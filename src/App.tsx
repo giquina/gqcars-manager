@@ -141,37 +141,43 @@ function App() {
       <Toaster />
       
       {/* Header */}
-      <header className="bg-card border-b px-6 py-4">
+      <header className="bg-card border-b px-4 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-primary">
-            GQ<span className="text-accent">Cars</span>
-          </h1>
-          <Button variant="outline" size="sm">
+          <div>
+            <h1 className="text-2xl font-bold text-primary">
+              GQ<span className="text-accent">Cars</span>
+            </h1>
+            <p className="text-xs text-muted-foreground">Passenger App</p>
+          </div>
+          <Button variant="outline" size="sm" className="hidden sm:flex">
             <User size={16} className="mr-2" />
             Profile
+          </Button>
+          <Button variant="outline" size="icon" className="sm:hidden">
+            <User size={16} />
           </Button>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-6 py-6">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:px-6">
         {/* Main Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="book" className="flex items-center gap-2">
-              <Car size={16} />
-              Book
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="book" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
+              <Car size={16} className="shrink-0" />
+              <span className="whitespace-nowrap">Book</span>
             </TabsTrigger>
-            <TabsTrigger value="active" className="flex items-center gap-2">
-              <NavigationArrow size={16} />
-              Active
+            <TabsTrigger value="active" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
+              <NavigationArrow size={16} className="shrink-0" />
+              <span className="whitespace-nowrap">Active</span>
             </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2">
-              <Clock size={16} />
-              History
+            <TabsTrigger value="history" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
+              <Clock size={16} className="shrink-0" />
+              <span className="whitespace-nowrap">History</span>
             </TabsTrigger>
-            <TabsTrigger value="favorites" className="flex items-center gap-2">
-              <Heart size={16} />
-              Favorites
+            <TabsTrigger value="favorites" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
+              <Heart size={16} className="shrink-0" />
+              <span className="whitespace-nowrap">Favorites</span>
             </TabsTrigger>
           </TabsList>
 
@@ -463,9 +469,9 @@ function App() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-muted py-8 px-6 mt-12">
+      <footer className="bg-muted py-8 px-4 mt-12 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
             <div>
               <Phone size={24} className="mx-auto mb-2 text-accent" />
               <p className="font-semibold">24/7 Support</p>
