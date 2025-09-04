@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Car, Phone, Mail, MapPin, Fuel, Users, Gauge } from "@phosphor-icons/react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Car, Phone, Mail, MapPin, Fuel, Users, Gauge, Heart, HeartStraight } from "@phosphor-icons/react"
 import { toast, Toaster } from 'sonner'
+import { useKV } from '@github/spark/hooks'
 
 // Sample car data - in a real app this would come from an API
 const cars = [
@@ -101,6 +103,8 @@ const cars = [
 function App() {
   const [selectedCar, setSelectedCar] = useState<typeof cars[0] | null>(null)
   const [filterBrand, setFilterBrand] = useState<string>("all")
+  const [activeTab, setActiveTab] = useState<string>("all")
+  const [favorites, setFavorites] = useKV("favorite-cars", [] as number[])
   const [inquiryForm, setInquiryForm] = useState({
     name: '',
     email: '',
@@ -112,7 +116,26 @@ function App() {
     ? cars 
     : cars.filter(car => car.make.toLowerCase() === filterBrand.toLowerCase())
 
+  const displayedCars = activeTab === "favorites" 
+    ? filteredCars.filter(car => favorites.includes(car.id))
+    : filteredCars
+
   const brands = ["all", ...Array.from(new Set(cars.map(car => car.make)))]
+
+  const toggleFavorite = (carId: number) => {
+    setFavorites((currentFavorites) => {
+      const isFavorited = currentFavorites.includes(carId)
+      if (isFavorited) {
+        toast.success("Removed from favorites")
+        return currentFavorites.filter(id => id !== carId)
+      } else {
+        toast.success("Added to favorites")
+        return [...currentFavorites, carId]
+      }
+    })
+  }
+
+  const isFavorited = (carId: number) => favorites.includes(carId)
 
   const handleInquiry = () => {
     if (!inquiryForm.name || !inquiryForm.email || !inquiryForm.message) {
@@ -167,10 +190,23 @@ function App() {
           </p>
         </div>
 
-        {/* Filter */}
-        <div className="mb-12 flex justify-center">
+        {/* Filter and Tabs */}
+        <div className="mb-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
+            <TabsList className="grid w-full grid-cols-2 sm:w-auto">
+              <TabsTrigger value="all" className="flex items-center gap-2">
+                <Car size={16} />
+                All Vehicles ({cars.length})
+              </TabsTrigger>
+              <TabsTrigger value="favorites" className="flex items-center gap-2">
+                <Heart size={16} />
+                Favorites ({favorites.length})
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          
           <Select value={filterBrand} onValueChange={setFilterBrand}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Filter by brand" />
             </SelectTrigger>
             <SelectContent>
@@ -184,154 +220,218 @@ function App() {
         </div>
 
         {/* Car Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCars.map(car => (
-            <Card key={car.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden">
-              <div className="relative overflow-hidden">
-                <img 
-                  src={car.image} 
-                  alt={`${car.make} ${car.model}`}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-4 right-4">
-                  <Badge className="bg-accent text-accent-foreground font-semibold">
-                    {car.year}
-                  </Badge>
-                </div>
-              </div>
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl">
-                  {car.make} {car.model}
-                </CardTitle>
-                <CardDescription className="text-lg font-semibold text-accent">
-                  ${car.price.toLocaleString()}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Gauge size={16} />
-                    {car.mileage.toLocaleString()} mi
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Fuel size={16} />
-                    {car.fuel}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users size={16} />
-                    {car.seats} seats
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {car.features.slice(0, 2).map(feature => (
-                    <Badge key={feature} variant="secondary" className="text-xs">
-                      {feature}
-                    </Badge>
-                  ))}
-                  {car.features.length > 2 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{car.features.length - 2} more
-                    </Badge>
-                  )}
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button 
-                      className="w-full mt-4"
-                      onClick={() => setSelectedCar(car)}
+        {displayedCars.length === 0 && activeTab === "favorites" ? (
+          <div className="text-center py-16">
+            <HeartStraight size={64} className="mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-2xl font-semibold mb-2">No Favorites Yet</h3>
+            <p className="text-muted-foreground mb-6">
+              Start adding vehicles to your favorites by clicking the heart icon on any car.
+            </p>
+            <Button 
+              onClick={() => setActiveTab("all")}
+              className="bg-accent hover:bg-accent/90 text-accent-foreground"
+            >
+              Browse All Vehicles
+            </Button>
+          </div>
+        ) : displayedCars.length === 0 ? (
+          <div className="text-center py-16">
+            <Car size={64} className="mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-2xl font-semibold mb-2">No Vehicles Found</h3>
+            <p className="text-muted-foreground">
+              Try adjusting your filter to see more vehicles.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayedCars.map(car => (
+              <Card key={car.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden">
+                <div className="relative overflow-hidden">
+                  <img 
+                    src={car.image} 
+                    alt={`${car.make} ${car.model}`}
+                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <Button
+                      size="sm"
+                      variant={isFavorited(car.id) ? "default" : "secondary"}
+                      className={`${
+                        isFavorited(car.id) 
+                          ? "bg-accent hover:bg-accent/90 text-accent-foreground" 
+                          : "bg-white/80 hover:bg-white text-foreground"
+                      } shadow-lg`}
+                      onClick={() => toggleFavorite(car.id)}
                     >
-                      View Details
+                      {isFavorited(car.id) ? (
+                        <Heart size={16} weight="fill" />
+                      ) : (
+                        <Heart size={16} />
+                      )}
                     </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                      <DialogTitle className="text-3xl">
-                        {car.make} {car.model}
-                      </DialogTitle>
-                      <DialogDescription className="text-xl font-semibold text-accent">
-                        ${car.price.toLocaleString()}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <img 
-                          src={car.image} 
-                          alt={`${car.make} ${car.model}`}
-                          className="w-full h-80 object-cover rounded-lg"
-                        />
-                      </div>
-                      <div className="space-y-6">
-                        <p className="text-muted-foreground leading-relaxed">
-                          {car.description}
-                        </p>
-                        
-                        <div className="grid grid-cols-2 gap-4 text-sm">
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <Badge className="bg-accent text-accent-foreground font-semibold">
+                      {car.year}
+                    </Badge>
+                  </div>
+                </div>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl">
+                    {car.make} {car.model}
+                  </CardTitle>
+                  <CardDescription className="text-lg font-semibold text-accent">
+                    ${car.price.toLocaleString()}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Gauge size={16} />
+                      {car.mileage.toLocaleString()} mi
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Fuel size={16} />
+                      {car.fuel}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Users size={16} />
+                      {car.seats} seats
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {car.features.slice(0, 2).map(feature => (
+                      <Badge key={feature} variant="secondary" className="text-xs">
+                        {feature}
+                      </Badge>
+                    ))}
+                    {car.features.length > 2 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{car.features.length - 2} more
+                      </Badge>
+                    )}
+                  </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button 
+                        className="w-full mt-4"
+                        onClick={() => setSelectedCar(car)}
+                      >
+                        View Details
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <div className="flex items-start justify-between">
                           <div>
-                            <Label className="font-semibold">Year</Label>
-                            <p>{car.year}</p>
+                            <DialogTitle className="text-3xl">
+                              {car.make} {car.model}
+                            </DialogTitle>
+                            <DialogDescription className="text-xl font-semibold text-accent">
+                              ${car.price.toLocaleString()}
+                            </DialogDescription>
                           </div>
-                          <div>
-                            <Label className="font-semibold">Mileage</Label>
-                            <p>{car.mileage.toLocaleString()} miles</p>
-                          </div>
-                          <div>
-                            <Label className="font-semibold">Fuel Type</Label>
-                            <p>{car.fuel}</p>
-                          </div>
-                          <div>
-                            <Label className="font-semibold">Transmission</Label>
-                            <p>{car.transmission}</p>
-                          </div>
-                        </div>
-
-                        <div>
-                          <Label className="font-semibold mb-2 block">Features</Label>
-                          <div className="flex flex-wrap gap-1">
-                            {car.features.map(feature => (
-                              <Badge key={feature} variant="secondary">
-                                {feature}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="space-y-4 pt-4 border-t">
-                          <h4 className="font-semibold">Interested in this vehicle?</h4>
-                          <div className="grid grid-cols-2 gap-3">
-                            <Input 
-                              placeholder="Your name"
-                              value={inquiryForm.name}
-                              onChange={(e) => setInquiryForm(prev => ({ ...prev, name: e.target.value }))}
-                            />
-                            <Input 
-                              placeholder="Email"
-                              type="email"
-                              value={inquiryForm.email}
-                              onChange={(e) => setInquiryForm(prev => ({ ...prev, email: e.target.value }))}
-                            />
-                          </div>
-                          <Input 
-                            placeholder="Phone (optional)"
-                            value={inquiryForm.phone}
-                            onChange={(e) => setInquiryForm(prev => ({ ...prev, phone: e.target.value }))}
-                          />
-                          <Textarea 
-                            placeholder="Message or questions..."
-                            value={inquiryForm.message}
-                            onChange={(e) => setInquiryForm(prev => ({ ...prev, message: e.target.value }))}
-                          />
-                          <Button onClick={handleInquiry} className="w-full">
-                            Send Inquiry
+                          <Button
+                            size="sm"
+                            variant={isFavorited(car.id) ? "default" : "outline"}
+                            className={isFavorited(car.id) ? "bg-accent hover:bg-accent/90 text-accent-foreground" : ""}
+                            onClick={() => toggleFavorite(car.id)}
+                          >
+                            {isFavorited(car.id) ? (
+                              <>
+                                <Heart size={16} weight="fill" className="mr-2" />
+                                Favorited
+                              </>
+                            ) : (
+                              <>
+                                <Heart size={16} className="mr-2" />
+                                Add to Favorites
+                              </>
+                            )}
                           </Button>
                         </div>
+                      </DialogHeader>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                          <img 
+                            src={car.image} 
+                            alt={`${car.make} ${car.model}`}
+                            className="w-full h-80 object-cover rounded-lg"
+                          />
+                        </div>
+                        <div className="space-y-6">
+                          <p className="text-muted-foreground leading-relaxed">
+                            {car.description}
+                          </p>
+                          
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <Label className="font-semibold">Year</Label>
+                              <p>{car.year}</p>
+                            </div>
+                            <div>
+                              <Label className="font-semibold">Mileage</Label>
+                              <p>{car.mileage.toLocaleString()} miles</p>
+                            </div>
+                            <div>
+                              <Label className="font-semibold">Fuel Type</Label>
+                              <p>{car.fuel}</p>
+                            </div>
+                            <div>
+                              <Label className="font-semibold">Transmission</Label>
+                              <p>{car.transmission}</p>
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label className="font-semibold mb-2 block">Features</Label>
+                            <div className="flex flex-wrap gap-1">
+                              {car.features.map(feature => (
+                                <Badge key={feature} variant="secondary">
+                                  {feature}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-4 pt-4 border-t">
+                            <h4 className="font-semibold">Interested in this vehicle?</h4>
+                            <div className="grid grid-cols-2 gap-3">
+                              <Input 
+                                placeholder="Your name"
+                                value={inquiryForm.name}
+                                onChange={(e) => setInquiryForm(prev => ({ ...prev, name: e.target.value }))}
+                              />
+                              <Input 
+                                placeholder="Email"
+                                type="email"
+                                value={inquiryForm.email}
+                                onChange={(e) => setInquiryForm(prev => ({ ...prev, email: e.target.value }))}
+                              />
+                            </div>
+                            <Input 
+                              placeholder="Phone (optional)"
+                              value={inquiryForm.phone}
+                              onChange={(e) => setInquiryForm(prev => ({ ...prev, phone: e.target.value }))}
+                            />
+                            <Textarea 
+                              placeholder="Message or questions..."
+                              value={inquiryForm.message}
+                              onChange={(e) => setInquiryForm(prev => ({ ...prev, message: e.target.value }))}
+                            />
+                            <Button onClick={handleInquiry} className="w-full">
+                              Send Inquiry
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                    </DialogContent>
+                  </Dialog>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Contact Section */}

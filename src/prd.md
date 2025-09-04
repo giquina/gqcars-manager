@@ -11,9 +11,9 @@
 
 ## Thought Process for Feature Selection
 - **Core Problem Analysis**: Car buyers need to easily browse and evaluate premium vehicles with comprehensive information
-- **User Context**: Users visit to explore luxury car inventory, compare options, and initiate purchase conversations
-- **Critical Path**: Browse cars → View details → Contact dealership
-- **Key Moments**: First impression of premium brand, car detail exploration, inquiry submission
+- **User Context**: Users visit to explore luxury car inventory, save preferred vehicles for comparison, and initiate purchase conversations
+- **Critical Path**: Browse cars → Save favorites → View details → Contact dealership
+- **Key Moments**: First impression of premium brand, favoriting preferred vehicles, car detail exploration, inquiry submission
 
 ## Essential Features
 
@@ -25,11 +25,19 @@
 - Clean, filterable grid of available vehicles
 - High-quality car images with key specs preview
 - Quick filtering by brand, price range, or type
+- Tab navigation between all vehicles and favorites
+
+### Favorites System
+- Persistent favorites storage using heart icon toggles
+- Dedicated favorites tab showing saved vehicles
+- Visual feedback for favorited status
+- Empty state guidance when no favorites exist
 
 ### Detailed Car Views
 - Comprehensive car information (specs, features, pricing)
 - Image galleries with multiple angles
 - Contact forms for inquiries
+- Favorites toggle within detailed view
 
 ### Contact & Information
 - Dealership contact information
