@@ -1147,10 +1147,10 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
 
   // Enhanced notification system for new messages
   useEffect(() => {
-    if (!isOpen && trip && messages.length > 0) {
+    if (!isOpen && trip && messages && messages.length > 0) {
       // Check for new driver messages when chat is closed
       const lastDriverMessage = messages
-        .filter(msg => msg.sender === 'driver')
+        .filter(msg => msg && msg.sender === 'driver')
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0]
       
       if (lastDriverMessage) {
@@ -1161,14 +1161,14 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
         }
       }
     }
-  }, [messages, isOpen, trip, driver.name])
+  }, [messages, isOpen, trip, driver?.name])
 
   // Simulate driver messages and typing
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen || !driver?.name) return
 
     // Add initial driver message if no messages exist
-    if (messages.length === 0) {
+    if (!messages || messages.length === 0) {
       const welcomeMessage = {
         id: Date.now(),
         text: `Hello! I'm ${driver.name}, your driver for today. I'm on my way to pick you up. ETA: ${driver.eta} minutes.`,
@@ -1181,7 +1181,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
 
     // Simulate driver responses with reduced frequency
     const responseInterval = setInterval(() => {
-      if (Math.random() > 0.98 && messages.length > 0) { // Reduced to 2% chance every 20 seconds
+      if (Math.random() > 0.98 && messages && messages.length > 0) { // Reduced to 2% chance every 20 seconds
         const responses = [
           "On my way!",
           "Just around the corner",
@@ -1197,7 +1197,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
           type: 'text'
         }
         
-        setMessages(prev => [...prev, response])
+        setMessages(prev => [...(prev || []), response])
       }
     }, 20000) // Increased interval to 20 seconds
 
@@ -1213,7 +1213,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
       clearInterval(responseInterval)
       clearInterval(typingInterval)
     }
-  }, [isOpen, messages.length, driver.name, driver.eta, setMessages])
+  }, [isOpen, messages?.length, driver?.name, driver?.eta, setMessages])
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -1232,7 +1232,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
       type: 'text'
     }
 
-    setMessages(prev => [...prev, message])
+    setMessages(prev => [...(prev || []), message])
     setNewMessage('')
     
     // Show typing indicator
@@ -1251,7 +1251,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
       type: 'text'
     }
 
-    setMessages(prev => [...prev, message])
+    setMessages(prev => [...(prev || []), message])
     toast.success("💬 Quick message sent")
   }
 
@@ -1295,7 +1295,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
-          {messages.map((message) => (
+          {messages && messages.length > 0 ? messages.map((message) => (
             <div
               key={message.id}
               className={`flex ${message.sender === 'passenger' ? 'justify-end' : 'justify-start'}`}
@@ -1329,7 +1329,11 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
                 </div>
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="text-center text-muted-foreground">
+              <p className="text-sm">Start a conversation with your driver</p>
+            </div>
+          )}
           
           {/* Driver typing indicator */}
           {driverTyping && (
@@ -1866,6 +1870,42 @@ function App() {
     return Math.round(R * c * 100) / 100 // Round to 2 decimal places
   }, [])
 
+  // Dynamic pricing calculation based on route distance and service level
+  const calculateServicePrice = useCallback((service: any, distance: number = 0) => {
+    if (!distance || distance === 0) {
+      return service.priceRange // Return original range if no distance
+    }
+
+    // Base pricing structure for each service type
+    const pricingStructure = {
+      'standard': { base: 18.00, perKm: 2.15, securityFee: 2.00 },
+      'shadow-escort': { base: 85.00, perKm: 18.50, securityFee: 45.00 },
+      'executive-protection': { base: 95.00, perKm: 15.80, securityFee: 35.00 },
+      'ultra-luxury': { base: 150.00, perKm: 22.50, securityFee: 28.00 },
+      'airport-express': { base: 45.00, perKm: 8.75, securityFee: 12.00 },
+      'corporate': { base: 28.00, perKm: 6.20, securityFee: 8.00 }
+    }
+
+    const pricing = pricingStructure[service.id as keyof typeof pricingStructure]
+    if (!pricing) return service.priceRange
+
+    // Calculate total price
+    const baseFare = pricing.base
+    const distanceFare = distance * pricing.perKm
+    const securityFee = pricing.securityFee
+    const total = baseFare + distanceFare + securityFee
+
+    return `£${total.toFixed(2)}`
+  }, [])
+
+  // Calculate route distance for pricing
+  const routeDistance = useMemo(() => {
+    if (bookingForm.pickupCoords && bookingForm.destinationCoords) {
+      return calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords)
+    }
+    return 0
+  }, [bookingForm.pickupCoords, bookingForm.destinationCoords, calculateDistance])
+
   const addToFavorites = useCallback((location: string, name: string) => {
     const newFavorite = { name, address: location, id: Date.now() }
     setFavorites((prev: any[]) => [...prev, newFavorite])
@@ -2166,28 +2206,39 @@ function App() {
               </div>
               
               {/* Trip Summary */}
-              {bookingForm.pickupCoords && bookingForm.destinationCoords && (
-                <div className="p-2 bg-muted/30 rounded-lg">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1">
-                        <NavigationArrow size={10} />
-                        <span>{calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords).toFixed(1)} km</span>
+              {bookingForm.pickupCoords && bookingForm.destinationCoords && (() => {
+                const distance = calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords)
+                const service = selectedService ? armoraServices.find(s => s.id === selectedService) : null
+                const price = service ? calculateServicePrice(service, distance) : null
+                
+                return (
+                  <div className="p-2 bg-muted/30 rounded-lg">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          <NavigationArrow size={10} />
+                          <span>{distance.toFixed(1)} km</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock size={10} />
+                          <span>~{Math.ceil(distance * 2)} min</span>
+                        </div>
+                        {price && (
+                          <div className="flex items-center gap-1">
+                            <span className="font-bold text-green-600">{price}</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock size={10} />
-                        <span>~{Math.ceil(calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords) * 2)} min</span>
-                      </div>
+                      {selectedService && (
+                        <div className="flex items-center gap-1">
+                          <CheckCircle size={10} className="text-green-600" />
+                          <span className="font-medium text-green-700">Ready</span>
+                        </div>
+                      )}
                     </div>
-                    {selectedService && (
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={10} className="text-green-600" />
-                        <span className="font-medium text-green-700">Ready</span>
-                      </div>
-                    )}
                   </div>
-                </div>
-              )}
+                )
+              })()}
               
               {/* Quick Favorites */}
               {(!bookingForm.destination) && favorites.length > 0 && (
@@ -2229,108 +2280,134 @@ function App() {
               {armoraServices.map(service => {
                 const Icon = service.icon
                 const isSelected = selectedService === service.id
+                const dynamicPrice = calculateServicePrice(service, routeDistance)
+                
                 return (
-                  <Card 
-                    key={service.id}
-                    className={`cursor-pointer transition-all duration-300 h-[180px] overflow-hidden relative ${ 
-                      isSelected
-                        ? 'ring-2 ring-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl transform scale-[1.02]' 
-                        : 'hover:shadow-lg hover:transform hover:scale-[1.01] bg-white border border-border/40'
-                    } ${service.popular ? 'border-green-300 bg-gradient-to-br from-green-50 to-green-25' : ''}`}
-                    onClick={() => setSelectedService(service.id)}
-                  >
-                    {/* Popular Badge - Top Right */}
+                  <div key={service.id} className="relative">
+                    {/* Small Corner Badge - No Text Overlap */}
                     {service.popular && (
-                      <div className="absolute top-2 right-2 z-10">
-                        <Badge className="text-[7px] px-1.5 py-0.5 bg-green-500 text-white border-0 shadow-sm leading-none">
+                      <div className="absolute -top-1 -right-1 z-10">
+                        <div className="bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-sm border border-white">
                           Popular
-                        </Badge>
+                        </div>
                       </div>
                     )}
                     
-                    <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center space-y-3">
-                      {/* Larger Icon */}
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${ 
-                        isSelected 
-                          ? 'bg-primary text-primary-foreground shadow-lg scale-105' 
-                          : service.popular 
-                          ? 'bg-green-500 text-white shadow-md'
-                          : 'bg-gradient-to-br from-muted to-muted/70 text-primary'
-                      }`}>
-                        <Icon size={28} weight={isSelected ? "fill" : "regular"} />
-                      </div>
-                      
-                      {/* Service Name - Larger and Contained */}
-                      <div className="space-y-1 w-full">
-                        <h3 className={`font-bold text-base leading-tight text-foreground text-center w-full break-words ${ 
-                          isSelected ? 'text-primary' : ''
+                    <Card 
+                      className={`cursor-pointer transition-all duration-300 h-[190px] overflow-hidden relative ${ 
+                        isSelected
+                          ? 'ring-2 ring-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl transform scale-[1.02]' 
+                          : 'hover:shadow-lg hover:transform hover:scale-[1.01] bg-white border border-border/40'
+                      } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-white' : ''}`}
+                      onClick={() => setSelectedService(service.id)}
+                    >
+                      <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center space-y-3">
+                        {/* Enhanced Icon */}
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 ${ 
+                          isSelected 
+                            ? 'bg-primary text-primary-foreground shadow-lg scale-110' 
+                            : service.popular 
+                            ? 'bg-green-500 text-white shadow-md'
+                            : 'bg-gradient-to-br from-muted to-muted/70 text-primary'
                         }`}>
-                          {service.name}
-                        </h3>
-                      </div>
-                      
-                      {/* Essential Information - Clean and Contained */}
-                      <div className="space-y-2 w-full flex flex-col items-center">
-                        {/* Price Range - Most Important */}
-                        <p className={`font-bold text-lg leading-none text-center ${ 
-                          isSelected ? 'text-primary' : 'text-foreground'
-                        }`}>
-                          {service.priceRange}
-                        </p>
-                        
-                        {/* Wait Time and Capacity - Stacked */}
-                        <div className="space-y-1 text-center">
-                          <p className="text-xs text-muted-foreground font-medium leading-none">
-                            {service.eta}
-                          </p>
-                          <p className="text-xs text-muted-foreground leading-none">
-                            {service.capacity}
-                          </p>
+                          <Icon size={24} weight={isSelected ? "fill" : "regular"} />
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        
+                        {/* Service Name - Clear and Contained */}
+                        <div className="space-y-1 w-full">
+                          <h3 className={`font-bold text-sm leading-tight text-foreground text-center w-full line-clamp-2 ${ 
+                            isSelected ? 'text-primary' : ''
+                          }`}>
+                            {service.name}
+                          </h3>
+                        </div>
+                        
+                        {/* Dynamic Pricing - Route-Based */}
+                        <div className="space-y-2 w-full flex flex-col items-center">
+                          {/* Price Range - Most Important */}
+                          <div className="text-center">
+                            <p className={`font-bold text-lg leading-none ${ 
+                              isSelected ? 'text-primary' : 'text-foreground'
+                            }`}>
+                              {dynamicPrice}
+                            </p>
+                            {routeDistance > 0 && (
+                              <p className="text-[9px] text-muted-foreground mt-0.5">
+                                for {routeDistance.toFixed(1)}km trip
+                              </p>
+                            )}
+                          </div>
+                          
+                          {/* Wait Time and Capacity - Stacked */}
+                          <div className="space-y-1 text-center">
+                            <p className="text-xs text-muted-foreground font-medium leading-none">
+                              {service.eta}
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-none">
+                              {service.capacity}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 )
               })}
             </div>
 
             {/* Enhanced Service Description */}
-            {selectedService && (
-              <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-md">
-                <CardContent className="p-4">
-                  <div className="text-center space-y-2">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      {React.createElement(armoraServices.find(s => s.id === selectedService)?.icon || Car, {
-                        size: 20,
-                        className: "text-primary",
-                        weight: "fill"
-                      })}
-                      <h4 className="font-bold text-primary">
-                        {armoraServices.find(s => s.id === selectedService)?.name}
-                      </h4>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {armoraServices.find(s => s.id === selectedService)?.description}
-                    </p>
-                    <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-primary/20">
-                      <div className="text-center">
-                        <p className="font-bold text-lg text-primary">
-                          {armoraServices.find(s => s.id === selectedService)?.priceRange}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Price Range</p>
+            {selectedService && (() => {
+              const service = armoraServices.find(s => s.id === selectedService)
+              const dynamicPrice = calculateServicePrice(service, routeDistance)
+              return (
+                <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-md">
+                  <CardContent className="p-4">
+                    <div className="text-center space-y-2">
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        {React.createElement(service?.icon || Car, {
+                          size: 20,
+                          className: "text-primary",
+                          weight: "fill"
+                        })}
+                        <h4 className="font-bold text-primary">
+                          {service?.name}
+                        </h4>
                       </div>
-                      <div className="w-px h-8 bg-primary/20"></div>
-                      <div className="text-center">
-                        <p className="font-bold text-lg text-accent">
-                          {armoraServices.find(s => s.id === selectedService)?.eta}
-                        </p>
-                        <p className="text-xs text-muted-foreground">Arrival Time</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {service?.description}
+                      </p>
+                      <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-primary/20">
+                        <div className="text-center">
+                          <p className="font-bold text-lg text-primary">
+                            {dynamicPrice}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {routeDistance > 0 ? `For ${routeDistance.toFixed(1)}km trip` : 'Price Range'}
+                          </p>
+                        </div>
+                        <div className="w-px h-8 bg-primary/20"></div>
+                        <div className="text-center">
+                          <p className="font-bold text-lg text-accent">
+                            {service?.eta}
+                          </p>
+                          <p className="text-xs text-muted-foreground">Arrival Time</p>
+                        </div>
                       </div>
+                      {routeDistance > 0 && (
+                        <div className="mt-3 p-2 bg-green-50 rounded-lg border border-green-200">
+                          <div className="flex items-center justify-center gap-2">
+                            <CheckCircle size={12} className="text-green-600" />
+                            <p className="text-xs text-green-700 font-medium">
+                              Price calculated for your specific route
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  </CardContent>
+                </Card>
+              )
+            })()}
           </div>
 
           {/* Compact Payment Method */}
@@ -2356,7 +2433,11 @@ function App() {
                 'Select ride type' :
                 !bookingForm.pickupCoords || !bookingForm.destinationCoords ?
                 'Select valid locations' :
-                `Confirm ${armoraServices.find(s => s.id === selectedService)?.name}`
+                (() => {
+                  const service = armoraServices.find(s => s.id === selectedService)
+                  const dynamicPrice = calculateServicePrice(service, routeDistance)
+                  return `Book ${service?.name} - ${dynamicPrice}`
+                })()
               }
             </div>
           </Button>
