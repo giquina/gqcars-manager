@@ -1303,7 +1303,7 @@ const useDriverArrivalTracking = (trip: any, driver: any, onNotification: (type:
   }
 }
 
-// Real-time chat system for driver-passenger communication
+// Enhanced Real-time chat system for driver-passenger communication
 const ChatSystem = ({ trip, driver, isOpen, onClose }: {
   trip: any,
   driver: any,
@@ -1314,80 +1314,191 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
   const [newMessage, setNewMessage] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [driverTyping, setDriverTyping] = useState(false)
+  const [isOnline, setIsOnline] = useState(true)
+  const [messageStatus, setMessageStatus] = useState<'sending' | 'sent' | 'delivered' | 'read'>('sent')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [attachmentPreview, setAttachmentPreview] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Quick message templates
-  const quickMessages = [
-    "I'm running a few minutes late",
-    "Where exactly should I meet you?",
-    "Thank you!",
-    "Please wait, I'll be right there",
-    "Can you see me?",
-    "Traffic is heavy, might be delayed"
-  ]
+  // Enhanced quick message templates with categories
+  const quickMessages = {
+    common: [
+      "I'm here! 👋",
+      "Running 2-3 minutes late",
+      "On my way",
+      "Thank you!",
+      "Have a great day!"
+    ],
+    location: [
+      "Where exactly should I meet you?",
+      "I'm by the main entrance",
+      "Can you see me?",
+      "I'm in the [vehicle description]",
+      "Please come to [specific location]"
+    ],
+    traffic: [
+      "Traffic is heavy, might be delayed",
+      "Taking alternate route",
+      "Road closure ahead",
+      "ETA updated due to traffic",
+      "Clear roads ahead"
+    ],
+    assistance: [
+      "Need help with luggage?",
+      "Please buckle up",
+      "Comfortable temperature?",
+      "Any preferred route?",
+      "Playing your preferred music"
+    ]
+  }
 
-  // Enhanced notification system for new messages
+  // Smart message suggestions based on trip context
+  const getSmartSuggestions = () => {
+    const tripProgress = Math.random() // Simulate trip progress
+    const timeOfDay = new Date().getHours()
+    
+    if (tripProgress < 0.2) {
+      // Trip just started
+      return [
+        "Thanks for the pickup!",
+        "The temperature is perfect",
+        "Please take the fastest route",
+        "I'm not in a rush"
+      ]
+    } else if (tripProgress < 0.8) {
+      // Mid-trip
+      return [
+        "How much longer?",
+        "This route looks good",
+        "Thanks for the smooth ride",
+        "Could we stop briefly?"
+      ]
+    } else {
+      // Near destination
+      return [
+        "Perfect, thank you!",
+        "You can drop me here",
+        "Thanks for the great service",
+        "Have a wonderful day!"
+      ]
+    }
+  }
+
+  // Auto-suggestions based on driver messages
+  const getContextualReplies = (lastDriverMessage: string) => {
+    const message = lastDriverMessage.toLowerCase()
+    
+    if (message.includes('here') || message.includes('arrived')) {
+      return ["Coming out now!", "Be right there", "Can you see me?"]
+    } else if (message.includes('traffic') || message.includes('delay')) {
+      return ["No problem!", "Thanks for letting me know", "Take your time"]
+    } else if (message.includes('route') || message.includes('way')) {
+      return ["Sounds good", "Whatever works best", "I trust your judgment"]
+    } else if (message.includes('temperature') || message.includes('music')) {
+      return ["Perfect, thanks!", "That's great", "Much appreciated"]
+    }
+    
+    return ["👍", "Thank you", "Sounds good"]
+  }
+
+  const [selectedQuickCategory, setSelectedQuickCategory] = useState<keyof typeof quickMessages>('common')
+  const [smartSuggestions, setSmartSuggestions] = useState<string[]>([])
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filteredMessages, setFilteredMessages] = useState<any[]>([])
+
+  // Enhanced emoji reactions
+  const quickReactions = ['👍', '👌', '🙏', '😊', '🚗', '⏰', '📍', '✅']
+
+  // Message search functionality
   useEffect(() => {
-    if (!isOpen && trip && messages && messages.length > 0) {
-      // Check for new driver messages when chat is closed
+    if (searchQuery && messages) {
+      const filtered = messages.filter(msg => 
+        msg.text.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      setFilteredMessages(filtered)
+    } else {
+      setFilteredMessages([])
+    }
+  }, [searchQuery, messages])
+
+  // Clear search when chat opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchQuery('')
+      setIsSearchOpen(false)
+    }
+  }, [isOpen])
+
+  // Update smart suggestions when messages change
+  useEffect(() => {
+    if (messages && messages.length > 0) {
       const lastDriverMessage = messages
-        .filter(msg => msg && msg.sender === 'driver')
-        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0]
+        .filter(msg => msg.sender === 'driver')
+        .slice(-1)[0]
       
       if (lastDriverMessage) {
-        const messageAge = new Date().getTime() - new Date(lastDriverMessage.timestamp).getTime()
-        if (messageAge < 5000) { // Only show very recent messages
-          // Reduced frequency of chat notifications
-          console.log('New driver message received')
-        }
+        setSmartSuggestions(getContextualReplies(lastDriverMessage.text))
+      } else {
+        setSmartSuggestions(getSmartSuggestions())
       }
+    } else {
+      setSmartSuggestions(getSmartSuggestions())
     }
-  }, [messages, isOpen, trip, driver?.name])
+  }, [messages])
 
-  // Simulate driver messages and typing
+  // Enhanced message delivery simulation
   useEffect(() => {
     if (!isOpen || !driver?.name) return
 
-    // Add initial driver message if no messages exist
+    // Add welcome message with enhanced detail
     if (!messages || messages.length === 0) {
       const welcomeMessage = {
         id: Date.now(),
-        text: `Hello! I'm ${driver.name}, your driver for today. I'm on my way to pick you up. ETA: ${driver.eta} minutes.`,
+        text: `Hello! I'm ${driver.name}, your protection officer for today. I'm en route to your pickup location with an ETA of ${driver.eta} minutes. Please let me know if you have any specific requirements or if there are any changes to your pickup location.`,
         sender: 'driver',
         timestamp: new Date(),
-        type: 'text'
+        type: 'welcome',
+        status: 'delivered',
+        reactions: []
       }
       setMessages([welcomeMessage])
     }
 
-    // Simulate driver responses with reduced frequency
+    // Simulate realistic driver responses with better timing
     const responseInterval = setInterval(() => {
-      if (Math.random() > 0.98 && messages && messages.length > 0) { // Reduced to 2% chance every 20 seconds
-        const responses = [
-          "On my way!",
-          "Just around the corner",
-          "Should be there in 2 minutes",
-          "Thanks for waiting"
+      if (Math.random() > 0.97 && messages && messages.length > 0) { // 3% chance every 15 seconds
+        const contextualResponses = [
+          "Just passed [landmark], should be there in 3 minutes",
+          "Navigating through some traffic, but still on schedule",
+          "Perfect timing, just pulled up to your location",
+          "Thanks for your patience during this busy period",
+          "Hope you're having a great day!",
+          "GPS is showing clear roads ahead",
+          "I can see the pickup point, looking for you now"
         ]
         
         const response = {
           id: Date.now(),
-          text: responses[Math.floor(Math.random() * responses.length)],
+          text: contextualResponses[Math.floor(Math.random() * contextualResponses.length)],
           sender: 'driver',
           timestamp: new Date(),
-          type: 'text'
+          type: 'text',
+          status: 'delivered',
+          reactions: []
         }
         
         setMessages(prev => [...(prev || []), response])
       }
-    }, 20000) // Increased interval to 20 seconds
+    }, 15000) // Every 15 seconds
 
-    // Simulate driver typing indicator with reduced frequency
+    // Enhanced typing indicator with realistic patterns
     const typingInterval = setInterval(() => {
-      if (Math.random() > 0.95) { // 5% chance
+      if (Math.random() > 0.92) { // 8% chance every 20 seconds
         setDriverTyping(true)
-        setTimeout(() => setDriverTyping(false), 2000)
+        setTimeout(() => setDriverTyping(false), Math.random() * 3000 + 1000) // 1-4 seconds
       }
     }, 20000)
 
@@ -1397,44 +1508,111 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
     }
   }, [isOpen, messages?.length, driver?.name, driver?.eta, setMessages])
 
-  // Auto-scroll to bottom when new messages arrive
+  // Connection status simulation
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const connectionInterval = setInterval(() => {
+      // Simulate occasional connection issues (5% chance)
+      if (Math.random() > 0.95) {
+        setIsOnline(false)
+        setTimeout(() => setIsOnline(true), Math.random() * 3000 + 1000)
+      }
+    }, 30000)
+
+    return () => clearInterval(connectionInterval)
+  }, [])
+
+  // Auto-scroll with smooth behavior
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'end'
+      })
+    }
   }, [messages, driverTyping])
 
-  // Handle sending messages
-  const sendMessage = () => {
-    if (!newMessage.trim()) return
+  // Enhanced message sending with delivery status
+  const sendMessage = async (text?: string, type: string = 'text') => {
+    const messageText = text || newMessage.trim()
+    if (!messageText) return
 
+    const tempId = Date.now()
     const message = {
-      id: Date.now(),
-      text: newMessage.trim(),
+      id: tempId,
+      text: messageText,
       sender: 'passenger',
       timestamp: new Date(),
-      type: 'text'
+      type,
+      status: 'sending',
+      reactions: []
     }
 
     setMessages(prev => [...(prev || []), message])
     setNewMessage('')
     
-    // Show typing indicator
-    setIsTyping(true)
-    setTimeout(() => setIsTyping(false), 1000)
+    // Simulate delivery status updates
+    setTimeout(() => {
+      setMessages(prev => prev.map(msg => 
+        msg.id === tempId ? { ...msg, status: 'sent' } : msg
+      ))
+    }, 500)
+
+    setTimeout(() => {
+      setMessages(prev => prev.map(msg => 
+        msg.id === tempId ? { ...msg, status: 'delivered' } : msg
+      ))
+    }, 1500)
+
+    setTimeout(() => {
+      setMessages(prev => prev.map(msg => 
+        msg.id === tempId ? { ...msg, status: 'read' } : msg
+      ))
+    }, 3000)
     
-    toast.success("💬 Message sent")
+    // Show typing indicator briefly
+    setIsTyping(true)
+    setTimeout(() => setIsTyping(false), 800)
+    
+    toast.success("💬 Message sent to driver")
   }
 
-  const sendQuickMessage = (text: string) => {
-    const message = {
-      id: Date.now(),
-      text,
-      sender: 'passenger',
-      timestamp: new Date(),
-      type: 'text'
-    }
+  // Add emoji reaction to message
+  const addReaction = (messageId: number, emoji: string) => {
+    setMessages(prev => prev.map(msg => {
+      if (msg.id === messageId) {
+        const existingReaction = msg.reactions?.find((r: any) => r.emoji === emoji)
+        if (existingReaction) {
+          // Remove reaction if it exists
+          return {
+            ...msg,
+            reactions: msg.reactions.filter((r: any) => r.emoji !== emoji)
+          }
+        } else {
+          // Add new reaction
+          return {
+            ...msg,
+            reactions: [
+              ...(msg.reactions || []),
+              { emoji, sender: 'passenger', timestamp: new Date() }
+            ]
+          }
+        }
+      }
+      return msg
+    }))
+  }
 
-    setMessages(prev => [...(prev || []), message])
-    toast.success("💬 Quick message sent")
+  // Handle file attachment (placeholder for future implementation)
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // For now, just show a preview (in real app, would upload to server)
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setAttachmentPreview(e.target?.result as string)
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -1444,93 +1622,271 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
     }
   }
 
+  // Voice note placeholder (for future implementation)
+  const sendVoiceNote = () => {
+    toast.info("🎤 Voice messages coming soon!")
+  }
+
+  // Share location placeholder
+  const shareLocation = () => {
+    sendMessage("📍 Shared my current location", 'location')
+  }
+
   if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end">
-      <div className="w-full max-w-md mx-auto bg-background rounded-t-3xl border-t border-border max-h-[85vh] flex flex-col">
-        {/* Chat Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-card to-card/95">
+      <div className="w-full max-w-md mx-auto bg-background rounded-t-3xl border-t border-border max-h-[90vh] flex flex-col">
+        {/* Enhanced Chat Header */}
+        <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-card to-card/95 rounded-t-3xl">
           <div className="flex items-center gap-3">
-            <img 
-              src={driver.photo} 
-              alt={driver.name}
-              className="w-10 h-10 rounded-full object-cover border-2 border-background"
-            />
-            <div>
-              <h3 className="font-semibold">{driver.name}</h3>
+            <div className="relative">
+              <img 
+                src={driver.photo} 
+                alt={driver.name}
+                className="w-12 h-12 rounded-full object-cover border-2 border-background shadow-sm"
+              />
+              <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background ${
+                isOnline ? 'bg-green-500' : 'bg-gray-400'
+              }`}></div>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base">{driver.name}</h3>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-xs text-muted-foreground">Online</span>
+                <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                <span className="text-xs text-muted-foreground">
+                  {isOnline ? (driverTyping ? 'Typing...' : 'Online') : 'Reconnecting...'}
+                </span>
               </div>
+              <p className="text-xs text-muted-foreground">{driver.vehicle} • {driver.license}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="w-9 h-9 rounded-full">
-              <Phone size={16} />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-10 h-10 rounded-full hover:bg-muted"
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+            >
+              <MagnifyingGlass size={18} />
             </Button>
-            <Button variant="ghost" size="sm" onClick={onClose} className="w-9 h-9 rounded-full">
-              <X size={16} />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-10 h-10 rounded-full hover:bg-primary hover:text-primary-foreground"
+              onClick={() => {
+                toast.success("📞 Calling driver...")
+              }}
+            >
+              <Phone size={18} />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onClose} 
+              className="w-10 h-10 rounded-full hover:bg-destructive hover:text-destructive-foreground"
+            >
+              <X size={18} />
             </Button>
           </div>
         </div>
 
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
-          {messages && messages.length > 0 ? messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.sender === 'passenger' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className="flex items-end gap-2 max-w-[80%]">
-                {message.sender === 'driver' && (
-                  <img 
-                    src={driver.photo} 
-                    alt={driver.name}
-                    className="w-6 h-6 rounded-full object-cover flex-shrink-0"
-                  />
-                )}
-                <div>
-                  <div
-                    className={`px-4 py-2 rounded-2xl ${
-                      message.sender === 'passenger'
-                        ? 'bg-primary text-primary-foreground rounded-br-md'
-                        : 'bg-muted text-muted-foreground rounded-bl-md'
-                    }`}
-                  >
-                    <p className="text-sm">{message.text}</p>
-                  </div>
-                  <p className={`text-xs text-muted-foreground mt-1 ${
-                    message.sender === 'passenger' ? 'text-right' : 'text-left'
-                  }`}>
-                    {new Date(message.timestamp).toLocaleTimeString('en-GB', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                </div>
-              </div>
+        {/* Search Bar */}
+        {isSearchOpen && (
+          <div className="p-3 border-b border-border bg-muted/30">
+            <div className="relative">
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search messages..."
+                className="pl-10 h-9 bg-background"
+              />
+              <MagnifyingGlass size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 p-0"
+                  onClick={() => setSearchQuery('')}
+                >
+                  <X size={12} />
+                </Button>
+              )}
             </div>
-          )) : (
-            <div className="text-center text-muted-foreground">
-              <p className="text-sm">Start a conversation with your driver</p>
+            {filteredMessages.length > 0 && (
+              <p className="text-xs text-muted-foreground mt-2">
+                Found {filteredMessages.length} message{filteredMessages.length !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Enhanced Messages Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 max-h-96">
+          {!isOnline && (
+            <div className="text-center py-3">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                <div className="flex items-center justify-center gap-2 text-yellow-700">
+                  <Warning size={16} />
+                  <span className="text-sm font-medium">Connection lost</span>
+                </div>
+                <p className="text-xs text-yellow-600 mt-1">Reconnecting to secure chat...</p>
+              </div>
             </div>
           )}
           
-          {/* Driver typing indicator */}
-          {driverTyping && (
+          {/* Display filtered messages if searching, otherwise show all */}
+          {(searchQuery ? filteredMessages : messages) && (searchQuery ? filteredMessages : messages).length > 0 ? (searchQuery ? filteredMessages : messages).map((message) => {
+            const shouldHighlight = searchQuery && message.text.toLowerCase().includes(searchQuery.toLowerCase())
+            
+            return (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === 'passenger' ? 'justify-end' : 'justify-start'} ${
+                  shouldHighlight ? 'bg-yellow-50 p-2 rounded-lg border border-yellow-200' : ''
+                }`}
+              >
+                <div className="flex items-end gap-2 max-w-[85%]">
+                  {message.sender === 'driver' && (
+                    <img 
+                      src={driver.photo} 
+                      alt={driver.name}
+                      className="w-7 h-7 rounded-full object-cover flex-shrink-0 border border-border"
+                    />
+                  )}
+                  <div className="space-y-1">
+                    <div className="relative group">
+                      <div
+                        className={`px-4 py-3 rounded-2xl relative ${
+                          message.sender === 'passenger'
+                            ? 'bg-primary text-primary-foreground rounded-br-md'
+                            : message.type === 'welcome'
+                            ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-800 border border-green-200 rounded-bl-md'
+                            : 'bg-muted text-foreground rounded-bl-md'
+                        }`}
+                      >
+                        <p className="text-sm leading-relaxed">
+                          {shouldHighlight ? (
+                            <>
+                              {message.text.split(new RegExp(`(${searchQuery})`, 'gi')).map((part: string, index: number) =>
+                                part.toLowerCase() === searchQuery.toLowerCase() ? (
+                                  <span key={index} className="bg-yellow-300 px-1 rounded font-semibold">
+                                    {part}
+                                  </span>
+                                ) : (
+                                  part
+                                )
+                              )}
+                            </>
+                          ) : (
+                            message.text
+                          )}
+                        </p>
+                        
+                        {/* Message status indicators for passenger messages */}
+                        {message.sender === 'passenger' && (
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 flex items-center justify-center">
+                            {message.status === 'sending' && (
+                              <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                            )}
+                            {message.status === 'sent' && (
+                              <CheckCircle size={12} className="text-blue-400" />
+                            )}
+                            {message.status === 'delivered' && (
+                              <div className="flex gap-0.5">
+                                <CheckCircle size={10} className="text-green-400" />
+                                <CheckCircle size={10} className="text-green-400" />
+                              </div>
+                            )}
+                            {message.status === 'read' && (
+                              <div className="flex gap-0.5">
+                                <CheckCircle size={10} className="text-green-600" weight="fill" />
+                                <CheckCircle size={10} className="text-green-600" weight="fill" />
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Quick reaction buttons on hover */}
+                      {!searchQuery && (
+                        <div className="absolute -bottom-6 left-0 right-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {quickReactions.slice(0, 4).map((emoji) => (
+                            <Button
+                              key={emoji}
+                              variant="ghost"
+                              size="sm"
+                              className="w-6 h-6 p-0 bg-background/90 hover:bg-primary hover:text-primary-foreground rounded-full text-xs border border-border/50"
+                              onClick={() => addReaction(message.id, emoji)}
+                            >
+                              {emoji}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Message reactions */}
+                    {message.reactions && message.reactions.length > 0 && (
+                      <div className="flex gap-1 mt-1">
+                        {message.reactions.map((reaction: any, idx: number) => (
+                          <span 
+                            key={idx}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-muted/70 rounded-full text-xs cursor-pointer hover:bg-muted"
+                            onClick={() => addReaction(message.id, reaction.emoji)}
+                          >
+                            {reaction.emoji}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Timestamp and status */}
+                    <div className={`flex items-center gap-2 mt-1 ${
+                      message.sender === 'passenger' ? 'justify-end' : 'justify-start'
+                    }`}>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(message.timestamp).toLocaleTimeString('en-GB', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }) : (
+            <div className="text-center text-muted-foreground py-8">
+              <ChatCircle size={48} className="mx-auto mb-4 opacity-50" />
+              {searchQuery ? (
+                <>
+                  <p className="text-sm">No messages found</p>
+                  <p className="text-xs mt-1">Try a different search term</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm">Start a conversation with your driver</p>
+                  <p className="text-xs mt-1">Messages are secure and private</p>
+                </>
+              )}
+            </div>
+          )}
+          
+          {/* Enhanced Driver typing indicator */}
+          {driverTyping && !searchQuery && (
             <div className="flex justify-start">
               <div className="flex items-end gap-2">
                 <img 
                   src={driver.photo} 
                   alt={driver.name}
-                  className="w-6 h-6 rounded-full object-cover"
+                  className="w-7 h-7 rounded-full object-cover border border-border"
                 />
-                <div className="bg-muted px-4 py-2 rounded-2xl rounded-bl-md">
+                <div className="bg-muted px-4 py-3 rounded-2xl rounded-bl-md">
                   <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
                 </div>
               </div>
@@ -1540,16 +1896,55 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Quick Messages */}
-        <div className="p-3 border-t border-border bg-muted/30">
+        {/* Enhanced Quick Messages with Categories and Smart Suggestions */}
+        <div className="border-t border-border bg-muted/30 p-3">
+          {/* Smart suggestions based on context */}
+          {smartSuggestions.length > 0 && (
+            <div className="mb-3">
+              <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                Smart replies
+              </p>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {smartSuggestions.slice(0, 3).map((suggestion, index) => (
+                  <Button
+                    key={index}
+                    variant="default"
+                    size="sm"
+                    className="whitespace-nowrap h-8 text-xs bg-primary/90 hover:bg-primary text-primary-foreground transition-colors flex-shrink-0 rounded-full"
+                    onClick={() => sendMessage(suggestion)}
+                  >
+                    {suggestion}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Category tabs */}
+          <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
+            {Object.keys(quickMessages).map((category) => (
+              <Button
+                key={category}
+                variant={selectedQuickCategory === category ? "default" : "outline"}
+                size="sm"
+                className="capitalize text-xs h-7 px-3 whitespace-nowrap"
+                onClick={() => setSelectedQuickCategory(category as keyof typeof quickMessages)}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+          
+          {/* Quick message buttons */}
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {quickMessages.slice(0, 3).map((msg, index) => (
+            {quickMessages[selectedQuickCategory].slice(0, 3).map((msg, index) => (
               <Button
                 key={index}
                 variant="outline"
                 size="sm"
-                className="whitespace-nowrap h-8 text-xs bg-background hover:bg-primary hover:text-primary-foreground transition-colors"
-                onClick={() => sendQuickMessage(msg)}
+                className="whitespace-nowrap h-8 text-xs bg-background hover:bg-primary hover:text-primary-foreground transition-colors flex-shrink-0"
+                onClick={() => sendMessage(msg)}
               >
                 {msg}
               </Button>
@@ -1557,44 +1952,112 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
           </div>
         </div>
 
-        {/* Message Input */}
-        <div className="p-4 border-t border-border bg-gradient-to-r from-card to-card/95">
-          <div className="flex items-end gap-3">
+        {/* Enhanced Message Input */}
+        <div className="p-4 border-t border-border bg-gradient-to-r from-card to-card/95 rounded-b-3xl">
+          {/* Attachment preview */}
+          {attachmentPreview && (
+            <div className="mb-3 p-2 bg-muted/50 rounded-lg flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">📎 Image ready to send</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-6 w-6 p-0"
+                onClick={() => setAttachmentPreview(null)}
+              >
+                <X size={12} />
+              </Button>
+            </div>
+          )}
+          
+          <div className="flex items-end gap-2">
+            {/* Additional action buttons */}
+            <div className="flex gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-8 h-8 p-0 rounded-full"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Plus size={16} className="text-muted-foreground" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-8 h-8 p-0 rounded-full"
+                onClick={shareLocation}
+              >
+                <MapPin size={16} className="text-muted-foreground" />
+              </Button>
+            </div>
+            
+            {/* Message input */}
             <div className="flex-1 relative">
               <Input
                 ref={inputRef}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Type a message..."
-                className="pr-12 rounded-full border-2 focus:border-primary transition-colors"
+                placeholder={isOnline ? "Type a message..." : "Reconnecting..."}
+                disabled={!isOnline}
+                className="pr-20 rounded-full border-2 focus:border-primary transition-colors min-h-[44px] resize-none"
                 maxLength={500}
               />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full"
-              >
-                <SmileyWink size={16} className="text-muted-foreground" />
-              </Button>
+              
+              {/* Emoji and voice buttons */}
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-8 h-8 p-0 rounded-full"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                >
+                  <SmileyWink size={16} className="text-muted-foreground" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-8 h-8 p-0 rounded-full"
+                  onClick={sendVoiceNote}
+                >
+                  <Bell size={16} className="text-muted-foreground" />
+                </Button>
+              </div>
             </div>
             
+            {/* Send button */}
             <Button
-              onClick={sendMessage}
-              disabled={!newMessage.trim()}
-              className="w-12 h-12 rounded-full bg-primary hover:bg-primary/90 disabled:opacity-50 transition-all"
+              onClick={() => sendMessage()}
+              disabled={!newMessage.trim() || !isOnline}
+              className="w-12 h-12 rounded-full bg-primary hover:bg-primary/90 disabled:opacity-50 transition-all flex-shrink-0"
             >
-              <PaperPlaneTilt size={18} className="text-primary-foreground" weight="fill" />
+              <PaperPlaneTilt size={20} className="text-primary-foreground" weight="fill" />
             </Button>
           </div>
           
-          {/* Character count */}
-          {newMessage.length > 400 && (
-            <p className="text-xs text-muted-foreground text-right mt-1">
-              {newMessage.length}/500
-            </p>
-          )}
+          {/* Character count and connection status */}
+          <div className="flex justify-between items-center mt-2">
+            {newMessage.length > 400 && (
+              <p className="text-xs text-muted-foreground">
+                {newMessage.length}/500
+              </p>
+            )}
+            {!isOnline && (
+              <p className="text-xs text-yellow-600 flex items-center gap-1">
+                <Warning size={12} />
+                Reconnecting...
+              </p>
+            )}
+          </div>
         </div>
+        
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,application/pdf"
+          onChange={handleFileUpload}
+          className="hidden"
+        />
       </div>
     </div>
   )
@@ -4057,7 +4520,7 @@ function App() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="h-11 font-medium"
+                  className="h-11 font-medium hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-colors"
                   onClick={() => {
                     // Simulate calling driver
                     toast.success("📞 Calling driver...")
@@ -4069,7 +4532,7 @@ function App() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="h-11 font-medium relative"
+                  className="h-11 font-medium relative hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-colors"
                   onClick={() => {
                     setIsChatOpen(true)
                     setUnreadMessages(0)
@@ -4078,9 +4541,12 @@ function App() {
                   <ChatCircle size={16} className="mr-2" />
                   Chat
                   {unreadMessages > 0 && (
-                    <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 text-xs bg-destructive text-destructive-foreground flex items-center justify-center">
-                      {unreadMessages}
-                    </Badge>
+                    <>
+                      <Badge className="absolute -top-2 -right-2 w-5 h-5 rounded-full p-0 text-xs bg-destructive text-destructive-foreground flex items-center justify-center font-bold">
+                        {unreadMessages > 9 ? '9+' : unreadMessages}
+                      </Badge>
+                      <div className="absolute inset-0 border-2 border-blue-400 rounded-lg animate-pulse"></div>
+                    </>
                   )}
                 </Button>
               </div>
@@ -4169,7 +4635,7 @@ function App() {
           </Button>
         </div>
 
-        {/* Chat System */}
+        {/* Enhanced Chat System with Notifications */}
         {currentTrip && assignedDriver && (
           <ChatSystem 
             trip={currentTrip}
@@ -4179,23 +4645,131 @@ function App() {
           />
         )}
 
-        {/* Floating Chat Bubble for unread messages */}
-        {currentTrip && assignedDriver && !isChatOpen && unreadMessages > 0 && (
-          <div className="fixed bottom-20 right-4 z-40">
-            <Button
-              onClick={() => {
-                setIsChatOpen(true)
-                setUnreadMessages(0)
-              }}
-              className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-xl relative animate-bounce"
-            >
-              <ChatCircle size={24} className="text-primary-foreground" weight="fill" />
-              <Badge className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0 text-xs bg-destructive text-destructive-foreground flex items-center justify-center">
-                {unreadMessages}
-              </Badge>
-            </Button>
+        {/* Enhanced Floating Chat Bubble with Smart Notifications */}
+        {currentTrip && assignedDriver && !isChatOpen && (
+          <div className="fixed bottom-24 right-4 z-40">
+            {/* Unread message bubble */}
+            {unreadMessages > 0 ? (
+              <Button
+                onClick={() => {
+                  setIsChatOpen(true)
+                  setUnreadMessages(0)
+                }}
+                className="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-2xl relative animate-bounce border-2 border-background"
+              >
+                <ChatCircle size={28} className="text-primary-foreground" weight="fill" />
+                <Badge className="absolute -top-2 -right-2 w-7 h-7 rounded-full p-0 text-sm bg-destructive text-destructive-foreground flex items-center justify-center font-bold border-2 border-background">
+                  {unreadMessages > 9 ? '9+' : unreadMessages}
+                </Badge>
+                {/* Ripple effect */}
+                <div className="absolute inset-0 rounded-full border-2 border-primary animate-ping opacity-30"></div>
+              </Button>
+            ) : (
+              /* Regular chat button */
+              <Button
+                onClick={() => setIsChatOpen(true)}
+                className="w-14 h-14 rounded-full bg-muted/90 hover:bg-primary hover:text-primary-foreground shadow-xl transition-all duration-300 border border-border/50"
+              >
+                <ChatCircle size={24} className="opacity-70" />
+              </Button>
+            )}
+            
+            {/* Driver status indicator */}
+            <div className="absolute -top-1 -left-1 w-5 h-5 bg-green-500 rounded-full border-2 border-background animate-pulse">
+              <div className="absolute inset-1 bg-white rounded-full"></div>
+            </div>
           </div>
         )}
+
+        {/* Smart Message Preview Notification */}
+        {currentTrip && assignedDriver && !isChatOpen && unreadMessages > 0 && (() => {
+          // Get the latest driver message for preview
+          const messages = JSON.parse(localStorage.getItem(`chat-${currentTrip.id}`) || '[]')
+          const lastDriverMessage = messages
+            .filter((msg: any) => msg.sender === 'driver')
+            .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0]
+          
+          if (lastDriverMessage) {
+            return (
+              <div className="fixed bottom-44 right-4 z-30 max-w-xs">
+                <Card className="bg-background/95 backdrop-blur-sm border border-border shadow-2xl animate-in slide-in-from-right duration-300">
+                  <CardContent className="p-3">
+                    <div className="flex items-start gap-3">
+                      <img 
+                        src={assignedDriver.photo} 
+                        alt={assignedDriver.name}
+                        className="w-8 h-8 rounded-full object-cover border border-border flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-semibold text-sm">{assignedDriver.name}</p>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(lastDriverMessage.timestamp).toLocaleTimeString('en-GB', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                        <p className="text-sm text-foreground line-clamp-2">
+                          {lastDriverMessage.text.length > 50 
+                            ? `${lastDriverMessage.text.substring(0, 50)}...`
+                            : lastDriverMessage.text
+                          }
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-6 h-6 p-0 flex-shrink-0"
+                        onClick={() => setUnreadMessages(0)}
+                      >
+                        <X size={12} />
+                      </Button>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full mt-2 h-8"
+                      onClick={() => {
+                        setIsChatOpen(true)
+                        setUnreadMessages(0)
+                      }}
+                    >
+                      Reply
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            )
+          }
+          return null
+        })()}
+
+        {/* Chat Activity Indicator */}
+        {currentTrip && assignedDriver && !isChatOpen && (() => {
+          const isDriverTyping = Math.random() > 0.95 // Simulate driver typing
+          if (isDriverTyping) {
+            return (
+              <div className="fixed bottom-32 right-20 z-30">
+                <div className="bg-background/95 backdrop-blur-sm border border-border rounded-full px-3 py-2 shadow-lg">
+                  <div className="flex items-center gap-2">
+                    <img 
+                      src={assignedDriver.photo} 
+                      alt={assignedDriver.name}
+                      className="w-5 h-5 rounded-full object-cover"
+                    />
+                    <div className="flex gap-1">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce"></div>
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
+          return null
+        })()}
       </div>
     )
   }
