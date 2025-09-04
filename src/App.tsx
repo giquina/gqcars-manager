@@ -26,7 +26,10 @@ import {
   ChatCircle,
   PaperPlaneTilt,
   SmileyWink,
-  MagnifyingGlass
+  MagnifyingGlass,
+  Bell,
+  BellRinging,
+  SpeakerHigh
 } from "@phosphor-icons/react"
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
@@ -1121,6 +1124,185 @@ const calculateBearing = (point1: any, point2: any) => {
   return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360
 }
 
+// Enhanced notification system with sound alerts
+const useDriverNotifications = (trip: any, driver: any) => {
+  const [notifications, setNotifications] = useKV(`driver-notifications-${trip?.id}`, [] as any[])
+  const [soundEnabled, setSoundEnabled] = useKV('notification-sound-enabled', true)
+  const [lastNotificationTime, setLastNotificationTime] = useState<number>(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  // Create notification sound
+  useEffect(() => {
+    if (soundEnabled) {
+      // Create a simple notification sound using Web Audio API
+      const createNotificationSound = () => {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+        const oscillator = audioContext.createOscillator()
+        const gainNode = audioContext.createGain()
+        
+        oscillator.connect(gainNode)
+        gainNode.connect(audioContext.destination)
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime) // High frequency
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1) // Lower frequency
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2) // High again
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
+        
+        oscillator.start(audioContext.currentTime)
+        oscillator.stop(audioContext.currentTime + 0.3)
+      }
+
+      // Store the sound function for later use
+      audioRef.current = { play: createNotificationSound } as any
+    }
+  }, [soundEnabled])
+
+  const playNotificationSound = useCallback(() => {
+    if (soundEnabled && audioRef.current) {
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+        const oscillator = audioContext.createOscillator()
+        const gainNode = audioContext.createGain()
+        
+        oscillator.connect(gainNode)
+        gainNode.connect(audioContext.destination)
+        
+        // Driver arrival notification sound - pleasant chime
+        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime) // C5
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.15) // E5
+        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.3) // G5
+        
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime)
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5)
+        
+        oscillator.start(audioContext.currentTime)
+        oscillator.stop(audioContext.currentTime + 0.5)
+      } catch (error) {
+        console.log('Audio notification not available')
+      }
+    }
+  }, [soundEnabled])
+
+  const sendNotification = useCallback((type: string, message: string, urgent: boolean = false) => {
+    const now = Date.now()
+    // Prevent spam notifications (minimum 10 seconds between notifications)
+    if (now - lastNotificationTime < 10000 && !urgent) return
+
+    const notification = {
+      id: now,
+      type,
+      message,
+      timestamp: new Date(),
+      urgent,
+      read: false
+    }
+
+    setNotifications(prev => [notification, ...(prev || []).slice(0, 9)]) // Keep last 10 notifications
+    setLastNotificationTime(now)
+
+    // Show toast notification
+    if (urgent) {
+      toast.success(message, {
+        duration: 6000,
+        className: 'font-semibold',
+        description: type === 'arrival' ? 'Your driver has arrived!' : undefined
+      })
+    } else {
+      toast.info(message, { duration: 4000 })
+    }
+
+    // Play sound for important notifications
+    if (urgent || type === 'arrival' || type === 'eta_update') {
+      playNotificationSound()
+    }
+
+    // Vibrate device if available (mobile)
+    if (navigator.vibrate && urgent) {
+      navigator.vibrate([200, 100, 200]) // Vibration pattern for arrival
+    }
+  }, [lastNotificationTime, setNotifications, playNotificationSound])
+
+  return {
+    notifications,
+    soundEnabled,
+    setSoundEnabled,
+    sendNotification,
+    playNotificationSound
+  }
+}
+
+// Driver arrival simulation with real-time notifications
+const useDriverArrivalTracking = (trip: any, driver: any, onNotification: (type: string, message: string, urgent?: boolean) => void) => {
+  const [estimatedArrival, setEstimatedArrival] = useState(driver?.eta || 5)
+  const [driverStatus, setDriverStatus] = useState<'en_route' | 'nearby' | 'arrived' | 'waiting'>('en_route')
+  const [lastStatusUpdate, setLastStatusUpdate] = useState(new Date())
+  const [arrivalNotificationSent, setArrivalNotificationSent] = useState(false)
+
+  useEffect(() => {
+    if (!trip || !driver) return
+
+    let currentEta = driver.eta || 5
+    let hasNotifiedNearby = false
+    let hasNotifiedArrival = false
+
+    const updateInterval = setInterval(() => {
+      // Simulate realistic driver progress
+      const timeElapsed = Math.random() * 0.5 + 0.3 // 0.3-0.8 minutes per update
+      currentEta = Math.max(0, currentEta - timeElapsed)
+
+      setEstimatedArrival(Math.ceil(currentEta))
+      setLastStatusUpdate(new Date())
+
+      // Send notifications based on ETA milestones
+      if (currentEta <= 2 && !hasNotifiedNearby) {
+        setDriverStatus('nearby')
+        hasNotifiedNearby = true
+        onNotification('nearby', `🚗 ${driver.name} is 2 minutes away`, true)
+      }
+
+      if (currentEta <= 0.5 && !hasNotifiedArrival) {
+        setDriverStatus('arrived')
+        hasNotifiedArrival = true
+        setArrivalNotificationSent(true)
+        onNotification('arrival', `✅ ${driver.name} has arrived at your pickup location!`, true)
+      }
+
+      // Random traffic/status updates
+      if (Math.random() > 0.95 && currentEta > 2) {
+        const updates = [
+          `📍 ${driver.name} is navigating through traffic`,
+          `🛣️ Driver is taking the fastest route`,
+          `⏱️ ETA updated: ${Math.ceil(currentEta)} minutes`,
+          `🚦 Driver stopped at traffic light`,
+          `🧭 ${driver.name} is following GPS directions`
+        ]
+        const randomUpdate = updates[Math.floor(Math.random() * updates.length)]
+        onNotification('eta_update', randomUpdate, false)
+      }
+
+      // Stop tracking when arrived
+      if (currentEta <= 0) {
+        setDriverStatus('waiting')
+        clearInterval(updateInterval)
+      }
+    }, 30000) // Update every 30 seconds for realistic tracking
+
+    // Initial status notification
+    onNotification('tracking_started', `📡 Tracking ${driver.name} - ETA: ${driver.eta} minutes`, false)
+
+    return () => clearInterval(updateInterval)
+  }, [trip, driver, onNotification])
+
+  return {
+    estimatedArrival,
+    driverStatus,
+    lastStatusUpdate,
+    arrivalNotificationSent
+  }
+}
+
 // Real-time chat system for driver-passenger communication
 const ChatSystem = ({ trip, driver, isOpen, onClose }: {
   trip: any,
@@ -1418,7 +1600,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
   )
 }
 
-// Real-time Live Tracking component for active trips
+// Real-time Live Tracking component for active trips with enhanced notifications
 const LiveTrackingMap = ({ trip, driver, onArrival }: {
   trip: any,
   driver: any,
@@ -1429,6 +1611,22 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
   const [routeInfo, setRouteInfo] = useState<any>(null)
   const [isTrackingActive, setIsTrackingActive] = useState(true)
   const [lastUpdate, setLastUpdate] = useState(new Date())
+
+  // Enhanced notification system
+  const { notifications, soundEnabled, setSoundEnabled, sendNotification } = useDriverNotifications(trip, driver)
+  
+  // Driver arrival tracking with notifications
+  const { 
+    estimatedArrival: trackedETA, 
+    driverStatus, 
+    lastStatusUpdate,
+    arrivalNotificationSent 
+  } = useDriverArrivalTracking(trip, driver, sendNotification)
+
+  // Update ETA from tracking system
+  useEffect(() => {
+    setEstimatedArrival(trackedETA)
+  }, [trackedETA])
 
   // Real-time driver position simulation with more realistic movement
   useEffect(() => {
@@ -1452,13 +1650,9 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
         const distance = Math.sqrt(Math.pow(target.lat - newLat, 2) + Math.pow(target.lng - newLng, 2))
         if (distance < 0.001) { // Very close to destination
           setEstimatedArrival(0)
-          if (onArrival) {
+          if (onArrival && !arrivalNotificationSent) {
             setTimeout(onArrival, 1000)
           }
-        } else {
-          // Update ETA based on distance
-          const roughDistance = distance * 111000 // Convert to meters roughly
-          setEstimatedArrival(Math.ceil(roughDistance / 500)) // Assuming 500m/min average speed
         }
 
         setLastUpdate(new Date())
@@ -1467,7 +1661,7 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
     }, 2000) // Update every 2 seconds for smooth movement
 
     return () => clearInterval(updateInterval)
-  }, [isTrackingActive, trip.status, trip.pickupCoords, trip.destinationCoords, onArrival])
+  }, [isTrackingActive, trip.status, trip.pickupCoords, trip.destinationCoords, onArrival, arrivalNotificationSent])
 
   // Calculate route when component mounts
   useEffect(() => {
@@ -1501,18 +1695,18 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
       title: `${driver.name} - Your Driver`,
       icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="16" cy="16" r="12" fill="#22C55E" stroke="white" stroke-width="3"/>
+          <circle cx="16" cy="16" r="12" fill="${driverStatus === 'arrived' ? '#10B981' : '#3B82F6'}" stroke="white" stroke-width="3"/>
           <path d="M8 16l4 4 8-8" stroke="white" stroke-width="2" fill="none"/>
         </svg>
       `),
-      animation: window.google?.maps?.Animation?.BOUNCE,
+      animation: driverStatus === 'arrived' ? window.google?.maps?.Animation?.BOUNCE : undefined,
       infoWindow: `
         <div style="padding: 8px; font-family: Arial, sans-serif;">
           <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: bold;">${driver.name}</h3>
           <p style="margin: 0; font-size: 12px; color: #666;">
             ${driver.vehicle}<br/>
             License: ${driver.license}<br/>
-            ETA: ${estimatedArrival} minutes
+            Status: ${driverStatus === 'arrived' ? 'Arrived!' : `ETA: ${estimatedArrival} min`}
           </p>
         </div>
       `
@@ -1557,23 +1751,59 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
 
   return (
     <div className="space-y-4">
-      {/* Live Status Banner */}
-      <Card className="border-0 shadow-sm bg-gradient-to-r from-green-50 to-emerald-50">
+      {/* Enhanced Live Status Banner with Driver Status */}
+      <Card className={`border-0 shadow-sm ${
+        driverStatus === 'arrived' 
+          ? 'bg-gradient-to-r from-green-50 to-emerald-50' 
+          : driverStatus === 'nearby'
+          ? 'bg-gradient-to-r from-yellow-50 to-orange-50'
+          : 'bg-gradient-to-r from-blue-50 to-indigo-50'
+      }`}>
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <div className={`w-3 h-3 rounded-full animate-pulse ${
+                driverStatus === 'arrived' ? 'bg-green-500' :
+                driverStatus === 'nearby' ? 'bg-yellow-500' : 'bg-blue-500'
+              }`}></div>
               <div>
-                <h3 className="font-semibold text-green-700">Live Tracking Active</h3>
-                <p className="text-sm text-green-600">
-                  Driver is {estimatedArrival === 0 ? 'arriving now' : `${estimatedArrival} minutes away`}
+                <h3 className={`font-semibold ${
+                  driverStatus === 'arrived' ? 'text-green-700' :
+                  driverStatus === 'nearby' ? 'text-yellow-700' : 'text-blue-700'
+                }`}>
+                  {driverStatus === 'arrived' ? '✅ Driver Arrived!' :
+                   driverStatus === 'nearby' ? '🚗 Driver Almost Here' : '📡 Live Tracking Active'}
+                </h3>
+                <p className={`text-sm ${
+                  driverStatus === 'arrived' ? 'text-green-600' :
+                  driverStatus === 'nearby' ? 'text-yellow-600' : 'text-blue-600'
+                }`}>
+                  {driverStatus === 'arrived' ? 'Your driver is at the pickup location' :
+                   driverStatus === 'nearby' ? `${driver.name} is ${estimatedArrival} minutes away` :
+                   `Driver is ${estimatedArrival} minutes away`}
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-green-600">Last update</p>
-              <p className="text-xs font-mono text-green-700">
-                {lastUpdate.toLocaleTimeString('en-GB', { 
+            <div className="text-right flex flex-col items-end gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 px-2 text-xs"
+                onClick={() => setSoundEnabled(!soundEnabled)}
+              >
+                {soundEnabled ? <SpeakerHigh size={12} /> : <SpeakerHigh size={12} className="opacity-50" />}
+              </Button>
+              <p className={`text-xs ${
+                driverStatus === 'arrived' ? 'text-green-600' :
+                driverStatus === 'nearby' ? 'text-yellow-600' : 'text-blue-600'
+              }`}>
+                Last update
+              </p>
+              <p className={`text-xs font-mono ${
+                driverStatus === 'arrived' ? 'text-green-700' :
+                driverStatus === 'nearby' ? 'text-yellow-700' : 'text-blue-700'
+              }`}>
+                {lastStatusUpdate.toLocaleTimeString('en-GB', { 
                   hour: '2-digit', 
                   minute: '2-digit',
                   second: '2-digit'
@@ -1599,8 +1829,10 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
           {/* Map overlay controls */}
           <div className="absolute top-4 left-4 space-y-2">
             <Badge variant="outline" className="bg-background/95 text-xs">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
-              Real-time GPS
+              <div className={`w-2 h-2 rounded-full animate-pulse mr-2 ${
+                driverStatus === 'arrived' ? 'bg-green-500' : 'bg-blue-500'
+              }`} />
+              {driverStatus === 'arrived' ? 'Driver Arrived' : 'Real-time GPS'}
             </Badge>
             {routeInfo && (
               <div className="bg-background/95 rounded-lg p-2 text-xs space-y-1">
@@ -1616,25 +1848,35 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
             )}
           </div>
 
-          {/* Driver info overlay */}
+          {/* Driver info overlay with status */}
           <div className="absolute bottom-4 left-4 right-4">
             <Card className="bg-background/95 backdrop-blur-sm border-0 shadow-lg">
               <CardContent className="p-3">
                 <div className="flex items-center gap-3">
-                  <img 
-                    src={driver.photo} 
-                    alt={driver.name}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-background"
-                  />
+                  <div className="relative">
+                    <img 
+                      src={driver.photo} 
+                      alt={driver.name}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-background"
+                    />
+                    <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background ${
+                      driverStatus === 'arrived' ? 'bg-green-500' :
+                      driverStatus === 'nearby' ? 'bg-yellow-500' : 'bg-blue-500'
+                    }`}></div>
+                  </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-sm">{driver.name}</h4>
                     <p className="text-xs text-muted-foreground">{driver.vehicle} • {driver.license}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-green-600">
-                      {estimatedArrival === 0 ? 'Arriving' : `${estimatedArrival} min`}
+                    <p className={`text-sm font-bold ${
+                      driverStatus === 'arrived' ? 'text-green-600' : 'text-blue-600'
+                    }`}>
+                      {driverStatus === 'arrived' ? 'Here!' : `${estimatedArrival} min`}
                     </p>
-                    <p className="text-xs text-muted-foreground">ETA</p>
+                    <p className="text-xs text-muted-foreground">
+                      {driverStatus === 'arrived' ? 'Pickup' : 'ETA'}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -1643,8 +1885,40 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
         </CardContent>
       </Card>
 
-      {/* Route Information */}
-      {routeInfo && (
+      {/* Recent Notifications Panel */}
+      {notifications && notifications.length > 0 && (
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-semibold text-sm flex items-center gap-2">
+                <BellRinging size={16} />
+                Live Updates
+              </h4>
+              <Badge variant="outline" className="text-xs">
+                {notifications.filter(n => !n.read).length} new
+              </Badge>
+            </div>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {notifications.slice(0, 3).map((notification) => (
+                <div key={notification.id} className="flex items-start gap-2 p-2 rounded-lg bg-muted/30">
+                  <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                    notification.urgent ? 'bg-green-500 animate-pulse' : 'bg-blue-500'
+                  }`}></div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{notification.message}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(notification.timestamp).toLocaleTimeString('en-GB', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
         <Card className="border-0 shadow-sm">
           <CardContent className="p-4">
             <h4 className="font-semibold text-sm mb-3">Route Information</h4>
@@ -1713,6 +1987,11 @@ function App() {
   const [favorites, setFavorites] = useKV("favorite-locations", [] as any[])
   const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
   const [paymentMethod, setPaymentMethod] = useState('mastercard')
+  const [notificationSettings, setNotificationSettings] = useKV("notification-settings", {
+    soundEnabled: true,
+    vibrationEnabled: true,
+    arrivalAlerts: true
+  })
   
   // Real geolocation integration with continuous tracking
   const { 
@@ -2583,17 +2862,62 @@ function App() {
           </div>
         </header>
 
-        {/* Driver Status Updates - Only show when driver is assigned */}
-        {currentTrip && assignedDriver && (
-          <div className="mx-4 mt-4 p-3 rounded-lg bg-green-50 border border-green-200">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <p className="text-sm font-medium text-green-700">
-                {assignedDriver.name} is arriving in {assignedDriver.eta} minutes
-              </p>
+        {/* Driver Status Updates with Enhanced Notifications */}
+        {currentTrip && assignedDriver && (() => {
+          const timeSinceBooking = Math.floor((new Date().getTime() - new Date(currentTrip.startTime).getTime()) / (1000 * 60))
+          const etaStatus = assignedDriver.eta <= 2 ? 'arriving' : assignedDriver.eta <= 5 ? 'nearby' : 'en_route'
+          
+          return (
+            <div className={`mx-4 mt-4 p-4 rounded-xl border-2 transition-all duration-300 ${
+              etaStatus === 'arriving' 
+                ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg' 
+                : etaStatus === 'nearby'
+                ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 shadow-md'
+                : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-sm'
+            }`}>
+              <div className="flex items-center gap-3">
+                <div className={`w-4 h-4 rounded-full animate-pulse ${
+                  etaStatus === 'arriving' ? 'bg-green-500' :
+                  etaStatus === 'nearby' ? 'bg-yellow-500' : 'bg-blue-500'
+                }`}></div>
+                <div className="flex-1">
+                  <p className={`font-bold text-sm ${
+                    etaStatus === 'arriving' ? 'text-green-800' :
+                    etaStatus === 'nearby' ? 'text-yellow-800' : 'text-blue-800'
+                  }`}>
+                    {etaStatus === 'arriving' ? '🚗 Driver Arriving Now!' :
+                     etaStatus === 'nearby' ? `🔔 ${assignedDriver.name} is ${assignedDriver.eta} minutes away` :
+                     `📍 ${assignedDriver.name} is on the way`}
+                  </p>
+                  <p className={`text-xs mt-1 ${
+                    etaStatus === 'arriving' ? 'text-green-600' :
+                    etaStatus === 'nearby' ? 'text-yellow-600' : 'text-blue-600'
+                  }`}>
+                    {etaStatus === 'arriving' ? 'Please be ready for pickup' :
+                     etaStatus === 'nearby' ? 'Get ready - driver almost here!' :
+                     `Estimated arrival: ${assignedDriver.eta} minutes • Booked ${timeSinceBooking}min ago`}
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => {
+                    const newSoundSetting = !notificationSettings.soundEnabled
+                    setNotificationSettings(prev => ({ ...prev, soundEnabled: newSoundSetting }))
+                    toast.success(newSoundSetting ? '🔊 Sound alerts enabled' : '🔇 Sound alerts disabled')
+                  }}
+                >
+                  {notificationSettings.soundEnabled ? (
+                    <SpeakerHigh size={16} className="text-green-600" />
+                  ) : (
+                    <SpeakerHigh size={16} className="opacity-50" />
+                  )}
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         <div className="p-4 pb-24 space-y-4 max-w-md mx-auto">{/* Enhanced Live Tracking Map */}
           <LiveTrackingMap 
