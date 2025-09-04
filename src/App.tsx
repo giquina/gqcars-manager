@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Car, Phone, Mail, MapPin, Clock, Users, Star, Heart, HeartStraight, NavigationArrow, User } from "@phosphor-icons/react"
+import { Progress } from "@/components/ui/progress"
+import { Car, Phone, Mail, MapPin, Clock, Users, Star, Heart, HeartStraight, NavigationArrow, User, Crosshair, Timer } from "@phosphor-icons/react"
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
@@ -77,6 +78,148 @@ const favoriteLocations = [
   { id: 4, name: 'Gym', address: '789 Fitness Center Dr' }
 ]
 
+// Real-time Map Component
+const RealTimeMap = ({ trip }: { trip: any }) => {
+  const [driverPosition, setDriverPosition] = useState({ x: 20, y: 80 })
+  const [tripProgress, setTripProgress] = useState(0)
+  const [eta, setEta] = useState(4)
+  const [lastUpdate, setLastUpdate] = useState(new Date())
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDriverPosition(prev => {
+        const newX = Math.min(prev.x + (Math.random() * 3 + 1), 80)
+        const newY = Math.max(prev.y - (Math.random() * 2 + 1), 20)
+        return { x: newX, y: newY }
+      })
+      
+      setTripProgress(prev => Math.min(prev + (Math.random() * 3 + 1), 100))
+      setEta(prev => Math.max(prev - 0.15, 0))
+      setLastUpdate(new Date())
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  }
+
+  return (
+    <div className="relative bg-muted/30 rounded-lg h-80 overflow-hidden border">
+      {/* Map Grid Background */}
+      <div className="absolute inset-0 opacity-20">
+        <svg width="100%" height="100%" className="text-muted-foreground">
+          <defs>
+            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+      </div>
+
+      {/* Route Line - Main Path */}
+      <svg className="absolute inset-0 w-full h-full">
+        <path
+          d={`M 20% 80% Q 40% 60% 60% 40% T 80% 20%`}
+          stroke="rgb(var(--muted-foreground) / 0.3)"
+          strokeWidth="4"
+          fill="none"
+        />
+        {/* Completed Route */}
+        <path
+          d={`M 20% 80% Q 40% 60% 60% 40% T 80% 20%`}
+          stroke="rgb(var(--accent))"
+          strokeWidth="4"
+          fill="none"
+          strokeDasharray={`${tripProgress * 3}% ${300 - tripProgress * 3}%`}
+          className="transition-all duration-1000"
+        />
+      </svg>
+
+      {/* Pickup Location */}
+      <div 
+        className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
+        style={{ left: '20%', top: '80%' }}
+      >
+        <div className="bg-background border-2 border-accent rounded-full p-2 shadow-lg">
+          <MapPin size={18} className="text-accent" weight="fill" />
+        </div>
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-accent text-accent-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium">
+          Pickup
+        </div>
+      </div>
+
+      {/* Driver Position */}
+      <div 
+        className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-3000"
+        style={{ 
+          left: `${20 + (60 * (tripProgress / 100))}%`, 
+          top: `${80 - (60 * (tripProgress / 100))}%` 
+        }}
+      >
+        <div className="relative">
+          {/* Driver Location Pulse */}
+          <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75"></div>
+          <div className="relative bg-primary border-2 border-background rounded-full p-2 shadow-lg">
+            <Car size={18} className="text-primary-foreground" weight="fill" />
+          </div>
+        </div>
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium">
+          {trip.driver}
+        </div>
+      </div>
+
+      {/* Destination */}
+      <div 
+        className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
+        style={{ left: '80%', top: '20%' }}
+      >
+        <div className="bg-background border-2 border-destructive rounded-full p-2 shadow-lg">
+          <NavigationArrow size={18} className="text-destructive" weight="fill" />
+        </div>
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium">
+          Destination
+        </div>
+      </div>
+
+      {/* Live Updates Badge */}
+      <div className="absolute top-3 right-3">
+        <Badge className="bg-accent text-accent-foreground animate-pulse">
+          <div className="w-2 h-2 bg-accent-foreground rounded-full mr-1 animate-pulse" />
+          Live
+        </Badge>
+      </div>
+
+      {/* ETA Banner */}
+      <div className="absolute top-3 left-3">
+        <div className="bg-background/90 backdrop-blur-sm rounded-lg p-2 border">
+          <div className="flex items-center gap-2">
+            <Timer size={16} className="text-accent" />
+            <span className="text-sm font-medium">ETA: {Math.round(eta)}min</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress Indicator */}
+      <div className="absolute bottom-3 left-3 right-3">
+        <div className="bg-background/90 backdrop-blur-sm rounded-lg p-3 border">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium">Trip Progress</span>
+            <span className="text-xs text-muted-foreground">{Math.round(tripProgress)}%</span>
+          </div>
+          <Progress value={tripProgress} className="h-2" />
+          <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+            <span>Last update: {formatTime(lastUpdate)}</span>
+            <span>{Math.round((100 - tripProgress) * 0.03)}min remaining</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function App() {
   const [selectedRide, setSelectedRide] = useState<string>('')
   const [activeTab, setActiveTab] = useState<string>('book')
@@ -84,6 +227,7 @@ function App() {
   const [pickupLocation, setPickupLocation] = useState('')
   const [destination, setDestination] = useState('')
   const [currentTrip, setCurrentTrip] = useState<any>(null)
+  const [tripStartTime, setTripStartTime] = useState<Date | null>(null)
   const [bookingForm, setBookingForm] = useState({
     pickup: '',
     destination: '',
@@ -125,6 +269,7 @@ function App() {
     }
     
     setCurrentTrip(mockTrip)
+    setTripStartTime(new Date())
     toast.success("Ride booked! Your driver is on the way.")
     setBookingForm({ pickup: '', destination: '', notes: '' })
     setSelectedRide('')
@@ -285,58 +430,115 @@ function App() {
           {/* Active Trip Tab */}
           <TabsContent value="active" className="space-y-6">
             {currentTrip ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Your Active Trip</CardTitle>
-                  <CardDescription>Driver is on the way</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg">
-                    <div>
-                      <p className="font-semibold">{currentTrip.driver}</p>
-                      <p className="text-sm text-muted-foreground">{currentTrip.vehicle}</p>
-                      <p className="text-sm text-muted-foreground">License: {currentTrip.plate}</p>
+              <div className="space-y-4">
+                {/* Real-time Map */}
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <Crosshair size={20} className="text-accent" />
+                          Live Tracking
+                        </CardTitle>
+                        <CardDescription>Follow your driver in real-time</CardDescription>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Crosshair size={16} className="mr-2" />
+                        Center Map
+                      </Button>
                     </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold">ETA: {currentTrip.eta}</p>
-                      <Badge className="bg-accent text-accent-foreground">En Route</Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <MapPin size={16} className="text-muted-foreground" />
-                      <span className="text-sm">From: {currentTrip.pickup}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <NavigationArrow size={16} className="text-muted-foreground" />
-                      <span className="text-sm">To: {currentTrip.destination}</span>
-                    </div>
-                  </div>
+                  </CardHeader>
+                  <CardContent>
+                    <RealTimeMap trip={currentTrip} />
+                  </CardContent>
+                </Card>
 
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1">
-                      <Phone size={16} className="mr-2" />
-                      Call Driver
-                    </Button>
-                    <Button variant="outline" className="flex-1">
-                      <Mail size={16} className="mr-2" />
-                      Message
-                    </Button>
-                  </div>
+                {/* Trip Details */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Trip Information</CardTitle>
+                    <CardDescription>Driver and vehicle details</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Driver Info Card */}
+                    <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg border">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
+                          <User size={20} className="text-accent-foreground" weight="fill" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">{currentTrip.driver}</p>
+                          <p className="text-sm text-muted-foreground">{currentTrip.vehicle}</p>
+                          <p className="text-sm text-muted-foreground">License: {currentTrip.plate}</p>
+                          <div className="flex items-center gap-1 mt-1">
+                            <Star size={14} className="text-yellow-500" weight="fill" />
+                            <span className="text-sm font-medium">4.9</span>
+                            <span className="text-xs text-muted-foreground">(245 trips)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge className="bg-accent text-accent-foreground mb-2">Verified Driver</Badge>
+                        <p className="text-sm text-muted-foreground">Member since 2019</p>
+                      </div>
+                    </div>
+                    
+                    {/* Trip Route */}
+                    <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
+                      <h4 className="font-medium text-sm">Trip Route</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-accent rounded-full"></div>
+                          <span className="text-sm font-medium">From: {currentTrip.pickup}</span>
+                        </div>
+                        <div className="ml-1.5 w-0.5 h-4 bg-border"></div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-destructive rounded-full"></div>
+                          <span className="text-sm font-medium">To: {currentTrip.destination}</span>
+                        </div>
+                      </div>
+                      {tripStartTime && (
+                        <div className="flex items-center gap-2 pt-2 border-t">
+                          <Timer size={16} className="text-muted-foreground" />
+                          <span className="text-sm">Trip started: {tripStartTime.toLocaleTimeString()}</span>
+                        </div>
+                      )}
+                    </div>
 
-                  <Button 
-                    variant="destructive" 
-                    className="w-full"
-                    onClick={() => {
-                      setCurrentTrip(null)
-                      toast.success("Trip cancelled")
-                    }}
-                  >
-                    Cancel Trip
-                  </Button>
-                </CardContent>
-              </Card>
+                    {/* Quick Actions */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button variant="outline" className="flex items-center gap-2">
+                        <Phone size={16} />
+                        <span className="hidden sm:inline">Call Driver</span>
+                        <span className="sm:hidden">Call</span>
+                      </Button>
+                      <Button variant="outline" className="flex items-center gap-2">
+                        <Mail size={16} />
+                        <span className="hidden sm:inline">Message</span>
+                        <span className="sm:hidden">Text</span>
+                      </Button>
+                    </div>
+
+                    {/* Emergency & Cancel */}
+                    <div className="space-y-2">
+                      <Button variant="outline" className="w-full text-orange-600 border-orange-200 hover:bg-orange-50">
+                        Emergency Assistance
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        className="w-full"
+                        onClick={() => {
+                          setCurrentTrip(null)
+                          setTripStartTime(null)
+                          toast.success("Trip cancelled successfully")
+                        }}
+                      >
+                        Cancel Trip
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             ) : (
               <Card>
                 <CardContent className="text-center py-12">
