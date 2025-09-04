@@ -163,7 +163,7 @@ const SecurityTrackingMap = ({ trip, driver }: { trip: any, driver: any }) => {
   }
 
   return (
-    <div className="relative bg-gradient-to-br from-muted/20 to-muted/40 rounded-xl h-96 overflow-hidden border-2 border-primary/20 shadow-2xl">
+    <div className="relative bg-gradient-to-br from-muted/20 to-muted/40 rounded-lg h-64 overflow-hidden border border-primary/20 shadow-lg">
       {/* Security Grid Background */}
       <div className="absolute inset-0 opacity-10">
         <svg width="100%" height="100%" className="text-primary">
@@ -181,14 +181,14 @@ const SecurityTrackingMap = ({ trip, driver }: { trip: any, driver: any }) => {
         <path
           d={`M 20% 80% Q 40% 60% 60% 40% T 80% 20%`}
           stroke="rgb(var(--muted-foreground) / 0.2)"
-          strokeWidth="8"
+          strokeWidth="4"
           fill="none"
         />
         {/* Secured Route Progress */}
         <path
           d={`M 20% 80% Q 40% 60% 60% 40% T 80% 20%`}
           stroke="rgb(var(--primary))"
-          strokeWidth="8"
+          strokeWidth="4"
           fill="none"
           strokeDasharray={`${tripProgress * 4}% ${400 - tripProgress * 4}%`}
           className="transition-all duration-2000"
@@ -200,11 +200,11 @@ const SecurityTrackingMap = ({ trip, driver }: { trip: any, driver: any }) => {
         className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
         style={{ left: '20%', top: '80%' }}
       >
-        <div className="bg-background border-2 border-primary rounded-full p-4 shadow-2xl">
-          <Shield size={24} className="text-primary" weight="fill" />
+        <div className="bg-background border border-primary rounded-full p-2 shadow-lg">
+          <Shield size={12} className="text-primary" weight="fill" />
         </div>
-        <div className="absolute top-14 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-sm px-4 py-2 rounded-lg whitespace-nowrap font-semibold shadow-xl">
-          Secure Pickup
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium shadow-lg">
+          Pickup
         </div>
       </div>
 
@@ -219,15 +219,15 @@ const SecurityTrackingMap = ({ trip, driver }: { trip: any, driver: any }) => {
         <div className="relative">
           {/* Security Pulse */}
           <div className="absolute inset-0 bg-accent rounded-full animate-ping opacity-75 scale-150"></div>
-          <div className="relative bg-accent border-3 border-background rounded-full p-4 shadow-2xl">
-            <Car size={24} className="text-accent-foreground" weight="fill" />
+          <div className="relative bg-accent border-2 border-background rounded-full p-2 shadow-lg">
+            <Car size={12} className="text-accent-foreground" weight="fill" />
           </div>
           {/* Security Status Indicator */}
-          <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-2 border-background flex items-center justify-center">
-            <CheckCircle size={16} className="text-white" weight="fill" />
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border border-background flex items-center justify-center">
+            <CheckCircle size={8} className="text-white" weight="fill" />
           </div>
         </div>
-        <div className="absolute top-16 left-1/2 transform -translate-x-1/2 bg-accent text-accent-foreground text-sm px-4 py-2 rounded-lg whitespace-nowrap font-bold shadow-xl">
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-accent text-accent-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium shadow-lg">
           {driver.name}
         </div>
       </div>
@@ -237,55 +237,62 @@ const SecurityTrackingMap = ({ trip, driver }: { trip: any, driver: any }) => {
         className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
         style={{ left: '80%', top: '20%' }}
       >
-        <div className="bg-background border-2 border-accent rounded-full p-4 shadow-2xl">
-          <NavigationArrow size={24} className="text-accent" weight="fill" />
+        <div className="bg-background border border-accent rounded-full p-2 shadow-lg">
+          <NavigationArrow size={12} className="text-accent" weight="fill" />
         </div>
-        <div className="absolute top-14 left-1/2 transform -translate-x-1/2 bg-accent text-accent-foreground text-sm px-4 py-2 rounded-lg whitespace-nowrap font-semibold shadow-xl">
-          Secure Destination
+        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-accent text-accent-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium shadow-lg">
+          Destination
         </div>
       </div>
 
       {/* Security Status Badge */}
-      <div className="absolute top-6 right-6">
-        <Badge className="bg-green-600 text-white animate-pulse px-4 py-2 text-sm font-bold shadow-xl border-2 border-green-400">
-          <div className="w-3 h-3 bg-white rounded-full mr-2 animate-pulse" />
+      <div className="absolute top-3 right-3">
+        <Badge className="bg-green-600 text-white animate-pulse px-2 py-1 text-xs font-bold shadow-lg border border-green-400">
+          <div className="w-2 h-2 bg-white rounded-full mr-1 animate-pulse" />
           SECURE
         </Badge>
       </div>
 
       {/* Security ETA */}
-      <div className="absolute top-6 left-6">
-        <div className="bg-primary/95 backdrop-blur-md rounded-xl p-4 border-2 border-primary shadow-2xl">
-          <div className="flex items-center gap-3">
-            <Shield size={20} className="text-primary-foreground" />
+      <div className="absolute top-3 left-3">
+        <div className="bg-primary/95 backdrop-blur-md rounded-lg p-2 border border-primary shadow-lg">
+          <div className="flex items-center gap-2">
+            <Shield size={12} className="text-primary-foreground" />
             <div className="text-primary-foreground">
-              <div className="text-xs font-medium">SECURITY ETA</div>
-              <div className="text-lg font-bold">{Math.round(eta)}min</div>
+              <div className="text-xs font-medium">ETA</div>
+              <div className="text-sm font-bold">{Math.round(eta)}min</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Security Progress */}
-      <div className="absolute bottom-6 left-6 right-6">
-        <div className="bg-background/95 backdrop-blur-md rounded-xl p-6 border-2 border-primary/20 shadow-2xl">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <Lock size={20} className="text-primary" />
-              <span className="font-bold text-primary">Secure Transport Progress</span>
+      <div className="absolute bottom-3 left-3 right-3">
+        <div className="bg-background/95 backdrop-blur-md rounded-lg p-3 border border-primary/20 shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Lock size={12} className="text-primary" />
+              <span className="font-bold text-primary text-xs">Progress</span>
             </div>
-            <span className="text-primary font-bold">{Math.round(tripProgress)}%</span>
+            <span className="text-primary font-bold text-xs">{Math.round(tripProgress)}%</span>
           </div>
-          <Progress value={tripProgress} className="h-4 mb-4" />
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <CheckCircle size={16} className="text-green-500" />
-              <span>Last security update: {formatTime(lastUpdate)}</span>
+          <Progress value={tripProgress} className="h-2 mb-2" />
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1 text-muted-foreground">
+              <CheckCircle size={10} className="text-green-500" />
+              <span>Updated: {formatTime(lastUpdate)}</span>
             </div>
-            <span className="text-primary font-semibold">{Math.round((100 - tripProgress) * 0.04)}min remaining</span>
+            <span className="text-primary font-medium">{Math.round((100 - tripProgress) * 0.04)}min left</span>
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+  return (
+    <div className="h-screen bg-gradient-to-br from-background via-background to-muted/20 relative z-10">
+      <SecurityTrackingMap trip={currentTrip} driver={assignedDriver} />
     </div>
   )
 }
@@ -366,123 +373,104 @@ function App() {
       <Toaster position="top-center" />
       
       {/* Security Header */}
-      <header className="bg-primary/95 backdrop-blur-md border-b-2 border-accent/20 sticky top-0 z-50 shadow-2xl">
-        <div className="max-w-6xl mx-auto px-4 py-5 sm:px-6">
+      <header className="bg-primary/95 backdrop-blur-md border-b border-accent/20 sticky top-0 z-50 shadow-lg">
+        <div className="max-w-6xl mx-auto px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center shadow-xl border-2 border-accent/50">
-                <Shield size={24} className="text-accent-foreground" weight="bold" />
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center shadow-md">
+                <Shield size={16} className="text-accent-foreground" weight="bold" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-accent via-accent to-accent/80 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-accent via-accent to-accent/80 bg-clip-text text-transparent">
                   GQCars
                 </h1>
-                <p className="text-sm text-primary-foreground/80 font-semibold">Security Transport</p>
+                <p className="text-xs text-primary-foreground/80 font-medium">Security Transport</p>
               </div>
             </div>
             
-            {/* Emergency Button - Always Visible */}
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="destructive" 
-                size="sm" 
-                onClick={handleEmergencyAlert}
-                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-bold shadow-xl border-2 border-destructive/50 hidden sm:flex items-center gap-2"
-              >
-                <Siren size={18} />
-                EMERGENCY
-              </Button>
-              <Button 
-                variant="destructive" 
-                size="icon" 
-                onClick={handleEmergencyAlert}
-                className="bg-destructive hover:bg-destructive/90 border-2 border-destructive/50 shadow-xl sm:hidden"
-              >
-                <Siren size={18} />
-              </Button>
-              
-              <Button variant="outline" size="sm" className="hidden sm:flex items-center gap-2 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20">
-                <User size={16} />
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="hidden sm:flex items-center gap-2 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 h-8 text-xs">
+                <User size={14} />
                 Profile
               </Button>
-              <Button variant="outline" size="icon" className="sm:hidden bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20">
-                <User size={16} />
+              <Button variant="outline" size="icon" className="sm:hidden bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8">
+                <User size={14} />
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 py-4 sm:px-6">
         {/* Security Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="mb-10">
-            <TabsList className="grid w-full grid-cols-4 h-20 bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-2xl">
+          <div className="mb-6">
+            <TabsList className="grid w-full grid-cols-4 h-12 bg-card/80 backdrop-blur-sm border border-primary/20 shadow-lg">
               <TabsTrigger 
                 value="assess" 
-                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-1 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-3 transition-all duration-300"
               >
-                <Warning size={18} className="shrink-0 sm:size-20" weight={activeTab === 'assess' ? 'fill' : 'regular'} />
-                <span className="font-semibold leading-tight hidden sm:inline">Risk Assessment</span>
-                <span className="font-semibold leading-tight text-[10px] sm:hidden">Risk</span>
+                <Warning size={14} className="shrink-0 sm:size-16" weight={activeTab === 'assess' ? 'fill' : 'regular'} />
+                <span className="font-medium leading-tight hidden sm:inline">Risk Assessment</span>
+                <span className="font-medium leading-tight text-[10px] sm:hidden">Risk</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="book" 
-                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-1 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-3 transition-all duration-300"
               >
-                <Shield size={18} className="shrink-0 sm:size-20" weight={activeTab === 'book' ? 'fill' : 'regular'} />
-                <span className="font-semibold leading-tight hidden sm:inline">Book Security</span>
-                <span className="font-semibold leading-tight text-[10px] sm:hidden">Book</span>
+                <Shield size={14} className="shrink-0 sm:size-16" weight={activeTab === 'book' ? 'fill' : 'regular'} />
+                <span className="font-medium leading-tight hidden sm:inline">Book Security</span>
+                <span className="font-medium leading-tight text-[10px] sm:hidden">Book</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="active" 
-                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-1 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-3 transition-all duration-300"
               >
-                <Eye size={18} className="shrink-0 sm:size-20" weight={activeTab === 'active' ? 'fill' : 'regular'} />
-                <span className="font-semibold leading-tight hidden sm:inline">Live Tracking</span>
-                <span className="font-semibold leading-tight text-[10px] sm:hidden">Live</span>
+                <Eye size={14} className="shrink-0 sm:size-16" weight={activeTab === 'active' ? 'fill' : 'regular'} />
+                <span className="font-medium leading-tight hidden sm:inline">Live Tracking</span>
+                <span className="font-medium leading-tight text-[10px] sm:hidden">Live</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="history" 
-                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-1 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-3 transition-all duration-300"
               >
-                <Clock size={18} className="shrink-0 sm:size-20" weight={activeTab === 'history' ? 'fill' : 'regular'} />
-                <span className="font-semibold leading-tight hidden sm:inline">History</span>
-                <span className="font-semibold leading-tight text-[10px] sm:hidden">History</span>
+                <Clock size={14} className="shrink-0 sm:size-16" weight={activeTab === 'history' ? 'fill' : 'regular'} />
+                <span className="font-medium leading-tight hidden sm:inline">History</span>
+                <span className="font-medium leading-tight text-[10px] sm:hidden">History</span>
               </TabsTrigger>
             </TabsList>
           </div>
 
           {/* Risk Assessment Tab */}
-          <TabsContent value="assess" className="space-y-8">
-            <Card className="shadow-2xl border-2 border-destructive/20 bg-gradient-to-br from-destructive/5 to-destructive/10">
-              <CardHeader className="pb-6">
-                <CardTitle className="text-3xl flex items-center gap-4">
-                  <div className="w-12 h-12 bg-destructive rounded-xl flex items-center justify-center shadow-lg">
-                    <Warning size={24} className="text-destructive-foreground" weight="fill" />
+          <TabsContent value="assess" className="space-y-4">
+            <Card className="shadow-lg border border-destructive/20 bg-gradient-to-br from-destructive/5 to-destructive/10">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <div className="w-8 h-8 bg-destructive rounded-lg flex items-center justify-center shadow-md">
+                    <Warning size={16} className="text-destructive-foreground" weight="fill" />
                   </div>
                   Security Risk Assessment
                 </CardTitle>
-                <CardDescription className="text-lg text-destructive">
+                <CardDescription className="text-sm text-destructive">
                   Help us determine the appropriate level of protection for your situation
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-8">
+              <CardContent className="space-y-4">
                 {riskQuestions.map((question, index) => (
-                  <div key={question.id} className="space-y-4">
-                    <Label className="text-lg font-semibold text-primary">{index + 1}. {question.question}</Label>
+                  <div key={question.id} className="space-y-3">
+                    <Label className="text-sm font-medium text-primary">{index + 1}. {question.question}</Label>
                     <RadioGroup
                       value={riskAssessment[question.id] || ''}
                       onValueChange={(value) => setRiskAssessment(prev => ({ ...prev, [question.id]: value }))}
-                      className="space-y-3"
+                      className="space-y-2"
                     >
                       {question.options.map((option) => (
-                        <div key={option.value} className="flex items-center space-x-3 p-4 rounded-lg border-2 border-border hover:border-primary/50 transition-all">
-                          <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} className="border-2 border-primary" />
-                          <Label htmlFor={`${question.id}-${option.value}`} className="text-base font-medium cursor-pointer flex-1">
+                        <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:border-primary/50 transition-all">
+                          <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} className="border border-primary" />
+                          <Label htmlFor={`${question.id}-${option.value}`} className="text-sm font-medium cursor-pointer flex-1">
                             {option.label}
                           </Label>
-                          <Badge variant={option.score >= 4 ? "destructive" : option.score >= 2 ? "secondary" : "outline"}>
+                          <Badge variant={option.score >= 4 ? "destructive" : option.score >= 2 ? "secondary" : "outline"} className="text-xs">
                             Risk: {option.score}
                           </Badge>
                         </div>
@@ -492,23 +480,23 @@ function App() {
                 ))}
                 
                 {Object.keys(riskAssessment).length === riskQuestions.length && (
-                  <div className="mt-8 p-6 bg-primary/10 rounded-xl border-2 border-primary/20">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Certificate size={24} className="text-primary" />
-                      <h3 className="text-xl font-bold text-primary">Risk Assessment Complete</h3>
+                  <div className="mt-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Certificate size={16} className="text-primary" />
+                      <h3 className="text-sm font-bold text-primary">Risk Assessment Complete</h3>
                     </div>
-                    <p className="text-lg text-primary mb-4">
+                    <p className="text-sm text-primary mb-2">
                       Total Risk Score: <span className="font-bold">{calculateRiskScore()}/18</span>
                     </p>
-                    <p className="text-base text-muted-foreground mb-6">
+                    <p className="text-xs text-muted-foreground mb-4">
                       Recommended Service: <span className="font-bold text-primary">{securityServices.find(s => s.id === getRecommendedService())?.name}</span>
                     </p>
                     <Button 
                       onClick={handleRiskAssessmentComplete}
-                      size="lg"
-                      className="w-full h-16 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-xl"
+                      size="sm"
+                      className="w-full h-10 text-sm font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-md"
                     >
-                      <CheckCircle size={24} className="mr-3" />
+                      <CheckCircle size={16} className="mr-2" />
                       Proceed to Security Booking
                     </Button>
                   </div>
@@ -518,9 +506,9 @@ function App() {
           </TabsContent>
 
           {/* Book Security Tab */}
-          <TabsContent value="book" className="space-y-8">
+          <TabsContent value="book" className="space-y-4">
             {/* Hero Section */}
-            <Card className="relative overflow-hidden border-0 shadow-2xl">
+            <Card className="relative overflow-hidden border-0 shadow-lg">
               <div 
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{
@@ -528,23 +516,23 @@ function App() {
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/90 to-accent/85" />
-              <CardContent className="relative p-16 text-center text-primary-foreground">
-                <div className="max-w-3xl mx-auto">
-                  <h2 className="text-5xl font-bold mb-6 leading-tight">Professional Security Transport</h2>
-                  <p className="text-2xl text-primary-foreground/90 mb-10 leading-relaxed">
+              <CardContent className="relative p-8 text-center text-primary-foreground">
+                <div className="max-w-2xl mx-auto">
+                  <h2 className="text-2xl font-bold mb-3 leading-tight">Professional Security Transport</h2>
+                  <p className="text-sm text-primary-foreground/90 mb-6 leading-relaxed">
                     Licensed security professionals providing safe, discreet transportation services
                   </p>
-                  <div className="flex justify-center gap-10 text-base">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-accent rounded-full animate-pulse" />
+                  <div className="flex justify-center gap-6 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                       <span>Licensed Security Drivers</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-accent rounded-full animate-pulse" />
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                       <span>Background Verified</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 bg-accent rounded-full animate-pulse" />
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                       <span>Real-Time Protection</span>
                     </div>
                   </div>
@@ -553,106 +541,101 @@ function App() {
             </Card>
 
             {/* Security Service Selection */}
-            <div className="space-y-6">
-              <h3 className="text-3xl font-bold flex items-center gap-4">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-                  <Shield size={20} className="text-primary-foreground" />
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold flex items-center gap-3">
+                <div className="w-6 h-6 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                  <Shield size={12} className="text-primary-foreground" />
                 </div>
                 Choose Your Security Level
               </h3>
               
               {selectedService && (
-                <div className="p-6 bg-accent/10 border-2 border-accent/20 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle size={24} className="text-accent" weight="fill" />
-                    <span className="text-lg font-semibold text-accent">
+                <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle size={16} className="text-accent" weight="fill" />
+                    <span className="text-sm font-medium text-accent">
                       {securityServices.find(s => s.id === selectedService)?.name} selected based on your risk assessment
                     </span>
                   </div>
                 </div>
               )}
               
-              <div className="grid gap-6">
+              <div className="grid gap-3">
                 {securityServices.map(service => {
                   const Icon = service.icon
                   return (
                     <Card 
                       key={service.id} 
-                      className={`cursor-pointer transition-all duration-500 border-2 group relative overflow-hidden ${
+                      className={`cursor-pointer transition-all duration-500 border group relative overflow-hidden ${
                         selectedService === service.id 
-                          ? 'ring-4 ring-accent/50 ring-offset-4 ring-offset-background bg-gradient-to-br from-accent/10 via-accent/5 to-primary/5 border-accent shadow-2xl scale-[1.02]' 
-                          : 'hover:shadow-2xl hover:border-primary/60 hover:scale-[1.01] border-border/30 bg-gradient-to-br from-card via-card to-card/80 hover:from-primary/5 hover:to-accent/5'
+                          ? 'ring-2 ring-accent/50 ring-offset-2 ring-offset-background bg-gradient-to-br from-accent/10 via-accent/5 to-primary/5 border-accent shadow-lg scale-[1.01]' 
+                          : 'hover:shadow-lg hover:border-primary/60 hover:scale-[1.005] border-border/30 bg-gradient-to-br from-card via-card to-card/80 hover:from-primary/5 hover:to-accent/5'
                       }`}
                       onClick={() => setSelectedService(service.id)}
                     >
-                      <CardContent className="p-8">
-                        <div className="flex items-start gap-6">
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-4">
                           <div className="relative">
-                            <div className={`w-16 h-16 rounded-xl flex items-center justify-center shadow-lg ${
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center shadow-md ${
                               selectedService === service.id ? 'bg-accent' : 'bg-primary'
                             }`}>
-                              <Icon size={28} className="text-white" weight="fill" />
+                              <Icon size={18} className="text-white" weight="fill" />
                             </div>
                             {selectedService === service.id && (
-                              <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center border-2 border-background">
-                                <CheckCircle size={16} className="text-accent-foreground" weight="fill" />
+                              <div className="absolute -top-1 -right-1 w-5 h-5 bg-accent rounded-full flex items-center justify-center border border-background">
+                                <CheckCircle size={10} className="text-accent-foreground" weight="fill" />
                               </div>
                             )}
                           </div>
                           
                           <div className="flex-1">
-                            <h4 className="font-bold text-2xl mb-2">{service.name}</h4>
-                            <p className="text-muted-foreground text-lg mb-4">{service.description}</p>
+                            <h4 className="font-bold text-sm mb-1">{service.name}</h4>
+                            <p className="text-muted-foreground text-xs mb-2">{service.description}</p>
                             
-                            <div className="grid grid-cols-2 gap-4 mb-4">
-                              <div className="flex items-center gap-2">
-                                <Timer size={16} className="text-primary" />
-                                <span className="font-medium">ETA: {service.eta}</span>
+                            <div className="grid grid-cols-2 gap-2 mb-2">
+                              <div className="flex items-center gap-1">
+                                <Timer size={12} className="text-primary" />
+                                <span className="font-medium text-xs">ETA: {service.eta}</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <Certificate size={16} className="text-primary" />
-                                <span className="font-medium capitalize">{service.threat_level} threat response</span>
+                              <div className="flex items-center gap-1">
+                                <Certificate size={12} className="text-primary" />
+                                <span className="font-medium text-xs capitalize">{service.threat_level} threat</span>
                               </div>
                             </div>
                             
-                            <div className="space-y-2">
-                              {service.features.map((feature, index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                  <CheckCircle size={14} className="text-accent" weight="fill" />
-                                  <span className="text-sm text-muted-foreground">{feature}</span>
+                            <div className="space-y-1">
+                              {service.features.slice(0, 2).map((feature, index) => (
+                                <div key={index} className="flex items-center gap-1">
+                                  <CheckCircle size={10} className="text-accent" weight="fill" />
+                                  <span className="text-xs text-muted-foreground">{feature}</span>
                                 </div>
                               ))}
                             </div>
                           </div>
                           
-                          <div className="text-right space-y-3">
+                          <div className="text-right space-y-2">
                             <div className="relative">
-                              <p className="text-4xl font-black text-primary mb-1">£{service.price}</p>
-                              <p className="text-sm text-muted-foreground font-medium">per journey</p>
-                              {selectedService === service.id && (
-                                <div className="absolute -top-3 -right-3 w-8 h-8 bg-accent rounded-full flex items-center justify-center border-2 border-background shadow-lg animate-pulse">
-                                  <CheckCircle size={16} className="text-accent-foreground" weight="fill" />
-                                </div>
-                              )}
+                              <p className="text-lg font-black text-primary">£{service.price}</p>
+                              <p className="text-xs text-muted-foreground font-medium">per journey</p>
                             </div>
                             <Button 
                               variant={selectedService === service.id ? "default" : "outline"}
-                              size="lg"
-                              className={`w-full font-bold transition-all duration-300 ${
+                              size="sm"
+                              className={`w-full font-bold transition-all duration-300 text-xs h-8 ${
                                 selectedService === service.id 
-                                  ? "bg-accent hover:bg-accent/90 text-accent-foreground shadow-xl scale-105" 
-                                  : "border-2 border-primary/20 hover:border-accent/50 hover:bg-accent/10"
+                                  ? "bg-accent hover:bg-accent/90 text-accent-foreground shadow-md" 
+                                  : "border border-primary/20 hover:border-accent/50 hover:bg-accent/10"
                               }`}
                             >
                               {selectedService === service.id ? (
                                 <>
-                                  <CheckCircle size={18} className="mr-2" />
+                                  <CheckCircle size={12} className="mr-1" />
                                   Selected
                                 </>
                               ) : (
                                 <>
-                                  <Shield size={18} className="mr-2" />
-                                  Select Service
+                                  <Shield size={12} className="mr-1" />
+                                  Select
                                 </>
                               )}
                             </Button>
@@ -666,36 +649,24 @@ function App() {
             </div>
 
             {/* Booking Form */}
-            <Card className="shadow-2xl border-2 border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 backdrop-blur-sm relative overflow-hidden">
-              {/* Subtle background pattern */}
-              <div className="absolute inset-0 opacity-5">
-                <svg width="100%" height="100%" className="text-primary">
-                  <defs>
-                    <pattern id="form-grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="1"/>
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#form-grid)" />
-                </svg>
-              </div>
-              
-              <CardHeader className="pb-8 relative z-10">
-                <CardTitle className="text-3xl flex items-center gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center shadow-xl border-2 border-accent/30">
-                    <MapPin size={24} className="text-accent-foreground" weight="bold" />
+            <Card className="shadow-lg border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 backdrop-blur-sm relative overflow-hidden">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center shadow-md">
+                    <MapPin size={16} className="text-accent-foreground" weight="bold" />
                   </div>
                   <div>
                     <div>Security Transport Details</div>
-                    <p className="text-lg text-muted-foreground font-normal mt-1">Secure booking information</p>
+                    <p className="text-sm text-muted-foreground font-normal mt-1">Secure booking information</p>
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-8 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="space-y-4 group">
-                    <Label htmlFor="pickup" className="text-lg font-bold flex items-center gap-3 text-primary">
-                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Shield size={16} className="text-primary" />
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="pickup" className="text-sm font-bold flex items-center gap-2 text-primary">
+                      <div className="w-5 h-5 bg-primary/10 rounded flex items-center justify-center">
+                        <Shield size={10} className="text-primary" />
                       </div>
                       Secure Pickup Location
                     </Label>
@@ -705,17 +676,17 @@ function App() {
                         placeholder="Enter pickup address or landmark"
                         value={bookingForm.pickup}
                         onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
-                        className="h-16 text-lg bg-background/90 border-2 border-primary/20 rounded-xl shadow-md hover:border-primary/40 focus:border-accent transition-all duration-300 pl-14"
+                        className="h-10 text-sm bg-background/90 border border-primary/20 rounded-lg shadow-sm hover:border-primary/40 focus:border-accent transition-all duration-300 pl-8"
                       />
-                      <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                        <MapPin size={20} className="text-primary/60" />
+                      <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                        <MapPin size={14} className="text-primary/60" />
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-4 group">
-                    <Label htmlFor="destination" className="text-lg font-bold flex items-center gap-3 text-accent">
-                      <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
-                        <NavigationArrow size={16} className="text-accent" />
+                  <div className="space-y-2">
+                    <Label htmlFor="destination" className="text-sm font-bold flex items-center gap-2 text-accent">
+                      <div className="w-5 h-5 bg-accent/10 rounded flex items-center justify-center">
+                        <NavigationArrow size={10} className="text-accent" />
                       </div>
                       Secure Destination
                     </Label>
@@ -725,22 +696,22 @@ function App() {
                         placeholder="Where do you need secure transport to?"
                         value={bookingForm.destination}
                         onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
-                        className="h-16 text-lg bg-background/90 border-2 border-accent/20 rounded-xl shadow-md hover:border-accent/40 focus:border-accent transition-all duration-300 pl-14"
+                        className="h-10 text-sm bg-background/90 border border-accent/20 rounded-lg shadow-sm hover:border-accent/40 focus:border-accent transition-all duration-300 pl-8"
                       />
-                      <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                        <NavigationArrow size={20} className="text-accent/60" />
+                      <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                        <NavigationArrow size={14} className="text-accent/60" />
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <Label htmlFor="emergency-contact" className="text-lg font-bold flex items-center gap-3 text-destructive">
-                    <div className="w-8 h-8 bg-destructive/10 rounded-lg flex items-center justify-center">
-                      <Phone size={16} className="text-destructive" />
+                <div className="space-y-2">
+                  <Label htmlFor="emergency-contact" className="text-sm font-bold flex items-center gap-2 text-destructive">
+                    <div className="w-5 h-5 bg-destructive/10 rounded flex items-center justify-center">
+                      <Phone size={10} className="text-destructive" />
                     </div>
                     Emergency Contact Number
-                    <Badge variant="destructive" className="ml-auto">Required</Badge>
+                    <Badge variant="destructive" className="ml-auto text-xs">Required</Badge>
                   </Label>
                   <div className="relative">
                     <Input
@@ -748,18 +719,18 @@ function App() {
                       placeholder="Emergency contact (required for security protocols)"
                       value={bookingForm.emergencyContact}
                       onChange={(e) => setBookingForm(prev => ({ ...prev, emergencyContact: e.target.value }))}
-                      className="h-16 text-lg bg-background/90 border-2 border-destructive/20 rounded-xl shadow-md hover:border-destructive/40 focus:border-destructive transition-all duration-300 pl-14"
+                      className="h-10 text-sm bg-background/90 border border-destructive/20 rounded-lg shadow-sm hover:border-destructive/40 focus:border-destructive transition-all duration-300 pl-8"
                     />
-                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-                      <Phone size={20} className="text-destructive/60" />
+                    <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                      <Phone size={14} className="text-destructive/60" />
                     </div>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <Label htmlFor="special-instructions" className="text-lg font-bold flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                      <Lock size={16} className="text-primary" />
+                <div className="space-y-2">
+                  <Label htmlFor="special-instructions" className="text-sm font-bold flex items-center gap-2">
+                    <div className="w-5 h-5 bg-primary/10 rounded flex items-center justify-center">
+                      <Lock size={10} className="text-primary" />
                     </div>
                     Security Instructions 
                     <Badge variant="outline" className="ml-auto text-xs">Optional</Badge>
@@ -769,7 +740,7 @@ function App() {
                     placeholder="Any specific security concerns, route preferences, or special instructions for your protection detail..."
                     value={bookingForm.specialInstructions}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, specialInstructions: e.target.value }))}
-                    className="min-h-[120px] bg-background/90 border-2 border-primary/20 rounded-xl shadow-md hover:border-primary/40 focus:border-accent transition-all duration-300 text-lg resize-none"
+                    className="min-h-[80px] bg-background/90 border border-primary/20 rounded-lg shadow-sm hover:border-primary/40 focus:border-accent transition-all duration-300 text-sm resize-none"
                   />
                 </div>
               </CardContent>
@@ -777,57 +748,51 @@ function App() {
 
             {/* Security Booking Button */}
             <div className="relative">
-              {/* Background glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-accent/20 via-accent/30 to-accent/20 rounded-2xl blur-xl"></div>
-              
               <Button 
                 onClick={handleBookSecurity} 
                 size="lg" 
-                className={`relative w-full h-24 text-xl font-black bg-gradient-to-r from-accent via-accent to-accent/90 hover:from-accent/95 hover:via-accent/95 hover:to-accent/85 text-accent-foreground shadow-2xl transition-all duration-500 border-4 border-accent/50 rounded-2xl group overflow-hidden ${
+                className={`relative w-full h-14 text-sm font-black bg-gradient-to-r from-accent via-accent to-accent/90 hover:from-accent/95 hover:via-accent/95 hover:to-accent/85 text-accent-foreground shadow-lg transition-all duration-500 border-2 border-accent/50 rounded-lg group overflow-hidden ${
                   !bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.emergencyContact
                     ? 'opacity-60 cursor-not-allowed hover:from-accent hover:via-accent hover:to-accent/90' 
-                    : 'hover:scale-[1.02] hover:shadow-accent/25'
+                    : 'hover:scale-[1.01] hover:shadow-accent/25'
                 }`}
                 disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.emergencyContact}
               >
-                {/* Animated background shimmer */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
-                
-                <div className="relative flex items-center justify-center gap-4">
-                  <Shield size={28} className="animate-pulse" weight="bold" />
+                <div className="relative flex items-center justify-center gap-3">
+                  <Shield size={20} className="animate-pulse" weight="bold" />
                   <div className="text-center">
                     <div>Request Security Transport</div>
                     {selectedService && (
-                      <div className="text-sm font-semibold opacity-90 mt-1">
+                      <div className="text-xs font-semibold opacity-90 mt-1">
                         {securityServices.find(s => s.id === selectedService)?.name} • £{securityServices.find(s => s.id === selectedService)?.price}
                       </div>
                     )}
                   </div>
-                  <Lightning size={28} className="animate-bounce" weight="bold" />
+                  <Lightning size={20} className="animate-bounce" weight="bold" />
                 </div>
               </Button>
             </div>
           </TabsContent>
 
           {/* Active Security Tab */}
-          <TabsContent value="active" className="space-y-8">
+          <TabsContent value="active" className="space-y-4">
             {currentTrip && assignedDriver ? (
-              <div className="space-y-8">
+              <div className="space-y-4">
                 {/* Real-time Security Tracking */}
-                <Card className="shadow-2xl border-2 border-primary/20">
-                  <CardHeader className="pb-4">
+                <Card className="shadow-lg border border-primary/20">
+                  <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle className="flex items-center gap-4 text-2xl">
-                          <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center shadow-lg">
-                            <Eye size={20} className="text-accent-foreground animate-pulse" />
+                        <CardTitle className="flex items-center gap-3 text-lg">
+                          <div className="w-6 h-6 bg-accent rounded-lg flex items-center justify-center shadow-md">
+                            <Eye size={12} className="text-accent-foreground animate-pulse" />
                           </div>
                           Live Security Tracking
                         </CardTitle>
-                        <CardDescription className="text-lg">Real-time monitoring of your security detail</CardDescription>
+                        <CardDescription className="text-sm">Real-time monitoring of your security detail</CardDescription>
                       </div>
-                      <Button variant="outline" size="sm" className="bg-background/50 hover:bg-background border-2 border-primary/20">
-                        <Crosshair size={16} className="mr-2" />
+                      <Button variant="outline" size="sm" className="bg-background/50 hover:bg-background border border-primary/20 h-8 text-xs">
+                        <Crosshair size={12} className="mr-1" />
                         <span className="hidden sm:inline">Center Map</span>
                       </Button>
                     </div>
@@ -838,67 +803,67 @@ function App() {
                 </Card>
 
                 {/* Security Driver Profile */}
-                <Card className="shadow-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-4 text-2xl">
-                      <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-                        <Certificate size={20} className="text-primary-foreground" />
+                <Card className="shadow-lg border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-3 text-lg">
+                      <div className="w-6 h-6 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                        <Certificate size={12} className="text-primary-foreground" />
                       </div>
                       Your Security Professional
                     </CardTitle>
-                    <CardDescription className="text-lg">Assigned protection specialist details and credentials</CardDescription>
+                    <CardDescription className="text-sm">Assigned protection specialist details and credentials</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6">
+                  <CardContent className="space-y-4">
                     {/* Driver Profile Card */}
-                    <div className="relative p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border-2 border-primary/20">
-                      <div className="flex items-start gap-6">
+                    <div className="relative p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
+                      <div className="flex items-start gap-4">
                         <div className="relative">
                           <img 
                             src={assignedDriver.photo} 
                             alt={assignedDriver.name}
-                            className="w-24 h-24 rounded-2xl object-cover border-4 border-primary shadow-xl"
+                            className="w-16 h-16 rounded-lg object-cover border-2 border-primary shadow-lg"
                           />
-                          <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 rounded-full border-4 border-background flex items-center justify-center shadow-lg">
-                            <CheckCircle size={20} className="text-white" weight="fill" />
+                          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-background flex items-center justify-center shadow-md">
+                            <CheckCircle size={12} className="text-white" weight="fill" />
                           </div>
                         </div>
                         
                         <div className="flex-1">
-                          <h3 className="text-2xl font-bold text-primary mb-1">{assignedDriver.name}</h3>
-                          <p className="text-accent font-semibold text-lg mb-3">{assignedDriver.title}</p>
-                          <p className="text-muted-foreground font-medium mb-4">
+                          <h3 className="text-lg font-bold text-primary mb-1">{assignedDriver.name}</h3>
+                          <p className="text-accent font-medium text-sm mb-2">{assignedDriver.title}</p>
+                          <p className="text-muted-foreground font-medium text-xs mb-3">
                             {assignedDriver.experience} experience • License: {assignedDriver.license}
                           </p>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div className="flex items-center gap-2">
-                              <Star size={18} className="text-yellow-500" weight="fill" />
-                              <span className="font-bold text-xl">{assignedDriver.rating}</span>
-                              <span className="text-muted-foreground">({assignedDriver.completedTrips} secure transports)</span>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                            <div className="flex items-center gap-1">
+                              <Star size={14} className="text-yellow-500" weight="fill" />
+                              <span className="font-bold text-sm">{assignedDriver.rating}</span>
+                              <span className="text-muted-foreground text-xs">({assignedDriver.completedTrips} trips)</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Car size={18} className="text-primary" />
-                              <span className="font-semibold">{assignedDriver.vehicle}</span>
+                            <div className="flex items-center gap-1">
+                              <Car size={14} className="text-primary" />
+                              <span className="font-medium text-xs">{assignedDriver.vehicle}</span>
                             </div>
                           </div>
                           
-                          <div className="space-y-3">
-                            <h4 className="font-bold text-primary">Security Credentials:</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              {assignedDriver.credentials.map((credential, index) => (
-                                <div key={index} className="flex items-center gap-2">
-                                  <Certificate size={16} className="text-accent" weight="fill" />
-                                  <span className="text-sm font-medium">{credential}</span>
+                          <div className="space-y-2">
+                            <h4 className="font-bold text-primary text-xs">Security Credentials:</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                              {assignedDriver.credentials.slice(0, 2).map((credential, index) => (
+                                <div key={index} className="flex items-center gap-1">
+                                  <Certificate size={10} className="text-accent" weight="fill" />
+                                  <span className="text-xs font-medium">{credential}</span>
                                 </div>
                               ))}
                             </div>
                           </div>
                           
-                          <div className="mt-4">
-                            <h4 className="font-bold text-primary mb-2">Specializations:</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {assignedDriver.specializations.map((spec, index) => (
-                                <Badge key={index} variant="secondary" className="bg-primary/10 text-primary border border-primary/20">
+                          <div className="mt-3">
+                            <h4 className="font-bold text-primary mb-1 text-xs">Specializations:</h4>
+                            <div className="flex flex-wrap gap-1">
+                              {assignedDriver.specializations.slice(0, 2).map((spec, index) => (
+                                <Badge key={index} variant="secondary" className="bg-primary/10 text-primary border border-primary/20 text-xs">
                                   {spec}
                                 </Badge>
                               ))}
@@ -909,58 +874,58 @@ function App() {
                     </div>
 
                     {/* Communication & Emergency */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <Button className="h-16 flex items-center gap-3 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl">
-                        <Phone size={20} />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                      <Button className="h-10 flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md text-xs">
+                        <Phone size={14} />
                         <span className="font-bold">Call Driver</span>
                       </Button>
-                      <Button variant="outline" className="h-16 flex items-center gap-3 border-2 border-primary/20 hover:bg-primary/10">
-                        <Mail size={20} className="text-primary" />
-                        <span className="font-bold">Secure Message</span>
+                      <Button variant="outline" className="h-10 flex items-center gap-2 border border-primary/20 hover:bg-primary/10 text-xs">
+                        <Mail size={14} className="text-primary" />
+                        <span className="font-bold">Message</span>
                       </Button>
                       <Button 
                         variant="destructive" 
-                        className="h-16 flex items-center gap-3 bg-destructive hover:bg-destructive/90 shadow-xl"
+                        className="h-10 flex items-center gap-2 bg-destructive hover:bg-destructive/90 shadow-md text-xs"
                         onClick={handleEmergencyAlert}
                       >
-                        <Siren size={20} />
+                        <Siren size={14} />
                         <span className="font-bold">EMERGENCY</span>
                       </Button>
                     </div>
 
                     {/* Trip Details */}
-                    <div className="p-6 bg-muted/30 rounded-xl border-2 border-border">
-                      <h4 className="font-bold text-xl flex items-center gap-3 mb-6">
-                        <MapPin size={20} className="text-accent" />
+                    <div className="p-4 bg-muted/30 rounded-lg border border-border">
+                      <h4 className="font-bold text-sm flex items-center gap-2 mb-4">
+                        <MapPin size={14} className="text-accent" />
                         Secure Route Details
                       </h4>
-                      <div className="space-y-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-5 h-5 bg-primary rounded-full shadow-md"></div>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 bg-primary rounded-full shadow-sm"></div>
                           <div>
-                            <span className="text-sm text-muted-foreground font-semibold">SECURE PICKUP</span>
-                            <p className="font-bold text-lg">{currentTrip.pickup}</p>
+                            <span className="text-xs text-muted-foreground font-semibold">SECURE PICKUP</span>
+                            <p className="font-bold text-sm">{currentTrip.pickup}</p>
                           </div>
                         </div>
-                        <div className="ml-2.5 w-0.5 h-12 bg-gradient-to-b from-primary to-accent"></div>
-                        <div className="flex items-center gap-4">
-                          <div className="w-5 h-5 bg-accent rounded-full shadow-md"></div>
+                        <div className="ml-1.5 w-0.5 h-8 bg-gradient-to-b from-primary to-accent"></div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-3 h-3 bg-accent rounded-full shadow-sm"></div>
                           <div>
-                            <span className="text-sm text-muted-foreground font-semibold">SECURE DESTINATION</span>
-                            <p className="font-bold text-lg">{currentTrip.destination}</p>
+                            <span className="text-xs text-muted-foreground font-semibold">SECURE DESTINATION</span>
+                            <p className="font-bold text-sm">{currentTrip.destination}</p>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="mt-6 pt-6 border-t border-border">
-                        <div className="grid grid-cols-2 gap-4">
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <span className="text-sm text-muted-foreground font-semibold">SERVICE LEVEL</span>
-                            <p className="font-bold">{currentTrip.service.name}</p>
+                            <span className="text-xs text-muted-foreground font-semibold">SERVICE LEVEL</span>
+                            <p className="font-bold text-sm">{currentTrip.service.name}</p>
                           </div>
                           <div>
-                            <span className="text-sm text-muted-foreground font-semibold">STARTED</span>
-                            <p className="font-bold">{currentTrip.startTime.toLocaleTimeString()}</p>
+                            <span className="text-xs text-muted-foreground font-semibold">STARTED</span>
+                            <p className="font-bold text-sm">{currentTrip.startTime.toLocaleTimeString()}</p>
                           </div>
                         </div>
                       </div>
@@ -969,7 +934,7 @@ function App() {
                     {/* Cancel Trip */}
                     <Button 
                       variant="destructive" 
-                      className="w-full h-16 text-lg font-bold shadow-xl"
+                      className="w-full h-10 text-sm font-bold shadow-md"
                       onClick={() => {
                         setCurrentTrip(null)
                         setAssignedDriver(null)
@@ -982,21 +947,21 @@ function App() {
                 </Card>
               </div>
             ) : (
-              <Card className="shadow-2xl border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
-                <CardContent className="text-center py-20">
-                  <div className="w-32 h-32 bg-muted rounded-full flex items-center justify-center mx-auto mb-8">
-                    <Shield size={60} className="text-muted-foreground" />
+              <Card className="shadow-lg border border-primary/20 bg-card/90 backdrop-blur-sm">
+                <CardContent className="text-center py-12">
+                  <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Shield size={40} className="text-muted-foreground" />
                   </div>
-                  <h3 className="text-3xl font-bold mb-6">No Active Security Detail</h3>
-                  <p className="text-muted-foreground mb-10 text-xl max-w-md mx-auto">
+                  <h3 className="text-xl font-bold mb-4">No Active Security Detail</h3>
+                  <p className="text-muted-foreground mb-6 text-sm max-w-md mx-auto">
                     You don't have any active security transport. Ready to book professional protection?
                   </p>
                   <Button 
                     onClick={() => setActiveTab('assess')}
                     size="lg"
-                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-2xl h-16 px-10 text-lg font-bold"
+                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg h-10 px-6 text-sm font-bold"
                   >
-                    <Shield size={24} className="mr-4" />
+                    <Shield size={16} className="mr-2" />
                     Start Risk Assessment
                   </Button>
                 </CardContent>
@@ -1005,31 +970,31 @@ function App() {
           </TabsContent>
 
           {/* Security History Tab */}
-          <TabsContent value="history" className="space-y-8">
-            <Card className="shadow-2xl border-2 border-primary/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-4 text-2xl">
-                  <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-                    <Clock size={20} className="text-primary-foreground" />
+          <TabsContent value="history" className="space-y-4">
+            <Card className="shadow-lg border border-primary/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-3 text-lg">
+                  <div className="w-6 h-6 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                    <Clock size={12} className="text-primary-foreground" />
                   </div>
                   Security Transport History
                 </CardTitle>
-                <CardDescription className="text-lg">Your previous professional security services</CardDescription>
+                <CardDescription className="text-sm">Your previous professional security services</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-16">
-                  <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Clock size={40} className="text-muted-foreground" />
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Clock size={24} className="text-muted-foreground" />
                   </div>
-                  <h4 className="text-xl font-bold mb-4">No Security History Yet</h4>
-                  <p className="text-muted-foreground text-lg max-w-md mx-auto mb-8">
+                  <h4 className="text-lg font-bold mb-3">No Security History Yet</h4>
+                  <p className="text-muted-foreground text-sm max-w-md mx-auto mb-6">
                     Your completed security transports will appear here for future reference and rebooking.
                   </p>
                   <Button 
                     onClick={() => setActiveTab('assess')}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl h-12 px-8"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md h-10 px-6 text-sm"
                   >
-                    <Shield size={20} className="mr-3" />
+                    <Shield size={14} className="mr-2" />
                     Book Your First Security Transport
                   </Button>
                 </div>
@@ -1040,36 +1005,36 @@ function App() {
       </div>
 
       {/* Premium Security Footer */}
-      <footer className="bg-gradient-to-r from-primary via-primary to-accent/20 border-t-2 border-accent/20 py-16 px-4 mt-20 sm:px-6">
+      <footer className="bg-gradient-to-r from-primary via-primary to-accent/20 border-t border-accent/20 py-8 px-4 mt-12 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-accent to-accent/80 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <Phone size={32} className="text-accent-foreground" weight="bold" />
+              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent/80 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                <Phone size={20} className="text-accent-foreground" weight="bold" />
               </div>
-              <h4 className="font-bold text-xl mb-3 text-primary-foreground">24/7 Security Operations</h4>
-              <p className="text-primary-foreground/80 text-lg">(555) SECURITY</p>
-              <p className="text-sm text-primary-foreground/60">Professional support always available</p>
+              <h4 className="font-bold text-sm mb-2 text-primary-foreground">24/7 Security Operations</h4>
+              <p className="text-primary-foreground/80 text-sm">(555) SECURITY</p>
+              <p className="text-xs text-primary-foreground/60">Professional support always available</p>
             </div>
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-accent to-accent/80 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <Certificate size={32} className="text-accent-foreground" weight="bold" />
+              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent/80 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                <Certificate size={20} className="text-accent-foreground" weight="bold" />
               </div>
-              <h4 className="font-bold text-xl mb-3 text-primary-foreground">Licensed Professionals</h4>
-              <p className="text-primary-foreground/80">All security drivers certified</p>
-              <p className="text-sm text-primary-foreground/60">Background verified & insured</p>
+              <h4 className="font-bold text-sm mb-2 text-primary-foreground">Licensed Professionals</h4>
+              <p className="text-primary-foreground/80 text-sm">All security drivers certified</p>
+              <p className="text-xs text-primary-foreground/60">Background verified & insured</p>
             </div>
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-accent to-accent/80 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <Shield size={32} className="text-accent-foreground" weight="bold" />
+              <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent/80 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                <Shield size={20} className="text-accent-foreground" weight="bold" />
               </div>
-              <h4 className="font-bold text-xl mb-3 text-primary-foreground">Confidential & Secure</h4>
-              <p className="text-primary-foreground/80">Discretion guaranteed</p>
-              <p className="text-sm text-primary-foreground/60">Professional protocols</p>
+              <h4 className="font-bold text-sm mb-2 text-primary-foreground">Confidential & Secure</h4>
+              <p className="text-primary-foreground/80 text-sm">Discretion guaranteed</p>
+              <p className="text-xs text-primary-foreground/60">Professional protocols</p>
             </div>
           </div>
-          <div className="text-center pt-8 border-t border-primary-foreground/20">
-            <p className="text-primary-foreground/80 font-semibold text-lg">
+          <div className="text-center pt-4 border-t border-primary-foreground/20">
+            <p className="text-primary-foreground/80 font-medium text-sm">
               © 2024 GQCars Security Transport. Professional protection services you can trust.
             </p>
           </div>
