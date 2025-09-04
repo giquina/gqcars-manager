@@ -2137,70 +2137,76 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Clean Professional Service Selection - Uber Style */}
-          <div className="space-y-4">
+          {/* Clean Professional Service Selection - Enhanced Design */}
+          <div className="space-y-5">
             <div className="px-1">
-              <h2 className="text-lg font-bold text-foreground mb-1">Choose your ride</h2>
+              <h2 className="text-xl font-bold text-foreground mb-2">Choose your ride</h2>
               <p className="text-sm text-muted-foreground">Professional transport for every need</p>
             </div>
             
-            {/* Professional Service Grid - Fixed Height Cards */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Enhanced Professional Service Grid - Redesigned Cards */}
+            <div className="grid grid-cols-2 gap-4">
               {armoraServices.map(service => {
                 const Icon = service.icon
                 const isSelected = selectedService === service.id
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 h-[140px] overflow-hidden ${
+                    className={`cursor-pointer transition-all duration-300 h-[160px] overflow-hidden relative ${
                       isSelected
-                        ? 'ring-2 ring-primary bg-primary/5 shadow-lg' 
-                        : 'hover:shadow-md bg-white border border-border/30'
-                    } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-background' : ''}`}
+                        ? 'ring-2 ring-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl transform scale-[1.02]' 
+                        : 'hover:shadow-lg hover:transform hover:scale-[1.01] bg-white border border-border/40'
+                    } ${service.popular ? 'border-green-300 bg-gradient-to-br from-green-50 to-green-25' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    <CardContent className="p-4 h-full flex flex-col justify-between">
-                      {/* Top Section: Icon + Badge */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                          isSelected 
-                            ? 'bg-primary text-primary-foreground' 
-                            : service.popular 
-                            ? 'bg-green-100 text-green-600'
-                            : 'bg-muted/50 text-primary'
-                        }`}>
-                          <Icon size={14} />
-                        </div>
-                        {service.popular && (
-                          <Badge className="text-[9px] px-1.5 py-0.5 h-auto bg-green-100 text-green-600 border-0">
-                            Popular
-                          </Badge>
-                        )}
+                    {/* Popular Badge - Repositioned */}
+                    {service.popular && (
+                      <div className="absolute top-2 right-2 z-10">
+                        <Badge className="text-[8px] px-2 py-0.5 bg-green-500 text-white border-0 shadow-sm">
+                          Most Popular
+                        </Badge>
+                      </div>
+                    )}
+                    
+                    <CardContent className="p-5 h-full flex flex-col items-center justify-center text-center space-y-3">
+                      {/* Large Centered Icon */}
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                        isSelected 
+                          ? 'bg-primary text-primary-foreground shadow-lg scale-110' 
+                          : service.popular 
+                          ? 'bg-green-500 text-white shadow-md'
+                          : 'bg-gradient-to-br from-muted to-muted/70 text-primary'
+                      }`}>
+                        <Icon size={24} weight={isSelected ? "fill" : "regular"} />
                       </div>
                       
-                      {/* Service Name - Two lines max */}
-                      <div className="mb-3 min-h-[32px] flex items-center">
-                        <h3 className="font-semibold text-[11px] leading-tight text-center text-foreground line-clamp-2 w-full">
+                      {/* Service Name - Larger and Better Spaced */}
+                      <div className="space-y-1">
+                        <h3 className={`font-bold text-sm leading-tight text-foreground line-clamp-2 ${
+                          isSelected ? 'text-primary' : ''
+                        }`}>
                           {service.name}
                         </h3>
                       </div>
                       
-                      {/* Essential Information - Spaced properly */}
-                      <div className="space-y-1.5 text-center">
-                        {/* Price Range */}
-                        <p className="font-bold text-[13px] text-foreground leading-none">
+                      {/* Essential Information - Clean Layout */}
+                      <div className="space-y-2 w-full">
+                        {/* Price Range - Most Important */}
+                        <p className={`font-bold text-base leading-none ${
+                          isSelected ? 'text-primary' : 'text-foreground'
+                        }`}>
                           {service.priceRange}
                         </p>
                         
-                        {/* Wait Time */}
-                        <p className="text-[11px] text-muted-foreground leading-none">
-                          {service.eta}
-                        </p>
-                        
-                        {/* Passenger Capacity */}
-                        <p className="text-[10px] text-muted-foreground leading-none">
-                          {service.capacity}
-                        </p>
+                        {/* Wait Time and Capacity - Combined */}
+                        <div className="space-y-1">
+                          <p className="text-xs text-muted-foreground font-medium">
+                            {service.eta}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {service.capacity}
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -2208,17 +2214,39 @@ function App() {
               })}
             </div>
 
-            {/* Clean Service Types Legend */}
+            {/* Enhanced Service Description */}
             {selectedService && (
-              <Card className="bg-gradient-to-r from-muted/30 to-muted/20 border-0">
-                <CardContent className="p-3">
-                  <div className="text-center">
-                    <p className="text-xs font-medium text-muted-foreground mb-1">
-                      Selected: {armoraServices.find(s => s.id === selectedService)?.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
+              <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-md">
+                <CardContent className="p-4">
+                  <div className="text-center space-y-2">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      {React.createElement(armoraServices.find(s => s.id === selectedService)?.icon || Car, {
+                        size: 20,
+                        className: "text-primary",
+                        weight: "fill"
+                      })}
+                      <h4 className="font-bold text-primary">
+                        {armoraServices.find(s => s.id === selectedService)?.name}
+                      </h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {armoraServices.find(s => s.id === selectedService)?.description}
                     </p>
+                    <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-primary/20">
+                      <div className="text-center">
+                        <p className="font-bold text-lg text-primary">
+                          {armoraServices.find(s => s.id === selectedService)?.priceRange}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Price Range</p>
+                      </div>
+                      <div className="w-px h-8 bg-primary/20"></div>
+                      <div className="text-center">
+                        <p className="font-bold text-lg text-accent">
+                          {armoraServices.find(s => s.id === selectedService)?.eta}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Arrival Time</p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
