@@ -1800,9 +1800,9 @@ function App() {
                       lng: userLocation.lng,
                       title: "Your Location",
                       icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="16" cy="16" r="8" fill="#3B82F6" stroke="white" stroke-width="3"/>
-                          <circle cx="16" cy="16" r="3" fill="white"/>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="10" cy="10" r="6" fill="#3B82F6" stroke="white" stroke-width="2"/>
+                          <circle cx="10" cy="10" r="2" fill="white"/>
                         </svg>
                       `),
                       animation: window.google?.maps?.Animation?.BOUNCE
@@ -1824,104 +1824,89 @@ function App() {
                         toast.success("Destination set")
                       }
                     }}
-                    className="h-32"
+                    className="h-40"
                     showControls={false}
                     showCurrentLocation={true}
                   />
                 </GoogleMapsLoader>
                 
-                {/* Enhanced GPS Status */}
-                <div className="absolute top-2 left-2 flex gap-2">
-                  <Badge variant="outline" className="bg-background/95 text-xs border-0 shadow-sm">
+                {/* Compact GPS Status */}
+                <div className="absolute top-3 left-3">
+                  <Badge variant="outline" className="bg-background/95 text-xs border-0 shadow-sm px-2 py-1">
                     {userLocation ? (
-                      <>
-                        <CheckCircle size={10} className="mr-1 text-green-500" />
-                        GPS Active
-                        {accuracy && accuracy < 10 && (
-                          <span className="ml-1 text-green-600">• High Accuracy</span>
-                        )}
-                      </>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                        <span className="text-green-700 font-medium">GPS</span>
+                      </div>
                     ) : locationLoading ? (
-                      <>
-                        <div className="w-2 h-2 border border-blue-500 border-t-transparent rounded-full animate-spin mr-1" />
-                        Finding...
-                      </>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-1.5 border border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-blue-600">Locating</span>
+                      </div>
                     ) : (
-                      <>
-                        <Warning size={10} className="mr-1 text-amber-500" />
-                        GPS Off
-                      </>
+                      <div className="flex items-center gap-1">
+                        <Warning size={12} className="text-amber-500" />
+                        <span className="text-amber-600">No GPS</span>
+                      </div>
                     )}
                   </Badge>
-                  {isLocationWatching && (
-                    <Badge variant="outline" className="bg-green-50 text-xs border-green-200">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-1" />
-                      Live
-                    </Badge>
-                  )}
                 </div>
                 
-                {/* Map Interaction Hint */}
-                <div className="absolute bottom-2 left-2 right-2">
-                  <div className="bg-background/95 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                {/* Compact Map Hint */}
+                <div className="absolute bottom-3 left-3 right-3">
+                  <div className="bg-background/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
                     <p className="text-xs text-muted-foreground text-center">
-                      Tap map to set {!bookingForm.pickup ? 'pickup' : !bookingForm.destination ? 'destination' : 'location'}
+                      Tap to set {!bookingForm.pickup ? 'pickup' : !bookingForm.destination ? 'destination' : 'location'}
                     </p>
                   </div>
                 </div>
                 
-                {/* Quick Actions */}
-                <div className="absolute top-2 right-2 flex flex-col gap-1">
+                {/* Compact Quick Actions */}
+                <div className="absolute top-3 right-3 flex flex-col gap-2">
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-8 h-8 p-0 bg-background/95 shadow-sm"
+                    className="w-8 h-8 p-0 bg-background/90 shadow-sm rounded-full"
                     onClick={getCurrentLocation}
                     disabled={locationLoading}
                   >
                     {locationLoading ? (
                       <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <Crosshair size={12} />
+                      <Crosshair size={14} />
                     )}
                   </Button>
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-8 h-8 p-0 bg-background/95 shadow-sm"
+                    className="w-8 h-8 p-0 bg-background/90 shadow-sm rounded-full"
                     onClick={() => setShowFullMap(true)}
                   >
-                    <MagnifyingGlass size={12} />
+                    <MagnifyingGlass size={14} />
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Enhanced Location Quick Actions with GPS Details */}
+          {/* Compact Location Display */}
           {userLocation && (
             <Card className="border-0 shadow-sm bg-gradient-to-r from-primary/5 to-accent/5">
               <CardContent className="p-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Compass size={14} className="text-primary" />
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Compass size={12} className="text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-xs">Current Location</p>
+                      <p className="font-medium text-xs mb-0.5">Current Location</p>
                       <p className="text-xs text-muted-foreground truncate">{userAddress || 'Getting address...'}</p>
-                      {accuracy && (
-                        <p className="text-xs text-green-600">
-                          GPS Accuracy: {Math.round(accuracy)}m
-                          {heading && ` • Heading: ${Math.round(heading)}°`}
-                        </p>
-                      )}
                     </div>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 px-2 text-xs"
+                    className="h-7 px-2 text-xs shrink-0"
                     onClick={() => {
                       if (userAddress && userLocation) {
                         setBookingForm(prev => ({
@@ -1933,14 +1918,14 @@ function App() {
                       }
                     }}
                   >
-                    Use as Pickup
+                    Use
                   </Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Enhanced Booking Form with Google Places */}
+          {/* Improved Booking Form */}
           <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/98">
             <CardContent className="p-4 space-y-3">
               <div className="space-y-2">
@@ -2030,13 +2015,12 @@ function App() {
                 </div>
               </div>
               
-              {/* Distance and Time Estimation */}
+              {/* Compact Distance Display */}
               {bookingForm.pickupCoords && bookingForm.destinationCoords && (
                 <div className="mt-2 p-2 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1.5">
                       <NavigationArrow size={12} className="text-muted-foreground" />
-                      <span className="text-muted-foreground">Distance:</span>
                       <span className="font-medium">{calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords).toFixed(1)} km</span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -2047,7 +2031,7 @@ function App() {
                 </div>
               )}
               
-              {/* Recent/Favorite Quick Picks */}
+              {/* Compact Quick Picks */}
               {(!bookingForm.destination) && favorites.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-xs text-muted-foreground font-medium">Quick destinations</p>
@@ -2075,7 +2059,7 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Ride Options with improved spacing */}
+          {/* Compact Ride Options */}
           <div className="space-y-2">
             <div className="flex items-center justify-between px-1">
               <p className="text-xs text-muted-foreground font-medium">Choose your ride</p>
@@ -2088,7 +2072,7 @@ function App() {
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 border-0 shadow-sm hover:shadow-md ${
+                    className={`cursor-pointer transition-all duration-200 border-0 shadow-sm hover:shadow-md ${ 
                       selectedService === service.id 
                         ? 'ring-2 ring-primary bg-gradient-to-r from-primary/5 to-accent/5 shadow-md' 
                         : 'hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10'
@@ -2108,12 +2092,12 @@ function App() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <div>
-                              <h3 className="font-semibold text-sm">{service.name}</h3>
-                              <p className="text-xs text-muted-foreground">{service.vehicle} • {service.capacity}</p>
+                              <h3 className="font-semibold text-sm leading-tight">{service.name}</h3>
+                              <p className="text-xs text-muted-foreground leading-tight">{service.capacity}</p>
                             </div>
                             <div className="text-right">
-                              <p className="font-bold text-sm">{service.priceRange}</p>
-                              <p className="text-xs text-muted-foreground">{service.eta} away</p>
+                              <p className="font-bold text-sm leading-tight">{service.priceRange}</p>
+                              <p className="text-xs text-muted-foreground leading-tight">{service.eta}</p>
                             </div>
                           </div>
                         </div>
@@ -2125,20 +2109,15 @@ function App() {
             </div>
           </div>
 
-          {/* Payment Method with improved design */}
+          {/* Compact Payment Method */}
           <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-muted/50 rounded-md flex items-center justify-center">
-                    <CreditCard size={12} />
-                  </div>
-                  <span className="font-medium text-sm">Payment</span>
+                  <CreditCard size={16} className="text-muted-foreground" />
+                  <span className="font-medium text-sm">Mastercard •••• 4321</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">Mastercard •••• 4321</span>
-                  <NavigationArrow size={12} className="rotate-90 text-muted-foreground" />
-                </div>
+                <NavigationArrow size={12} className="rotate-90 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
@@ -2162,19 +2141,16 @@ function App() {
             </div>
           </Button>
 
-          {/* Booking Tips */}
+          {/* Compact Booking Tips */}
           <Card className="border-0 shadow-sm bg-gradient-to-r from-accent/5 to-primary/5">
             <CardContent className="p-3">
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <CheckCircle size={12} className="text-accent" />
-                </div>
+                <CheckCircle size={14} className="text-accent mt-0.5 flex-shrink-0" />
                 <div className="space-y-1">
-                  <h4 className="font-medium text-xs">Tips for better rides</h4>
+                  <h4 className="font-medium text-xs">Quick tips</h4>
                   <ul className="text-xs text-muted-foreground space-y-0.5">
-                    <li>• Enable location services for accurate pickup</li>
-                    <li>• Add multiple stops during booking if needed</li>
-                    <li>• Save frequent destinations to favorites</li>
+                    <li>• Enable GPS for precise pickup</li>
+                    <li>• Save favorites for faster booking</li>
                   </ul>
                 </div>
               </div>
@@ -2206,9 +2182,9 @@ function App() {
                       lng: userLocation.lng,
                       title: "Your Location",
                       icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="16" cy="16" r="12" fill="#3B82F6" stroke="white" stroke-width="3"/>
-                          <circle cx="16" cy="16" r="4" fill="white"/>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="10" cy="10" r="6" fill="#3B82F6" stroke="white" stroke-width="2"/>
+                          <circle cx="10" cy="10" r="2" fill="white"/>
                         </svg>
                       `)
                     }] : []}

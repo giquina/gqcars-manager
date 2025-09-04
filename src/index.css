@@ -12,36 +12,36 @@
 }
 
 :root {
-  /* Clean UK Passenger App Color Scheme */
-  --background: oklch(1.00 0.000 0);
+  /* Modern Professional UK Transport App Color Scheme */
+  --background: oklch(0.99 0.000 0);
   --foreground: oklch(0.09 0.005 220);
 
-  --card: oklch(0.99 0.000 0);
+  --card: oklch(1.00 0.000 0);
   --card-foreground: oklch(0.09 0.005 220);
   --popover: oklch(1.00 0.000 0);
   --popover-foreground: oklch(0.09 0.005 220);
 
-  /* Professional Black - Primary Actions */
-  --primary: oklch(0.12 0.00 0);
+  /* Premium Black - Primary Actions (Professional Feel) */
+  --primary: oklch(0.09 0.000 0);
   --primary-foreground: oklch(0.98 0.000 0);
   
   /* Light Gray - Secondary Elements */
-  --secondary: oklch(0.96 0.000 0);
-  --secondary-foreground: oklch(0.12 0.00 0);
+  --secondary: oklch(0.97 0.000 0);
+  --secondary-foreground: oklch(0.09 0.000 0);
   
-  /* Ride Accent - Interactive Elements */
-  --accent: oklch(0.25 0.030 250);
+  /* Professional Blue - Interactive Elements */
+  --accent: oklch(0.45 0.15 250);
   --accent-foreground: oklch(0.98 0.000 0);
   
-  /* Error Red - Cancellations and Warnings */
+  /* Safety Red - Cancellations and Warnings */
   --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.98 0.000 0);
 
-  --muted: oklch(0.97 0.000 0);
+  --muted: oklch(0.96 0.000 0);
   --muted-foreground: oklch(0.45 0.000 0);
-  --border: oklch(0.92 0.000 0);
-  --input: oklch(0.96 0.000 0);
-  --ring: oklch(0.25 0.030 250);
+  --border: oklch(0.89 0.000 0);
+  --input: oklch(0.95 0.000 0);
+  --ring: oklch(0.45 0.15 250);
 
   --radius: 0.75rem;
 }
