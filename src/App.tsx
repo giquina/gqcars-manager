@@ -523,7 +523,7 @@ const useGeolocation = () => {
         }
         
         setLoading(false)
-        // GPS working silently in background
+        // GPS working silently in background - no notifications needed
       },
       (error) => {
         let errorMessage = 'Unable to find your location'
@@ -1129,16 +1129,14 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
       setMessages([welcomeMessage])
     }
 
-    // Simulate driver responses less frequently
+    // Simulate driver responses with reduced frequency
     const responseInterval = setInterval(() => {
-      if (Math.random() > 0.95 && messages.length > 0) { // Reduced to 5% chance every 15 seconds
+      if (Math.random() > 0.98 && messages.length > 0) { // Reduced to 2% chance every 20 seconds
         const responses = [
           "On my way!",
           "Just around the corner",
           "Should be there in 2 minutes",
-          "Thanks for waiting",
-          "Traffic is moving well",
-          "I can see the pickup location"
+          "Thanks for waiting"
         ]
         
         const response = {
@@ -1151,15 +1149,15 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
         
         setMessages(prev => [...prev, response])
       }
-    }, 15000) // Increased interval to 15 seconds
+    }, 20000) // Increased interval to 20 seconds
 
-    // Simulate driver typing indicator
+    // Simulate driver typing indicator with reduced frequency
     const typingInterval = setInterval(() => {
-      if (Math.random() > 0.9) { // 10% chance
+      if (Math.random() > 0.95) { // 5% chance
         setDriverTyping(true)
         setTimeout(() => setDriverTyping(false), 2000)
       }
-    }, 15000)
+    }, 20000)
 
     return () => {
       clearInterval(responseInterval)
@@ -1687,7 +1685,7 @@ function App() {
     }
   }, [userLocation])
 
-  // Separate effect for setting pickup location to avoid infinite loops
+  // Separate effect for setting pickup location to avoid infinite loops and excessive notifications
   const [hasSetInitialPickup, setHasSetInitialPickup] = useState(false)
   
   useEffect(() => {
@@ -1698,14 +1696,8 @@ function App() {
         pickupCoords: userLocation 
       }))
       setHasSetInitialPickup(true)
-      // Clear the finding location message and show success only once
+      // Only show location success once, no repeated notifications
       setStatusMessage('')
-      setTimeout(() => {
-        if (!statusMessage.includes('ready to book')) {
-          setStatusMessage("📍 Location ready - tap to set pickup")
-          setStatusType('success')
-        }
-      }, 500)
     }
   }, [userLocation, userAddress, hasSetInitialPickup])
 
@@ -1722,9 +1714,7 @@ function App() {
         startWatchingLocation()
         setIsLocationWatching(true)
         
-        // Show location status only initially
-        setStatusMessage("📍 Getting your location...")
-        setStatusType('info')
+        // No intrusive status messages - GPS indicator shows status
       }
     }
     
@@ -1797,18 +1787,19 @@ function App() {
     setIsChatOpen(false)
     setUnreadMessages(0)
     
-    // Clear any previous status and show driver assignment once
+    // Clear any previous status messages
     setStatusMessage('')
     
     // Add to recent trips
     setRecentTrips((prev: any[]) => [trip, ...prev.slice(0, 9)])
     
     // Show single success notification
-    toast.success(`🚗 ${driver.name} is your driver! ETA: ${driver.eta} minutes`, {
-      duration: 5000,
-      description: `${driver.vehicle} • ${driver.license}`
+    toast.success(`🚗 Driver assigned: ${driver.name}`, {
+      duration: 4000,
+      description: `${driver.vehicle} • ETA: ${driver.eta} minutes`
     })
-    // Clear both form fields when resetting
+    
+    // Clear form for next booking
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
     setHasSetInitialPickup(false)
   }, [bookingForm, selectedService, setRecentTrips, showPassengerStatus])
@@ -1860,10 +1851,13 @@ function App() {
           </div>
         </header>
 
-        {/* Simplified Status Messages */}
-        {statusMessage && (
-          <div className="mx-4 mt-3 p-2 rounded-lg bg-blue-50 border-l-4 border-blue-500">
-            <p className="text-sm text-blue-700">{statusMessage}</p>
+        {/* Essential Status Messages Only */}
+        {statusMessage && statusMessage.includes('Driver') && (
+          <div className="mx-4 mt-3 p-3 rounded-lg bg-green-50 border border-green-200">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <p className="text-sm font-medium text-green-700">{statusMessage}</p>
+            </div>
           </div>
         )}
 
@@ -2161,70 +2155,70 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Enhanced Ride Options - 2 Per Row Grid Layout */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between px-1">
-              <p className="text-sm font-semibold text-foreground">Choose Your Service</p>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock size={12} />
-                <span>Live pricing</span>
-              </div>
+          {/* Clean Professional Service Selection - Uber Style */}
+          <div className="space-y-4">
+            <div className="px-1">
+              <h2 className="text-lg font-bold text-foreground mb-1">Choose your ride</h2>
+              <p className="text-sm text-muted-foreground">Professional transport for every need</p>
             </div>
             
-            {/* Grid Layout - 2 services per row */}
+            {/* Clean Service Grid - Focus on Decision Factors Only */}
             <div className="grid grid-cols-2 gap-3">
               {armoraServices.map(service => {
                 const Icon = service.icon
+                const isSelected = selectedService === service.id
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 border-0 shadow-sm hover:shadow-md ${ 
-                      selectedService === service.id 
-                        ? 'ring-2 ring-primary bg-gradient-to-br from-primary/8 to-accent/8 shadow-md' 
-                        : 'hover:bg-gradient-to-br hover:from-muted/20 hover:to-muted/5'
-                    } ${service.highlight ? 'bg-gradient-to-br from-accent/10 to-primary/10 border border-accent/20' : ''}`}
-                    onClick={() => {
-                      setSelectedService(service.id)
-                    }}
+                    className={`cursor-pointer transition-all duration-200 h-[120px] ${
+                      isSelected
+                        ? 'ring-2 ring-primary bg-primary/5 shadow-lg' 
+                        : 'hover:shadow-md bg-white border border-border/30'
+                    } ${service.highlight ? 'border-accent/50 bg-gradient-to-br from-accent/5 to-primary/5' : ''}`}
+                    onClick={() => setSelectedService(service.id)}
                   >
-                    <CardContent className="p-3">
-                      <div className="space-y-2">
-                        {/* Icon and Badges Row */}
-                        <div className="flex items-center justify-between">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                            selectedService === service.id 
-                              ? 'bg-primary text-primary-foreground' 
-                              : service.highlight 
-                              ? 'bg-accent text-accent-foreground'
-                              : 'bg-primary/10'
-                          }`}>
-                            <Icon size={16} className={selectedService === service.id ? '' : service.highlight ? '' : 'text-primary'} />
-                          </div>
-                          
-                          <div className="flex gap-1">
-                            {service.new && (
-                              <Badge className="h-3 px-1 text-xs bg-accent text-accent-foreground">NEW</Badge>
-                            )}
-                            {service.highlight && (
-                              <Badge className="h-3 px-1 text-xs bg-gradient-to-r from-accent to-primary text-white">★</Badge>
-                            )}
-                          </div>
+                    <CardContent className="p-4 h-full flex flex-col justify-between">
+                      {/* Header: Icon + New Badge */}
+                      <div className="flex items-start justify-between mb-2">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          isSelected 
+                            ? 'bg-primary text-primary-foreground' 
+                            : service.highlight 
+                            ? 'bg-accent/20 text-accent-foreground'
+                            : 'bg-muted/50 text-primary'
+                        }`}>
+                          <Icon size={16} />
                         </div>
-                        
-                        {/* Service Info */}
+                        {service.new && (
+                          <Badge className="h-4 px-1.5 text-xs font-medium bg-accent text-accent-foreground">
+                            NEW
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      {/* Service Name - Always fits on one line */}
+                      <div className="flex-1">
+                        <h3 className={`font-semibold text-sm leading-tight mb-1 ${
+                          service.name.length > 12 ? 'text-xs' : 'text-sm'
+                        }`}>
+                          {service.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          {service.capacity.replace(' passengers', ' pass')}
+                        </p>
+                      </div>
+                      
+                      {/* Bottom: Price + ETA */}
+                      <div className="flex items-end justify-between mt-2">
                         <div>
-                          <h3 className="font-semibold text-sm leading-tight mb-1">{service.name}</h3>
-                          <p className="text-xs text-muted-foreground leading-tight mb-1">{service.capacity}</p>
+                          <p className="font-bold text-sm text-foreground">
+                            {service.priceRange.replace(' - ', '-')}
+                          </p>
                         </div>
-                        
-                        {/* Price and ETA */}
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-bold text-sm leading-tight">{service.priceRange}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-xs text-muted-foreground leading-tight">{service.eta}</p>
-                          </div>
+                        <div className="text-right">
+                          <p className="text-xs text-muted-foreground">
+                            {service.eta}
+                          </p>
                         </div>
                       </div>
                     </CardContent>
@@ -2232,31 +2226,22 @@ function App() {
                 )
               })}
             </div>
-            
-            {/* Service Categories Quick Info */}
-            <div className="grid grid-cols-3 gap-2 mt-3">
-              <div className="text-center p-2 bg-muted/30 rounded-lg">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-1">
-                  <Car size={12} className="text-blue-600" />
-                </div>
-                <p className="text-xs font-medium text-blue-700">Standard</p>
-                <p className="text-xs text-muted-foreground">Professional</p>
-              </div>
-              <div className="text-center p-2 bg-muted/30 rounded-lg">
-                <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-1">
-                  <Shield size={12} className="text-amber-600" />
-                </div>
-                <p className="text-xs font-medium text-amber-700">Security</p>
-                <p className="text-xs text-muted-foreground">Protected</p>
-              </div>
-              <div className="text-center p-2 bg-muted/30 rounded-lg">
-                <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-1">
-                  <Star size={12} className="text-purple-600" />
-                </div>
-                <p className="text-xs font-medium text-purple-700">Luxury</p>
-                <p className="text-xs text-muted-foreground">Premium</p>
-              </div>
-            </div>
+
+            {/* Clean Service Types Legend */}
+            {selectedService && (
+              <Card className="bg-gradient-to-r from-muted/30 to-muted/20 border-0">
+                <CardContent className="p-3">
+                  <div className="text-center">
+                    <p className="text-xs font-medium text-muted-foreground mb-1">
+                      Selected: {armoraServices.find(s => s.id === selectedService)?.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {armoraServices.find(s => s.id === selectedService)?.description}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Compact Payment Method */}
