@@ -3,13 +3,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Progress } from "@/components/ui/progress"
 import { 
   Shield, 
   Phone, 
-  Mail, 
   MapPin, 
   Clock, 
   Users, 
@@ -24,20 +20,13 @@ import {
   ArrowLeft,
   Plus,
   X,
-  Navigation,
-  Speedometer,
-  Timer,
   Crosshair,
   Warning,
   CheckCircle,
   ChatCircle,
   PaperPlaneTilt,
-  Microphone,
   SmileyWink,
-  DotsThree,
-  MagnifyingGlass,
-  Calendar,
-  Compass
+  MagnifyingGlass
 } from "@phosphor-icons/react"
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
@@ -247,15 +236,15 @@ declare namespace google {
 // ARMORA Premium Luxury Security Transport Services
 const armoraServices = [
   {
-    id: 'executive',
-    name: 'Executive Transport',
-    description: 'Professional chauffeurs with luxury sedans',
+    id: 'standard',
+    name: 'Standard Transport',
+    description: 'Licensed close protection officer with discrete vehicle',
     priceRange: '£45 - £75',
     eta: '3-8 min',
     icon: Car,
     capacity: '1-3 passengers',
-    vehicle: 'Mercedes S-Class, BMW 7 Series',
-    features: ['Professional chauffeur', 'Premium vehicles', 'Wi-Fi & refreshments']
+    vehicle: 'Nissan Leaf, standard plates',
+    popular: true // Most popular choice
   },
   {
     id: 'shadow-escort',
@@ -265,10 +254,7 @@ const armoraServices = [
     eta: '5-12 min',
     icon: Shield,
     capacity: '1-4 passengers',
-    vehicle: 'Your vehicle + Security escort',
-    features: ['SIA-licensed security', 'GPS coordination', 'Panic button'],
-    highlight: true, // This is the signature service
-    new: true
+    vehicle: 'Your vehicle + Security escort'
   },
   {
     id: 'executive-protection', 
@@ -278,8 +264,7 @@ const armoraServices = [
     eta: '8-15 min',
     icon: Shield,
     capacity: '1-3 passengers',
-    vehicle: 'Armored luxury vehicles',
-    features: ['Close protection officers', 'Secure vehicles', 'Route planning']
+    vehicle: 'Armored luxury vehicles'
   },
   {
     id: 'ultra-luxury',
@@ -289,8 +274,7 @@ const armoraServices = [
     eta: '10-20 min',
     icon: Star,
     capacity: '1-4 passengers',
-    vehicle: 'Rolls-Royce, Bentley Flying Spur',
-    features: ['Ultra-luxury vehicles', 'White-glove service', 'Champagne service']
+    vehicle: 'Rolls-Royce, Bentley Flying Spur'
   },
   {
     id: 'airport-express',
@@ -300,8 +284,7 @@ const armoraServices = [
     eta: '15-30 min',
     icon: NavigationArrow,
     capacity: '1-6 passengers',
-    vehicle: 'Mercedes E-Class, Range Rover',
-    features: ['Flight monitoring', 'Meet & greet', 'Luggage assistance']
+    vehicle: 'Mercedes E-Class, Range Rover'
   },
   {
     id: 'corporate',
@@ -311,8 +294,7 @@ const armoraServices = [
     eta: '5-12 min',
     icon: Users,
     capacity: '1-8 passengers',
-    vehicle: 'Mercedes V-Class, BMW X7',
-    features: ['Business accounts', 'Bulk booking', 'Invoice management']
+    vehicle: 'Mercedes V-Class, BMW X7'
   }
 ]
 
@@ -2162,62 +2144,67 @@ function App() {
               <p className="text-sm text-muted-foreground">Professional transport for every need</p>
             </div>
             
-            {/* Clean Service Grid - Focus on Decision Factors Only */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Fixed Service Grid - Complete Information Display */}
+            <div className="grid grid-cols-2 gap-4">
               {armoraServices.map(service => {
                 const Icon = service.icon
                 const isSelected = selectedService === service.id
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 h-[120px] ${
+                    className={`cursor-pointer transition-all duration-200 h-[140px] ${
                       isSelected
                         ? 'ring-2 ring-primary bg-primary/5 shadow-lg' 
                         : 'hover:shadow-md bg-white border border-border/30'
-                    } ${service.highlight ? 'border-accent/50 bg-gradient-to-br from-accent/5 to-primary/5' : ''}`}
+                    } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-background' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    <CardContent className="p-4 h-full flex flex-col justify-between">
-                      {/* Header: Icon + New Badge */}
-                      <div className="flex items-start justify-between mb-2">
+                    <CardContent className="p-4 h-full flex flex-col">
+                      {/* Icon and Popular Indicator */}
+                      <div className="flex items-center justify-between mb-3">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                           isSelected 
                             ? 'bg-primary text-primary-foreground' 
-                            : service.highlight 
-                            ? 'bg-accent/20 text-accent-foreground'
+                            : service.popular 
+                            ? 'bg-green-100 text-green-600'
                             : 'bg-muted/50 text-primary'
                         }`}>
                           <Icon size={16} />
                         </div>
-                        {service.new && (
-                          <Badge className="h-4 px-1.5 text-xs font-medium bg-accent text-accent-foreground">
-                            NEW
-                          </Badge>
+                        {service.popular && (
+                          <div className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                            Popular
+                          </div>
                         )}
                       </div>
                       
-                      {/* Service Name - Always fits on one line */}
-                      <div className="flex-1">
-                        <h3 className={`font-semibold text-sm leading-tight mb-1 ${
-                          service.name.length > 12 ? 'text-xs' : 'text-sm'
-                        }`}>
+                      {/* Service Name - Guaranteed to fit */}
+                      <div className="mb-3">
+                        <h3 className="font-bold text-sm leading-tight text-center text-foreground">
                           {service.name}
                         </h3>
-                        <p className="text-xs text-muted-foreground">
-                          {service.capacity.replace(' passengers', ' pass')}
-                        </p>
                       </div>
                       
-                      {/* Bottom: Price + ETA */}
-                      <div className="flex items-end justify-between mt-2">
+                      {/* Essential Information - All Visible */}
+                      <div className="flex-1 flex flex-col justify-center space-y-2 text-center">
+                        {/* Price Range - Most Important */}
                         <div>
-                          <p className="font-bold text-sm text-foreground">
-                            {service.priceRange.replace(' - ', '-')}
+                          <p className="font-bold text-base text-foreground">
+                            {service.priceRange}
                           </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-xs text-muted-foreground">
+                        
+                        {/* Wait Time */}
+                        <div>
+                          <p className="text-sm text-muted-foreground">
                             {service.eta}
+                          </p>
+                        </div>
+                        
+                        {/* Passenger Capacity */}
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            {service.capacity}
                           </p>
                         </div>
                       </div>
@@ -2273,11 +2260,11 @@ function App() {
           </Button>
 
           {/* Compact Service Tips */}
-          <div className="p-3 bg-gradient-to-r from-accent/5 to-primary/5 rounded-lg">
+          <div className="p-3 bg-gradient-to-r from-green-50/50 to-blue-50/50 rounded-lg">
             <div className="flex items-center gap-2">
-              <CheckCircle size={12} className="text-accent flex-shrink-0" />
+              <CheckCircle size={12} className="text-green-600 flex-shrink-0" />
               <div>
-                <p className="text-xs font-medium text-accent-foreground">💡 Try Shadow Escort for luxury + security</p>
+                <p className="text-xs font-medium text-foreground">💡 Standard Transport is our most popular choice</p>
               </div>
             </div>
           </div>
