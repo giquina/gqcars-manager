@@ -218,35 +218,52 @@ function App() {
   // Home/Booking View
   if (currentView === 'home') {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
         <Toaster position="top-center" />
         
-        {/* Header */}
-        <header className="bg-background border-b p-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Car size={20} className="text-primary" weight="bold" />
-              <h1 className="text-lg font-bold">GQ Cars</h1>
+        {/* Header with subtle shadow */}
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
+          <div className="flex items-center justify-between max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                <Car size={18} className="text-primary-foreground" weight="bold" />
+              </div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">GQ Cars</h1>
             </div>
-            <Button variant="ghost" size="sm">
-              <User size={16} />
+            <Button variant="ghost" size="sm" className="w-9 h-9 rounded-full">
+              <User size={18} />
             </Button>
           </div>
         </header>
 
-        <div className="p-4 pb-20 space-y-4">
-          {/* Booking Form */}
-          <Card>
-            <CardContent className="p-4 space-y-3">
-              <div className="space-y-2">
+        <div className="p-4 pb-20 space-y-5 max-w-md mx-auto">
+          {/* Map Preview Section */}
+          <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-0">
+              <div className="h-32 bg-gradient-to-br from-muted/20 to-muted/10 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iY3VycmVudENvbG9yIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4K')] opacity-20"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center space-y-1">
+                    <MapPin size={24} className="text-primary mx-auto" weight="duotone" />
+                    <p className="text-xs text-muted-foreground font-medium">Tap to set pickup location</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Booking Form with enhanced styling */}
+          <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/98">
+            <CardContent className="p-5 space-y-4">
+              <div className="space-y-3">
                 <div className="relative">
                   <Input
                     placeholder="Pickup location"
                     value={bookingForm.pickup}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
-                    className="pl-8"
+                    className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
                   />
-                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full"></div>
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-sm"></div>
                 </div>
                 
                 <div className="relative">
@@ -254,110 +271,135 @@ function App() {
                     placeholder="Where to?"
                     value={bookingForm.destination}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
-                    className="pl-8"
+                    className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
                   />
-                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2 h-2 bg-destructive rounded-full"></div>
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-destructive rounded-full shadow-sm"></div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Ride Options */}
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground px-1">Choose a ride, or swipe up for more</p>
-            {rideServices.map(service => {
-              const Icon = service.icon
-              return (
-                <Card 
-                  key={service.id}
-                  className={`cursor-pointer transition-all ${
-                    selectedService === service.id 
-                      ? 'ring-2 ring-primary border-primary' 
-                      : 'hover:border-primary/50'
-                  }`}
-                  onClick={() => setSelectedService(service.id)}
-                >
-                  <CardContent className="p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Icon size={20} className="text-primary" />
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-sm">{service.name}</h3>
-                          <div className="text-right">
-                            <p className="font-bold text-sm">{service.priceRange}</p>
-                            <p className="text-xs text-muted-foreground">{service.eta} dropoff</p>
+          {/* Ride Options with improved spacing */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <p className="text-sm text-muted-foreground font-medium">Choose your ride</p>
+              <Clock size={14} className="text-muted-foreground" />
+            </div>
+            
+            <div className="space-y-2">
+              {rideServices.map(service => {
+                const Icon = service.icon
+                return (
+                  <Card 
+                    key={service.id}
+                    className={`cursor-pointer transition-all duration-200 border-0 shadow-sm hover:shadow-md ${
+                      selectedService === service.id 
+                        ? 'ring-2 ring-primary bg-gradient-to-r from-primary/5 to-accent/5 shadow-md' 
+                        : 'hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10'
+                    }`}
+                    onClick={() => setSelectedService(service.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+                          selectedService === service.id 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'bg-primary/10'
+                        }`}>
+                          <Icon size={22} className={selectedService === service.id ? '' : 'text-primary'} />
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h3 className="font-semibold text-base">{service.name}</h3>
+                              <p className="text-sm text-muted-foreground">{service.description}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-base">{service.priceRange}</p>
+                              <p className="text-xs text-muted-foreground">{service.eta} away</p>
+                            </div>
                           </div>
                         </div>
-                        <p className="text-xs text-muted-foreground">{service.description}</p>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
           </div>
 
-          {/* Payment Method */}
-          <Card>
-            <CardContent className="p-3">
+          {/* Payment Method with improved design */}
+          <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CreditCard size={16} />
-                  <span className="text-sm">Payment</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-muted/50 rounded-lg flex items-center justify-center">
+                    <CreditCard size={16} />
+                  </div>
+                  <span className="font-medium">Payment</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm">Mastercard •••• 4321</span>
-                  <NavigationArrow size={12} className="rotate-90" />
+                  <span className="text-sm text-muted-foreground">Mastercard •••• 4321</span>
+                  <NavigationArrow size={14} className="rotate-90 text-muted-foreground" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Confirm Button */}
+          {/* Enhanced Confirm Button */}
           <Button 
             onClick={handleBookRide}
-            className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold"
+            className="w-full h-14 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
             disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService}
           >
-            Confirm {selectedService ? rideServices.find(s => s.id === selectedService)?.name : 'Ride'}
+            <div className="flex items-center gap-2">
+              {selectedService && <Car size={18} />}
+              Confirm {selectedService ? rideServices.find(s => s.id === selectedService)?.name : 'Ride'}
+            </div>
           </Button>
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
-          <div className="grid grid-cols-4 h-16">
+        {/* Bottom Navigation with enhanced design */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+          <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
-              className="flex flex-col items-center justify-center gap-1 text-primary"
+              className="flex flex-col items-center justify-center gap-1 text-primary transition-colors"
             >
-              <House size={18} weight="fill" />
-              <span className="text-xs font-medium">Home</span>
+              <div className="w-6 h-6 flex items-center justify-center">
+                <House size={20} weight="fill" />
+              </div>
+              <span className="text-xs font-semibold">Home</span>
             </button>
             
             <button
               onClick={() => setCurrentView('activity')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <List size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <List size={20} />
+              </div>
               <span className="text-xs">Activity</span>
             </button>
 
             <button
               onClick={() => setCurrentView('favorites')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Heart size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <Heart size={20} />
+              </div>
               <span className="text-xs">Saved</span>
             </button>
 
             <button
               onClick={() => setCurrentView('account')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <User size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <User size={20} />
+              </div>
               <span className="text-xs">Account</span>
             </button>
           </div>
@@ -369,75 +411,95 @@ function App() {
   // Trip Tracking View
   if (currentView === 'tracking' && currentTrip && assignedDriver) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
         <Toaster position="top-center" />
         
-        {/* Header */}
-        <header className="bg-background border-b p-3">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => setCurrentView('home')}>
-              <ArrowLeft size={16} />
+        {/* Header with enhanced styling */}
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
+          <div className="flex items-center gap-3 max-w-md mx-auto">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView('home')} className="w-9 h-9 rounded-full">
+              <ArrowLeft size={18} />
             </Button>
-            <h1 className="font-semibold">Trip to {currentTrip.destination}</h1>
+            <div className="flex-1">
+              <h1 className="font-semibold truncate">Trip to {currentTrip.destination}</h1>
+              <p className="text-xs text-muted-foreground">Tracking your ride</p>
+            </div>
           </div>
         </header>
 
-        <div className="p-4 space-y-4">
-          {/* Map */}
-          <RideTrackingMap trip={currentTrip} driver={assignedDriver} />
+        <div className="p-4 space-y-4 max-w-md mx-auto">
+          {/* Enhanced Map */}
+          <Card className="overflow-hidden border-0 shadow-lg">
+            <CardContent className="p-0">
+              <RideTrackingMap trip={currentTrip} driver={assignedDriver} />
+            </CardContent>
+          </Card>
 
-          {/* Driver Info */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <img 
-                  src={assignedDriver.photo} 
-                  alt={assignedDriver.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
+          {/* Driver Info with improved layout */}
+          <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="relative">
+                  <img 
+                    src={assignedDriver.photo} 
+                    alt={assignedDriver.name}
+                    className="w-16 h-16 rounded-full object-cover border-2 border-background shadow-md"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-background"></div>
+                </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold">{assignedDriver.name}</h3>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Star size={12} className="text-yellow-500" weight="fill" />
-                    <span>{assignedDriver.rating}</span>
+                  <h3 className="font-bold text-lg">{assignedDriver.name}</h3>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                    <Star size={14} className="text-yellow-500" weight="fill" />
+                    <span className="font-medium">{assignedDriver.rating}</span>
                     <span>•</span>
-                    <span>{assignedDriver.vehicle}</span>
+                    <span>{assignedDriver.completedTrips} trips</span>
                   </div>
-                  <p className="text-sm font-medium">{assignedDriver.license}</p>
+                  <p className="text-sm font-medium text-foreground">{assignedDriver.vehicle}</p>
+                  <p className="text-sm text-muted-foreground">{assignedDriver.license}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" size="sm">
-                  <Phone size={14} className="mr-2" />
-                  Call
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="outline" size="sm" className="h-11 font-medium">
+                  <Phone size={16} className="mr-2" />
+                  Call Driver
                 </Button>
-                <Button variant="outline" size="sm">
-                  <Mail size={14} className="mr-2" />
+                <Button variant="outline" size="sm" className="h-11 font-medium">
+                  <Mail size={16} className="mr-2" />
                   Message
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          {/* Trip Details */}
-          <Card>
-            <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <span className="text-sm">{currentTrip.pickup}</span>
-              </div>
-              <div className="ml-1 w-0.5 h-6 bg-gradient-to-b from-primary to-destructive"></div>
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-destructive rounded-full"></div>
-                <span className="text-sm">{currentTrip.destination}</span>
+          {/* Trip Details with better visual hierarchy */}
+          <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
+            <CardContent className="p-5 space-y-4">
+              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Trip Route</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-4 bg-primary rounded-full flex-shrink-0 shadow-sm"></div>
+                  <div>
+                    <p className="font-medium">{currentTrip.pickup}</p>
+                    <p className="text-xs text-muted-foreground">Pickup location</p>
+                  </div>
+                </div>
+                <div className="ml-2 w-0.5 h-8 bg-gradient-to-b from-primary via-muted to-destructive"></div>
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-4 bg-destructive rounded-full flex-shrink-0 shadow-sm"></div>
+                  <div>
+                    <p className="font-medium">{currentTrip.destination}</p>
+                    <p className="text-xs text-muted-foreground">Destination</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
           <Button 
             variant="destructive" 
-            className="w-full"
+            className="w-full h-12 font-semibold rounded-xl"
             onClick={() => {
               setCurrentTrip(null)
               setAssignedDriver(null)
@@ -455,48 +517,68 @@ function App() {
   // Activity View
   if (currentView === 'activity') {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
         <Toaster position="top-center" />
         
-        <header className="bg-background border-b p-3">
-          <h1 className="text-lg font-semibold">Your Activity</h1>
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-xl font-bold">Your Activity</h1>
+            <p className="text-sm text-muted-foreground">Recent trips and bookings</p>
+          </div>
         </header>
 
-        <div className="p-4 pb-20">
+        <div className="p-4 pb-20 max-w-md mx-auto">
           {recentTrips.length === 0 ? (
-            <div className="text-center py-12">
-              <List size={48} className="text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No trips yet</h3>
-              <p className="text-muted-foreground mb-4">When you book your first ride, it will appear here</p>
-              <Button onClick={() => setCurrentView('home')}>
-                <Car size={16} className="mr-2" />
-                Book a ride
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <List size={32} className="text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">No trips yet</h3>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">When you book your first ride with GQ Cars, it will appear here</p>
+              <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
+                <Car size={18} className="mr-2" />
+                Book your first ride
               </Button>
             </div>
           ) : (
             <div className="space-y-3">
               {recentTrips.map((trip: any) => (
-                <Card key={trip.id}>
+                <Card key={trip.id} className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95 hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">{trip.service.name}</h3>
-                      <span className="text-sm text-muted-foreground">
-                        {new Date(trip.startTime).toLocaleDateString()}
-                      </span>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Car size={18} className="text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{trip.service.name}</h3>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(trip.startTime).toLocaleDateString('en-GB', { 
+                              day: 'numeric', 
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="font-bold text-lg">{trip.estimatedPrice}</span>
                     </div>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex items-center gap-2">
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
-                        {trip.pickup}
+                        <span className="text-muted-foreground truncate">{trip.pickup}</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-destructive rounded-full"></div>
-                        {trip.destination}
+                        <span className="text-muted-foreground truncate">{trip.destination}</span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between mt-3">
-                      <span className="text-sm">{trip.driver.name}</span>
-                      <span className="font-semibold">{trip.estimatedPrice}</span>
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
+                      <span className="text-sm text-muted-foreground">Driver: {trip.driver.name}</span>
+                      <Button variant="ghost" size="sm" className="h-7 text-xs">
+                        View details
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -506,37 +588,45 @@ function App() {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
-          <div className="grid grid-cols-4 h-16">
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+          <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <House size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <House size={20} />
+              </div>
               <span className="text-xs">Home</span>
             </button>
             
             <button
               onClick={() => setCurrentView('activity')}
-              className="flex flex-col items-center justify-center gap-1 text-primary"
+              className="flex flex-col items-center justify-center gap-1 text-primary transition-colors"
             >
-              <List size={18} weight="fill" />
-              <span className="text-xs font-medium">Activity</span>
+              <div className="w-6 h-6 flex items-center justify-center">
+                <List size={20} weight="fill" />
+              </div>
+              <span className="text-xs font-semibold">Activity</span>
             </button>
 
             <button
               onClick={() => setCurrentView('favorites')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Heart size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <Heart size={20} />
+              </div>
               <span className="text-xs">Saved</span>
             </button>
 
             <button
               onClick={() => setCurrentView('account')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <User size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <User size={20} />
+              </div>
               <span className="text-xs">Account</span>
             </button>
           </div>
@@ -548,45 +638,52 @@ function App() {
   // Favorites View
   if (currentView === 'favorites') {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
         <Toaster position="top-center" />
         
-        <header className="bg-background border-b p-3">
-          <h1 className="text-lg font-semibold">Saved Places</h1>
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-xl font-bold">Saved Places</h1>
+            <p className="text-sm text-muted-foreground">Quick access to your favorites</p>
+          </div>
         </header>
 
-        <div className="p-4 pb-20">
+        <div className="p-4 pb-20 max-w-md mx-auto">
           {favorites.length === 0 ? (
-            <div className="text-center py-12">
-              <Heart size={48} className="text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No saved places</h3>
-              <p className="text-muted-foreground mb-4">Save your favorite locations for quick booking</p>
-              <Button onClick={() => setCurrentView('home')}>
-                <Plus size={16} className="mr-2" />
-                Add location
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart size={32} className="text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">No saved places</h3>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">Save your favorite locations for quick and easy booking</p>
+              <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
+                <Plus size={18} className="mr-2" />
+                Add first location
               </Button>
             </div>
           ) : (
             <div className="space-y-3">
               {favorites.map((location: any) => (
-                <Card key={location.id}>
+                <Card key={location.id} className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95 hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <MapPin size={18} className="text-primary" />
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <MapPin size={20} className="text-primary" weight="duotone" />
                         </div>
-                        <div>
-                          <h3 className="font-semibold">{location.name}</h3>
-                          <p className="text-sm text-muted-foreground">{location.address}</p>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-base mb-1">{location.name}</h3>
+                          <p className="text-sm text-muted-foreground truncate">{location.address}</p>
                         </div>
                       </div>
                       <Button 
                         variant="ghost" 
                         size="sm"
+                        className="ml-3 h-9 px-4 font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
                         onClick={() => {
                           setBookingForm(prev => ({ ...prev, destination: location.address }))
                           setCurrentView('home')
+                          toast.success("Destination set from favorites")
                         }}
                       >
                         Use
@@ -600,37 +697,45 @@ function App() {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
-          <div className="grid grid-cols-4 h-16">
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+          <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <House size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <House size={20} />
+              </div>
               <span className="text-xs">Home</span>
             </button>
             
             <button
               onClick={() => setCurrentView('activity')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <List size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <List size={20} />
+              </div>
               <span className="text-xs">Activity</span>
             </button>
 
             <button
               onClick={() => setCurrentView('favorites')}
-              className="flex flex-col items-center justify-center gap-1 text-primary"
+              className="flex flex-col items-center justify-center gap-1 text-primary transition-colors"
             >
-              <Heart size={18} weight="fill" />
-              <span className="text-xs font-medium">Saved</span>
+              <div className="w-6 h-6 flex items-center justify-center">
+                <Heart size={20} weight="fill" />
+              </div>
+              <span className="text-xs font-semibold">Saved</span>
             </button>
 
             <button
               onClick={() => setCurrentView('account')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <User size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <User size={20} />
+              </div>
               <span className="text-xs">Account</span>
             </button>
           </div>
@@ -642,64 +747,110 @@ function App() {
   // Account View
   if (currentView === 'account') {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
         <Toaster position="top-center" />
         
-        <header className="bg-background border-b p-3">
-          <h1 className="text-lg font-semibold">Account</h1>
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-xl font-bold">Account</h1>
+            <p className="text-sm text-muted-foreground">Manage your profile and settings</p>
+          </div>
         </header>
 
-        <div className="p-4 pb-20 space-y-4">
-          {/* Profile Section */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <User size={24} className="text-primary" />
+        <div className="p-4 pb-20 space-y-6 max-w-md mx-auto">
+          {/* Profile Section with enhanced design */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
+                    <User size={32} className="text-primary" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-background flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg">John Smith</h3>
-                  <p className="text-muted-foreground">john.smith@email.com</p>
-                  <p className="text-muted-foreground">+44 7700 900123</p>
+                <div className="flex-1">
+                  <h3 className="font-bold text-xl mb-1">John Smith</h3>
+                  <p className="text-muted-foreground text-sm mb-1">john.smith@email.com</p>
+                  <p className="text-muted-foreground text-sm">+44 7700 900123</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Star size={14} className="text-yellow-500" weight="fill" />
+                    <span className="text-sm font-medium">4.9 passenger rating</span>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Settings */}
-          <div className="space-y-1">
-            <Card>
+          {/* Settings with improved visual hierarchy */}
+          <div className="space-y-2">
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide px-1 mb-3">Settings</h2>
+            
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95 hover:shadow-md transition-shadow">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CreditCard size={18} />
-                    <span>Payment Methods</span>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
+                      <CreditCard size={20} />
+                    </div>
+                    <div>
+                      <span className="font-medium">Payment Methods</span>
+                      <p className="text-xs text-muted-foreground">Manage cards and billing</p>
+                    </div>
                   </div>
-                  <NavigationArrow size={14} className="rotate-90" />
+                  <NavigationArrow size={16} className="rotate-90 text-muted-foreground" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95 hover:shadow-md transition-shadow">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Clock size={18} />
-                    <span>Trip History</span>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
+                      <Clock size={20} />
+                    </div>
+                    <div>
+                      <span className="font-medium">Trip History</span>
+                      <p className="text-xs text-muted-foreground">View all your journeys</p>
+                    </div>
                   </div>
-                  <NavigationArrow size={14} className="rotate-90" />
+                  <NavigationArrow size={16} className="rotate-90 text-muted-foreground" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95 hover:shadow-md transition-shadow">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Phone size={18} />
-                    <span>Help & Support</span>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
+                      <Phone size={20} />
+                    </div>
+                    <div>
+                      <span className="font-medium">Help & Support</span>
+                      <p className="text-xs text-muted-foreground">Get assistance 24/7</p>
+                    </div>
                   </div>
-                  <NavigationArrow size={14} className="rotate-90" />
+                  <NavigationArrow size={16} className="rotate-90 text-muted-foreground" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95 hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
+                      <Shield size={20} />
+                    </div>
+                    <div>
+                      <span className="font-medium">Privacy & Safety</span>
+                      <p className="text-xs text-muted-foreground">Security settings</p>
+                    </div>
+                  </div>
+                  <NavigationArrow size={16} className="rotate-90 text-muted-foreground" />
                 </div>
               </CardContent>
             </Card>
@@ -707,38 +858,46 @@ function App() {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
-          <div className="grid grid-cols-4 h-16">
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+          <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <House size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <House size={20} />
+              </div>
               <span className="text-xs">Home</span>
             </button>
             
             <button
               onClick={() => setCurrentView('activity')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <List size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <List size={20} />
+              </div>
               <span className="text-xs">Activity</span>
             </button>
 
             <button
               onClick={() => setCurrentView('favorites')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Heart size={18} />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <Heart size={20} />
+              </div>
               <span className="text-xs">Saved</span>
             </button>
 
             <button
               onClick={() => setCurrentView('account')}
-              className="flex flex-col items-center justify-center gap-1 text-primary"
+              className="flex flex-col items-center justify-center gap-1 text-primary transition-colors"
             >
-              <User size={18} weight="fill" />
-              <span className="text-xs font-medium">Account</span>
+              <div className="w-6 h-6 flex items-center justify-center">
+                <User size={20} weight="fill" />
+              </div>
+              <span className="text-xs font-semibold">Account</span>
             </button>
           </div>
         </div>
