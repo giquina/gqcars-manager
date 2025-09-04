@@ -1919,6 +1919,9 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
           </CardContent>
         </Card>
       )}
+
+      {/* Route Information */}
+      {routeInfo && (
         <Card className="border-0 shadow-sm">
           <CardContent className="p-4">
             <h4 className="font-semibold text-sm mb-3">Route Information</h4>
