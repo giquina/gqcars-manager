@@ -34,7 +34,10 @@ import {
   PaperPlaneTilt,
   Microphone,
   SmileyWink,
-  DotsThree
+  DotsThree,
+  MagnifyingGlass,
+  Calendar,
+  Compass
 } from "@phosphor-icons/react"
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
@@ -103,17 +106,309 @@ const drivers = [
   }
 ]
 
-// Enhanced GPS tracking and map data
-const londonLocations = [
-  { name: "Westminster Bridge", lat: 51.5007, lng: -0.1246 },
-  { name: "London Bridge", lat: 51.5079, lng: -0.0877 },
-  { name: "Tower Bridge", lat: 51.5055, lng: -0.0754 },
-  { name: "Kings Cross Station", lat: 51.5308, lng: -0.1238 },
-  { name: "Paddington Station", lat: 51.5154, lng: -0.1755 },
-  { name: "Oxford Circus", lat: 51.5154, lng: -0.1414 },
-  { name: "Piccadilly Circus", lat: 51.5100, lng: -0.1347 },
-  { name: "Covent Garden", lat: 51.5118, lng: -0.1226 }
-]
+// Real Google Maps integration
+const useGeolocation = () => {
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [address, setAddress] = useState<string>('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const getCurrentLocation = useCallback(() => {
+    setLoading(true)
+    setError(null)
+
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by this browser')
+      setLoading(false)
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+        setLocation(coords)
+        
+        // Reverse geocoding to get address
+        if (window.google && window.google.maps) {
+          const geocoder = new window.google.maps.Geocoder()
+          geocoder.geocode({ location: coords }, (results, status) => {
+            if (status === 'OK' && results?.[0]) {
+              setAddress(results[0].formatted_address)
+            }
+          })
+        }
+        
+        setLoading(false)
+        toast.success('Location found successfully')
+      },
+      (error) => {
+        setError(`Unable to retrieve your location: ${error.message}`)
+        setLoading(false)
+        toast.error('Location access denied')
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    )
+  }, [])
+
+  return { location, address, loading, error, getCurrentLocation }
+}
+
+// Enhanced Google Maps component
+const GoogleMapView = ({ 
+  center, 
+  markers = [], 
+  onLocationSelect,
+  className = "h-64",
+  showControls = true 
+}: {
+  center: { lat: number; lng: number }
+  markers?: any[]
+  onLocationSelect?: (location: { lat: number; lng: number; address: string }) => void
+  className?: string
+  showControls?: boolean
+}) => {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const mapInstanceRef = useRef<google.maps.Map | null>(null)
+  const markersRef = useRef<google.maps.Marker[]>([])
+
+  useEffect(() => {
+    if (!mapRef.current || !window.google) return
+
+    // Initialize map
+    const map = new window.google.maps.Map(mapRef.current, {
+      center,
+      zoom: 15,
+      styles: [
+        {
+          featureType: "all",
+          elementType: "geometry.fill",
+          stylers: [{ weight: "2.00" }]
+        },
+        {
+          featureType: "all",
+          elementType: "geometry.stroke",
+          stylers: [{ color: "#9c9c9c" }]
+        },
+        {
+          featureType: "all",
+          elementType: "labels.text",
+          stylers: [{ visibility: "on" }]
+        },
+        {
+          featureType: "landscape",
+          elementType: "all",
+          stylers: [{ color: "#f2f2f2" }]
+        },
+        {
+          featureType: "landscape",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#ffffff" }]
+        },
+        {
+          featureType: "landscape.man_made",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#ffffff" }]
+        },
+        {
+          featureType: "poi",
+          elementType: "all",
+          stylers: [{ visibility: "off" }]
+        },
+        {
+          featureType: "road",
+          elementType: "all",
+          stylers: [{ saturation: -100 }, { lightness: 45 }]
+        },
+        {
+          featureType: "road",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#eeeeee" }]
+        },
+        {
+          featureType: "road",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#7b7b7b" }]
+        },
+        {
+          featureType: "road",
+          elementType: "labels.text.stroke",
+          stylers: [{ color: "#ffffff" }]
+        },
+        {
+          featureType: "road.highway",
+          elementType: "all",
+          stylers: [{ visibility: "simplified" }]
+        },
+        {
+          featureType: "road.arterial",
+          elementType: "labels.icon",
+          stylers: [{ visibility: "off" }]
+        },
+        {
+          featureType: "transit",
+          elementType: "all",
+          stylers: [{ visibility: "off" }]
+        },
+        {
+          featureType: "water",
+          elementType: "all",
+          stylers: [{ color: "#46bcec" }, { visibility: "on" }]
+        },
+        {
+          featureType: "water",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#c8d7d4" }]
+        },
+        {
+          featureType: "water",
+          elementType: "labels.text.fill",
+          stylers: [{ color: "#070707" }]
+        },
+        {
+          featureType: "water",
+          elementType: "labels.text.stroke",
+          stylers: [{ color: "#ffffff" }]
+        }
+      ],
+      disableDefaultUI: !showControls,
+      gestureHandling: 'cooperative',
+      zoomControl: showControls,
+      streetViewControl: false,
+      fullscreenControl: false
+    })
+
+    mapInstanceRef.current = map
+
+    // Add click listener for location selection
+    if (onLocationSelect) {
+      map.addListener('click', (event: google.maps.MapMouseEvent) => {
+        if (event.latLng) {
+          const coords = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+          }
+          
+          // Reverse geocoding
+          const geocoder = new window.google.maps.Geocoder()
+          geocoder.geocode({ location: coords }, (results, status) => {
+            if (status === 'OK' && results?.[0]) {
+              onLocationSelect({
+                ...coords,
+                address: results[0].formatted_address
+              })
+            }
+          })
+        }
+      })
+    }
+
+    return () => {
+      // Cleanup markers
+      markersRef.current.forEach(marker => marker.setMap(null))
+      markersRef.current = []
+    }
+  }, [center, onLocationSelect, showControls])
+
+  // Update markers when they change
+  useEffect(() => {
+    if (!mapInstanceRef.current) return
+
+    // Clear existing markers
+    markersRef.current.forEach(marker => marker.setMap(null))
+    markersRef.current = []
+
+    // Add new markers
+    markers.forEach(markerData => {
+      const marker = new window.google.maps.Marker({
+        position: { lat: markerData.lat, lng: markerData.lng },
+        map: mapInstanceRef.current,
+        title: markerData.title,
+        icon: markerData.icon ? {
+          url: markerData.icon,
+          scaledSize: new window.google.maps.Size(32, 32)
+        } : undefined
+      })
+
+      if (markerData.onClick) {
+        marker.addListener('click', markerData.onClick)
+      }
+
+      markersRef.current.push(marker)
+    })
+  }, [markers])
+
+  // Update map center when it changes
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.setCenter(center)
+    }
+  }, [center])
+
+  return <div ref={mapRef} className={className} />
+}
+
+// Places Autocomplete component
+const PlacesAutocomplete = ({ 
+  value, 
+  onChange, 
+  placeholder,
+  className = "",
+  onPlaceSelect 
+}: {
+  value: string
+  onChange: (value: string) => void
+  placeholder: string
+  className?: string
+  onPlaceSelect?: (place: any) => void
+}) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+
+  useEffect(() => {
+    if (!inputRef.current || !window.google?.maps?.places) return
+
+    const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+      componentRestrictions: { country: 'gb' }, // Restrict to UK
+      fields: ['place_id', 'formatted_address', 'geometry', 'name'],
+      types: ['establishment', 'geocode'] // Include both places and addresses
+    })
+
+    autocompleteRef.current = autocomplete
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+      if (place.formatted_address) {
+        onChange(place.formatted_address)
+        if (onPlaceSelect) {
+          onPlaceSelect(place)
+        }
+      }
+    })
+
+    return () => {
+      if (autocompleteRef.current) {
+        window.google.maps.event.clearInstanceListeners(autocompleteRef.current)
+      }
+    }
+  }, [onChange, onPlaceSelect])
+
+  return (
+    <Input
+      ref={inputRef}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className={className}
+    />
+  )
+}
 
 // Real-time GPS simulation
 const useGPSTracking = (initialPosition: any, destination: any, isActive: boolean) => {
@@ -744,11 +1039,37 @@ function App() {
   const [unreadMessages, setUnreadMessages] = useState(0)
   const [bookingForm, setBookingForm] = useState({
     pickup: '',
-    destination: ''
+    destination: '',
+    pickupCoords: null as { lat: number; lng: number } | null,
+    destinationCoords: null as { lat: number; lng: number } | null
   })
   const [favorites, setFavorites] = useKV("favorite-locations", [] as any[])
   const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
   const [paymentMethod, setPaymentMethod] = useState('mastercard')
+  
+  // Real geolocation integration
+  const { location: userLocation, address: userAddress, loading: locationLoading, getCurrentLocation } = useGeolocation()
+  const [mapCenter, setMapCenter] = useState({ lat: 51.5074, lng: -0.1278 }) // Default to London
+  const [showFullMap, setShowFullMap] = useState(false)
+
+  // Update map center when user location is found
+  useEffect(() => {
+    if (userLocation) {
+      setMapCenter(userLocation)
+      if (!bookingForm.pickup && userAddress) {
+        setBookingForm(prev => ({ 
+          ...prev, 
+          pickup: userAddress,
+          pickupCoords: userLocation 
+        }))
+      }
+    }
+  }, [userLocation, userAddress, bookingForm.pickup])
+
+  // Initialize location on app start
+  useEffect(() => {
+    getCurrentLocation()
+  }, [getCurrentLocation])
 
   const handleBookRide = () => {
     if (!bookingForm.pickup || !bookingForm.destination || !selectedService) {
@@ -756,14 +1077,15 @@ function App() {
       return
     }
     
+    if (!bookingForm.pickupCoords || !bookingForm.destinationCoords) {
+      toast.error("Please ensure both locations are properly selected")
+      return
+    }
+    
     const driver = drivers[Math.floor(Math.random() * drivers.length)]
     const service = rideServices.find(s => s.id === selectedService)
     
-    // Calculate estimated distance and duration based on selected locations
-    const pickupCoords = londonLocations.find(loc => loc.name === bookingForm.pickup) || londonLocations[0]
-    const destCoords = londonLocations.find(loc => loc.name === bookingForm.destination) || londonLocations[1]
-    
-    const distance = calculateDistance(pickupCoords, destCoords)
+    const distance = calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords)
     const estimatedDuration = Math.ceil(distance * 2) // Rough estimation: 2 minutes per km in city traffic
     
     const trip = {
@@ -771,8 +1093,8 @@ function App() {
       service: service,
       pickup: bookingForm.pickup,
       destination: bookingForm.destination,
-      pickupCoords: pickupCoords,
-      destinationCoords: destCoords,
+      pickupCoords: bookingForm.pickupCoords,
+      destinationCoords: bookingForm.destinationCoords,
       driver: driver,
       status: 'driver_assigned',
       startTime: new Date(),
@@ -796,7 +1118,7 @@ function App() {
     setRecentTrips((prev: any[]) => [trip, ...prev.slice(0, 9)])
     
     toast.success(`${driver.name} is on the way! GPS tracking active.`)
-    setBookingForm({ pickup: '', destination: '' })
+    setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
   }
 
   // Distance calculation helper
@@ -839,86 +1161,204 @@ function App() {
         </header>
 
         <div className="p-4 pb-20 space-y-5 max-w-md mx-auto">
-          {/* Map Preview Section with GPS */}
+          {/* Enhanced Map Preview with Real Google Maps */}
           <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
             <CardContent className="p-0">
-              <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
-                {/* Mini street grid */}
-                <div className="absolute inset-0">
-                  <svg width="100%" height="100%" className="opacity-15">
-                    <defs>
-                      <pattern id="miniStreets" width="20" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="1"/>
-                      </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#miniStreets)" />
-                  </svg>
-                </div>
-                
-                {/* Current location indicator */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className="relative">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="relative">
+                {window.google ? (
+                  <GoogleMapView
+                    center={mapCenter}
+                    markers={userLocation ? [{
+                      lat: userLocation.lat,
+                      lng: userLocation.lng,
+                      title: "Your Location",
+                      icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="16" cy="16" r="8" fill="#3B82F6" stroke="white" stroke-width="3"/>
+                          <circle cx="16" cy="16" r="3" fill="white"/>
+                        </svg>
+                      `)
+                    }] : []}
+                    onLocationSelect={(location) => {
+                      if (!bookingForm.pickup) {
+                        setBookingForm(prev => ({
+                          ...prev,
+                          pickup: location.address,
+                          pickupCoords: { lat: location.lat, lng: location.lng }
+                        }))
+                        toast.success("Pickup location set")
+                      } else if (!bookingForm.destination) {
+                        setBookingForm(prev => ({
+                          ...prev,
+                          destination: location.address,
+                          destinationCoords: { lat: location.lat, lng: location.lng }
+                        }))
+                        toast.success("Destination set")
+                      }
+                    }}
+                    className="h-40"
+                    showControls={false}
+                  />
+                ) : (
+                  <div className="h-40 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center space-y-2">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full mx-auto animate-pulse"></div>
+                        <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
+                      </div>
                     </div>
-                    <div className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-25"></div>
                   </div>
-                </div>
+                )}
                 
-                {/* GPS Status */}
-                <div className="absolute top-2 left-2">
-                  <Badge variant="secondary" className="text-xs bg-background/90">
-                    <CheckCircle size={12} className="mr-1 text-green-500" />
-                    GPS Ready
+                {/* Enhanced GPS Status */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <Badge variant="outline" className="bg-background/95 text-xs border-0 shadow-sm">
+                    {userLocation ? (
+                      <>
+                        <CheckCircle size={12} className="mr-1 text-green-500" />
+                        GPS Active
+                      </>
+                    ) : locationLoading ? (
+                      <>
+                        <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-1" />
+                        Finding...
+                      </>
+                    ) : (
+                      <>
+                        <Warning size={12} className="mr-1 text-amber-500" />
+                        GPS Off
+                      </>
+                    )}
                   </Badge>
                 </div>
                 
-                {/* Set Pickup Button */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="absolute bottom-2 right-2 h-7 text-xs bg-background/90"
-                  onClick={() => {
-                    // Simulate getting current location
-                    const randomLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
-                    setBookingForm(prev => ({ ...prev, pickup: randomLocation.name }))
-                    toast.success("Current location set as pickup")
-                  }}
-                >
-                  <Crosshair size={12} className="mr-1" />
-                  Use Current
-                </Button>
-                
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center space-y-1">
-                    <p className="text-xs text-muted-foreground font-medium">Tap map to explore pickup options</p>
+                {/* Map Interaction Hint */}
+                <div className="absolute bottom-3 left-3 right-3">
+                  <div className="bg-background/95 backdrop-blur-sm rounded-lg p-2 shadow-sm">
+                    <p className="text-xs text-muted-foreground text-center">
+                      Tap map to set {!bookingForm.pickup ? 'pickup' : !bookingForm.destination ? 'destination' : 'location'}
+                    </p>
                   </div>
+                </div>
+                
+                {/* Quick Actions */}
+                <div className="absolute top-3 right-3 flex flex-col gap-2">
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    className="w-9 h-9 p-0 bg-background/95 shadow-sm"
+                    onClick={getCurrentLocation}
+                    disabled={locationLoading}
+                  >
+                    {locationLoading ? (
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Crosshair size={14} />
+                    )}
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    className="w-9 h-9 p-0 bg-background/95 shadow-sm"
+                    onClick={() => setShowFullMap(true)}
+                  >
+                    <MagnifyingGlass size={14} />
+                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Enhanced Booking Form with Location Suggestions */}
+          {/* Enhanced Location Quick Actions */}
+          {userLocation && (
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-primary/5 to-accent/5">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Compass size={18} className="text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm">Current Location</p>
+                      <p className="text-xs text-muted-foreground truncate">{userAddress || 'Getting address...'}</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-xs"
+                    onClick={() => {
+                      if (userAddress && userLocation) {
+                        setBookingForm(prev => ({
+                          ...prev,
+                          pickup: userAddress,
+                          pickupCoords: userLocation
+                        }))
+                        toast.success("Current location set as pickup")
+                      }
+                    }}
+                  >
+                    Use as Pickup
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Enhanced Booking Form with Google Places */}
           <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/98">
             <CardContent className="p-5 space-y-4">
               <div className="space-y-3">
                 <div className="relative">
-                  <Input
-                    placeholder="Pickup location"
-                    value={bookingForm.pickup}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
-                    className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
-                  />
+                  {window.google?.maps?.places ? (
+                    <PlacesAutocomplete
+                      value={bookingForm.pickup}
+                      onChange={(value) => setBookingForm(prev => ({ ...prev, pickup: value }))}
+                      placeholder="Pickup location"
+                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                      onPlaceSelect={(place) => {
+                        if (place.geometry?.location) {
+                          setBookingForm(prev => ({
+                            ...prev,
+                            pickup: place.formatted_address || place.name,
+                            pickupCoords: {
+                              lat: place.geometry.location.lat(),
+                              lng: place.geometry.location.lng()
+                            }
+                          }))
+                          setMapCenter({
+                            lat: place.geometry.location.lat(),
+                            lng: place.geometry.location.lng()
+                          })
+                        }
+                      }}
+                    />
+                  ) : (
+                    <Input
+                      placeholder="Pickup location"
+                      value={bookingForm.pickup}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
+                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                    />
+                  )}
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full shadow-sm"></div>
                   <Button
                     variant="ghost"
                     size="sm"
                     className="absolute right-1 top-1/2 -translate-y-1/2 h-10 px-3 text-xs"
                     onClick={() => {
-                      const randomLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
-                      setBookingForm(prev => ({ ...prev, pickup: randomLocation.name }))
-                      toast.success("GPS location set")
+                      if (userLocation && userAddress) {
+                        setBookingForm(prev => ({
+                          ...prev,
+                          pickup: userAddress,
+                          pickupCoords: userLocation
+                        }))
+                        toast.success("GPS location set")
+                      } else {
+                        getCurrentLocation()
+                      }
                     }}
+                    disabled={locationLoading}
                   >
                     <Crosshair size={14} className="mr-1" />
                     GPS
@@ -926,12 +1366,33 @@ function App() {
                 </div>
                 
                 <div className="relative">
-                  <Input
-                    placeholder="Where to?"
-                    value={bookingForm.destination}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
-                    className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
-                  />
+                  {window.google?.maps?.places ? (
+                    <PlacesAutocomplete
+                      value={bookingForm.destination}
+                      onChange={(value) => setBookingForm(prev => ({ ...prev, destination: value }))}
+                      placeholder="Where to?"
+                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                      onPlaceSelect={(place) => {
+                        if (place.geometry?.location) {
+                          setBookingForm(prev => ({
+                            ...prev,
+                            destination: place.formatted_address || place.name,
+                            destinationCoords: {
+                              lat: place.geometry.location.lat(),
+                              lng: place.geometry.location.lng()
+                            }
+                          }))
+                        }
+                      }}
+                    />
+                  ) : (
+                    <Input
+                      placeholder="Where to?"
+                      value={bookingForm.destination}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
+                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                    />
+                  )}
                   <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full shadow-sm"></div>
                   {bookingForm.destination && (
                     <Button
@@ -948,27 +1409,43 @@ function App() {
                 </div>
               </div>
               
-              {/* Quick Location Suggestions */}
-              {(!bookingForm.pickup || !bookingForm.destination) && (
+              {/* Distance and Time Estimation */}
+              {bookingForm.pickupCoords && bookingForm.destinationCoords && (
+                <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <NavigationArrow size={14} className="text-muted-foreground" />
+                      <span className="text-muted-foreground">Distance:</span>
+                      <span className="font-medium">{calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords).toFixed(1)} km</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock size={14} className="text-muted-foreground" />
+                      <span className="font-medium">~{Math.ceil(calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords) * 2)} min</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Recent/Favorite Quick Picks */}
+              {(!bookingForm.destination) && favorites.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground font-medium">Quick locations</p>
+                  <p className="text-xs text-muted-foreground font-medium">Quick destinations</p>
                   <div className="flex flex-wrap gap-2">
-                    {londonLocations.slice(0, 4).map((location, index) => (
+                    {favorites.slice(0, 3).map((fav, index) => (
                       <Button
                         key={index}
                         variant="outline"
                         size="sm"
                         className="h-7 text-xs"
                         onClick={() => {
-                          if (!bookingForm.pickup) {
-                            setBookingForm(prev => ({ ...prev, pickup: location.name }))
-                          } else if (!bookingForm.destination) {
-                            setBookingForm(prev => ({ ...prev, destination: location.name }))
-                          }
+                          setBookingForm(prev => ({
+                            ...prev,
+                            destination: fav.address
+                          }))
                         }}
                       >
-                        <MapPin size={12} className="mr-1" />
-                        {location.name}
+                        <Heart size={12} className="mr-1" />
+                        {fav.name}
                       </Button>
                     ))}
                   </div>
@@ -1045,18 +1522,99 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Enhanced Confirm Button */}
+          {/* Enhanced Confirm Button with validation */}
           <Button 
             onClick={handleBookRide}
             className="w-full h-14 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
-            disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService}
+            disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.pickupCoords || !bookingForm.destinationCoords}
           >
             <div className="flex items-center gap-2">
               {selectedService && <Car size={18} />}
-              Confirm {selectedService ? rideServices.find(s => s.id === selectedService)?.name : 'Ride'}
+              {!bookingForm.pickup || !bookingForm.destination ? 
+                'Enter pickup & destination' :
+                !selectedService ? 
+                'Select ride type' :
+                !bookingForm.pickupCoords || !bookingForm.destinationCoords ?
+                'Select valid locations' :
+                `Confirm ${rideServices.find(s => s.id === selectedService)?.name}`
+              }
             </div>
           </Button>
+
+          {/* Booking Tips */}
+          <Card className="border-0 shadow-sm bg-gradient-to-r from-accent/5 to-primary/5">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <CheckCircle size={16} className="text-accent" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-medium text-sm">Tips for better rides</h4>
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    <li>• Enable location services for accurate pickup</li>
+                    <li>• Add multiple stops during booking if needed</li>
+                    <li>• Save frequent destinations to favorites</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Full Map Modal */}
+        {showFullMap && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <Card className="w-full max-w-lg max-h-[80vh] overflow-hidden">
+              <CardContent className="p-0">
+                <div className="flex items-center justify-between p-4 border-b">
+                  <h3 className="font-semibold">Select Location</h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowFullMap(false)}
+                    className="w-8 h-8 p-0"
+                  >
+                    <X size={16} />
+                  </Button>
+                </div>
+                {window.google && (
+                  <GoogleMapView
+                    center={mapCenter}
+                    markers={userLocation ? [{
+                      lat: userLocation.lat,
+                      lng: userLocation.lng,
+                      title: "Your Location"
+                    }] : []}
+                    onLocationSelect={(location) => {
+                      if (!bookingForm.pickup) {
+                        setBookingForm(prev => ({
+                          ...prev,
+                          pickup: location.address,
+                          pickupCoords: { lat: location.lat, lng: location.lng }
+                        }))
+                        toast.success("Pickup location set")
+                      } else if (!bookingForm.destination) {
+                        setBookingForm(prev => ({
+                          ...prev,
+                          destination: location.address,
+                          destinationCoords: { lat: location.lat, lng: location.lng }
+                        }))
+                        toast.success("Destination set")
+                      }
+                      setShowFullMap(false)
+                    }}
+                    className="h-96"
+                  />
+                )}
+                <div className="p-4 bg-muted/30">
+                  <p className="text-sm text-muted-foreground text-center">
+                    Tap anywhere on the map to set your {!bookingForm.pickup ? 'pickup location' : 'destination'}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Bottom Navigation with enhanced design */}
         <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
