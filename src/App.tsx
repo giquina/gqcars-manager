@@ -475,7 +475,7 @@ const useGeolocation = () => {
         }
         
         setLoading(false)
-        // Don't show technical location messages to passengers
+        // No notification needed - GPS is working silently in background
       },
       (error) => {
         let errorMessage = 'Unable to find your location'
@@ -1687,6 +1687,8 @@ function App() {
   const [mapCenter, setMapCenter] = useState({ lat: 51.5074, lng: -0.1278 }) // Default to London
   const [showFullMap, setShowFullMap] = useState(false)
   const [isLocationWatching, setIsLocationWatching] = useState(false)
+  const [statusMessage, setStatusMessage] = useState<string>('')
+  const [statusType, setStatusType] = useState<'info' | 'success' | 'warning' | 'error'>('info')
 
   // Update map center when user location is found
   useEffect(() => {
@@ -1715,6 +1717,23 @@ function App() {
       setIsLocationWatching(false)
     }
   }, [getCurrentLocation, startWatchingLocation, stopWatchingLocation])
+
+  // Function to show passenger-relevant status messages
+  const showPassengerStatus = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+    setStatusMessage(message)
+    setStatusType(type)
+    // Auto-hide status after 5 seconds for non-critical messages
+    if (type === 'info' || type === 'success') {
+      setTimeout(() => setStatusMessage(''), 5000)
+    }
+  }
+
+  // Example passenger status updates that would be appropriate:
+  // - "🚗 Driver is 3 minutes away"
+  // - "📍 Ready to book - pickup and destination set"
+  // - "⚠️ High demand in your area - longer wait times expected"
+  // - "✅ Payment method confirmed"
+  // - "🎯 Favorite location saved successfully"
 
   const handleBookRide = () => {
     if (!bookingForm.pickup || !bookingForm.destination || !selectedService) {
@@ -1759,10 +1778,17 @@ function App() {
     setIsChatOpen(false)
     setUnreadMessages(0)
     
+    // Clear any previous status and show driver assignment
+    setStatusMessage('')
+    setTimeout(() => {
+      showPassengerStatus(`🚗 ${driver.name} is your driver - arriving in ${driver.eta} minutes`, 'success')
+    }, 1000)
+    
     // Add to recent trips
     setRecentTrips((prev: any[]) => [trip, ...prev.slice(0, 9)])
     
     // Show passenger-relevant notification instead of technical details
+    showPassengerStatus(`🚗 ${driver.name} is your driver - arriving in ${driver.eta} minutes`, 'success')
     toast.success(`🚗 ${driver.name} is your driver! They'll arrive in ${driver.eta} minutes`, {
       duration: 5000,
       description: `${driver.vehicle} • ${driver.license}`
@@ -1809,6 +1835,34 @@ function App() {
           </div>
         </header>
 
+        {/* Passenger Status Banner - Only show relevant information */}
+        {statusMessage && (
+          <div className={`mx-4 mt-4 p-3 rounded-lg border-l-4 ${
+            statusType === 'success' ? 'bg-green-50 border-green-500 text-green-700' :
+            statusType === 'warning' ? 'bg-amber-50 border-amber-500 text-amber-700' :
+            statusType === 'error' ? 'bg-red-50 border-red-500 text-red-700' :
+            'bg-blue-50 border-blue-500 text-blue-700'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {statusType === 'success' && <CheckCircle size={16} />}
+                {statusType === 'warning' && <Warning size={16} />}
+                {statusType === 'error' && <X size={16} />}
+                {statusType === 'info' && <CheckCircle size={16} />}
+                <p className="text-sm font-medium">{statusMessage}</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setStatusMessage('')}
+                className="h-6 w-6 p-0 hover:bg-transparent"
+              >
+                <X size={12} />
+              </Button>
+            </div>
+          </div>
+        )}
+
         <div className="p-4 pb-20 space-y-4 max-w-md mx-auto">
           {/* Enhanced Map Preview with Real Google Maps */}
           <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
@@ -1836,6 +1890,7 @@ function App() {
                           pickup: location.address,
                           pickupCoords: { lat: location.lat, lng: location.lng }
                         }))
+                        showPassengerStatus("📍 Pickup location confirmed", 'success')
                         toast.success("📍 Pickup location set")
                       } else if (!bookingForm.destination) {
                         setBookingForm(prev => ({
@@ -1843,6 +1898,7 @@ function App() {
                           destination: location.address,
                           destinationCoords: { lat: location.lat, lng: location.lng }
                         }))
+                        showPassengerStatus("🎯 Destination confirmed - ready to book", 'success')
                         toast.success("🎯 Destination confirmed")
                       }
                     }}
@@ -1936,6 +1992,7 @@ function App() {
                           pickup: userAddress,
                           pickupCoords: userLocation
                         }))
+                        showPassengerStatus("📍 Using your current location as pickup", 'success')
                         toast.success("📍 Using current location as pickup")
                       }
                     }}
@@ -2038,8 +2095,30 @@ function App() {
                 </div>
               </div>
               
+              {/* Distance Display with Booking Ready Status */}
+              {bookingForm.pickupCoords && bookingForm.destinationCoords && selectedService && (
+                <div className="mt-2 p-2 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <CheckCircle size={12} className="text-green-600" />
+                      <span className="font-medium text-green-700">Ready to book</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <NavigationArrow size={10} />
+                        <span>{calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords).toFixed(1)} km</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock size={10} />
+                        <span>~{Math.ceil(calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords) * 2)} min</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               {/* Compact Distance Display */}
-              {bookingForm.pickupCoords && bookingForm.destinationCoords && (
+              {bookingForm.pickupCoords && bookingForm.destinationCoords && !selectedService && (
                 <div className="mt-2 p-2 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1.5">
@@ -2100,7 +2179,10 @@ function App() {
                         ? 'ring-2 ring-primary bg-gradient-to-r from-primary/5 to-accent/5 shadow-md' 
                         : 'hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10'
                     }`}
-                    onClick={() => setSelectedService(service.id)}
+                    onClick={() => {
+                      setSelectedService(service.id)
+                      showPassengerStatus(`${service.name} selected - ${service.priceRange}`, 'info')
+                    }}
                   >
                     <CardContent className="p-3">
                       <div className="flex items-center gap-3">
@@ -2311,8 +2393,19 @@ function App() {
           </div>
         </header>
 
-        <div className="p-4 space-y-4 max-w-md mx-auto">
-          {/* Enhanced Live Tracking Map */}
+        {/* Driver Status Updates */}
+        {currentTrip && assignedDriver && (
+          <div className="mx-4 mt-4 p-3 rounded-lg bg-green-50 border-l-4 border-green-500">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <p className="text-sm font-medium text-green-700">
+                {assignedDriver.name} is {assignedDriver.eta} minutes away
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="p-4 space-y-4 max-w-md mx-auto">{/* Enhanced Live Tracking Map */}
           <LiveTrackingMap 
             trip={currentTrip} 
             driver={{...assignedDriver, location: userLocation}} 
