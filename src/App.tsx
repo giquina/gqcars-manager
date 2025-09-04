@@ -2855,8 +2855,8 @@ function App() {
           <div className="space-y-2">
             <h2 className="text-lg font-bold">Choose your ride</h2>
             
-            {/* Compact 3x2 Service Grid */}
-            <div className="grid grid-cols-3 gap-2">
+            {/* Compact 2x3 Service Grid - Two services per row */}
+            <div className="grid grid-cols-2 gap-3">
               {armoraServices.map(service => {
                 const Icon = service.icon
                 const isSelected = selectedService === service.id
@@ -2865,7 +2865,7 @@ function App() {
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 h-[100px] overflow-hidden relative ${ 
+                    className={`cursor-pointer transition-all duration-200 h-[120px] overflow-hidden relative ${ 
                       isSelected
                         ? 'ring-2 ring-primary bg-primary/10 shadow-lg' 
                         : 'hover:shadow-md bg-white border border-border/40'
@@ -2878,23 +2878,23 @@ function App() {
                         ★
                       </div>
                     )}
-                    <CardContent className="p-2 h-full flex flex-col items-center justify-center text-center space-y-1">
+                    <CardContent className="p-3 h-full flex flex-col items-center justify-center text-center space-y-1.5">
                       {/* Icon */}
-                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${ 
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${ 
                         isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted/70 text-primary'
                       }`}>
-                        <Icon size={14} weight={isSelected ? "fill" : "regular"} />
+                        <Icon size={18} weight={isSelected ? "fill" : "regular"} />
                       </div>
                       
                       {/* Service Name */}
-                      <h3 className={`font-bold text-[10px] leading-tight text-center line-clamp-2 ${ 
+                      <h3 className={`font-bold text-xs leading-tight text-center line-clamp-2 ${ 
                         isSelected ? 'text-primary' : 'text-foreground'
                       }`}>
                         {service.name}
                       </h3>
                       
                       {/* Price */}
-                      <p className={`font-bold text-xs leading-none ${ 
+                      <p className={`font-bold text-sm leading-none ${ 
                         isSelected ? 'text-primary' : 'text-foreground'
                       }`}>
                         {dynamicPrice}
@@ -2902,10 +2902,10 @@ function App() {
                       
                       {/* ETA and Capacity */}
                       <div className="space-y-0.5 text-center">
-                        <p className="text-[8px] text-muted-foreground leading-none">
+                        <p className="text-[9px] text-muted-foreground leading-none">
                           {service.eta}
                         </p>
-                        <p className="text-[8px] text-muted-foreground leading-none">
+                        <p className="text-[9px] text-muted-foreground leading-none">
                           {service.capacity}
                         </p>
                       </div>
