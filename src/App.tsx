@@ -404,7 +404,7 @@ const useGoogleMapsAPI = () => {
   return { isLoaded, isLoading, error }
 }
 
-// Enhanced Google Maps Loading Component
+// Enhanced Google Maps Loading Component - Improved Error Handling
 const GoogleMapsLoader = ({ children, fallback }: { 
   children: React.ReactNode, 
   fallback?: React.ReactNode 
@@ -413,18 +413,21 @@ const GoogleMapsLoader = ({ children, fallback }: {
 
   if (error) {
     return (
-      <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+      <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden rounded-lg">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center space-y-2">
-            <Warning size={24} className="text-amber-500 mx-auto" />
-            <p className="text-sm text-muted-foreground">Maps temporarily unavailable</p>
+          <div className="text-center space-y-3 p-4">
+            <Warning size={28} className="text-amber-500 mx-auto" />
+            <div>
+              <p className="text-sm font-medium text-gray-700">Map temporarily unavailable</p>
+              <p className="text-xs text-gray-500 mt-1">You can still enter addresses manually</p>
+            </div>
             <Button 
               variant="outline" 
               size="sm" 
               onClick={() => window.location.reload()}
-              className="text-xs"
+              className="text-xs h-8 px-3"
             >
-              Retry
+              Retry Map
             </Button>
           </div>
         </div>
@@ -435,11 +438,14 @@ const GoogleMapsLoader = ({ children, fallback }: {
   if (isLoading) {
     return (
       fallback || (
-        <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+        <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden rounded-lg">
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center space-y-2">
-              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-              <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
+            <div className="text-center space-y-3">
+              <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+              <div>
+                <p className="text-sm font-medium text-gray-700">Loading Google Maps...</p>
+                <p className="text-xs text-gray-500">This may take a few seconds</p>
+              </div>
             </div>
           </div>
         </div>
@@ -449,11 +455,16 @@ const GoogleMapsLoader = ({ children, fallback }: {
 
   if (!isLoaded) {
     return (
-      <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+      <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden rounded-lg">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center space-y-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-full mx-auto opacity-50"></div>
-            <p className="text-sm text-muted-foreground">Maps not available</p>
+          <div className="text-center space-y-3 p-4">
+            <div className="w-10 h-10 bg-blue-500 rounded-full mx-auto opacity-50 flex items-center justify-center">
+              <MapPin size={20} className="text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-700">Map not available</p>
+              <p className="text-xs text-gray-500">Continue with manual address entry</p>
+            </div>
           </div>
         </div>
       </div>
@@ -619,267 +630,312 @@ const GoogleMapView = React.forwardRef<any, {
   const directionsServiceRef = useRef<google.maps.DirectionsService | null>(null)
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null)
 
-  // Enhanced Google Maps initialization
+  // Enhanced Google Maps initialization - Fixed initialization
   useEffect(() => {
-    if (!mapRef.current || !window.google) return
+    if (!mapRef.current || !window.google?.maps) return
 
-    // Initialize map with enhanced options
-    const map = new window.google.maps.Map(mapRef.current, {
-      center,
-      zoom: trackingMode ? 16 : 15,
-      minZoom: 8,
-      maxZoom: 20,
-      styles: [
-        // Enhanced map styling for better visibility
-        {
-          featureType: "all",
-          elementType: "geometry.fill",
-          stylers: [{ weight: "2.00" }]
-        },
-        {
-          featureType: "all",
-          elementType: "geometry.stroke",
-          stylers: [{ color: "#9c9c9c" }]
-        },
-        {
-          featureType: "all",
-          elementType: "labels.text",
-          stylers: [{ visibility: "on" }]
-        },
-        {
-          featureType: "landscape",
-          elementType: "all",
-          stylers: [{ color: "#f2f2f2" }]
-        },
-        {
-          featureType: "landscape",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#ffffff" }]
-        },
-        {
-          featureType: "landscape.man_made",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#ffffff" }]
-        },
-        {
-          featureType: "poi",
-          elementType: "all",
-          stylers: [{ visibility: trackingMode ? "off" : "simplified" }]
-        },
-        {
-          featureType: "road",
-          elementType: "all",
-          stylers: [{ saturation: -100 }, { lightness: 45 }]
-        },
-        {
-          featureType: "road",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#eeeeee" }]
-        },
-        {
-          featureType: "road",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#7b7b7b" }]
-        },
-        {
-          featureType: "road",
-          elementType: "labels.text.stroke",
-          stylers: [{ color: "#ffffff" }]
-        },
-        {
-          featureType: "road.highway",
-          elementType: "all",
-          stylers: [{ visibility: "simplified" }]
-        },
-        {
-          featureType: "road.arterial",
-          elementType: "labels.icon",
-          stylers: [{ visibility: "off" }]
-        },
-        {
-          featureType: "transit",
-          elementType: "all",
-          stylers: [{ visibility: trackingMode ? "off" : "simplified" }]
-        },
-        {
-          featureType: "water",
-          elementType: "all",
-          stylers: [{ color: "#46bcec" }, { visibility: "on" }]
-        },
-        {
-          featureType: "water",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#c8d7d4" }]
-        },
-        {
-          featureType: "water",
-          elementType: "labels.text.fill",
-          stylers: [{ color: "#070707" }]
-        },
-        {
-          featureType: "water",
-          elementType: "labels.text.stroke",
-          stylers: [{ color: "#ffffff" }]
-        }
-      ],
-      disableDefaultUI: !showControls,
-      gestureHandling: trackingMode ? 'greedy' : 'cooperative',
-      zoomControl: showControls,
-      streetViewControl: false,
-      fullscreenControl: false,
-      mapTypeControl: showControls,
-      scaleControl: true,
-      rotateControl: trackingMode,
-      tilt: trackingMode ? 45 : 0
-    })
-
-    mapInstanceRef.current = map
-
-    // Initialize services
-    directionsServiceRef.current = new window.google.maps.DirectionsService()
-    directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
-      suppressMarkers: false,
-      polylineOptions: {
-        strokeColor: '#1976d2',
-        strokeWeight: 5,
-        strokeOpacity: 0.8
-      }
-    })
-    directionsRendererRef.current.setMap(map)
-
-    // Add traffic layer if requested
-    if (showTraffic) {
-      trafficLayerRef.current = new window.google.maps.TrafficLayer()
-      trafficLayerRef.current.setMap(map)
-    }
-
-    // Add click listener for location selection
-    if (onLocationSelect) {
-      map.addListener('click', (event: google.maps.MapMouseEvent) => {
-        if (event.latLng) {
-          const coords = {
-            lat: event.latLng.lat(),
-            lng: event.latLng.lng()
+    try {
+      // Initialize map with enhanced options
+      const map = new window.google.maps.Map(mapRef.current, {
+        center,
+        zoom: trackingMode ? 16 : 15,
+        minZoom: 8,
+        maxZoom: 20,
+        styles: [
+          // Enhanced map styling for better visibility
+          {
+            featureType: "all",
+            elementType: "geometry.fill",
+            stylers: [{ weight: "2.00" }]
+          },
+          {
+            featureType: "all",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#9c9c9c" }]
+          },
+          {
+            featureType: "all",
+            elementType: "labels.text",
+            stylers: [{ visibility: "on" }]
+          },
+          {
+            featureType: "landscape",
+            elementType: "all",
+            stylers: [{ color: "#f2f2f2" }]
+          },
+          {
+            featureType: "landscape",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#ffffff" }]
+          },
+          {
+            featureType: "landscape.man_made",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#ffffff" }]
+          },
+          {
+            featureType: "poi",
+            elementType: "all",
+            stylers: [{ visibility: trackingMode ? "off" : "simplified" }]
+          },
+          {
+            featureType: "road",
+            elementType: "all",
+            stylers: [{ saturation: -100 }, { lightness: 45 }]
+          },
+          {
+            featureType: "road",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#eeeeee" }]
+          },
+          {
+            featureType: "road",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#7b7b7b" }]
+          },
+          {
+            featureType: "road",
+            elementType: "labels.text.stroke",
+            stylers: [{ color: "#ffffff" }]
+          },
+          {
+            featureType: "road.highway",
+            elementType: "all",
+            stylers: [{ visibility: "simplified" }]
+          },
+          {
+            featureType: "road.arterial",
+            elementType: "labels.icon",
+            stylers: [{ visibility: "off" }]
+          },
+          {
+            featureType: "transit",
+            elementType: "all",
+            stylers: [{ visibility: trackingMode ? "off" : "simplified" }]
+          },
+          {
+            featureType: "water",
+            elementType: "all",
+            stylers: [{ color: "#46bcec" }, { visibility: "on" }]
+          },
+          {
+            featureType: "water",
+            elementType: "geometry.fill",
+            stylers: [{ color: "#c8d7d4" }]
+          },
+          {
+            featureType: "water",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#070707" }]
+          },
+          {
+            featureType: "water",
+            elementType: "labels.text.stroke",
+            stylers: [{ color: "#ffffff" }]
           }
-          
-          // Reverse geocoding
-          const geocoder = new window.google.maps.Geocoder()
-          geocoder.geocode({ location: coords }, (results, status) => {
-            if (status === 'OK' && results?.[0]) {
-              onLocationSelect({
-                ...coords,
-                address: results[0].formatted_address
-              })
-            }
-          })
-        }
+        ],
+        disableDefaultUI: !showControls,
+        gestureHandling: trackingMode ? 'greedy' : 'cooperative',
+        zoomControl: showControls,
+        streetViewControl: false,
+        fullscreenControl: false,
+        mapTypeControl: showControls,
+        scaleControl: true,
+        rotateControl: trackingMode,
+        tilt: trackingMode ? 45 : 0
       })
+
+      mapInstanceRef.current = map
+
+      // Initialize services safely
+      if (window.google.maps.DirectionsService) {
+        directionsServiceRef.current = new window.google.maps.DirectionsService()
+      }
+      
+      if (window.google.maps.DirectionsRenderer) {
+        directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
+          suppressMarkers: false,
+          polylineOptions: {
+            strokeColor: '#1976d2',
+            strokeWeight: 5,
+            strokeOpacity: 0.8
+          }
+        })
+        directionsRendererRef.current.setMap(map)
+      }
+
+      // Add traffic layer if requested
+      if (showTraffic && window.google.maps.TrafficLayer) {
+        trafficLayerRef.current = new window.google.maps.TrafficLayer()
+        trafficLayerRef.current.setMap(map)
+      }
+
+      // Add click listener for location selection
+      if (onLocationSelect) {
+        map.addListener('click', (event: google.maps.MapMouseEvent) => {
+          if (event.latLng) {
+            const coords = {
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng()
+            }
+            
+            // Reverse geocoding
+            const geocoder = new window.google.maps.Geocoder()
+            geocoder.geocode({ location: coords }, (results, status) => {
+              if (status === 'OK' && results?.[0]) {
+                onLocationSelect({
+                  ...coords,
+                  address: results[0].formatted_address
+                })
+              }
+            })
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Error initializing Google Maps:', error)
     }
 
     return () => {
-      // Cleanup
-      markersRef.current.forEach(marker => marker.setMap(null))
-      markersRef.current = []
-      if (currentLocationMarkerRef.current) {
-        currentLocationMarkerRef.current.setMap(null)
-      }
-      if (trafficLayerRef.current) {
-        trafficLayerRef.current.setMap(null)
+      try {
+        // Cleanup
+        markersRef.current.forEach(marker => {
+          if (marker && typeof marker.setMap === 'function') {
+            marker.setMap(null)
+          }
+        })
+        markersRef.current = []
+        
+        if (currentLocationMarkerRef.current && typeof currentLocationMarkerRef.current.setMap === 'function') {
+          currentLocationMarkerRef.current.setMap(null)
+        }
+        
+        if (trafficLayerRef.current && typeof trafficLayerRef.current.setMap === 'function') {
+          trafficLayerRef.current.setMap(null)
+        }
+      } catch (error) {
+        console.error('Error during cleanup:', error)
       }
     }
   }, [center, onLocationSelect, showControls, showTraffic, trackingMode])
 
-  // Update markers when they change
+  // Update markers when they change - Enhanced error handling
   useEffect(() => {
-    if (!mapInstanceRef.current) return
+    if (!mapInstanceRef.current || !window.google?.maps) return
 
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.setMap(null))
-    markersRef.current = []
-
-    // Add new markers
-    markers.forEach(markerData => {
-      const marker = new window.google.maps.Marker({
-        position: { lat: markerData.lat, lng: markerData.lng },
-        map: mapInstanceRef.current,
-        title: markerData.title,
-        animation: markerData.animation || null,
-        icon: markerData.icon ? {
-          url: markerData.icon,
-          scaledSize: new window.google.maps.Size(
-            markerData.iconSize?.width || 32, 
-            markerData.iconSize?.height || 32
-          ),
-          anchor: new window.google.maps.Point(
-            (markerData.iconSize?.width || 32) / 2,
-            (markerData.iconSize?.height || 32) / 2
-          )
-        } : undefined
+    try {
+      // Clear existing markers safely
+      markersRef.current.forEach(marker => {
+        if (marker && typeof marker.setMap === 'function') {
+          marker.setMap(null)
+        }
       })
+      markersRef.current = []
 
-      if (markerData.onClick) {
-        marker.addListener('click', markerData.onClick)
-      }
+      // Add new markers
+      markers.forEach(markerData => {
+        try {
+          const marker = new window.google.maps.Marker({
+            position: { lat: markerData.lat, lng: markerData.lng },
+            map: mapInstanceRef.current,
+            title: markerData.title,
+            animation: markerData.animation || null,
+            icon: markerData.icon ? {
+              url: markerData.icon,
+              scaledSize: new window.google.maps.Size(
+                markerData.iconSize?.width || 32, 
+                markerData.iconSize?.height || 32
+              ),
+              anchor: new window.google.maps.Point(
+                (markerData.iconSize?.width || 32) / 2,
+                (markerData.iconSize?.height || 32) / 2
+              )
+            } : undefined
+          })
 
-      // Add info window if provided
-      if (markerData.infoWindow) {
-        const infoWindow = new window.google.maps.InfoWindow({
-          content: markerData.infoWindow
-        })
-        
-        marker.addListener('click', () => {
-          infoWindow.open(mapInstanceRef.current, marker)
-        })
-      }
+          if (markerData.onClick) {
+            marker.addListener('click', markerData.onClick)
+          }
 
-      markersRef.current.push(marker)
-    })
+          // Add info window if provided
+          if (markerData.infoWindow) {
+            const infoWindow = new window.google.maps.InfoWindow({
+              content: markerData.infoWindow
+            })
+            
+            marker.addListener('click', () => {
+              infoWindow.open(mapInstanceRef.current, marker)
+            })
+          }
+
+          markersRef.current.push(marker)
+        } catch (error) {
+          console.error('Error creating marker:', error)
+        }
+      })
+    } catch (error) {
+      console.error('Error updating markers:', error)
+    }
   }, [markers])
 
-  // Update map center when it changes
+  // Update map center when it changes - Enhanced safety
   useEffect(() => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.setCenter(center)
-      if (trackingMode) {
-        mapInstanceRef.current.setZoom(16)
+    if (mapInstanceRef.current && center && center.lat && center.lng) {
+      try {
+        mapInstanceRef.current.setCenter(center)
+        if (trackingMode) {
+          mapInstanceRef.current.setZoom(16)
+        }
+      } catch (error) {
+        console.error('Error updating map center:', error)
       }
     }
   }, [center, trackingMode])
 
-  // Method to calculate and display route
+  // Method to calculate and display route - Enhanced error handling
   const showRoute = useCallback((origin: google.maps.LatLng | google.maps.LatLngLiteral, 
                                 destination: google.maps.LatLng | google.maps.LatLngLiteral,
                                 travelMode: google.maps.TravelMode = google.maps.TravelMode.DRIVING) => {
-    if (!directionsServiceRef.current || !directionsRendererRef.current) return
+    if (!directionsServiceRef.current || !directionsRendererRef.current || !window.google?.maps) return
 
-    directionsServiceRef.current.route({
-      origin,
-      destination,
-      travelMode,
-      avoidHighways: false,
-      avoidTolls: false,
-      optimizeWaypoints: true
-    }, (result, status) => {
-      if (status === 'OK' && result) {
-        directionsRendererRef.current?.setDirections(result)
-        
-        // Fit map to route bounds
-        if (mapInstanceRef.current && result.routes[0]) {
-          mapInstanceRef.current.fitBounds(result.routes[0].bounds)
+    try {
+      directionsServiceRef.current.route({
+        origin,
+        destination,
+        travelMode,
+        avoidHighways: false,
+        avoidTolls: false,
+        optimizeWaypoints: true
+      }, (result, status) => {
+        if (status === 'OK' && result) {
+          try {
+            directionsRendererRef.current?.setDirections(result)
+            
+            // Fit map to route bounds
+            if (mapInstanceRef.current && result.routes[0]) {
+              mapInstanceRef.current.fitBounds(result.routes[0].bounds)
+            }
+          } catch (error) {
+            console.error('Error setting directions:', error)
+            toast.error('Unable to display route')
+          }
+        } else {
+          console.error('Directions request failed:', status)
+          toast.error('Unable to calculate route')
         }
-      } else {
-        console.error('Directions request failed:', status)
-        toast.error('Unable to calculate route')
-      }
-    })
+      })
+    } catch (error) {
+      console.error('Error in showRoute:', error)
+      toast.error('Route calculation failed')
+    }
   }, [])
 
-  return <div ref={mapRef} className={className} />
+  return <div ref={mapRef} className={className} style={{ minHeight: '200px', width: '100%' }} />
 })
 
 GoogleMapView.displayName = 'GoogleMapView'
 
-// Places Autocomplete component
+// Places Autocomplete component - Enhanced Error Handling
 const PlacesAutocomplete = ({ 
   value, 
   onChange, 
@@ -899,27 +955,39 @@ const PlacesAutocomplete = ({
   useEffect(() => {
     if (!inputRef.current || !window.google?.maps?.places) return
 
-    const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
-      componentRestrictions: { country: 'gb' }, // Restrict to UK
-      fields: ['place_id', 'formatted_address', 'geometry', 'name'],
-      types: ['establishment', 'geocode'] // Include both places and addresses
-    })
+    try {
+      const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+        componentRestrictions: { country: 'gb' }, // Restrict to UK
+        fields: ['place_id', 'formatted_address', 'geometry', 'name'],
+        types: ['establishment', 'geocode'] // Include both places and addresses
+      })
 
-    autocompleteRef.current = autocomplete
+      autocompleteRef.current = autocomplete
 
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace()
-      if (place.formatted_address) {
-        onChange(place.formatted_address)
-        if (onPlaceSelect) {
-          onPlaceSelect(place)
+      autocomplete.addListener('place_changed', () => {
+        try {
+          const place = autocomplete.getPlace()
+          if (place.formatted_address) {
+            onChange(place.formatted_address)
+            if (onPlaceSelect) {
+              onPlaceSelect(place)
+            }
+          }
+        } catch (error) {
+          console.error('Error in place selection:', error)
         }
-      }
-    })
+      })
+    } catch (error) {
+      console.error('Error initializing autocomplete:', error)
+    }
 
     return () => {
-      if (autocompleteRef.current) {
-        window.google.maps.event.clearInstanceListeners(autocompleteRef.current)
+      try {
+        if (autocompleteRef.current && window.google?.maps?.event) {
+          window.google.maps.event.clearInstanceListeners(autocompleteRef.current)
+        }
+      } catch (error) {
+        console.error('Error cleaning up autocomplete:', error)
       }
     }
   }, [onChange, onPlaceSelect])
@@ -1833,8 +1901,8 @@ function App() {
           </div>
         </header>
 
-        {/* Essential Status Messages Only */}
-        {statusMessage && statusMessage.includes('Driver') && (
+        {/* Essential Status Messages Only - Driver Related Info */}
+        {statusMessage && (statusMessage.includes('Driver') || statusMessage.includes('arriving') || statusMessage.includes('assigned')) && (
           <div className="mx-4 mt-3 p-3 rounded-lg bg-green-50 border border-green-200">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -1848,7 +1916,19 @@ function App() {
           <Card className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-card to-card/90 ring-1 ring-border/10">
             <CardContent className="p-0">
               <div className="relative">
-                <GoogleMapsLoader>
+                <GoogleMapsLoader
+                  fallback={
+                    <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden rounded-lg">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center space-y-3">
+                          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                          <p className="text-sm font-medium text-gray-700">Loading Interactive Map...</p>
+                          <p className="text-xs text-gray-500">Connecting to GPS services</p>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                >
                   <GoogleMapView
                     center={mapCenter}
                     markers={userLocation ? [{
@@ -2144,66 +2224,66 @@ function App() {
               <p className="text-sm text-muted-foreground">Professional transport for every need</p>
             </div>
             
-            {/* Enhanced Professional Service Grid - Redesigned Cards */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Enhanced Professional Service Grid - Fixed Layout and Text Containment */}
+            <div className="grid grid-cols-2 gap-3">
               {armoraServices.map(service => {
                 const Icon = service.icon
                 const isSelected = selectedService === service.id
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-300 h-[160px] overflow-hidden relative ${
+                    className={`cursor-pointer transition-all duration-300 h-[180px] overflow-hidden relative ${ 
                       isSelected
                         ? 'ring-2 ring-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl transform scale-[1.02]' 
                         : 'hover:shadow-lg hover:transform hover:scale-[1.01] bg-white border border-border/40'
                     } ${service.popular ? 'border-green-300 bg-gradient-to-br from-green-50 to-green-25' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    {/* Popular Badge - Repositioned */}
+                    {/* Popular Badge - Top Right */}
                     {service.popular && (
                       <div className="absolute top-2 right-2 z-10">
-                        <Badge className="text-[8px] px-2 py-0.5 bg-green-500 text-white border-0 shadow-sm">
-                          Most Popular
+                        <Badge className="text-[7px] px-1.5 py-0.5 bg-green-500 text-white border-0 shadow-sm leading-none">
+                          Popular
                         </Badge>
                       </div>
                     )}
                     
-                    <CardContent className="p-5 h-full flex flex-col items-center justify-center text-center space-y-3">
-                      {/* Large Centered Icon */}
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                    <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center space-y-3">
+                      {/* Larger Icon */}
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${ 
                         isSelected 
-                          ? 'bg-primary text-primary-foreground shadow-lg scale-110' 
+                          ? 'bg-primary text-primary-foreground shadow-lg scale-105' 
                           : service.popular 
                           ? 'bg-green-500 text-white shadow-md'
                           : 'bg-gradient-to-br from-muted to-muted/70 text-primary'
                       }`}>
-                        <Icon size={24} weight={isSelected ? "fill" : "regular"} />
+                        <Icon size={28} weight={isSelected ? "fill" : "regular"} />
                       </div>
                       
-                      {/* Service Name - Larger and Better Spaced */}
-                      <div className="space-y-1">
-                        <h3 className={`font-bold text-sm leading-tight text-foreground line-clamp-2 ${
+                      {/* Service Name - Larger and Contained */}
+                      <div className="space-y-1 w-full">
+                        <h3 className={`font-bold text-base leading-tight text-foreground text-center w-full break-words ${ 
                           isSelected ? 'text-primary' : ''
                         }`}>
                           {service.name}
                         </h3>
                       </div>
                       
-                      {/* Essential Information - Clean Layout */}
-                      <div className="space-y-2 w-full">
+                      {/* Essential Information - Clean and Contained */}
+                      <div className="space-y-2 w-full flex flex-col items-center">
                         {/* Price Range - Most Important */}
-                        <p className={`font-bold text-base leading-none ${
+                        <p className={`font-bold text-lg leading-none text-center ${ 
                           isSelected ? 'text-primary' : 'text-foreground'
                         }`}>
                           {service.priceRange}
                         </p>
                         
-                        {/* Wait Time and Capacity - Combined */}
-                        <div className="space-y-1">
-                          <p className="text-xs text-muted-foreground font-medium">
+                        {/* Wait Time and Capacity - Stacked */}
+                        <div className="space-y-1 text-center">
+                          <p className="text-xs text-muted-foreground font-medium leading-none">
                             {service.eta}
                           </p>
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-xs text-muted-foreground leading-none">
                             {service.capacity}
                           </p>
                         </div>
