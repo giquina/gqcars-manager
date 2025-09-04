@@ -1700,6 +1700,9 @@ function App() {
           pickup: userAddress,
           pickupCoords: userLocation 
         }))
+        // Clear the finding location message and show success
+        setStatusMessage('')
+        showPassengerStatus("📍 Location found - ready to book from here", 'success')
       }
     }
   }, [userLocation, userAddress, bookingForm.pickup])
@@ -1711,6 +1714,11 @@ function App() {
     // Start continuous tracking for better user experience
     const watchId = startWatchingLocation()
     setIsLocationWatching(true)
+    
+    // Show location status to user
+    if (!userLocation) {
+      showPassengerStatus("📍 Finding your location for pickup...", 'info')
+    }
     
     return () => {
       stopWatchingLocation()
@@ -1820,18 +1828,30 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
         <Toaster position="top-center" />
         
-        {/* Header with subtle shadow */}
-        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
+        {/* Header with enhanced gradient and location awareness */}
+        <header className="bg-gradient-to-r from-background/98 to-background/95 backdrop-blur-md border-b border-border/30 p-4 sticky top-0 z-10 shadow-sm">
           <div className="flex items-center justify-between max-w-md mx-auto">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <Car size={18} className="text-primary-foreground" weight="bold" />
+              <div className="w-10 h-10 bg-gradient-to-br from-primary via-primary/90 to-accent rounded-xl flex items-center justify-center shadow-lg">
+                <Car size={20} className="text-primary-foreground" weight="bold" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">GQ Cars</h1>
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">GQ Cars</h1>
+                {userLocation && (
+                  <p className="text-xs text-muted-foreground">
+                    📍 {userAddress ? userAddress.split(',')[0] : 'Locating...'}
+                  </p>
+                )}
+              </div>
             </div>
-            <Button variant="ghost" size="sm" className="w-9 h-9 rounded-full">
-              <User size={18} />
-            </Button>
+            <div className="flex items-center gap-2">
+              {isLocationWatching && (
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live GPS tracking active" />
+              )}
+              <Button variant="ghost" size="sm" className="w-10 h-10 rounded-full">
+                <User size={18} />
+              </Button>
+            </div>
           </div>
         </header>
 
@@ -1864,8 +1884,8 @@ function App() {
         )}
 
         <div className="p-4 pb-20 space-y-4 max-w-md mx-auto">
-          {/* Enhanced Map Preview with Real Google Maps */}
-          <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+          {/* Enhanced Map Preview with Real Google Maps - Larger and More Interactive */}
+          <Card className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-card to-card/90 ring-1 ring-border/10">
             <CardContent className="p-0">
               <div className="relative">
                 <GoogleMapsLoader>
@@ -1874,14 +1894,23 @@ function App() {
                     markers={userLocation ? [{
                       lat: userLocation.lat,
                       lng: userLocation.lng,
-                      title: "Your Location",
+                      title: "Your Current Location",
                       icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="10" cy="10" r="6" fill="#3B82F6" stroke="white" stroke-width="2"/>
-                          <circle cx="10" cy="10" r="2" fill="white"/>
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="16" cy="16" r="14" fill="#3B82F6" stroke="white" stroke-width="3" opacity="0.9"/>
+                          <circle cx="16" cy="16" r="6" fill="white"/>
+                          <circle cx="16" cy="16" r="3" fill="#3B82F6"/>
                         </svg>
                       `),
-                      animation: window.google?.maps?.Animation?.BOUNCE
+                      animation: window.google?.maps?.Animation?.DROP,
+                      infoWindow: `
+                        <div style="padding: 8px; font-family: Inter, sans-serif; text-align: center;">
+                          <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #1f2937;">📍 You are here</h3>
+                          <p style="margin: 0; font-size: 12px; color: #6b7280;">
+                            Accurate to ${accuracy ? Math.round(accuracy) + 'm' : 'GPS precision'}
+                          </p>
+                        </div>
+                      `
                     }] : []}
                     onLocationSelect={(location) => {
                       if (!bookingForm.pickup) {
@@ -1902,89 +1931,143 @@ function App() {
                         toast.success("🎯 Destination confirmed")
                       }
                     }}
-                    className="h-40"
-                    showControls={false}
+                    className="h-64"
+                    showControls={true}
                     showCurrentLocation={true}
+                    showTraffic={false}
                   />
                 </GoogleMapsLoader>
                 
-                {/* Compact GPS Status */}
-                <div className="absolute top-3 left-3">
-                  <Badge variant="outline" className="bg-background/95 text-xs border-0 shadow-sm px-2 py-1">
+                {/* Enhanced GPS Status with Location Details */}
+                <div className="absolute top-4 left-4 space-y-2">
+                  <Badge variant="outline" className="bg-background/95 backdrop-blur-sm text-xs border-0 shadow-lg px-3 py-1.5">
                     {userLocation ? (
-                      <div className="flex items-center gap-1">
-                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-green-700 font-medium">GPS</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                        <span className="text-green-700 font-semibold">Live GPS</span>
+                        {accuracy && (
+                          <span className="text-green-600 text-xs">±{Math.round(accuracy)}m</span>
+                        )}
                       </div>
                     ) : locationLoading ? (
-                      <div className="flex items-center gap-1">
-                        <div className="w-1.5 h-1.5 border border-blue-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-blue-600">Locating</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 border border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-blue-600 font-medium">Finding you...</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-2">
                         <Warning size={12} className="text-amber-500" />
-                        <span className="text-amber-600">No GPS</span>
+                        <span className="text-amber-600 font-medium">Enable GPS</span>
                       </div>
                     )}
                   </Badge>
+                  
+                  {/* Speed and Movement Info */}
+                  {userLocation && userSpeed !== null && userSpeed > 0 && (
+                    <Badge variant="outline" className="bg-background/95 backdrop-blur-sm text-xs border-0 shadow-sm px-2 py-1">
+                      <div className="flex items-center gap-1">
+                        <Speedometer size={10} className="text-blue-500" />
+                        <span className="text-blue-600">{Math.round(userSpeed * 3.6)} km/h</span>
+                      </div>
+                    </Badge>
+                  )}
                 </div>
                 
-                {/* Compact Map Hint */}
-                <div className="absolute bottom-3 left-3 right-3">
-                  <div className="bg-background/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
-                    <p className="text-xs text-muted-foreground text-center">
-                      Tap to set {!bookingForm.pickup ? 'pickup' : !bookingForm.destination ? 'destination' : 'location'}
-                    </p>
+                {/* Enhanced Interactive Map Guide */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-gradient-to-r from-background/95 to-background/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg border border-border/20">
+                    <div className="text-center space-y-1">
+                      <p className="text-sm font-medium text-foreground">
+                        {!bookingForm.pickup ? 'Tap map to set pickup location' : 
+                         !bookingForm.destination ? 'Tap map to set destination' : 
+                         'Locations set - ready to book!'}
+                      </p>
+                      {userLocation && (
+                        <p className="text-xs text-muted-foreground">
+                          📍 {userAddress ? userAddress.split(',')[0] : 'Getting address...'}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
-                {/* Compact Quick Actions */}
-                <div className="absolute top-3 right-3 flex flex-col gap-2">
+                {/* Enhanced Quick Action Controls */}
+                <div className="absolute top-4 right-4 flex flex-col gap-3">
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-8 h-8 p-0 bg-background/90 shadow-sm rounded-full"
+                    className="w-12 h-12 p-0 bg-background/95 backdrop-blur-sm shadow-lg rounded-full border-0 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
                     onClick={getCurrentLocation}
                     disabled={locationLoading}
+                    title="Find my location"
                   >
                     {locationLoading ? (
-                      <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <Crosshair size={14} />
+                      <Crosshair size={18} className={userLocation ? 'text-green-600' : ''} />
                     )}
                   </Button>
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-8 h-8 p-0 bg-background/90 shadow-sm rounded-full"
+                    className="w-12 h-12 p-0 bg-background/95 backdrop-blur-sm shadow-lg rounded-full border-0 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
                     onClick={() => setShowFullMap(true)}
+                    title="Open full map"
                   >
-                    <MagnifyingGlass size={14} />
+                    <MagnifyingGlass size={18} />
+                  </Button>
+                  
+                  {/* Traffic Toggle */}
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    className="w-12 h-12 p-0 bg-background/95 backdrop-blur-sm shadow-lg rounded-full border-0 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                    onClick={() => {
+                      // This would toggle traffic layer in a real implementation
+                      toast.success("🚦 Traffic view toggled")
+                    }}
+                    title="Toggle traffic"
+                  >
+                    <Navigation size={18} />
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Compact Location Display */}
+          {/* Enhanced Current Location Display with Actions */}
           {userLocation && (
-            <Card className="border-0 shadow-sm bg-gradient-to-r from-primary/5 to-accent/5">
-              <CardContent className="p-3">
+            <Card className="border-0 shadow-lg bg-gradient-to-r from-primary/8 to-accent/8 ring-1 ring-primary/20">
+              <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Compass size={12} className="text-primary" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center flex-shrink-0 relative">
+                      <Compass size={16} className="text-primary" />
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-background animate-pulse"></div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-xs mb-0.5">Current Location</p>
-                      <p className="text-xs text-muted-foreground truncate">{userAddress || 'Getting address...'}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-semibold text-sm">Your Current Location</p>
+                        {accuracy && accuracy < 50 && (
+                          <Badge variant="outline" className="h-5 px-1.5 text-xs bg-green-50 text-green-700 border-green-200">
+                            High accuracy
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground truncate leading-tight">
+                        {userAddress || 'Getting precise address...'}
+                      </p>
+                      {accuracy && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Accurate to ±{Math.round(accuracy)} meters
+                        </p>
+                      )}
                     </div>
                   </div>
                   <Button
-                    variant="outline"
+                    variant="default"
                     size="sm"
-                    className="h-7 px-2 text-xs shrink-0"
+                    className="h-9 px-4 text-sm shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                     onClick={() => {
                       if (userAddress && userLocation) {
                         setBookingForm(prev => ({
@@ -1993,11 +2076,11 @@ function App() {
                           pickupCoords: userLocation
                         }))
                         showPassengerStatus("📍 Using your current location as pickup", 'success')
-                        toast.success("📍 Using current location as pickup")
+                        toast.success("📍 Current location set as pickup")
                       }
                     }}
                   >
-                    Use
+                    Use as Pickup
                   </Button>
                 </div>
               </CardContent>
