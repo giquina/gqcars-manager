@@ -2092,6 +2092,46 @@ function App() {
   // - "✅ Payment method confirmed"
   // - "🎯 Favorite location saved successfully"
 
+  // Distance calculation helper
+  const calculateDistance = useCallback((point1: any, point2: any) => {
+    const R = 6371 // Earth's radius in kilometers
+    const dLat = (point2.lat - point1.lat) * Math.PI / 180
+    const dLng = (point2.lng - point1.lng) * Math.PI / 180
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
+              Math.sin(dLng/2) * Math.sin(dLng/2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    return Math.round(R * c * 100) / 100 // Round to 2 decimal places
+  }, [])
+
+  // Dynamic pricing calculation based on route distance and service level
+  const calculateServicePrice = useCallback((service: any, distance: number = 0) => {
+    if (!distance || distance === 0) {
+      return service.priceRange // Return original range if no distance
+    }
+
+    // Base pricing structure for each service type
+    const pricingStructure = {
+      'standard': { base: 18.00, perKm: 2.15, securityFee: 2.00 },
+      'shadow-escort': { base: 85.00, perKm: 18.50, securityFee: 45.00 },
+      'executive-protection': { base: 95.00, perKm: 15.80, securityFee: 35.00 },
+      'ultra-luxury': { base: 150.00, perKm: 22.50, securityFee: 28.00 },
+      'airport-express': { base: 45.00, perKm: 8.75, securityFee: 12.00 },
+      'corporate': { base: 28.00, perKm: 6.20, securityFee: 8.00 }
+    }
+
+    const pricing = pricingStructure[service.id as keyof typeof pricingStructure]
+    if (!pricing) return service.priceRange
+
+    // Calculate total price
+    const baseFare = pricing.base
+    const distanceFare = distance * pricing.perKm
+    const securityFee = pricing.securityFee
+    const total = baseFare + distanceFare + securityFee
+
+    return `£${total.toFixed(2)}`
+  }, [])
+
   const handleBookRide = useCallback(() => {
     if (!bookingForm.pickup || !bookingForm.destination || !selectedService) {
       toast.error("🚗 Please set pickup location, destination, and choose your ride type")
@@ -2164,46 +2204,6 @@ function App() {
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
     setHasSetInitialPickup(false)
   }, [currentTrip, setRecentTrips])
-
-  // Distance calculation helper
-  const calculateDistance = useCallback((point1: any, point2: any) => {
-    const R = 6371 // Earth's radius in kilometers
-    const dLat = (point2.lat - point1.lat) * Math.PI / 180
-    const dLng = (point2.lng - point1.lng) * Math.PI / 180
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
-              Math.sin(dLng/2) * Math.sin(dLng/2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-    return Math.round(R * c * 100) / 100 // Round to 2 decimal places
-  }, [])
-
-  // Dynamic pricing calculation based on route distance and service level
-  const calculateServicePrice = useCallback((service: any, distance: number = 0) => {
-    if (!distance || distance === 0) {
-      return service.priceRange // Return original range if no distance
-    }
-
-    // Base pricing structure for each service type
-    const pricingStructure = {
-      'standard': { base: 18.00, perKm: 2.15, securityFee: 2.00 },
-      'shadow-escort': { base: 85.00, perKm: 18.50, securityFee: 45.00 },
-      'executive-protection': { base: 95.00, perKm: 15.80, securityFee: 35.00 },
-      'ultra-luxury': { base: 150.00, perKm: 22.50, securityFee: 28.00 },
-      'airport-express': { base: 45.00, perKm: 8.75, securityFee: 12.00 },
-      'corporate': { base: 28.00, perKm: 6.20, securityFee: 8.00 }
-    }
-
-    const pricing = pricingStructure[service.id as keyof typeof pricingStructure]
-    if (!pricing) return service.priceRange
-
-    // Calculate total price
-    const baseFare = pricing.base
-    const distanceFare = distance * pricing.perKm
-    const securityFee = pricing.securityFee
-    const total = baseFare + distanceFare + securityFee
-
-    return `£${total.toFixed(2)}`
-  }, [])
 
   // Calculate route distance for pricing
   const routeDistance = useMemo(() => {
@@ -2622,7 +2622,6 @@ function App() {
         </div>
       </div>
     )
-  }
   }
 
   // Home/Booking View
