@@ -417,34 +417,38 @@ function App() {
         {/* Security Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <div className="mb-10">
-            <TabsList className="grid w-full grid-cols-4 h-16 bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-2xl">
+            <TabsList className="grid w-full grid-cols-4 h-20 bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-2xl">
               <TabsTrigger 
                 value="assess" 
-                className="flex flex-col items-center gap-2 py-3 px-3 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
               >
-                <Warning size={20} className="shrink-0" weight={activeTab === 'assess' ? 'fill' : 'regular'} />
-                <span className="font-semibold">Risk Assessment</span>
+                <Warning size={18} className="shrink-0 sm:size-20" weight={activeTab === 'assess' ? 'fill' : 'regular'} />
+                <span className="font-semibold leading-tight hidden sm:inline">Risk Assessment</span>
+                <span className="font-semibold leading-tight text-[10px] sm:hidden">Risk</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="book" 
-                className="flex flex-col items-center gap-2 py-3 px-3 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
               >
-                <Shield size={20} className="shrink-0" weight={activeTab === 'book' ? 'fill' : 'regular'} />
-                <span className="font-semibold">Book Security</span>
+                <Shield size={18} className="shrink-0 sm:size-20" weight={activeTab === 'book' ? 'fill' : 'regular'} />
+                <span className="font-semibold leading-tight hidden sm:inline">Book Security</span>
+                <span className="font-semibold leading-tight text-[10px] sm:hidden">Book</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="active" 
-                className="flex flex-col items-center gap-2 py-3 px-3 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
               >
-                <Eye size={20} className="shrink-0" weight={activeTab === 'active' ? 'fill' : 'regular'} />
-                <span className="font-semibold">Live Tracking</span>
+                <Eye size={18} className="shrink-0 sm:size-20" weight={activeTab === 'active' ? 'fill' : 'regular'} />
+                <span className="font-semibold leading-tight hidden sm:inline">Live Tracking</span>
+                <span className="font-semibold leading-tight text-[10px] sm:hidden">Live</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="history" 
-                className="flex flex-col items-center gap-2 py-3 px-3 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
+                className="flex flex-col items-center gap-1 py-2 px-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-xl sm:flex-row sm:gap-3 sm:text-sm sm:px-4 transition-all duration-300"
               >
-                <Clock size={20} className="shrink-0" weight={activeTab === 'history' ? 'fill' : 'regular'} />
-                <span className="font-semibold">History</span>
+                <Clock size={18} className="shrink-0 sm:size-20" weight={activeTab === 'history' ? 'fill' : 'regular'} />
+                <span className="font-semibold leading-tight hidden sm:inline">History</span>
+                <span className="font-semibold leading-tight text-[10px] sm:hidden">History</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -574,10 +578,10 @@ function App() {
                   return (
                     <Card 
                       key={service.id} 
-                      className={`cursor-pointer transition-all duration-300 border-2 ${
+                      className={`cursor-pointer transition-all duration-500 border-2 group relative overflow-hidden ${
                         selectedService === service.id 
-                          ? 'ring-2 ring-accent ring-offset-2 bg-accent/5 border-accent shadow-2xl' 
-                          : 'hover:shadow-xl hover:border-primary/50 border-border/50 bg-card/80'
+                          ? 'ring-4 ring-accent/50 ring-offset-4 ring-offset-background bg-gradient-to-br from-accent/10 via-accent/5 to-primary/5 border-accent shadow-2xl scale-[1.02]' 
+                          : 'hover:shadow-2xl hover:border-primary/60 hover:scale-[1.01] border-border/30 bg-gradient-to-br from-card via-card to-card/80 hover:from-primary/5 hover:to-accent/5'
                       }`}
                       onClick={() => setSelectedService(service.id)}
                     >
@@ -621,14 +625,37 @@ function App() {
                             </div>
                           </div>
                           
-                          <div className="text-right">
-                            <p className="text-3xl font-bold text-primary">£{service.price}</p>
-                            <Badge 
-                              variant={selectedService === service.id ? "default" : "secondary"}
-                              className={`mt-2 px-4 py-1 ${selectedService === service.id ? "bg-accent text-accent-foreground" : ""}`}
+                          <div className="text-right space-y-3">
+                            <div className="relative">
+                              <p className="text-4xl font-black text-primary mb-1">£{service.price}</p>
+                              <p className="text-sm text-muted-foreground font-medium">per journey</p>
+                              {selectedService === service.id && (
+                                <div className="absolute -top-3 -right-3 w-8 h-8 bg-accent rounded-full flex items-center justify-center border-2 border-background shadow-lg animate-pulse">
+                                  <CheckCircle size={16} className="text-accent-foreground" weight="fill" />
+                                </div>
+                              )}
+                            </div>
+                            <Button 
+                              variant={selectedService === service.id ? "default" : "outline"}
+                              size="lg"
+                              className={`w-full font-bold transition-all duration-300 ${
+                                selectedService === service.id 
+                                  ? "bg-accent hover:bg-accent/90 text-accent-foreground shadow-xl scale-105" 
+                                  : "border-2 border-primary/20 hover:border-accent/50 hover:bg-accent/10"
+                              }`}
                             >
-                              {selectedService === service.id ? 'Selected' : 'Select'}
-                            </Badge>
+                              {selectedService === service.id ? (
+                                <>
+                                  <CheckCircle size={18} className="mr-2" />
+                                  Selected
+                                </>
+                              ) : (
+                                <>
+                                  <Shield size={18} className="mr-2" />
+                                  Select Service
+                                </>
+                              )}
+                            </Button>
                           </div>
                         </div>
                       </CardContent>
@@ -639,86 +666,147 @@ function App() {
             </div>
 
             {/* Booking Form */}
-            <Card className="shadow-2xl border-2 border-primary/20 bg-card/90 backdrop-blur-sm">
-              <CardHeader className="pb-6">
-                <CardTitle className="text-2xl flex items-center gap-4">
-                  <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center shadow-lg">
-                    <MapPin size={20} className="text-accent-foreground" />
+            <Card className="shadow-2xl border-2 border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 backdrop-blur-sm relative overflow-hidden">
+              {/* Subtle background pattern */}
+              <div className="absolute inset-0 opacity-5">
+                <svg width="100%" height="100%" className="text-primary">
+                  <defs>
+                    <pattern id="form-grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#form-grid)" />
+                </svg>
+              </div>
+              
+              <CardHeader className="pb-8 relative z-10">
+                <CardTitle className="text-3xl flex items-center gap-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center shadow-xl border-2 border-accent/30">
+                    <MapPin size={24} className="text-accent-foreground" weight="bold" />
                   </div>
-                  Security Transport Details
+                  <div>
+                    <div>Security Transport Details</div>
+                    <p className="text-lg text-muted-foreground font-normal mt-1">Secure booking information</p>
+                  </div>
                 </CardTitle>
-                <CardDescription className="text-lg">Provide your location details and any special security requirements</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="pickup" className="text-base font-bold flex items-center gap-2">
-                      <Shield size={16} className="text-primary" />
+              <CardContent className="space-y-8 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="space-y-4 group">
+                    <Label htmlFor="pickup" className="text-lg font-bold flex items-center gap-3 text-primary">
+                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <Shield size={16} className="text-primary" />
+                      </div>
                       Secure Pickup Location
                     </Label>
-                    <Input
-                      id="pickup"
-                      placeholder="Enter pickup address or landmark"
-                      value={bookingForm.pickup}
-                      onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
-                      className="h-14 text-lg bg-background/80 border-2 border-primary/20"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="pickup"
+                        placeholder="Enter pickup address or landmark"
+                        value={bookingForm.pickup}
+                        onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
+                        className="h-16 text-lg bg-background/90 border-2 border-primary/20 rounded-xl shadow-md hover:border-primary/40 focus:border-accent transition-all duration-300 pl-14"
+                      />
+                      <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <MapPin size={20} className="text-primary/60" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="destination" className="text-base font-bold flex items-center gap-2">
-                      <NavigationArrow size={16} className="text-accent" />
+                  <div className="space-y-4 group">
+                    <Label htmlFor="destination" className="text-lg font-bold flex items-center gap-3 text-accent">
+                      <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
+                        <NavigationArrow size={16} className="text-accent" />
+                      </div>
                       Secure Destination
                     </Label>
-                    <Input
-                      id="destination"
-                      placeholder="Where do you need secure transport to?"
-                      value={bookingForm.destination}
-                      onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
-                      className="h-14 text-lg bg-background/80 border-2 border-primary/20"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="destination"
+                        placeholder="Where do you need secure transport to?"
+                        value={bookingForm.destination}
+                        onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
+                        className="h-16 text-lg bg-background/90 border-2 border-accent/20 rounded-xl shadow-md hover:border-accent/40 focus:border-accent transition-all duration-300 pl-14"
+                      />
+                      <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <NavigationArrow size={20} className="text-accent/60" />
+                      </div>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <Label htmlFor="emergency-contact" className="text-base font-bold flex items-center gap-2">
-                    <Phone size={16} className="text-destructive" />
+                <div className="space-y-4">
+                  <Label htmlFor="emergency-contact" className="text-lg font-bold flex items-center gap-3 text-destructive">
+                    <div className="w-8 h-8 bg-destructive/10 rounded-lg flex items-center justify-center">
+                      <Phone size={16} className="text-destructive" />
+                    </div>
                     Emergency Contact Number
+                    <Badge variant="destructive" className="ml-auto">Required</Badge>
                   </Label>
-                  <Input
-                    id="emergency-contact"
-                    placeholder="Emergency contact (required for security protocols)"
-                    value={bookingForm.emergencyContact}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, emergencyContact: e.target.value }))}
-                    className="h-14 text-lg bg-background/80 border-2 border-primary/20"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="emergency-contact"
+                      placeholder="Emergency contact (required for security protocols)"
+                      value={bookingForm.emergencyContact}
+                      onChange={(e) => setBookingForm(prev => ({ ...prev, emergencyContact: e.target.value }))}
+                      className="h-16 text-lg bg-background/90 border-2 border-destructive/20 rounded-xl shadow-md hover:border-destructive/40 focus:border-destructive transition-all duration-300 pl-14"
+                    />
+                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                      <Phone size={20} className="text-destructive/60" />
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <Label htmlFor="special-instructions" className="text-base font-bold flex items-center gap-2">
-                    <Lock size={16} className="text-primary" />
-                    Security Instructions <span className="text-muted-foreground font-normal">(Optional)</span>
+                <div className="space-y-4">
+                  <Label htmlFor="special-instructions" className="text-lg font-bold flex items-center gap-3">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Lock size={16} className="text-primary" />
+                    </div>
+                    Security Instructions 
+                    <Badge variant="outline" className="ml-auto text-xs">Optional</Badge>
                   </Label>
                   <Textarea
                     id="special-instructions"
                     placeholder="Any specific security concerns, route preferences, or special instructions for your protection detail..."
                     value={bookingForm.specialInstructions}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, specialInstructions: e.target.value }))}
-                    className="min-h-[100px] bg-background/80 border-2 border-primary/20"
+                    className="min-h-[120px] bg-background/90 border-2 border-primary/20 rounded-xl shadow-md hover:border-primary/40 focus:border-accent transition-all duration-300 text-lg resize-none"
                   />
                 </div>
               </CardContent>
             </Card>
 
             {/* Security Booking Button */}
-            <Button 
-              onClick={handleBookSecurity} 
-              size="lg" 
-              className="w-full h-20 text-xl font-bold bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 border-2 border-accent/50"
-              disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.emergencyContact}
-            >
-              <Shield size={24} className="mr-4" />
-              Request Security Transport
-            </Button>
+            <div className="relative">
+              {/* Background glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-accent/20 via-accent/30 to-accent/20 rounded-2xl blur-xl"></div>
+              
+              <Button 
+                onClick={handleBookSecurity} 
+                size="lg" 
+                className={`relative w-full h-24 text-xl font-black bg-gradient-to-r from-accent via-accent to-accent/90 hover:from-accent/95 hover:via-accent/95 hover:to-accent/85 text-accent-foreground shadow-2xl transition-all duration-500 border-4 border-accent/50 rounded-2xl group overflow-hidden ${
+                  !bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.emergencyContact
+                    ? 'opacity-60 cursor-not-allowed hover:from-accent hover:via-accent hover:to-accent/90' 
+                    : 'hover:scale-[1.02] hover:shadow-accent/25'
+                }`}
+                disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.emergencyContact}
+              >
+                {/* Animated background shimmer */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+                
+                <div className="relative flex items-center justify-center gap-4">
+                  <Shield size={28} className="animate-pulse" weight="bold" />
+                  <div className="text-center">
+                    <div>Request Security Transport</div>
+                    {selectedService && (
+                      <div className="text-sm font-semibold opacity-90 mt-1">
+                        {securityServices.find(s => s.id === selectedService)?.name} • £{securityServices.find(s => s.id === selectedService)?.price}
+                      </div>
+                    )}
+                  </div>
+                  <Lightning size={28} className="animate-bounce" weight="bold" />
+                </div>
+              </Button>
+            </div>
           </TabsContent>
 
           {/* Active Security Tab */}

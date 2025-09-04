@@ -12,38 +12,38 @@
 }
 
 :root {
-  /* Premium Security Color Scheme */
-  --background: oklch(0.98 0.005 220);
-  --foreground: oklch(0.15 0.02 220);
+  /* Premium Security Color Scheme - Enhanced */
+  --background: oklch(0.99 0.003 220);
+  --foreground: oklch(0.12 0.02 220);
 
-  --card: oklch(0.99 0.003 220);
-  --card-foreground: oklch(0.12 0.02 220);
-  --popover: oklch(0.99 0.003 220);
-  --popover-foreground: oklch(0.12 0.02 220);
+  --card: oklch(0.995 0.002 220);
+  --card-foreground: oklch(0.10 0.02 220);
+  --popover: oklch(0.99 0.002 220);
+  --popover-foreground: oklch(0.10 0.02 220);
 
-  /* Deep Navy - Authority & Trust */
-  --primary: oklch(0.18 0.05 240);
-  --primary-foreground: oklch(0.98 0.005 240);
+  /* Deep Navy - Authority & Trust (Enhanced) */
+  --primary: oklch(0.16 0.06 240);
+  --primary-foreground: oklch(0.98 0.003 240);
   
-  /* Platinum Silver - Premium Technology */
-  --secondary: oklch(0.92 0.008 220);
-  --secondary-foreground: oklch(0.18 0.02 240);
+  /* Platinum Silver - Premium Technology (Enhanced) */
+  --secondary: oklch(0.94 0.006 220);
+  --secondary-foreground: oklch(0.16 0.02 240);
   
-  /* Gold/Amber - Premium Service & Emergency */
-  --accent: oklch(0.72 0.18 75);
-  --accent-foreground: oklch(0.15 0.02 240);
+  /* Premium Gold - Luxury & Emergency (Enhanced) */
+  --accent: oklch(0.75 0.20 75);
+  --accent-foreground: oklch(0.12 0.02 240);
   
-  /* Professional Red - Emergency & Critical Actions */
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.98 0.005 240);
+  /* Professional Red - Emergency & Critical Actions (Enhanced) */
+  --destructive: oklch(0.58 0.24 25);
+  --destructive-foreground: oklch(0.98 0.003 240);
 
-  --muted: oklch(0.96 0.008 220);
-  --muted-foreground: oklch(0.45 0.02 220);
-  --border: oklch(0.90 0.008 220);
-  --input: oklch(0.94 0.008 220);
-  --ring: oklch(0.72 0.18 75);
+  --muted: oklch(0.97 0.006 220);
+  --muted-foreground: oklch(0.43 0.02 220);
+  --border: oklch(0.92 0.006 220);
+  --input: oklch(0.96 0.006 220);
+  --ring: oklch(0.75 0.20 75);
 
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
 @theme {
@@ -69,8 +69,8 @@
 
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) * 1.5);
-  --radius-xl: calc(var(--radius) * 2);
-  --radius-2xl: calc(var(--radius) * 3);
+  --radius-lg: calc(var(--radius) * 1.25);
+  --radius-xl: calc(var(--radius) * 1.75);
+  --radius-2xl: calc(var(--radius) * 2.5);
   --radius-full: 9999px;
 }
