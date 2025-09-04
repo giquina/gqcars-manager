@@ -42,6 +42,192 @@ import {
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
+// TypeScript declarations for Google Maps API
+declare global {
+  interface Window {
+    google: typeof google
+    initMap: () => void
+    googleMapsLoaded: boolean
+  }
+}
+
+declare namespace google {
+  namespace maps {
+    class Map {
+      constructor(mapDiv: HTMLElement, opts?: MapOptions)
+      setCenter(latLng: LatLng | LatLngLiteral): void
+      setZoom(zoom: number): void
+      fitBounds(bounds: LatLngBounds): void
+      addListener(eventName: string, handler: Function): void
+    }
+    
+    class Marker {
+      constructor(opts?: MarkerOptions)
+      setMap(map: Map | null): void
+      addListener(eventName: string, handler: Function): void
+    }
+    
+    class Geocoder {
+      geocode(request: GeocoderRequest, callback: (results: GeocoderResult[], status: string) => void): void
+    }
+    
+    class DirectionsService {
+      route(request: DirectionsRequest, callback: (result: DirectionsResult, status: string) => void): void
+    }
+    
+    class DirectionsRenderer {
+      constructor(opts?: DirectionsRendererOptions)
+      setMap(map: Map): void
+      setDirections(directions: DirectionsResult): void
+    }
+    
+    class TrafficLayer {
+      setMap(map: Map | null): void
+      getMap(): Map | null
+    }
+    
+    namespace places {
+      class Autocomplete {
+        constructor(inputField: HTMLInputElement, opts?: AutocompleteOptions)
+        addListener(eventName: string, handler: Function): void
+        getPlace(): PlaceResult
+      }
+    }
+    
+    namespace event {
+      function clearInstanceListeners(instance: any): void
+    }
+    
+    enum TravelMode {
+      DRIVING = 'DRIVING',
+      WALKING = 'WALKING',
+      BICYCLING = 'BICYCLING',
+      TRANSIT = 'TRANSIT'
+    }
+    
+    enum UnitSystem {
+      METRIC = 0,
+      IMPERIAL = 1
+    }
+    
+    enum Animation {
+      BOUNCE = 1,
+      DROP = 2
+    }
+    
+    interface LatLng {
+      lat(): number
+      lng(): number
+    }
+    
+    interface LatLngLiteral {
+      lat: number
+      lng: number
+    }
+    
+    interface MapOptions {
+      center?: LatLng | LatLngLiteral
+      zoom?: number
+      minZoom?: number
+      maxZoom?: number
+      styles?: any[]
+      disableDefaultUI?: boolean
+      gestureHandling?: string
+      zoomControl?: boolean
+      streetViewControl?: boolean
+      fullscreenControl?: boolean
+      mapTypeControl?: boolean
+      scaleControl?: boolean
+      rotateControl?: boolean
+      tilt?: number
+    }
+    
+    interface MarkerOptions {
+      position?: LatLng | LatLngLiteral
+      map?: Map
+      title?: string
+      animation?: Animation
+      icon?: string | any
+    }
+    
+    interface Size {
+      constructor(width: number, height: number): Size
+    }
+    
+    interface Point {
+      constructor(x: number, y: number): Point
+    }
+    
+    // Add other necessary interfaces
+    interface GeocoderRequest {
+      location: LatLng | LatLngLiteral
+    }
+    
+    interface GeocoderResult {
+      formatted_address: string
+    }
+    
+    interface DirectionsRequest {
+      origin: LatLng | LatLngLiteral
+      destination: LatLng | LatLngLiteral
+      travelMode: TravelMode
+      unitSystem?: UnitSystem
+      avoidHighways?: boolean
+      avoidTolls?: boolean
+      optimizeWaypoints?: boolean
+    }
+    
+    interface DirectionsResult {
+      routes: DirectionsRoute[]
+    }
+    
+    interface DirectionsRoute {
+      bounds: LatLngBounds
+      legs: DirectionsLeg[]
+    }
+    
+    interface DirectionsLeg {
+      distance?: { text: string }
+      duration?: { text: string }
+      steps: DirectionsStep[]
+    }
+    
+    interface DirectionsStep {
+      // Add step properties as needed
+    }
+    
+    interface LatLngBounds {
+      // Add bounds properties as needed
+    }
+    
+    interface DirectionsRendererOptions {
+      suppressMarkers?: boolean
+      polylineOptions?: any
+    }
+    
+    interface AutocompleteOptions {
+      componentRestrictions?: { country: string }
+      fields?: string[]
+      types?: string[]
+    }
+    
+    interface PlaceResult {
+      place_id?: string
+      formatted_address?: string
+      geometry?: PlaceGeometry
+      name?: string
+    }
+    
+    interface PlaceGeometry {
+      location?: LatLng
+    }
+    
+    interface MapMouseEvent {
+      latLng?: LatLng
+    }
+  }
+}
+
 // UK Ride Service Levels - Professional Service Types
 const rideServices = [
   {
@@ -124,12 +310,122 @@ const londonLocations = [
   { lat: 51.5045, lng: -0.1123, name: "Monument" }
 ]
 
-// Real Google Maps integration
+// Google Maps API loader with better error handling
+const useGoogleMapsAPI = () => {
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Check if Google Maps is already loaded
+    if (window.google && window.google.maps) {
+      setIsLoaded(true)
+      setIsLoading(false)
+      return
+    }
+
+    // Listen for the API to load
+    const handleLoad = () => {
+      setIsLoaded(true)
+      setIsLoading(false)
+      setError(null)
+    }
+
+    const handleError = () => {
+      setIsLoaded(false)
+      setIsLoading(false)
+      setError('Failed to load Google Maps API')
+    }
+
+    // Add event listeners
+    window.addEventListener('google-maps-loaded', handleLoad)
+    window.addEventListener('google-maps-error', handleError)
+
+    // Set a timeout in case the API doesn't load
+    const timeout = setTimeout(() => {
+      if (!window.google) {
+        setError('Google Maps API took too long to load')
+        setIsLoading(false)
+      }
+    }, 10000)
+
+    return () => {
+      window.removeEventListener('google-maps-loaded', handleLoad)
+      window.removeEventListener('google-maps-error', handleError)
+      clearTimeout(timeout)
+    }
+  }, [])
+
+  return { isLoaded, isLoading, error }
+}
+
+// Enhanced Google Maps Loading Component
+const GoogleMapsLoader = ({ children, fallback }: { 
+  children: React.ReactNode, 
+  fallback?: React.ReactNode 
+}) => {
+  const { isLoaded, isLoading, error } = useGoogleMapsAPI()
+
+  if (error) {
+    return (
+      <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center space-y-2">
+            <Warning size={24} className="text-amber-500 mx-auto" />
+            <p className="text-sm text-muted-foreground">Maps temporarily unavailable</p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => window.location.reload()}
+              className="text-xs"
+            >
+              Retry
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      fallback || (
+        <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center space-y-2">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+              <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
+            </div>
+          </div>
+        </div>
+      )
+    )
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center space-y-2">
+            <div className="w-8 h-8 bg-blue-500 rounded-full mx-auto opacity-50"></div>
+            <p className="text-sm text-muted-foreground">Maps not available</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return <>{children}</>
+}
 const useGeolocation = () => {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [address, setAddress] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [accuracy, setAccuracy] = useState<number>(0)
+  const [heading, setHeading] = useState<number | null>(null)
+  const [speed, setSpeed] = useState<number | null>(null)
+  const [watchId, setWatchId] = useState<number | null>(null)
 
   const getCurrentLocation = useCallback(() => {
     setLoading(true)
@@ -148,6 +444,9 @@ const useGeolocation = () => {
           lng: position.coords.longitude
         }
         setLocation(coords)
+        setAccuracy(position.coords.accuracy)
+        setHeading(position.coords.heading)
+        setSpeed(position.coords.speed)
         
         // Reverse geocoding to get address
         if (window.google && window.google.maps) {
@@ -163,47 +462,129 @@ const useGeolocation = () => {
         toast.success('Location found successfully')
       },
       (error) => {
-        setError(`Unable to retrieve your location: ${error.message}`)
+        let errorMessage = 'Unable to retrieve your location'
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Location access denied. Please enable location services.'
+            break
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information unavailable'
+            break
+          case error.TIMEOUT:
+            errorMessage = 'Location request timed out'
+            break
+        }
+        setError(errorMessage)
         setLoading(false)
-        toast.error('Location access denied')
+        toast.error(errorMessage)
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000
+        timeout: 15000,
+        maximumAge: 30000
       }
     )
   }, [])
 
-  return { location, address, loading, error, getCurrentLocation }
+  const startWatchingLocation = useCallback(() => {
+    if (!navigator.geolocation) return
+
+    const id = navigator.geolocation.watchPosition(
+      (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+        setLocation(coords)
+        setAccuracy(position.coords.accuracy)
+        setHeading(position.coords.heading)
+        setSpeed(position.coords.speed)
+        
+        // Update address less frequently to avoid rate limits
+        if (window.google && window.google.maps && Math.random() > 0.8) {
+          const geocoder = new window.google.maps.Geocoder()
+          geocoder.geocode({ location: coords }, (results, status) => {
+            if (status === 'OK' && results?.[0]) {
+              setAddress(results[0].formatted_address)
+            }
+          })
+        }
+      },
+      (error) => {
+        console.warn('Geolocation error:', error)
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 5000
+      }
+    )
+    
+    setWatchId(id)
+    return id
+  }, [])
+
+  const stopWatchingLocation = useCallback(() => {
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId)
+      setWatchId(null)
+    }
+  }, [watchId])
+
+  return { 
+    location, 
+    address, 
+    loading, 
+    error, 
+    accuracy, 
+    heading, 
+    speed,
+    getCurrentLocation,
+    startWatchingLocation,
+    stopWatchingLocation
+  }
 }
 
-// Enhanced Google Maps component
+// Enhanced Google Maps component with real-time tracking
 const GoogleMapView = ({ 
   center, 
   markers = [], 
   onLocationSelect,
   className = "h-64",
-  showControls = true 
+  showControls = true,
+  showTraffic = false,
+  showCurrentLocation = true,
+  trackingMode = false
 }: {
   center: { lat: number; lng: number }
   markers?: any[]
   onLocationSelect?: (location: { lat: number; lng: number; address: string }) => void
   className?: string
   showControls?: boolean
+  showTraffic?: boolean
+  showCurrentLocation?: boolean
+  trackingMode?: boolean
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const markersRef = useRef<google.maps.Marker[]>([])
+  const currentLocationMarkerRef = useRef<google.maps.Marker | null>(null)
+  const trafficLayerRef = useRef<google.maps.TrafficLayer | null>(null)
+  const directionsServiceRef = useRef<google.maps.DirectionsService | null>(null)
+  const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null)
 
+  // Enhanced Google Maps initialization
   useEffect(() => {
     if (!mapRef.current || !window.google) return
 
-    // Initialize map
+    // Initialize map with enhanced options
     const map = new window.google.maps.Map(mapRef.current, {
       center,
-      zoom: 15,
+      zoom: trackingMode ? 16 : 15,
+      minZoom: 8,
+      maxZoom: 20,
       styles: [
+        // Enhanced map styling for better visibility
         {
           featureType: "all",
           elementType: "geometry.fill",
@@ -237,7 +618,7 @@ const GoogleMapView = ({
         {
           featureType: "poi",
           elementType: "all",
-          stylers: [{ visibility: "off" }]
+          stylers: [{ visibility: trackingMode ? "off" : "simplified" }]
         },
         {
           featureType: "road",
@@ -272,7 +653,7 @@ const GoogleMapView = ({
         {
           featureType: "transit",
           elementType: "all",
-          stylers: [{ visibility: "off" }]
+          stylers: [{ visibility: trackingMode ? "off" : "simplified" }]
         },
         {
           featureType: "water",
@@ -296,13 +677,35 @@ const GoogleMapView = ({
         }
       ],
       disableDefaultUI: !showControls,
-      gestureHandling: 'cooperative',
+      gestureHandling: trackingMode ? 'greedy' : 'cooperative',
       zoomControl: showControls,
       streetViewControl: false,
-      fullscreenControl: false
+      fullscreenControl: false,
+      mapTypeControl: showControls,
+      scaleControl: true,
+      rotateControl: trackingMode,
+      tilt: trackingMode ? 45 : 0
     })
 
     mapInstanceRef.current = map
+
+    // Initialize services
+    directionsServiceRef.current = new window.google.maps.DirectionsService()
+    directionsRendererRef.current = new window.google.maps.DirectionsRenderer({
+      suppressMarkers: false,
+      polylineOptions: {
+        strokeColor: '#1976d2',
+        strokeWeight: 5,
+        strokeOpacity: 0.8
+      }
+    })
+    directionsRendererRef.current.setMap(map)
+
+    // Add traffic layer if requested
+    if (showTraffic) {
+      trafficLayerRef.current = new window.google.maps.TrafficLayer()
+      trafficLayerRef.current.setMap(map)
+    }
 
     // Add click listener for location selection
     if (onLocationSelect) {
@@ -328,11 +731,17 @@ const GoogleMapView = ({
     }
 
     return () => {
-      // Cleanup markers
+      // Cleanup
       markersRef.current.forEach(marker => marker.setMap(null))
       markersRef.current = []
+      if (currentLocationMarkerRef.current) {
+        currentLocationMarkerRef.current.setMap(null)
+      }
+      if (trafficLayerRef.current) {
+        trafficLayerRef.current.setMap(null)
+      }
     }
-  }, [center, onLocationSelect, showControls])
+  }, [center, onLocationSelect, showControls, showTraffic, trackingMode])
 
   // Update markers when they change
   useEffect(() => {
@@ -348,14 +757,33 @@ const GoogleMapView = ({
         position: { lat: markerData.lat, lng: markerData.lng },
         map: mapInstanceRef.current,
         title: markerData.title,
+        animation: markerData.animation || null,
         icon: markerData.icon ? {
           url: markerData.icon,
-          scaledSize: new window.google.maps.Size(32, 32)
+          scaledSize: new window.google.maps.Size(
+            markerData.iconSize?.width || 32, 
+            markerData.iconSize?.height || 32
+          ),
+          anchor: new window.google.maps.Point(
+            (markerData.iconSize?.width || 32) / 2,
+            (markerData.iconSize?.height || 32) / 2
+          )
         } : undefined
       })
 
       if (markerData.onClick) {
         marker.addListener('click', markerData.onClick)
+      }
+
+      // Add info window if provided
+      if (markerData.infoWindow) {
+        const infoWindow = new window.google.maps.InfoWindow({
+          content: markerData.infoWindow
+        })
+        
+        marker.addListener('click', () => {
+          infoWindow.open(mapInstanceRef.current, marker)
+        })
       }
 
       markersRef.current.push(marker)
@@ -366,8 +794,54 @@ const GoogleMapView = ({
   useEffect(() => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setCenter(center)
+      if (trackingMode) {
+        mapInstanceRef.current.setZoom(16)
+      }
     }
-  }, [center])
+  }, [center, trackingMode])
+
+  // Method to calculate and display route
+  const showRoute = useCallback((origin: google.maps.LatLng | google.maps.LatLngLiteral, 
+                                destination: google.maps.LatLng | google.maps.LatLngLiteral,
+                                travelMode: google.maps.TravelMode = google.maps.TravelMode.DRIVING) => {
+    if (!directionsServiceRef.current || !directionsRendererRef.current) return
+
+    directionsServiceRef.current.route({
+      origin,
+      destination,
+      travelMode,
+      avoidHighways: false,
+      avoidTolls: false,
+      optimizeWaypoints: true
+    }, (result, status) => {
+      if (status === 'OK' && result) {
+        directionsRendererRef.current?.setDirections(result)
+        
+        // Fit map to route bounds
+        if (mapInstanceRef.current && result.routes[0]) {
+          mapInstanceRef.current.fitBounds(result.routes[0].bounds)
+        }
+      } else {
+        console.error('Directions request failed:', status)
+        toast.error('Unable to calculate route')
+      }
+    })
+  }, [])
+
+  // Expose methods to parent component
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      // Add custom methods to the map instance for external access
+      (mapInstanceRef.current as any).showRoute = showRoute
+      (mapInstanceRef.current as any).toggleTraffic = () => {
+        if (trafficLayerRef.current) {
+          trafficLayerRef.current.setMap(
+            trafficLayerRef.current.getMap() ? null : mapInstanceRef.current
+          )
+        }
+      }
+    }
+  }, [showRoute])
 
   return <div ref={mapRef} className={className} />
 }
@@ -853,364 +1327,285 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
   )
 }
 
-// Enhanced Interactive Map Component with real-time GPS tracking
-const InteractiveMap = ({ trip, driver, onLocationUpdate }: { 
-  trip: any, 
-  driver: any, 
-  onLocationUpdate?: (location: any) => void 
+// Real-time Live Tracking component for active trips
+const LiveTrackingMap = ({ trip, driver, onArrival }: {
+  trip: any,
+  driver: any,
+  onArrival?: () => void
 }) => {
-  const mapRef = useRef<HTMLDivElement>(null)
-  const [mapCenter, setMapCenter] = useState({ lat: 51.5074, lng: -0.1278 }) // London center
-  const [zoom, setZoom] = useState(13)
-  const [isFollowingDriver, setIsFollowingDriver] = useState(true)
-  const [showLocationHistory, setShowLocationHistory] = useState(true)
-  
-  // Get pickup and destination coordinates
-  const pickupLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
-  const destinationLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
-  
-  // Use enhanced GPS tracking
-  const { 
-    currentPosition, 
-    route, 
-    progress, 
-    eta, 
-    speed, 
-    bearing, 
-    locationHistory, 
-    lastUpdateTime, 
-    isOnRoute, 
-    trafficDelay 
-  } = useGPSTracking(pickupLocation, destinationLocation, true)
+  const [driverLocation, setDriverLocation] = useState(driver.location || londonLocations[0])
+  const [estimatedArrival, setEstimatedArrival] = useState(driver.eta || 5)
+  const [routeInfo, setRouteInfo] = useState<any>(null)
+  const [isTrackingActive, setIsTrackingActive] = useState(true)
+  const [lastUpdate, setLastUpdate] = useState(new Date())
+  const mapRef = useRef<any>(null)
 
-  // Convert real coordinates to screen position (simplified)
-  const coordsToScreen = useCallback((lat: number, lng: number) => {
-    const mapBounds = mapRef.current?.getBoundingClientRect()
-    if (!mapBounds) return { x: 50, y: 50 }
-    
-    // Simplified projection for demo - in real app would use proper map projection
-    const latRange = 0.02 // Rough degree range shown on map
-    const lngRange = 0.03
-    
-    const x = ((lng - (mapCenter.lng - lngRange/2)) / lngRange) * 100
-    const y = ((mapCenter.lat + latRange/2 - lat) / latRange) * 100
-    
-    return { 
-      x: Math.max(5, Math.min(95, x)), 
-      y: Math.max(5, Math.min(95, y)) 
-    }
-  }, [mapCenter])
-
-  // Update map center when following driver
+  // Real-time driver position simulation with more realistic movement
   useEffect(() => {
-    if (isFollowingDriver && currentPosition) {
-      setMapCenter(currentPosition)
-      if (onLocationUpdate) {
-        onLocationUpdate({
-          position: currentPosition,
-          speed,
-          bearing,
-          eta,
-          lastUpdate: lastUpdateTime,
-          isOnRoute,
-          trafficDelay
-        })
-      }
+    if (!isTrackingActive) return
+
+    const updateInterval = setInterval(() => {
+      setDriverLocation(prev => {
+        // Simulate movement toward pickup/destination
+        const target = trip.status === 'driver_en_route' ? trip.pickupCoords : trip.destinationCoords
+        if (!target) return prev
+
+        // Calculate movement direction
+        const deltaLat = (target.lat - prev.lat) * 0.1 // Move 10% closer each update
+        const deltaLng = (target.lng - prev.lng) * 0.1
+
+        // Add realistic GPS variance
+        const newLat = prev.lat + deltaLat + (Math.random() - 0.5) * 0.0001
+        const newLng = prev.lng + deltaLng + (Math.random() - 0.5) * 0.0001
+
+        // Check if arrived
+        const distance = Math.sqrt(Math.pow(target.lat - newLat, 2) + Math.pow(target.lng - newLng, 2))
+        if (distance < 0.001) { // Very close to destination
+          setEstimatedArrival(0)
+          if (onArrival) {
+            setTimeout(onArrival, 1000)
+          }
+        } else {
+          // Update ETA based on distance
+          const roughDistance = distance * 111000 // Convert to meters roughly
+          setEstimatedArrival(Math.ceil(roughDistance / 500)) // Assuming 500m/min average speed
+        }
+
+        setLastUpdate(new Date())
+        return { lat: newLat, lng: newLng }
+      })
+    }, 2000) // Update every 2 seconds for smooth movement
+
+    return () => clearInterval(updateInterval)
+  }, [isTrackingActive, trip.status, trip.pickupCoords, trip.destinationCoords, onArrival])
+
+  // Calculate route when component mounts
+  useEffect(() => {
+    if (window.google && trip.pickupCoords && trip.destinationCoords) {
+      const directionsService = new window.google.maps.DirectionsService()
+      
+      directionsService.route({
+        origin: trip.pickupCoords,
+        destination: trip.destinationCoords,
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false
+      }, (result, status) => {
+        if (status === 'OK' && result) {
+          setRouteInfo({
+            distance: result.routes[0].legs[0].distance?.text,
+            duration: result.routes[0].legs[0].duration?.text,
+            steps: result.routes[0].legs[0].steps
+          })
+        }
+      })
     }
-  }, [currentPosition, isFollowingDriver, speed, bearing, eta, lastUpdateTime, isOnRoute, trafficDelay, onLocationUpdate])
+  }, [trip.pickupCoords, trip.destinationCoords])
 
-  const driverScreen = coordsToScreen(currentPosition.lat, currentPosition.lng)
-  const pickupScreen = coordsToScreen(pickupLocation.lat, pickupLocation.lng)
-  const destinationScreen = coordsToScreen(destinationLocation.lat, destinationLocation.lng)
-
-  // Calculate time since last GPS update
-  const secondsSinceUpdate = Math.floor((Date.now() - lastUpdateTime.getTime()) / 1000)
+  const markers = [
+    // Driver marker with real-time position
+    {
+      lat: driverLocation.lat,
+      lng: driverLocation.lng,
+      title: `${driver.name} - Your Driver`,
+      icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="12" fill="#22C55E" stroke="white" stroke-width="3"/>
+          <path d="M8 16l4 4 8-8" stroke="white" stroke-width="2" fill="none"/>
+        </svg>
+      `),
+      animation: window.google?.maps?.Animation?.BOUNCE,
+      infoWindow: `
+        <div style="padding: 8px; font-family: Arial, sans-serif;">
+          <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: bold;">${driver.name}</h3>
+          <p style="margin: 0; font-size: 12px; color: #666;">
+            ${driver.vehicle}<br/>
+            License: ${driver.license}<br/>
+            ETA: ${estimatedArrival} minutes
+          </p>
+        </div>
+      `
+    },
+    // Pickup marker
+    {
+      lat: trip.pickupCoords.lat,
+      lng: trip.pickupCoords.lng,
+      title: 'Pickup Location',
+      icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="12" fill="#3B82F6" stroke="white" stroke-width="3"/>
+          <circle cx="16" cy="16" r="4" fill="white"/>
+        </svg>
+      `),
+      infoWindow: `
+        <div style="padding: 8px; font-family: Arial, sans-serif;">
+          <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: bold;">Pickup Point</h3>
+          <p style="margin: 0; font-size: 12px; color: #666;">${trip.pickup}</p>
+        </div>
+      `
+    },
+    // Destination marker
+    {
+      lat: trip.destinationCoords.lat,
+      lng: trip.destinationCoords.lng,
+      title: 'Destination',
+      icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2C11.03 2 7 6.03 7 11c0 7.25 9 17 9 17s9-9.75 9-17c0-4.97-4.03-9-9-9z" fill="#EF4444" stroke="white" stroke-width="2"/>
+          <circle cx="16" cy="11" r="3" fill="white"/>
+        </svg>
+      `),
+      infoWindow: `
+        <div style="padding: 8px; font-family: Arial, sans-serif;">
+          <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: bold;">Destination</h3>
+          <p style="margin: 0; font-size: 12px; color: #666;">${trip.destination}</p>
+        </div>
+      `
+    }
+  ]
 
   return (
     <div className="space-y-4">
-      {/* Enhanced Map Controls */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Button 
-            variant={isFollowingDriver ? "default" : "outline"}
-            size="sm"
-            onClick={() => setIsFollowingDriver(!isFollowingDriver)}
-            className="h-8 px-3 text-xs"
-          >
-            <Crosshair size={14} className="mr-1" />
-            {isFollowingDriver ? "Following" : "Follow"}
-          </Button>
-          <Button 
-            variant={showLocationHistory ? "default" : "outline"}
-            size="sm"
-            onClick={() => setShowLocationHistory(!showLocationHistory)}
-            className="h-8 px-3 text-xs"
-          >
-            <Navigation size={14} className="mr-1" />
-            Trail
-          </Button>
-          <Badge variant={isOnRoute ? "secondary" : "destructive"} className="text-xs">
-            <CheckCircle size={12} className="mr-1" />
-            {isOnRoute ? "On Route" : "Off Route"}
-          </Badge>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="text-xs">
-            <Speedometer size={12} className="mr-1" />
-            {Math.round(speed)} mph
-          </Badge>
-          <Badge variant="outline" className="text-xs">
-            <Timer size={12} className="mr-1" />
-            {eta} min
-          </Badge>
-          {trafficDelay > 0 && (
-            <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-700">
-              +{trafficDelay}min
-            </Badge>
-          )}
-        </div>
-      </div>
-
-      {/* GPS Status Banner */}
-      <Card className="border-0 shadow-sm bg-gradient-to-r from-green-50 to-green-100">
-        <CardContent className="p-3">
+      {/* Live Status Banner */}
+      <Card className="border-0 shadow-sm bg-gradient-to-r from-green-50 to-emerald-50">
+        <CardContent className="p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium">Live GPS Tracking</span>
-              <Badge variant="outline" className="text-xs bg-white">
-                {secondsSinceUpdate}s ago
-              </Badge>
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <div>
+                <h3 className="font-semibold text-green-700">Live Tracking Active</h3>
+                <p className="text-sm text-green-600">
+                  Driver is {estimatedArrival === 0 ? 'arriving now' : `${estimatedArrival} minutes away`}
+                </p>
+              </div>
             </div>
-            <div className="text-xs text-muted-foreground">
-              Accuracy: {isOnRoute ? "High" : "Searching..."}
+            <div className="text-right">
+              <p className="text-xs text-green-600">Last update</p>
+              <p className="text-xs font-mono text-green-700">
+                {lastUpdate.toLocaleTimeString('en-GB', { 
+                  hour: '2-digit', 
+                  minute: '2-digit',
+                  second: '2-digit'
+                })}
+              </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Enhanced Interactive Map */}
+      {/* Enhanced Map with Live Tracking */}
       <Card className="overflow-hidden border-0 shadow-lg">
         <CardContent className="p-0">
-          <div 
+          <GoogleMapView
+            center={driverLocation}
+            markers={markers}
+            className="h-80"
+            showControls={true}
+            showTraffic={true}
+            trackingMode={true}
             ref={mapRef}
-            className="relative bg-gradient-to-br from-slate-100 to-slate-200 h-64 overflow-hidden cursor-move"
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect()
-              const x = ((e.clientX - rect.left) / rect.width) * 100
-              const y = ((e.clientY - rect.top) / rect.height) * 100
-              // Handle map interaction
-            }}
-          >
-            {/* Street Grid Pattern */}
-            <div className="absolute inset-0">
-              <svg width="100%" height="100%" className="opacity-20">
-                <defs>
-                  <pattern id="streets" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
-                    <path d="M 20 0 L 20 40 M 0 20 L 40 20" fill="none" stroke="currentColor" strokeWidth="0.5"/>
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#streets)" />
-              </svg>
-            </div>
-
-            {/* Enhanced Route Path */}
-            <svg className="absolute inset-0 w-full h-full">
-              <path
-                d={`M ${pickupScreen.x}% ${pickupScreen.y}% Q ${(pickupScreen.x + destinationScreen.x)/2}% ${(pickupScreen.y + destinationScreen.y)/2 - 10}% ${destinationScreen.x}% ${destinationScreen.y}%`}
-                stroke="rgb(59 130 246)"
-                strokeWidth="4"
-                fill="none"
-                strokeDasharray="8,4"
-                className="opacity-40"
-              />
-              
-              {/* Progress Line */}
-              <path
-                d={`M ${pickupScreen.x}% ${pickupScreen.y}% Q ${(pickupScreen.x + destinationScreen.x)/2}% ${(pickupScreen.y + destinationScreen.y)/2 - 10}% ${destinationScreen.x}% ${destinationScreen.y}%`}
-                stroke="rgb(34 197 94)"
-                strokeWidth="5"
-                fill="none"
-                strokeDasharray={`${progress * 2},${200 - progress * 2}`}
-                className="opacity-90"
-              />
-            </svg>
-
-            {/* Location History Trail */}
-            {showLocationHistory && locationHistory.length > 1 && (
-              <svg className="absolute inset-0 w-full h-full">
-                {locationHistory.slice(1).map((pos, index) => {
-                  const prevPos = locationHistory[index]
-                  const currentScreen = coordsToScreen(pos.lat, pos.lng)
-                  const prevScreen = coordsToScreen(prevPos.lat, prevPos.lng)
-                  return (
-                    <line
-                      key={index}
-                      x1={`${prevScreen.x}%`}
-                      y1={`${prevScreen.y}%`}
-                      x2={`${currentScreen.x}%`}
-                      y2={`${currentScreen.y}%`}
-                      stroke="rgb(34 197 94)"
-                      strokeWidth="2"
-                      opacity={0.3 + (index / locationHistory.length) * 0.5}
-                    />
-                  )
-                })}
-              </svg>
-            )}
-
-            {/* Pickup Location */}
-            <div 
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500"
-              style={{ left: `${pickupScreen.x}%`, top: `${pickupScreen.y}%` }}
-            >
-              <div className="relative">
-                <div className="w-4 h-4 bg-blue-500 rounded-full shadow-lg border-2 border-white">
-                  <div className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-25"></div>
+          />
+          
+          {/* Map overlay controls */}
+          <div className="absolute top-4 left-4 space-y-2">
+            <Badge variant="outline" className="bg-background/95 text-xs">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+              Real-time GPS
+            </Badge>
+            {routeInfo && (
+              <div className="bg-background/95 rounded-lg p-2 text-xs space-y-1">
+                <div className="flex items-center gap-2">
+                  <NavigationArrow size={12} />
+                  <span>{routeInfo.distance}</span>
                 </div>
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                  Pickup
+                <div className="flex items-center gap-2">
+                  <Clock size={12} />
+                  <span>{routeInfo.duration}</span>
                 </div>
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Enhanced Driver Position with Real-time Indicators */}
-            <div 
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1500 ease-linear"
-              style={{ 
-                left: `${driverScreen.x}%`, 
-                top: `${driverScreen.y}%`,
-                transform: `translate(-50%, -50%) rotate(${bearing}deg)`
-              }}
-            >
-              <div className="relative">
-                <div className={`w-6 h-6 rounded-full shadow-xl border-3 border-white flex items-center justify-center transition-colors ${
-                  isOnRoute ? 'bg-green-500' : 'bg-orange-500'
-                }`}>
-                  <Car size={14} className="text-white" style={{transform: `rotate(-${bearing}deg)`}} />
-                </div>
-                {/* Speed indicator ring */}
-                <div className="absolute inset-0 rounded-full border-2 border-green-300 animate-pulse opacity-60"></div>
-                {/* Real-time status indicator */}
-                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-green-600 to-green-500 text-white text-xs px-3 py-1 rounded-full whitespace-nowrap shadow-md">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                    {driver.name} • {Math.round(speed)} mph
+          {/* Driver info overlay */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <Card className="bg-background/95 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={driver.photo} 
+                    alt={driver.name}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-background"
+                  />
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-sm">{driver.name}</h4>
+                    <p className="text-xs text-muted-foreground">{driver.vehicle} • {driver.license}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-green-600">
+                      {estimatedArrival === 0 ? 'Arriving' : `${estimatedArrival} min`}
+                    </p>
+                    <p className="text-xs text-muted-foreground">ETA</p>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Destination */}
-            <div 
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500"
-              style={{ left: `${destinationScreen.x}%`, top: `${destinationScreen.y}%` }}
-            >
-              <div className="relative">
-                <div className="w-4 h-4 bg-red-500 rounded-full shadow-lg border-2 border-white">
-                  <NavigationArrow size={10} className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
-                </div>
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                  Destination
-                </div>
-              </div>
-            </div>
-
-            {/* Zoom Controls */}
-            <div className="absolute bottom-4 right-4 flex flex-col gap-1">
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                className="w-8 h-8 p-0 bg-white/90 hover:bg-white shadow-md"
-                onClick={() => setZoom(z => Math.min(z + 1, 18))}
-              >
-                +
-              </Button>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                className="w-8 h-8 p-0 bg-white/90 hover:bg-white shadow-md"
-                onClick={() => setZoom(z => Math.max(z - 1, 8))}
-              >
-                -
-              </Button>
-            </div>
-
-            {/* Live Status Indicator */}
-            <div className="absolute top-4 left-4">
-              <Badge variant="outline" className="bg-white/95 text-xs shadow-sm">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
-                Live Tracking
-              </Badge>
-            </div>
-
-            {/* Traffic Alert */}
-            {trafficDelay > 2 && (
-              <div className="absolute top-4 right-20">
-                <Badge variant="secondary" className="bg-orange-100 text-orange-700 text-xs">
-                  <Warning size={12} className="mr-1" />
-                  Traffic Delay
-                </Badge>
-              </div>
-            )}
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>
 
-      {/* Enhanced Trip Progress with Real-time Data */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Trip Progress</span>
-            <div className="flex items-center gap-2">
-              <span className="font-medium">{Math.round(progress)}% Complete</span>
-              {trafficDelay > 0 && (
-                <Badge variant="outline" className="text-xs bg-orange-50 text-orange-600">
-                  +{trafficDelay}min delay
-                </Badge>
-              )}
-            </div>
-          </div>
-          <Progress value={progress} className="h-2" />
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Started {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-            <div className="flex items-center gap-2">
-              <span>ETA: {eta} min</span>
-              <div className="w-1 h-1 bg-current rounded-full"></div>
-              <span>{Math.round(speed)} mph</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Real-time GPS Data */}
-      <Card className="border-0 shadow-sm bg-gradient-to-r from-blue-50 to-indigo-50">
-        <CardContent className="p-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium">GPS Signal</span>
+      {/* Route Information */}
+      {routeInfo && (
+        <Card className="border-0 shadow-sm">
+          <CardContent className="p-4">
+            <h4 className="font-semibold text-sm mb-3">Route Information</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold text-primary">{routeInfo.distance}</p>
+                <p className="text-xs text-muted-foreground">Total Distance</p>
               </div>
-              <Badge variant="outline" className="text-xs bg-white">
-                Strong
-              </Badge>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-accent">{routeInfo.duration}</p>
+                <p className="text-xs text-muted-foreground">Estimated Time</p>
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Last Update</span>
-              <span className="text-xs font-mono">
-                {secondsSinceUpdate < 5 ? 'Just now' : `${secondsSinceUpdate}s ago`}
-              </span>
-            </div>
-          </div>
-          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-            <span>Route Status: {isOnRoute ? 'On planned route' : 'Recalculating route...'}</span>
-            <span>Bearing: {Math.round(bearing)}°</span>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Tracking Controls */}
+      <div className="flex gap-2">
+        <Button
+          variant={isTrackingActive ? "default" : "outline"}
+          size="sm"
+          className="flex-1 h-10"
+          onClick={() => setIsTrackingActive(!isTrackingActive)}
+        >
+          {isTrackingActive ? (
+            <>
+              <CheckCircle size={16} className="mr-2" />
+              Tracking Active
+            </>
+          ) : (
+            <>
+              <Warning size={16} className="mr-2" />
+              Start Tracking
+            </>
+          )}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-10 px-4"
+          onClick={() => {
+            if (mapRef.current?.toggleTraffic) {
+              mapRef.current.toggleTraffic()
+            }
+          }}
+        >
+          Traffic
+        </Button>
+      </div>
     </div>
   )
 }
@@ -1232,10 +1627,21 @@ function App() {
   const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
   const [paymentMethod, setPaymentMethod] = useState('mastercard')
   
-  // Real geolocation integration
-  const { location: userLocation, address: userAddress, loading: locationLoading, getCurrentLocation } = useGeolocation()
+  // Real geolocation integration with continuous tracking
+  const { 
+    location: userLocation, 
+    address: userAddress, 
+    loading: locationLoading, 
+    accuracy,
+    heading,
+    speed: userSpeed,
+    getCurrentLocation,
+    startWatchingLocation,
+    stopWatchingLocation
+  } = useGeolocation()
   const [mapCenter, setMapCenter] = useState({ lat: 51.5074, lng: -0.1278 }) // Default to London
   const [showFullMap, setShowFullMap] = useState(false)
+  const [isLocationWatching, setIsLocationWatching] = useState(false)
 
   // Update map center when user location is found
   useEffect(() => {
@@ -1251,10 +1657,19 @@ function App() {
     }
   }, [userLocation, userAddress, bookingForm.pickup])
 
-  // Initialize location on app start
+  // Initialize location and start watching when app loads
   useEffect(() => {
     getCurrentLocation()
-  }, [getCurrentLocation])
+    
+    // Start continuous tracking for better user experience
+    const watchId = startWatchingLocation()
+    setIsLocationWatching(true)
+    
+    return () => {
+      stopWatchingLocation()
+      setIsLocationWatching(false)
+    }
+  }, [getCurrentLocation, startWatchingLocation, stopWatchingLocation])
 
   const handleBookRide = () => {
     if (!bookingForm.pickup || !bookingForm.destination || !selectedService) {
@@ -1350,7 +1765,7 @@ function App() {
           <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
             <CardContent className="p-0">
               <div className="relative">
-                {window.google ? (
+                <GoogleMapsLoader>
                   <GoogleMapView
                     center={mapCenter}
                     markers={userLocation ? [{
@@ -1362,7 +1777,8 @@ function App() {
                           <circle cx="16" cy="16" r="8" fill="#3B82F6" stroke="white" stroke-width="3"/>
                           <circle cx="16" cy="16" r="3" fill="white"/>
                         </svg>
-                      `)
+                      `),
+                      animation: window.google?.maps?.Animation?.BOUNCE
                     }] : []}
                     onLocationSelect={(location) => {
                       if (!bookingForm.pickup) {
@@ -1383,17 +1799,9 @@ function App() {
                     }}
                     className="h-32"
                     showControls={false}
+                    showCurrentLocation={true}
                   />
-                ) : (
-                  <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center space-y-2">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full mx-auto animate-pulse"></div>
-                        <p className="text-sm text-muted-foreground">Loading Google Maps...</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                </GoogleMapsLoader>
                 
                 {/* Enhanced GPS Status */}
                 <div className="absolute top-2 left-2 flex gap-2">
@@ -1402,6 +1810,9 @@ function App() {
                       <>
                         <CheckCircle size={10} className="mr-1 text-green-500" />
                         GPS Active
+                        {accuracy && accuracy < 10 && (
+                          <span className="ml-1 text-green-600">• High Accuracy</span>
+                        )}
                       </>
                     ) : locationLoading ? (
                       <>
@@ -1415,6 +1826,12 @@ function App() {
                       </>
                     )}
                   </Badge>
+                  {isLocationWatching && (
+                    <Badge variant="outline" className="bg-green-50 text-xs border-green-200">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-1" />
+                      Live
+                    </Badge>
+                  )}
                 </div>
                 
                 {/* Map Interaction Hint */}
@@ -1454,7 +1871,7 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Enhanced Location Quick Actions */}
+          {/* Enhanced Location Quick Actions with GPS Details */}
           {userLocation && (
             <Card className="border-0 shadow-sm bg-gradient-to-r from-primary/5 to-accent/5">
               <CardContent className="p-3">
@@ -1466,6 +1883,12 @@ function App() {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-xs">Current Location</p>
                       <p className="text-xs text-muted-foreground truncate">{userAddress || 'Getting address...'}</p>
+                      {accuracy && (
+                        <p className="text-xs text-green-600">
+                          GPS Accuracy: {Math.round(accuracy)}m
+                          {heading && ` • Heading: ${Math.round(heading)}°`}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <Button
@@ -1495,7 +1918,7 @@ function App() {
             <CardContent className="p-4 space-y-3">
               <div className="space-y-2">
                 <div className="relative">
-                  {window.google?.maps?.places ? (
+                  <GoogleMapsLoader>
                     <PlacesAutocomplete
                       value={bookingForm.pickup}
                       onChange={(value) => setBookingForm(prev => ({ ...prev, pickup: value }))}
@@ -1518,14 +1941,7 @@ function App() {
                         }
                       }}
                     />
-                  ) : (
-                    <Input
-                      placeholder="Pickup location"
-                      value={bookingForm.pickup}
-                      onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
-                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
-                    />
-                  )}
+                  </GoogleMapsLoader>
                   <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-500 rounded-full shadow-sm"></div>
                   <Button
                     variant="ghost"
@@ -1551,7 +1967,7 @@ function App() {
                 </div>
                 
                 <div className="relative">
-                  {window.google?.maps?.places ? (
+                  <GoogleMapsLoader>
                     <PlacesAutocomplete
                       value={bookingForm.destination}
                       onChange={(value) => setBookingForm(prev => ({ ...prev, destination: value }))}
@@ -1570,14 +1986,7 @@ function App() {
                         }
                       }}
                     />
-                  ) : (
-                    <Input
-                      placeholder="Where to?"
-                      value={bookingForm.destination}
-                      onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
-                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
-                    />
-                  )}
+                  </GoogleMapsLoader>
                   <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-red-500 rounded-full shadow-sm"></div>
                   {bookingForm.destination && (
                     <Button
@@ -1762,13 +2171,19 @@ function App() {
                     <X size={16} />
                   </Button>
                 </div>
-                {window.google && (
+                <GoogleMapsLoader>
                   <GoogleMapView
                     center={mapCenter}
                     markers={userLocation ? [{
                       lat: userLocation.lat,
                       lng: userLocation.lng,
-                      title: "Your Location"
+                      title: "Your Location",
+                      icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="16" cy="16" r="12" fill="#3B82F6" stroke="white" stroke-width="3"/>
+                          <circle cx="16" cy="16" r="4" fill="white"/>
+                        </svg>
+                      `)
                     }] : []}
                     onLocationSelect={(location) => {
                       if (!bookingForm.pickup) {
@@ -1789,8 +2204,10 @@ function App() {
                       setShowFullMap(false)
                     }}
                     className="h-96"
+                    showControls={true}
+                    showCurrentLocation={true}
                   />
-                )}
+                </GoogleMapsLoader>
                 <div className="p-4 bg-muted/30">
                   <p className="text-sm text-muted-foreground text-center">
                     Tap anywhere on the map to set your {!bookingForm.pickup ? 'pickup location' : 'destination'}
@@ -1869,19 +2286,14 @@ function App() {
         </header>
 
         <div className="p-4 space-y-4 max-w-md mx-auto">
-          {/* Enhanced Map */}
-          <InteractiveMap 
+          {/* Enhanced Live Tracking Map */}
+          <LiveTrackingMap 
             trip={currentTrip} 
-            driver={assignedDriver} 
-            onLocationUpdate={(update) => {
-              // Handle real-time location updates
-              if (update.trafficDelay > 3) {
-                toast.info(`Traffic delay detected: +${update.trafficDelay} minutes`)
-              }
-              if (!update.isOnRoute) {
-                toast.warning("Driver is recalculating route...")
-              }
-            }} 
+            driver={{...assignedDriver, location: userLocation}} 
+            onArrival={() => {
+              toast.success("Driver has arrived!")
+              // Could transition to in-trip mode here
+            }}
           />
 
           {/* Driver Info with improved layout */}

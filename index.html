@@ -9,7 +9,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script async defer 
-        src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=geometry,places">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4R6h2HNm0A5F9k1K2LmD8p6QwH3Vb9Yc&libraries=geometry,places&callback=initMap">
+    </script>
+    <script>
+        // Initialize Google Maps callback
+        window.initMap = function() {
+            console.log('Google Maps API loaded');
+            window.googleMapsLoaded = true;
+            // Dispatch event to let React know Maps is ready
+            window.dispatchEvent(new Event('google-maps-loaded'));
+        };
     </script>
     <link href="/src/main.css" rel="stylesheet" />
 </head>
