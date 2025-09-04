@@ -2144,7 +2144,7 @@ function App() {
               <p className="text-sm text-muted-foreground">Professional transport for every need</p>
             </div>
             
-            {/* Professional Service Grid - All Content Contained */}
+            {/* Professional Service Grid - Fixed Height Cards */}
             <div className="grid grid-cols-2 gap-3">
               {armoraServices.map(service => {
                 const Icon = service.icon
@@ -2152,48 +2152,48 @@ function App() {
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 h-[120px] overflow-hidden ${
+                    className={`cursor-pointer transition-all duration-200 h-[140px] overflow-hidden ${
                       isSelected
                         ? 'ring-2 ring-primary bg-primary/5 shadow-lg' 
                         : 'hover:shadow-md bg-white border border-border/30'
                     } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-background' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    <CardContent className="p-3 h-full flex flex-col justify-between">
+                    <CardContent className="p-4 h-full flex flex-col justify-between">
                       {/* Top Section: Icon + Badge */}
-                      <div className="flex items-center justify-between mb-2">
-                        <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 ${
+                      <div className="flex items-center justify-between mb-3">
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
                           isSelected 
                             ? 'bg-primary text-primary-foreground' 
                             : service.popular 
                             ? 'bg-green-100 text-green-600'
                             : 'bg-muted/50 text-primary'
                         }`}>
-                          <Icon size={12} />
+                          <Icon size={14} />
                         </div>
                         {service.popular && (
-                          <Badge className="text-[10px] px-1.5 py-0.5 h-auto bg-green-100 text-green-600 border-0">
+                          <Badge className="text-[9px] px-1.5 py-0.5 h-auto bg-green-100 text-green-600 border-0">
                             Popular
                           </Badge>
                         )}
                       </div>
                       
-                      {/* Service Name - Constrained to fit */}
-                      <div className="mb-2">
-                        <h3 className="font-semibold text-xs leading-tight text-center text-foreground line-clamp-2">
+                      {/* Service Name - Two lines max */}
+                      <div className="mb-3 min-h-[32px] flex items-center">
+                        <h3 className="font-semibold text-[11px] leading-tight text-center text-foreground line-clamp-2 w-full">
                           {service.name}
                         </h3>
                       </div>
                       
-                      {/* Essential Information - Compact Layout */}
-                      <div className="space-y-1 text-center flex-1 flex flex-col justify-center">
+                      {/* Essential Information - Spaced properly */}
+                      <div className="space-y-1.5 text-center">
                         {/* Price Range */}
-                        <p className="font-bold text-sm text-foreground leading-none">
+                        <p className="font-bold text-[13px] text-foreground leading-none">
                           {service.priceRange}
                         </p>
                         
                         {/* Wait Time */}
-                        <p className="text-xs text-muted-foreground leading-none">
+                        <p className="text-[11px] text-muted-foreground leading-none">
                           {service.eta}
                         </p>
                         
