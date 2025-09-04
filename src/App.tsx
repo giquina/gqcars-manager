@@ -2144,69 +2144,63 @@ function App() {
               <p className="text-sm text-muted-foreground">Professional transport for every need</p>
             </div>
             
-            {/* Fixed Service Grid - Complete Information Display */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Professional Service Grid - All Content Contained */}
+            <div className="grid grid-cols-2 gap-3">
               {armoraServices.map(service => {
                 const Icon = service.icon
                 const isSelected = selectedService === service.id
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 h-[140px] ${
+                    className={`cursor-pointer transition-all duration-200 h-[120px] overflow-hidden ${
                       isSelected
                         ? 'ring-2 ring-primary bg-primary/5 shadow-lg' 
                         : 'hover:shadow-md bg-white border border-border/30'
                     } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-background' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    <CardContent className="p-4 h-full flex flex-col">
-                      {/* Icon and Popular Indicator */}
-                      <div className="flex items-center justify-between mb-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    <CardContent className="p-3 h-full flex flex-col justify-between">
+                      {/* Top Section: Icon + Badge */}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 ${
                           isSelected 
                             ? 'bg-primary text-primary-foreground' 
                             : service.popular 
                             ? 'bg-green-100 text-green-600'
                             : 'bg-muted/50 text-primary'
                         }`}>
-                          <Icon size={16} />
+                          <Icon size={12} />
                         </div>
                         {service.popular && (
-                          <div className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                          <Badge className="text-[10px] px-1.5 py-0.5 h-auto bg-green-100 text-green-600 border-0">
                             Popular
-                          </div>
+                          </Badge>
                         )}
                       </div>
                       
-                      {/* Service Name - Guaranteed to fit */}
-                      <div className="mb-3">
-                        <h3 className="font-bold text-sm leading-tight text-center text-foreground">
+                      {/* Service Name - Constrained to fit */}
+                      <div className="mb-2">
+                        <h3 className="font-semibold text-xs leading-tight text-center text-foreground line-clamp-2">
                           {service.name}
                         </h3>
                       </div>
                       
-                      {/* Essential Information - All Visible */}
-                      <div className="flex-1 flex flex-col justify-center space-y-2 text-center">
-                        {/* Price Range - Most Important */}
-                        <div>
-                          <p className="font-bold text-base text-foreground">
-                            {service.priceRange}
-                          </p>
-                        </div>
+                      {/* Essential Information - Compact Layout */}
+                      <div className="space-y-1 text-center flex-1 flex flex-col justify-center">
+                        {/* Price Range */}
+                        <p className="font-bold text-sm text-foreground leading-none">
+                          {service.priceRange}
+                        </p>
                         
                         {/* Wait Time */}
-                        <div>
-                          <p className="text-sm text-muted-foreground">
-                            {service.eta}
-                          </p>
-                        </div>
+                        <p className="text-xs text-muted-foreground leading-none">
+                          {service.eta}
+                        </p>
                         
                         {/* Passenger Capacity */}
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            {service.capacity}
-                          </p>
-                        </div>
+                        <p className="text-[10px] text-muted-foreground leading-none">
+                          {service.capacity}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>

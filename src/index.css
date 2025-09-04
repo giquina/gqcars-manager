@@ -15,7 +15,20 @@
   }
 }
 
-:root {
+/* Add line-clamp utilities for text overflow control */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
   /* ARMORA Premium Luxury Security Transport Color Scheme */
   /* "Drive in luxury, protected by shadows" */
   
