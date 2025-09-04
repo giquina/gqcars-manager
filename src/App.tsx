@@ -1972,7 +1972,10 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
 }
 
 function App() {
-  const [currentView, setCurrentView] = useState<string>('home')
+  // Enhanced state management with welcome screen and onboarding
+  const [currentView, setCurrentView] = useState<string>('welcome')
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useKV("armora-onboarding-complete", false)
+  const [isFirstLaunch, setIsFirstLaunch] = useKV("armora-first-launch", true)
   const [selectedService, setSelectedService] = useState<string>('')
   const [currentTrip, setCurrentTrip] = useState<any>(null)
   const [assignedDriver, setAssignedDriver] = useState<any>(null)
@@ -2010,6 +2013,18 @@ function App() {
   const [isLocationWatching, setIsLocationWatching] = useState(false)
   const [statusMessage, setStatusMessage] = useState<string>('')
   const [statusType, setStatusType] = useState<'info' | 'success' | 'warning' | 'error'>('info')
+
+  // Initialize app flow based on user state
+  useEffect(() => {
+    // Determine initial view based on user status
+    if (isFirstLaunch) {
+      setCurrentView('welcome')
+    } else if (!hasCompletedOnboarding) {
+      setCurrentView('onboarding')
+    } else {
+      setCurrentView('home')
+    }
+  }, [isFirstLaunch, hasCompletedOnboarding])
 
   // Update map center when user location is found - with proper dependency management
   useEffect(() => {
@@ -2088,23 +2103,20 @@ function App() {
       return
     }
     
-    const driver = armoraDrivers[Math.floor(Math.random() * armoraDrivers.length)]
     const service = armoraServices.find(s => s.id === selectedService)
-    
     const distance = calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords)
     const estimatedDuration = Math.ceil(distance * 2) // Rough estimation: 2 minutes per km in city traffic
+    const finalPrice = calculateServicePrice(service, distance)
     
-    const trip = {
+    // Create trip object for confirmation
+    const tripData = {
       id: Date.now(),
       service: service,
       pickup: bookingForm.pickup,
       destination: bookingForm.destination,
       pickupCoords: bookingForm.pickupCoords,
       destinationCoords: bookingForm.destinationCoords,
-      driver: driver,
-      status: 'driver_assigned',
-      startTime: new Date(),
-      estimatedPrice: service?.priceRange,
+      estimatedPrice: finalPrice,
       estimatedDistance: distance,
       estimatedDuration: estimatedDuration,
       realTimeData: {
@@ -2114,19 +2126,35 @@ function App() {
       }
     }
     
-    setCurrentTrip(trip)
+    // Store trip data and go to confirmation
+    setCurrentTrip(tripData)
+    setCurrentView('booking-confirmation')
+    
+  }, [bookingForm, selectedService, calculateDistance, calculateServicePrice])
+
+  const confirmBooking = useCallback(() => {
+    if (!currentTrip) return
+    
+    // Assign driver and complete booking
+    const driver = armoraDrivers[Math.floor(Math.random() * armoraDrivers.length)]
+    
+    const finalTrip = {
+      ...currentTrip,
+      driver: driver,
+      status: 'driver_assigned',
+      startTime: new Date()
+    }
+    
+    setCurrentTrip(finalTrip)
     setAssignedDriver(driver)
     setCurrentView('tracking')
     setIsChatOpen(false)
     setUnreadMessages(0)
     
-    // Clear any previous status messages
-    setStatusMessage('')
-    
     // Add to recent trips
-    setRecentTrips((prev: any[]) => [trip, ...prev.slice(0, 9)])
+    setRecentTrips((prev: any[]) => [finalTrip, ...prev.slice(0, 9)])
     
-    // Show single success notification
+    // Show success notification
     toast.success(`🚗 Driver assigned: ${driver.name}`, {
       duration: 4000,
       description: `${driver.vehicle} • ETA: ${driver.eta} minutes`
@@ -2135,7 +2163,7 @@ function App() {
     // Clear form for next booking
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
     setHasSetInitialPickup(false)
-  }, [bookingForm, selectedService, setRecentTrips, showPassengerStatus])
+  }, [currentTrip, setRecentTrips])
 
   // Distance calculation helper
   const calculateDistance = useCallback((point1: any, point2: any) => {
@@ -2190,6 +2218,412 @@ function App() {
     setFavorites((prev: any[]) => [...prev, newFavorite])
     // Don't show duplicate toast here since it's handled at the button level
   }, [setFavorites])
+
+  // Welcome Screen
+  if (currentView === 'welcome') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10 flex items-center justify-center p-4">
+        <Toaster position="top-center" />
+        
+        <div className="max-w-sm mx-auto text-center space-y-8 animate-in fade-in duration-1000">
+          {/* Professional Logo and Branding */}
+          <div className="space-y-4">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary to-accent rounded-3xl flex items-center justify-center shadow-2xl">
+              <Shield size={40} className="text-primary-foreground" weight="fill" />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Armora
+              </h1>
+              <p className="text-sm text-muted-foreground font-medium">
+                Protected by Shadows
+              </p>
+              <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                Premium security transport with licensed close protection officers
+              </p>
+            </div>
+          </div>
+
+          {/* Value Proposition */}
+          <div className="space-y-6">
+            <div className="grid gap-4">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/20">
+                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Shield size={16} className="text-green-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold">Licensed Security</p>
+                  <p className="text-xs text-muted-foreground">SIA-trained protection officers</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/20">
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Car size={16} className="text-blue-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold">Luxury Vehicles</p>
+                  <p className="text-xs text-muted-foreground">Premium fleet with professional drivers</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/20">
+                <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                  <Star size={16} className="text-amber-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold">Discrete Service</p>
+                  <p className="text-xs text-muted-foreground">Professional, confidential transport</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Continue Button */}
+          <div className="space-y-4">
+            <Button 
+              onClick={() => {
+                setIsFirstLaunch(false)
+                setCurrentView('onboarding')
+              }}
+              className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg"
+            >
+              Get Started
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => {
+                setIsFirstLaunch(false)
+                setHasCompletedOnboarding(true)
+                setCurrentView('home')
+                toast.success("Welcome to Armora!")
+              }}
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
+              Skip intro
+            </Button>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="pt-4 border-t border-border/20">
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Shield size={10} />
+                <span>SIA Licensed</span>
+              </div>
+              <div className="w-px h-3 bg-border"></div>
+              <div className="flex items-center gap-1">
+                <CheckCircle size={10} />
+                <span>Insured</span>
+              </div>
+              <div className="w-px h-3 bg-border"></div>
+              <div className="flex items-center gap-1">
+                <Star size={10} />
+                <span>5-Star Service</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Onboarding Flow
+  if (currentView === 'onboarding') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="flex items-center justify-between max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                <Shield size={16} className="text-primary-foreground" weight="bold" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold">Welcome to Armora</h1>
+                <p className="text-xs text-muted-foreground">Quick setup</p>
+              </div>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => {
+                setHasCompletedOnboarding(true)
+                setCurrentView('home')
+              }}
+              className="text-xs"
+            >
+              Skip
+            </Button>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 space-y-6 max-w-md mx-auto">
+          {/* Service Introduction */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
+                <Shield size={32} className="text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold mb-2">Security-First Transport</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Every Armora driver is a licensed close protection officer. You're not just getting a ride - 
+                  you're getting professional security service.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Service Levels Preview */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-6 space-y-4">
+              <h3 className="font-semibold text-center mb-4">Choose Your Protection Level</h3>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                  <Car size={20} className="text-primary" />
+                  <div>
+                    <p className="font-medium text-sm">Standard Transport</p>
+                    <p className="text-xs text-muted-foreground">Discrete security officer</p>
+                  </div>
+                  <span className="ml-auto text-sm font-bold">£45-75</span>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                  <Shield size={20} className="text-accent" />
+                  <div>
+                    <p className="font-medium text-sm">Executive Protection</p>
+                    <p className="text-xs text-muted-foreground">Enhanced security measures</p>
+                  </div>
+                  <span className="ml-auto text-sm font-bold">£120-250</span>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                  <Star size={20} className="text-amber-500" />
+                  <div>
+                    <p className="font-medium text-sm">Ultra-Luxury</p>
+                    <p className="text-xs text-muted-foreground">Premium vehicles + security</p>
+                  </div>
+                  <span className="ml-auto text-sm font-bold">£180-450</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Location Permission */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="w-12 h-12 mx-auto bg-blue-100 rounded-xl flex items-center justify-center">
+                <MapPin size={24} className="text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Enable Location Services</h3>
+                <p className="text-sm text-muted-foreground">
+                  We need your location to provide accurate pickup times and route optimization.
+                </p>
+              </div>
+              <Button 
+                onClick={() => {
+                  getCurrentLocation()
+                  toast.success("📍 Location access granted")
+                }}
+                className="w-full h-10"
+              >
+                <MapPin size={16} className="mr-2" />
+                Enable Location
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Complete Setup */}
+          <Button 
+            onClick={() => {
+              setHasCompletedOnboarding(true)
+              setCurrentView('home')
+              toast.success("🎉 Welcome to Armora! You're all set.")
+            }}
+            className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg"
+          >
+            Start Using Armora
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Booking Confirmation Screen
+  if (currentView === 'booking-confirmation' && currentTrip) {
+    const service = currentTrip.service
+    const distance = currentTrip.estimatedDistance
+    const duration = currentTrip.estimatedDuration
+    const price = currentTrip.estimatedPrice
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="flex items-center gap-3 max-w-md mx-auto">
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView('home')} className="w-9 h-9 rounded-full">
+              <ArrowLeft size={18} />
+            </Button>
+            <div className="flex-1">
+              <h1 className="font-semibold">Confirm Your Booking</h1>
+              <p className="text-xs text-muted-foreground">Review trip details</p>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 space-y-4 max-w-md mx-auto">
+          {/* Service Summary */}
+          <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/10 to-accent/10">
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary to-accent rounded-2xl flex items-center justify-center">
+                {React.createElement(service?.icon || Car, {
+                  size: 32,
+                  className: "text-primary-foreground",
+                  weight: "fill"
+                })}
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-primary">{service?.name}</h2>
+                <p className="text-sm text-muted-foreground mt-1">{service?.description}</p>
+              </div>
+              <div className="bg-card/50 rounded-xl p-4 space-y-2">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-green-600">{price}</p>
+                  <p className="text-xs text-muted-foreground">Total fare • {distance?.toFixed(1)}km • ~{duration} min</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trip Route */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-5 space-y-4">
+              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Trip Route</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-4 bg-blue-500 rounded-full flex-shrink-0 shadow-sm"></div>
+                  <div>
+                    <p className="font-medium">{currentTrip.pickup}</p>
+                    <p className="text-xs text-muted-foreground">Pickup location</p>
+                  </div>
+                </div>
+                <div className="ml-2 w-0.5 h-8 bg-gradient-to-b from-blue-500 via-muted to-red-500"></div>
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-4 bg-red-500 rounded-full flex-shrink-0 shadow-sm"></div>
+                  <div>
+                    <p className="font-medium">{currentTrip.destination}</p>
+                    <p className="text-xs text-muted-foreground">Destination</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trip Details */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-5 space-y-4">
+              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Journey Details</h3>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-primary">{distance?.toFixed(1)} km</p>
+                  <p className="text-xs text-muted-foreground">Distance</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-accent">~{duration} min</p>
+                  <p className="text-xs text-muted-foreground">Duration</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-green-600">{service?.capacity}</p>
+                  <p className="text-xs text-muted-foreground">Capacity</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Payment Method */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
+                    <CreditCard size={20} />
+                  </div>
+                  <div>
+                    <p className="font-medium">Payment Method</p>
+                    <p className="text-sm text-muted-foreground">Mastercard •••• 4321</p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" className="text-xs">
+                  Change
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security Features */}
+          <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-blue-50">
+            <CardContent className="p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <Shield size={16} className="text-green-600" />
+                <h3 className="font-semibold text-green-800">Security Features Included</h3>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={12} className="text-green-600" />
+                  <span>SIA-licensed close protection officer</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={12} className="text-green-600" />
+                  <span>Real-time journey tracking</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={12} className="text-green-600" />
+                  <span>Professional background-checked driver</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={12} className="text-green-600" />
+                  <span>24/7 support and monitoring</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Booking Actions */}
+          <div className="space-y-3 pt-2">
+            <Button 
+              onClick={confirmBooking}
+              className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg"
+            >
+              Confirm Booking - {price}
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => setCurrentView('home')}
+              className="w-full h-10"
+            >
+              Back to Edit Trip
+            </Button>
+          </div>
+
+          {/* Terms */}
+          <div className="text-center text-xs text-muted-foreground pt-2">
+            <p>By booking, you agree to our Terms of Service and acknowledge our Privacy Policy.</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  }
 
   // Home/Booking View
   if (currentView === 'home') {
