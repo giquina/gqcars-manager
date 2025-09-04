@@ -106,7 +106,7 @@ const RealTimeMap = ({ trip }: { trip: any }) => {
   }
 
   return (
-    <div className="relative bg-muted/30 rounded-lg h-80 overflow-hidden border">
+    <div className="relative bg-muted/30 rounded-xl h-80 overflow-hidden border shadow-lg">
       {/* Map Grid Background */}
       <div className="absolute inset-0 opacity-20">
         <svg width="100%" height="100%" className="text-muted-foreground">
@@ -124,14 +124,14 @@ const RealTimeMap = ({ trip }: { trip: any }) => {
         <path
           d={`M 20% 80% Q 40% 60% 60% 40% T 80% 20%`}
           stroke="rgb(var(--muted-foreground) / 0.3)"
-          strokeWidth="4"
+          strokeWidth="6"
           fill="none"
         />
         {/* Completed Route */}
         <path
           d={`M 20% 80% Q 40% 60% 60% 40% T 80% 20%`}
           stroke="rgb(var(--accent))"
-          strokeWidth="4"
+          strokeWidth="6"
           fill="none"
           strokeDasharray={`${tripProgress * 3}% ${300 - tripProgress * 3}%`}
           className="transition-all duration-1000"
@@ -143,10 +143,10 @@ const RealTimeMap = ({ trip }: { trip: any }) => {
         className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
         style={{ left: '20%', top: '80%' }}
       >
-        <div className="bg-background border-2 border-accent rounded-full p-2 shadow-lg">
-          <MapPin size={18} className="text-accent" weight="fill" />
+        <div className="bg-background border-2 border-accent rounded-full p-3 shadow-xl">
+          <MapPin size={20} className="text-accent" weight="fill" />
         </div>
-        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-accent text-accent-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium">
+        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-accent text-accent-foreground text-xs px-3 py-1.5 rounded-lg whitespace-nowrap font-semibold shadow-lg">
           Pickup
         </div>
       </div>
@@ -161,12 +161,12 @@ const RealTimeMap = ({ trip }: { trip: any }) => {
       >
         <div className="relative">
           {/* Driver Location Pulse */}
-          <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75"></div>
-          <div className="relative bg-primary border-2 border-background rounded-full p-2 shadow-lg">
-            <Car size={18} className="text-primary-foreground" weight="fill" />
+          <div className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75 scale-125"></div>
+          <div className="relative bg-primary border-2 border-background rounded-full p-3 shadow-xl">
+            <Car size={20} className="text-primary-foreground" weight="fill" />
           </div>
         </div>
-        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium">
+        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs px-3 py-1.5 rounded-lg whitespace-nowrap font-semibold shadow-lg">
           {trip.driver}
         </div>
       </div>
@@ -176,41 +176,41 @@ const RealTimeMap = ({ trip }: { trip: any }) => {
         className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
         style={{ left: '80%', top: '20%' }}
       >
-        <div className="bg-background border-2 border-destructive rounded-full p-2 shadow-lg">
-          <NavigationArrow size={18} className="text-destructive" weight="fill" />
+        <div className="bg-background border-2 border-destructive rounded-full p-3 shadow-xl">
+          <NavigationArrow size={20} className="text-destructive" weight="fill" />
         </div>
-        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded whitespace-nowrap font-medium">
+        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-destructive text-destructive-foreground text-xs px-3 py-1.5 rounded-lg whitespace-nowrap font-semibold shadow-lg">
           Destination
         </div>
       </div>
 
       {/* Live Updates Badge */}
-      <div className="absolute top-3 right-3">
-        <Badge className="bg-accent text-accent-foreground animate-pulse">
-          <div className="w-2 h-2 bg-accent-foreground rounded-full mr-1 animate-pulse" />
+      <div className="absolute top-4 right-4">
+        <Badge className="bg-accent text-accent-foreground animate-pulse px-3 py-1 shadow-lg">
+          <div className="w-2 h-2 bg-accent-foreground rounded-full mr-2 animate-pulse" />
           Live
         </Badge>
       </div>
 
       {/* ETA Banner */}
-      <div className="absolute top-3 left-3">
-        <div className="bg-background/90 backdrop-blur-sm rounded-lg p-2 border">
+      <div className="absolute top-4 left-4">
+        <div className="bg-background/95 backdrop-blur-md rounded-xl p-3 border shadow-lg">
           <div className="flex items-center gap-2">
-            <Timer size={16} className="text-accent" />
-            <span className="text-sm font-medium">ETA: {Math.round(eta)}min</span>
+            <Timer size={18} className="text-accent" />
+            <span className="font-bold">ETA: {Math.round(eta)}min</span>
           </div>
         </div>
       </div>
 
       {/* Progress Indicator */}
-      <div className="absolute bottom-3 left-3 right-3">
-        <div className="bg-background/90 backdrop-blur-sm rounded-lg p-3 border">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-medium">Trip Progress</span>
-            <span className="text-xs text-muted-foreground">{Math.round(tripProgress)}%</span>
+      <div className="absolute bottom-4 left-4 right-4">
+        <div className="bg-background/95 backdrop-blur-md rounded-xl p-4 border shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-bold">Trip Progress</span>
+            <span className="text-muted-foreground font-semibold">{Math.round(tripProgress)}%</span>
           </div>
-          <Progress value={tripProgress} className="h-2" />
-          <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+          <Progress value={tripProgress} className="h-3 mb-3" />
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
             <span>Last update: {formatTime(lastUpdate)}</span>
             <span>{Math.round((100 - tripProgress) * 0.03)}min remaining</span>
           </div>
@@ -282,131 +282,197 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Toaster />
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
+      <Toaster position="top-center" />
       
       {/* Header */}
-      <header className="bg-card border-b px-4 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-primary">
-              GQ<span className="text-accent">Cars</span>
-            </h1>
-            <p className="text-xs text-muted-foreground">Passenger App</p>
+      <header className="bg-card/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 py-4 sm:px-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg">
+                <Car size={20} className="text-white" weight="bold" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                  GQCars
+                </h1>
+                <p className="text-xs text-muted-foreground font-medium">Passenger</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="hidden sm:flex items-center gap-2 bg-background/50 hover:bg-background">
+              <User size={16} />
+              Profile
+            </Button>
+            <Button variant="outline" size="icon" className="sm:hidden bg-background/50 hover:bg-background">
+              <User size={16} />
+            </Button>
           </div>
-          <Button variant="outline" size="sm" className="hidden sm:flex">
-            <User size={16} className="mr-2" />
-            Profile
-          </Button>
-          <Button variant="outline" size="icon" className="sm:hidden">
-            <User size={16} />
-          </Button>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 sm:px-6">
+      <div className="max-w-5xl mx-auto px-4 py-8 sm:px-6">
         {/* Main Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
-            <TabsTrigger value="book" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
-              <Car size={16} className="shrink-0" />
-              <span className="whitespace-nowrap">Book</span>
-            </TabsTrigger>
-            <TabsTrigger value="active" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
-              <NavigationArrow size={16} className="shrink-0" />
-              <span className="whitespace-nowrap">Active</span>
-            </TabsTrigger>
-            <TabsTrigger value="history" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
-              <Clock size={16} className="shrink-0" />
-              <span className="whitespace-nowrap">History</span>
-            </TabsTrigger>
-            <TabsTrigger value="favorites" className="flex flex-col items-center gap-1 py-3 px-1 text-xs sm:flex-row sm:gap-2 sm:text-sm sm:px-4">
-              <Heart size={16} className="shrink-0" />
-              <span className="whitespace-nowrap">Favorites</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="mb-8">
+            <TabsList className="grid w-full grid-cols-4 h-14 bg-card/50 backdrop-blur-sm border border-border/50 shadow-lg">
+              <TabsTrigger 
+                value="book" 
+                className="flex flex-col items-center gap-1.5 py-2 px-2 text-xs data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-4 transition-all duration-200"
+              >
+                <Car size={18} className="shrink-0" weight={activeTab === 'book' ? 'fill' : 'regular'} />
+                <span className="font-medium">Book</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="active" 
+                className="flex flex-col items-center gap-1.5 py-2 px-2 text-xs data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-4 transition-all duration-200"
+              >
+                <NavigationArrow size={18} className="shrink-0" weight={activeTab === 'active' ? 'fill' : 'regular'} />
+                <span className="font-medium">Active</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="history" 
+                className="flex flex-col items-center gap-1.5 py-2 px-2 text-xs data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-4 transition-all duration-200"
+              >
+                <Clock size={18} className="shrink-0" weight={activeTab === 'history' ? 'fill' : 'regular'} />
+                <span className="font-medium">History</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="favorites" 
+                className="flex flex-col items-center gap-1.5 py-2 px-2 text-xs data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-md sm:flex-row sm:gap-2 sm:text-sm sm:px-4 transition-all duration-200"
+              >
+                <Heart size={18} className="shrink-0" weight={activeTab === 'favorites' ? 'fill' : 'regular'} />
+                <span className="font-medium">Favorites</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Book Ride Tab */}
-          <TabsContent value="book" className="space-y-6">
+          <TabsContent value="book" className="space-y-8">
             {/* Hero Section */}
-            <Card className="relative overflow-hidden">
+            <Card className="relative overflow-hidden border-0 shadow-2xl">
               <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{
                   backgroundImage: "url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80')",
                 }}
               />
-              <CardContent className="relative p-8 text-center">
-                <h2 className="text-3xl font-bold mb-4">Where to?</h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Get a ride in minutes with GQCars
-                </p>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/80 to-accent/90" />
+              <CardContent className="relative p-12 text-center text-white">
+                <div className="max-w-2xl mx-auto">
+                  <h2 className="text-4xl font-bold mb-4 leading-tight">Where to?</h2>
+                  <p className="text-xl text-white/90 mb-8 leading-relaxed">
+                    Get a safe, reliable ride in minutes with GQCars
+                  </p>
+                  <div className="flex justify-center gap-8 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                      <span>24/7 Available</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                      <span>Verified Drivers</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                      <span>Real-time Tracking</span>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
             {/* Booking Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Book Your Ride</CardTitle>
-                <CardDescription>Enter your pickup and destination</CardDescription>
+            <Card className="shadow-xl border-0 bg-card/50 backdrop-blur-sm">
+              <CardHeader className="pb-6">
+                <CardTitle className="text-2xl flex items-center gap-3">
+                  <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                    <MapPin size={18} className="text-accent-foreground" />
+                  </div>
+                  Book Your Ride
+                </CardTitle>
+                <CardDescription className="text-base">Enter your pickup and destination locations</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="pickup">Pickup Location</Label>
+              <CardContent className="space-y-6">
+                <div className="space-y-3">
+                  <Label htmlFor="pickup" className="text-sm font-semibold">Pickup Location</Label>
                   <Input
                     id="pickup"
-                    placeholder="Enter pickup address"
+                    placeholder="Enter pickup address or landmark"
                     value={bookingForm.pickup}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
+                    className="h-12 text-base bg-background/50"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="destination">Destination</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="destination" className="text-sm font-semibold">Destination</Label>
                   <Input
                     id="destination"
-                    placeholder="Where are you going?"
+                    placeholder="Where would you like to go?"
                     value={bookingForm.destination}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
+                    className="h-12 text-base bg-background/50"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Notes (Optional)</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="notes" className="text-sm font-semibold">Special Instructions <span className="text-muted-foreground font-normal">(Optional)</span></Label>
                   <Textarea
                     id="notes"
-                    placeholder="Special instructions for your driver"
+                    placeholder="Any special instructions for your driver..."
                     value={bookingForm.notes}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, notes: e.target.value }))}
+                    className="min-h-[80px] bg-background/50"
                   />
                 </div>
               </CardContent>
             </Card>
 
             {/* Ride Type Selection */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Choose Your Ride</h3>
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold flex items-center gap-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Car size={18} className="text-primary-foreground" />
+                </div>
+                Choose Your Ride
+              </h3>
               <div className="grid gap-4">
                 {rideTypes.map(ride => (
                   <Card 
                     key={ride.id} 
-                    className={`cursor-pointer transition-all ${
-                      selectedRide === ride.id ? 'ring-2 ring-accent bg-accent/5' : 'hover:shadow-md'
+                    className={`cursor-pointer transition-all duration-300 border-2 ${
+                      selectedRide === ride.id 
+                        ? 'ring-2 ring-accent ring-offset-2 bg-accent/5 border-accent shadow-xl' 
+                        : 'hover:shadow-lg hover:border-accent/50 border-border/50 bg-card/50'
                     }`}
                     onClick={() => setSelectedRide(ride.id)}
                   >
-                    <CardContent className="flex items-center p-4">
-                      <img 
-                        src={ride.image} 
-                        alt={ride.name}
-                        className="w-16 h-12 object-cover rounded mr-4"
-                      />
+                    <CardContent className="flex items-center p-6">
+                      <div className="relative w-20 h-16 mr-6">
+                        <img 
+                          src={ride.image} 
+                          alt={ride.name}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                        {selectedRide === ride.id && (
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center">
+                            <span className="text-xs text-accent-foreground font-bold">✓</span>
+                          </div>
+                        )}
+                      </div>
                       <div className="flex-1">
-                        <h4 className="font-semibold">{ride.name}</h4>
-                        <p className="text-sm text-muted-foreground">{ride.description}</p>
-                        <p className="text-sm text-muted-foreground">ETA: {ride.eta}</p>
+                        <h4 className="font-bold text-lg">{ride.name}</h4>
+                        <p className="text-muted-foreground mb-1">{ride.description}</p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock size={14} />
+                          <span>ETA: {ride.eta}</span>
+                        </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg font-bold">${ride.price}</p>
-                        <Badge variant={selectedRide === ride.id ? "default" : "secondary"}>
+                        <p className="text-2xl font-bold text-primary">${ride.price}</p>
+                        <Badge 
+                          variant={selectedRide === ride.id ? "default" : "secondary"}
+                          className={selectedRide === ride.id ? "bg-accent text-accent-foreground" : ""}
+                        >
                           {selectedRide === ride.id ? 'Selected' : 'Select'}
                         </Badge>
                       </div>
@@ -420,31 +486,34 @@ function App() {
             <Button 
               onClick={handleBookRide} 
               size="lg" 
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+              className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               disabled={!bookingForm.pickup || !bookingForm.destination || !selectedRide}
             >
-              Book Ride
+              <Car size={20} className="mr-3" />
+              Book Your Ride Now
             </Button>
           </TabsContent>
 
           {/* Active Trip Tab */}
-          <TabsContent value="active" className="space-y-6">
+          <TabsContent value="active" className="space-y-8">
             {currentTrip ? (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {/* Real-time Map */}
-                <Card>
-                  <CardHeader>
+                <Card className="shadow-xl border-0">
+                  <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle className="flex items-center gap-2">
-                          <Crosshair size={20} className="text-accent" />
+                        <CardTitle className="flex items-center gap-3 text-xl">
+                          <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                            <Crosshair size={18} className="text-accent-foreground animate-pulse" />
+                          </div>
                           Live Tracking
                         </CardTitle>
-                        <CardDescription>Follow your driver in real-time</CardDescription>
+                        <CardDescription className="text-base">Follow your driver in real-time</CardDescription>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="bg-background/50 hover:bg-background">
                         <Crosshair size={16} className="mr-2" />
-                        Center Map
+                        <span className="hidden sm:inline">Center Map</span>
                       </Button>
                     </div>
                   </CardHeader>
@@ -454,79 +523,101 @@ function App() {
                 </Card>
 
                 {/* Trip Details */}
-                <Card>
+                <Card className="shadow-xl border-0 bg-card/50 backdrop-blur-sm">
                   <CardHeader>
-                    <CardTitle>Trip Information</CardTitle>
-                    <CardDescription>Driver and vehicle details</CardDescription>
+                    <CardTitle className="flex items-center gap-3 text-xl">
+                      <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <User size={18} className="text-primary-foreground" />
+                      </div>
+                      Trip Information
+                    </CardTitle>
+                    <CardDescription className="text-base">Driver and vehicle details</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-6">
                     {/* Driver Info Card */}
-                    <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg border">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
-                          <User size={20} className="text-accent-foreground" weight="fill" />
-                        </div>
-                        <div>
-                          <p className="font-semibold">{currentTrip.driver}</p>
-                          <p className="text-sm text-muted-foreground">{currentTrip.vehicle}</p>
-                          <p className="text-sm text-muted-foreground">License: {currentTrip.plate}</p>
-                          <div className="flex items-center gap-1 mt-1">
-                            <Star size={14} className="text-yellow-500" weight="fill" />
-                            <span className="text-sm font-medium">4.9</span>
-                            <span className="text-xs text-muted-foreground">(245 trips)</span>
+                    <div className="relative p-6 bg-gradient-to-r from-accent/10 to-primary/10 rounded-xl border-2 border-accent/20">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <div className="w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center shadow-lg">
+                              <User size={24} className="text-white" weight="fill" />
+                            </div>
+                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                              <span className="text-xs text-white font-bold">✓</span>
+                            </div>
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-bold">{currentTrip.driver}</h4>
+                            <p className="text-muted-foreground font-medium">{currentTrip.vehicle}</p>
+                            <p className="text-sm text-muted-foreground">License: <span className="font-mono">{currentTrip.plate}</span></p>
+                            <div className="flex items-center gap-1 mt-2">
+                              <Star size={16} className="text-yellow-500" weight="fill" />
+                              <span className="font-bold text-lg">4.9</span>
+                              <span className="text-sm text-muted-foreground ml-1">(245 rides)</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge className="bg-accent text-accent-foreground mb-2">Verified Driver</Badge>
-                        <p className="text-sm text-muted-foreground">Member since 2019</p>
+                        <div className="text-right">
+                          <Badge className="bg-accent text-accent-foreground mb-2 px-3 py-1">Verified Driver</Badge>
+                          <p className="text-sm text-muted-foreground">Since 2019</p>
+                        </div>
                       </div>
                     </div>
                     
                     {/* Trip Route */}
-                    <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
-                      <h4 className="font-medium text-sm">Trip Route</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-accent rounded-full"></div>
-                          <span className="text-sm font-medium">From: {currentTrip.pickup}</span>
+                    <div className="space-y-4 p-6 bg-muted/30 rounded-xl border">
+                      <h4 className="font-bold text-lg flex items-center gap-2">
+                        <MapPin size={18} className="text-accent" />
+                        Trip Route
+                      </h4>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 bg-accent rounded-full shadow-md"></div>
+                          <div>
+                            <span className="text-sm text-muted-foreground">FROM</span>
+                            <p className="font-semibold">{currentTrip.pickup}</p>
+                          </div>
                         </div>
-                        <div className="ml-1.5 w-0.5 h-4 bg-border"></div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 bg-destructive rounded-full"></div>
-                          <span className="text-sm font-medium">To: {currentTrip.destination}</span>
+                        <div className="ml-2 w-0.5 h-8 bg-gradient-to-b from-accent to-destructive"></div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 bg-destructive rounded-full shadow-md"></div>
+                          <div>
+                            <span className="text-sm text-muted-foreground">TO</span>
+                            <p className="font-semibold">{currentTrip.destination}</p>
+                          </div>
                         </div>
                       </div>
                       {tripStartTime && (
-                        <div className="flex items-center gap-2 pt-2 border-t">
-                          <Timer size={16} className="text-muted-foreground" />
-                          <span className="text-sm">Trip started: {tripStartTime.toLocaleTimeString()}</span>
+                        <div className="flex items-center gap-3 pt-4 border-t border-border">
+                          <Timer size={18} className="text-muted-foreground" />
+                          <div>
+                            <span className="text-sm text-muted-foreground">STARTED</span>
+                            <p className="font-semibold">{tripStartTime.toLocaleTimeString()}</p>
+                          </div>
                         </div>
                       )}
                     </div>
 
                     {/* Quick Actions */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <Button variant="outline" className="flex items-center gap-2">
-                        <Phone size={16} />
-                        <span className="hidden sm:inline">Call Driver</span>
-                        <span className="sm:hidden">Call</span>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button variant="outline" className="h-12 flex items-center gap-3 bg-background/50 hover:bg-background hover:shadow-md">
+                        <Phone size={18} className="text-accent" />
+                        <span className="font-semibold">Call</span>
                       </Button>
-                      <Button variant="outline" className="flex items-center gap-2">
-                        <Mail size={16} />
-                        <span className="hidden sm:inline">Message</span>
-                        <span className="sm:hidden">Text</span>
+                      <Button variant="outline" className="h-12 flex items-center gap-3 bg-background/50 hover:bg-background hover:shadow-md">
+                        <Mail size={18} className="text-accent" />
+                        <span className="font-semibold">Message</span>
                       </Button>
                     </div>
 
                     {/* Emergency & Cancel */}
-                    <div className="space-y-2">
-                      <Button variant="outline" className="w-full text-orange-600 border-orange-200 hover:bg-orange-50">
-                        Emergency Assistance
+                    <div className="space-y-3">
+                      <Button variant="outline" className="w-full h-12 text-orange-600 border-orange-200 bg-orange-50 hover:bg-orange-100 font-semibold">
+                        🚨 Emergency Assistance
                       </Button>
                       <Button 
                         variant="destructive" 
-                        className="w-full"
+                        className="w-full h-12 font-semibold shadow-lg"
                         onClick={() => {
                           setCurrentTrip(null)
                           setTripStartTime(null)
@@ -540,17 +631,21 @@ function App() {
                 </Card>
               </div>
             ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Car size={64} className="mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold mb-2">No Active Trips</h3>
-                  <p className="text-muted-foreground mb-6">
-                    You don't have any active trips right now.
+              <Card className="shadow-xl border-0 bg-card/50 backdrop-blur-sm">
+                <CardContent className="text-center py-16">
+                  <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Car size={40} className="text-muted-foreground" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">No Active Trips</h3>
+                  <p className="text-muted-foreground mb-8 text-lg max-w-md mx-auto">
+                    You don't have any active trips right now. Ready to go somewhere?
                   </p>
                   <Button 
                     onClick={() => setActiveTab('book')}
-                    className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                    size="lg"
+                    className="bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-accent-foreground shadow-xl h-12 px-8"
                   >
+                    <Car size={20} className="mr-3" />
                     Book a Ride
                   </Button>
                 </CardContent>
@@ -559,39 +654,53 @@ function App() {
           </TabsContent>
 
           {/* Trip History Tab */}
-          <TabsContent value="history" className="space-y-6">
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Recent Trips</h3>
+          <TabsContent value="history" className="space-y-8">
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Clock size={18} className="text-primary-foreground" />
+                </div>
+                <h3 className="text-2xl font-bold">Recent Trips</h3>
+              </div>
               {recentTrips.map(trip => (
-                <Card key={trip.id}>
-                  <CardContent className="flex items-center justify-between p-4">
+                <Card key={trip.id} className="shadow-lg border-0 bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                  <CardContent className="flex items-center justify-between p-6">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <MapPin size={16} className="text-muted-foreground" />
-                        <span className="font-medium">{trip.from}</span>
-                        <NavigationArrow size={16} className="text-muted-foreground" />
-                        <span className="font-medium">{trip.to}</span>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-3 h-3 bg-accent rounded-full"></div>
+                        <span className="font-bold text-lg">{trip.from}</span>
+                        <NavigationArrow size={18} className="text-muted-foreground" />
+                        <span className="font-bold text-lg">{trip.to}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">{trip.date}</p>
-                      <p className="text-sm text-muted-foreground">Driver: {trip.driver}</p>
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground flex items-center gap-2">
+                          <Clock size={14} />
+                          {trip.date}
+                        </p>
+                        <p className="text-muted-foreground flex items-center gap-2">
+                          <User size={14} />
+                          Driver: {trip.driver}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className="font-semibold">${trip.price}</p>
-                        <div className="flex items-center gap-1">
-                          <Star size={14} className="text-yellow-500" weight="fill" />
-                          <span className="text-sm">{trip.rating}</span>
+                        <p className="text-2xl font-bold text-primary">${trip.price}</p>
+                        <div className="flex items-center gap-1 justify-end">
+                          <Star size={16} className="text-yellow-500" weight="fill" />
+                          <span className="font-bold">{trip.rating}</span>
                         </div>
                       </div>
                       <Button
                         size="sm"
                         variant={isTripFavorited(trip.id) ? "default" : "outline"}
                         onClick={() => toggleFavoriteTrip(trip.id)}
+                        className={isTripFavorited(trip.id) ? "bg-accent hover:bg-accent/90 text-accent-foreground" : "hover:bg-accent/10"}
                       >
                         {isTripFavorited(trip.id) ? (
-                          <Heart size={16} weight="fill" />
+                          <Heart size={18} weight="fill" />
                         ) : (
-                          <Heart size={16} />
+                          <Heart size={18} />
                         )}
                       </Button>
                     </div>
@@ -602,22 +711,32 @@ function App() {
           </TabsContent>
 
           {/* Favorites Tab */}
-          <TabsContent value="favorites" className="space-y-6">
+          <TabsContent value="favorites" className="space-y-8">
             {/* Favorite Locations */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Favorite Locations</h3>
-              <div className="grid gap-3">
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                  <MapPin size={18} className="text-accent-foreground" />
+                </div>
+                <h3 className="text-2xl font-bold">Favorite Locations</h3>
+              </div>
+              <div className="grid gap-4">
                 {favoriteLocations.map(location => (
-                  <Card key={location.id} className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardContent className="flex items-center justify-between p-4">
-                      <div>
-                        <h4 className="font-semibold">{location.name}</h4>
-                        <p className="text-sm text-muted-foreground">{location.address}</p>
+                  <Card key={location.id} className="shadow-lg border-0 bg-card/50 backdrop-blur-sm cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+                    <CardContent className="flex items-center justify-between p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center">
+                          <MapPin size={20} className="text-white" weight="fill" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg">{location.name}</h4>
+                          <p className="text-muted-foreground">{location.address}</p>
+                        </div>
                       </div>
                       <Button 
                         size="sm"
                         onClick={() => handleQuickBook(location)}
-                        className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                        className="bg-accent hover:bg-accent/90 text-accent-foreground px-6 h-10 font-semibold"
                       >
                         Book Here
                       </Button>
@@ -628,35 +747,42 @@ function App() {
             </div>
 
             {/* Favorite Trips */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Favorite Trips</h3>
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Heart size={18} className="text-primary-foreground" />
+                </div>
+                <h3 className="text-2xl font-bold">Favorite Trips</h3>
+              </div>
               {favoriteTrips.length === 0 ? (
-                <Card>
-                  <CardContent className="text-center py-8">
-                    <HeartStraight size={48} className="mx-auto mb-4 text-muted-foreground" />
-                    <h4 className="font-semibold mb-2">No Favorite Trips Yet</h4>
-                    <p className="text-muted-foreground text-sm">
+                <Card className="shadow-lg border-0 bg-card/50 backdrop-blur-sm">
+                  <CardContent className="text-center py-16">
+                    <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                      <HeartStraight size={40} className="text-muted-foreground" />
+                    </div>
+                    <h4 className="text-xl font-bold mb-4">No Favorite Trips Yet</h4>
+                    <p className="text-muted-foreground text-lg max-w-md mx-auto">
                       Mark trips as favorites from your trip history to see them here.
                     </p>
                   </CardContent>
                 </Card>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {recentTrips.filter(trip => favoriteTrips.includes(trip.id)).map(trip => (
-                    <Card key={trip.id}>
-                      <CardContent className="flex items-center justify-between p-4">
+                    <Card key={trip.id} className="shadow-lg border-0 bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+                      <CardContent className="flex items-center justify-between p-6">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <MapPin size={16} className="text-muted-foreground" />
-                            <span className="font-medium">{trip.from}</span>
-                            <NavigationArrow size={16} className="text-muted-foreground" />
-                            <span className="font-medium">{trip.to}</span>
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="w-3 h-3 bg-accent rounded-full"></div>
+                            <span className="font-bold text-lg">{trip.from}</span>
+                            <NavigationArrow size={18} className="text-muted-foreground" />
+                            <span className="font-bold text-lg">{trip.to}</span>
                           </div>
-                          <p className="text-sm text-muted-foreground">Last trip: {trip.date}</p>
+                          <p className="text-muted-foreground">Last trip: {trip.date}</p>
                         </div>
                         <Button 
                           size="sm"
-                          className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                          className="bg-accent hover:bg-accent/90 text-accent-foreground px-6 h-10 font-semibold"
                         >
                           Book Again
                         </Button>
@@ -671,28 +797,39 @@ function App() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-muted py-8 px-4 mt-12 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-            <div>
-              <Phone size={24} className="mx-auto mb-2 text-accent" />
-              <p className="font-semibold">24/7 Support</p>
-              <p className="text-sm text-muted-foreground">(555) 123-RIDE</p>
+      <footer className="bg-gradient-to-r from-muted via-card to-muted border-t py-12 px-4 mt-16 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Phone size={28} className="text-white" weight="bold" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">24/7 Support</h4>
+              <p className="text-muted-foreground">(555) 123-RIDE</p>
+              <p className="text-sm text-muted-foreground">Always here to help</p>
             </div>
-            <div>
-              <MapPin size={24} className="mx-auto mb-2 text-accent" />
-              <p className="font-semibold">Available Citywide</p>
-              <p className="text-sm text-muted-foreground">All neighborhoods</p>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <MapPin size={28} className="text-white" weight="bold" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">Available Citywide</h4>
+              <p className="text-muted-foreground">All neighborhoods</p>
+              <p className="text-sm text-muted-foreground">Expanding daily</p>
             </div>
-            <div>
-              <Car size={24} className="mx-auto mb-2 text-accent" />
-              <p className="font-semibold">Safe & Reliable</p>
-              <p className="text-sm text-muted-foreground">Licensed drivers</p>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Car size={28} className="text-white" weight="bold" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">Safe & Reliable</h4>
+              <p className="text-muted-foreground">Licensed drivers</p>
+              <p className="text-sm text-muted-foreground">Background checked</p>
             </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            © 2024 GQCars. Your trusted ride-sharing partner.
-          </p>
+          <div className="text-center pt-8 border-t border-border">
+            <p className="text-muted-foreground font-medium">
+              © 2024 GQCars. Your trusted ride-sharing partner.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
