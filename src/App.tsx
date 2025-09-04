@@ -106,6 +106,20 @@ const drivers = [
   }
 ]
 
+// Sample London locations for realistic GPS simulation
+const londonLocations = [
+  { lat: 51.5074, lng: -0.1278, name: "London Bridge" },
+  { lat: 51.5155, lng: -0.0922, name: "Tower Bridge" },
+  { lat: 51.4994, lng: -0.1244, name: "Borough Market" },
+  { lat: 51.5007, lng: -0.1246, name: "Southwark Cathedral" },
+  { lat: 51.5033, lng: -0.1195, name: "London Bridge Station" },
+  { lat: 51.5081, lng: -0.0759, name: "Canary Wharf" },
+  { lat: 51.5118, lng: -0.1301, name: "St Paul's Cathedral" },
+  { lat: 51.5139, lng: -0.0986, name: "Bank Station" },
+  { lat: 51.5085, lng: -0.1257, name: "Mansion House" },
+  { lat: 51.5045, lng: -0.1123, name: "Monument" }
+]
+
 // Real Google Maps integration
 const useGeolocation = () => {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
@@ -410,7 +424,7 @@ const PlacesAutocomplete = ({
   )
 }
 
-// Real-time GPS simulation
+// Enhanced Real-time GPS tracking with live location updates
 const useGPSTracking = (initialPosition: any, destination: any, isActive: boolean) => {
   const [currentPosition, setCurrentPosition] = useState(initialPosition)
   const [route, setRoute] = useState<any[]>([])
@@ -418,52 +432,102 @@ const useGPSTracking = (initialPosition: any, destination: any, isActive: boolea
   const [eta, setEta] = useState(0)
   const [speed, setSpeed] = useState(0)
   const [bearing, setBearing] = useState(0)
+  const [locationHistory, setLocationHistory] = useState<any[]>([])
+  const [lastUpdateTime, setLastUpdateTime] = useState(new Date())
+  const [isOnRoute, setIsOnRoute] = useState(true)
+  const [trafficDelay, setTrafficDelay] = useState(0)
 
   useEffect(() => {
     if (!isActive || !destination) return
 
-    // Generate route points between pickup and destination
+    // Generate detailed route points between pickup and destination
     const routePoints = generateRoute(initialPosition, destination)
     setRoute(routePoints)
     setEta(Math.ceil(routePoints.length * 0.5)) // Rough ETA calculation
+    setLocationHistory([initialPosition])
 
     let currentIndex = 0
-    const interval = setInterval(() => {
+    const updateInterval = setInterval(() => {
       if (currentIndex < routePoints.length - 1) {
         const currentPoint = routePoints[currentIndex]
         const nextPoint = routePoints[currentIndex + 1]
         
-        setCurrentPosition(currentPoint)
+        // Add slight random variation to simulate real GPS movement
+        const gpsVariation = {
+          lat: currentPoint.lat + (Math.random() - 0.5) * 0.0001,
+          lng: currentPoint.lng + (Math.random() - 0.5) * 0.0001
+        }
+        
+        setCurrentPosition(gpsVariation)
         setProgress((currentIndex / (routePoints.length - 1)) * 100)
-        setSpeed(25 + Math.random() * 15) // Simulated speed 25-40 mph
+        
+        // Realistic speed variation based on traffic
+        const baseSpeed = 25 + Math.random() * 15 // 25-40 mph base
+        const trafficMultiplier = Math.random() > 0.8 ? 0.5 : 1 // 20% chance of traffic slowdown
+        const currentSpeed = baseSpeed * trafficMultiplier
+        setSpeed(currentSpeed)
+        
+        // Calculate traffic delay
+        if (trafficMultiplier < 1) {
+          setTrafficDelay(prev => prev + 1)
+        }
+        
         setBearing(calculateBearing(currentPoint, nextPoint))
-        setEta(Math.ceil((routePoints.length - currentIndex) * 0.5))
+        setEta(Math.ceil((routePoints.length - currentIndex) * 0.5 + trafficDelay * 0.1))
+        setLastUpdateTime(new Date())
+        setIsOnRoute(Math.random() > 0.05) // 95% chance of being on route
+        
+        // Update location history
+        setLocationHistory(prev => [...prev.slice(-20), gpsVariation]) // Keep last 20 positions
         
         currentIndex++
       } else {
         setProgress(100)
         setSpeed(0)
         setEta(0)
-        clearInterval(interval)
+        clearInterval(updateInterval)
       }
-    }, 2000) // Update every 2 seconds
+    }, 1500) // More frequent updates for smoother tracking
 
-    return () => clearInterval(interval)
+    return () => clearInterval(updateInterval)
   }, [isActive, destination])
 
-  return { currentPosition, route, progress, eta, speed, bearing }
+  return { 
+    currentPosition, 
+    route, 
+    progress, 
+    eta, 
+    speed, 
+    bearing, 
+    locationHistory, 
+    lastUpdateTime, 
+    isOnRoute, 
+    trafficDelay 
+  }
 }
 
-// Route generation helper
+// Enhanced route generation with more realistic GPS points
 const generateRoute = (start: any, end: any) => {
   const points = []
-  const steps = 15 // Number of route points
+  const steps = 25 // More route points for smoother tracking
   
   for (let i = 0; i <= steps; i++) {
     const ratio = i / steps
-    const lat = start.lat + (end.lat - start.lat) * ratio + (Math.random() - 0.5) * 0.002
-    const lng = start.lng + (end.lng - start.lng) * ratio + (Math.random() - 0.5) * 0.002
-    points.push({ lat, lng, timestamp: Date.now() + i * 2000 })
+    
+    // Add curve variation to simulate real roads
+    const curveFactor = Math.sin(ratio * Math.PI * 3) * 0.001
+    const roadVariation = (Math.random() - 0.5) * 0.0005
+    
+    const lat = start.lat + (end.lat - start.lat) * ratio + curveFactor + roadVariation
+    const lng = start.lng + (end.lng - start.lng) * ratio + (Math.random() - 0.5) * 0.001 + roadVariation
+    
+    points.push({ 
+      lat, 
+      lng, 
+      timestamp: Date.now() + i * 1500,
+      speed: 25 + Math.random() * 15, // Speed at this point
+      isTrafficArea: Math.random() > 0.8 // 20% chance of traffic
+    })
   }
   
   return points
@@ -785,7 +849,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
   )
 }
 
-// Enhanced Interactive Map Component
+// Enhanced Interactive Map Component with real-time GPS tracking
 const InteractiveMap = ({ trip, driver, onLocationUpdate }: { 
   trip: any, 
   driver: any, 
@@ -795,17 +859,25 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
   const [mapCenter, setMapCenter] = useState({ lat: 51.5074, lng: -0.1278 }) // London center
   const [zoom, setZoom] = useState(13)
   const [isFollowingDriver, setIsFollowingDriver] = useState(true)
+  const [showLocationHistory, setShowLocationHistory] = useState(true)
   
   // Get pickup and destination coordinates
   const pickupLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
   const destinationLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
   
-  // Use GPS tracking
-  const { currentPosition, route, progress, eta, speed, bearing } = useGPSTracking(
-    pickupLocation, 
-    destinationLocation, 
-    true
-  )
+  // Use enhanced GPS tracking
+  const { 
+    currentPosition, 
+    route, 
+    progress, 
+    eta, 
+    speed, 
+    bearing, 
+    locationHistory, 
+    lastUpdateTime, 
+    isOnRoute, 
+    trafficDelay 
+  } = useGPSTracking(pickupLocation, destinationLocation, true)
 
   // Convert real coordinates to screen position (simplified)
   const coordsToScreen = useCallback((lat: number, lng: number) => {
@@ -829,16 +901,30 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
   useEffect(() => {
     if (isFollowingDriver && currentPosition) {
       setMapCenter(currentPosition)
+      if (onLocationUpdate) {
+        onLocationUpdate({
+          position: currentPosition,
+          speed,
+          bearing,
+          eta,
+          lastUpdate: lastUpdateTime,
+          isOnRoute,
+          trafficDelay
+        })
+      }
     }
-  }, [currentPosition, isFollowingDriver])
+  }, [currentPosition, isFollowingDriver, speed, bearing, eta, lastUpdateTime, isOnRoute, trafficDelay, onLocationUpdate])
 
   const driverScreen = coordsToScreen(currentPosition.lat, currentPosition.lng)
   const pickupScreen = coordsToScreen(pickupLocation.lat, pickupLocation.lng)
   const destinationScreen = coordsToScreen(destinationLocation.lat, destinationLocation.lng)
 
+  // Calculate time since last GPS update
+  const secondsSinceUpdate = Math.floor((Date.now() - lastUpdateTime.getTime()) / 1000)
+
   return (
     <div className="space-y-4">
-      {/* Map Controls */}
+      {/* Enhanced Map Controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Button 
@@ -850,9 +936,18 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
             <Crosshair size={14} className="mr-1" />
             {isFollowingDriver ? "Following" : "Follow"}
           </Button>
-          <Badge variant="secondary" className="text-xs">
-            <Navigation size={12} className="mr-1" style={{transform: `rotate(${bearing}deg)`}} />
-            {Math.round(bearing)}°
+          <Button 
+            variant={showLocationHistory ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowLocationHistory(!showLocationHistory)}
+            className="h-8 px-3 text-xs"
+          >
+            <Navigation size={14} className="mr-1" />
+            Trail
+          </Button>
+          <Badge variant={isOnRoute ? "secondary" : "destructive"} className="text-xs">
+            <CheckCircle size={12} className="mr-1" />
+            {isOnRoute ? "On Route" : "Off Route"}
           </Badge>
         </div>
         
@@ -865,10 +960,33 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
             <Timer size={12} className="mr-1" />
             {eta} min
           </Badge>
+          {trafficDelay > 0 && (
+            <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-700">
+              +{trafficDelay}min
+            </Badge>
+          )}
         </div>
       </div>
 
-      {/* Interactive Map */}
+      {/* GPS Status Banner */}
+      <Card className="border-0 shadow-sm bg-gradient-to-r from-green-50 to-green-100">
+        <CardContent className="p-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">Live GPS Tracking</span>
+              <Badge variant="outline" className="text-xs bg-white">
+                {secondsSinceUpdate}s ago
+              </Badge>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Accuracy: {isOnRoute ? "High" : "Searching..."}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Enhanced Interactive Map */}
       <Card className="overflow-hidden border-0 shadow-lg">
         <CardContent className="p-0">
           <div 
@@ -894,27 +1012,50 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
               </svg>
             </div>
 
-            {/* Route Path */}
+            {/* Enhanced Route Path */}
             <svg className="absolute inset-0 w-full h-full">
               <path
                 d={`M ${pickupScreen.x}% ${pickupScreen.y}% Q ${(pickupScreen.x + destinationScreen.x)/2}% ${(pickupScreen.y + destinationScreen.y)/2 - 10}% ${destinationScreen.x}% ${destinationScreen.y}%`}
                 stroke="rgb(59 130 246)"
-                strokeWidth="3"
+                strokeWidth="4"
                 fill="none"
                 strokeDasharray="8,4"
-                className="opacity-60"
+                className="opacity-40"
               />
               
               {/* Progress Line */}
               <path
                 d={`M ${pickupScreen.x}% ${pickupScreen.y}% Q ${(pickupScreen.x + destinationScreen.x)/2}% ${(pickupScreen.y + destinationScreen.y)/2 - 10}% ${destinationScreen.x}% ${destinationScreen.y}%`}
                 stroke="rgb(34 197 94)"
-                strokeWidth="4"
+                strokeWidth="5"
                 fill="none"
                 strokeDasharray={`${progress * 2},${200 - progress * 2}`}
-                className="opacity-80"
+                className="opacity-90"
               />
             </svg>
+
+            {/* Location History Trail */}
+            {showLocationHistory && locationHistory.length > 1 && (
+              <svg className="absolute inset-0 w-full h-full">
+                {locationHistory.slice(1).map((pos, index) => {
+                  const prevPos = locationHistory[index]
+                  const currentScreen = coordsToScreen(pos.lat, pos.lng)
+                  const prevScreen = coordsToScreen(prevPos.lat, prevPos.lng)
+                  return (
+                    <line
+                      key={index}
+                      x1={`${prevScreen.x}%`}
+                      y1={`${prevScreen.y}%`}
+                      x2={`${currentScreen.x}%`}
+                      y2={`${currentScreen.y}%`}
+                      stroke="rgb(34 197 94)"
+                      strokeWidth="2"
+                      opacity={0.3 + (index / locationHistory.length) * 0.5}
+                    />
+                  )
+                })}
+              </svg>
+            )}
 
             {/* Pickup Location */}
             <div 
@@ -931,9 +1072,9 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
               </div>
             </div>
 
-            {/* Driver Position */}
+            {/* Enhanced Driver Position with Real-time Indicators */}
             <div 
-              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-2000 ease-linear"
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-1500 ease-linear"
               style={{ 
                 left: `${driverScreen.x}%`, 
                 top: `${driverScreen.y}%`,
@@ -941,12 +1082,19 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
               }}
             >
               <div className="relative">
-                <div className="w-5 h-5 bg-green-500 rounded-full shadow-xl border-2 border-white flex items-center justify-center">
-                  <Car size={12} className="text-white" style={{transform: `rotate(-${bearing}deg)`}} />
+                <div className={`w-6 h-6 rounded-full shadow-xl border-3 border-white flex items-center justify-center transition-colors ${
+                  isOnRoute ? 'bg-green-500' : 'bg-orange-500'
+                }`}>
+                  <Car size={14} className="text-white" style={{transform: `rotate(-${bearing}deg)`}} />
                 </div>
-                <div className="absolute inset-0 bg-green-500 rounded-full animate-pulse opacity-30"></div>
-                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                  {driver.name}
+                {/* Speed indicator ring */}
+                <div className="absolute inset-0 rounded-full border-2 border-green-300 animate-pulse opacity-60"></div>
+                {/* Real-time status indicator */}
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-green-600 to-green-500 text-white text-xs px-3 py-1 rounded-full whitespace-nowrap shadow-md">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    {driver.name} • {Math.round(speed)} mph
+                  </div>
                 </div>
               </div>
             </div>
@@ -971,7 +1119,7 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
               <Button 
                 variant="secondary" 
                 size="sm" 
-                className="w-8 h-8 p-0"
+                className="w-8 h-8 p-0 bg-white/90 hover:bg-white shadow-md"
                 onClick={() => setZoom(z => Math.min(z + 1, 18))}
               >
                 +
@@ -979,50 +1127,83 @@ const InteractiveMap = ({ trip, driver, onLocationUpdate }: {
               <Button 
                 variant="secondary" 
                 size="sm" 
-                className="w-8 h-8 p-0"
+                className="w-8 h-8 p-0 bg-white/90 hover:bg-white shadow-md"
                 onClick={() => setZoom(z => Math.max(z - 1, 8))}
               >
                 -
               </Button>
             </div>
 
-            {/* GPS Status */}
+            {/* Live Status Indicator */}
             <div className="absolute top-4 left-4">
-              <Badge variant="outline" className="bg-background/90 text-xs">
-                <CheckCircle size={12} className="mr-1 text-green-500" />
-                GPS Active
+              <Badge variant="outline" className="bg-white/95 text-xs shadow-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                Live Tracking
               </Badge>
             </div>
+
+            {/* Traffic Alert */}
+            {trafficDelay > 2 && (
+              <div className="absolute top-4 right-20">
+                <Badge variant="secondary" className="bg-orange-100 text-orange-700 text-xs">
+                  <Warning size={12} className="mr-1" />
+                  Traffic Delay
+                </Badge>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Trip Progress */}
+      {/* Enhanced Trip Progress with Real-time Data */}
       <Card className="border-0 shadow-sm">
         <CardContent className="p-4 space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Trip Progress</span>
-            <span className="font-medium">{Math.round(progress)}% Complete</span>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">{Math.round(progress)}% Complete</span>
+              {trafficDelay > 0 && (
+                <Badge variant="outline" className="text-xs bg-orange-50 text-orange-600">
+                  +{trafficDelay}min delay
+                </Badge>
+              )}
+            </div>
           </div>
           <Progress value={progress} className="h-2" />
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>Started {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
-            <span>ETA: {eta} min</span>
+            <div className="flex items-center gap-2">
+              <span>ETA: {eta} min</span>
+              <div className="w-1 h-1 bg-current rounded-full"></div>
+              <span>{Math.round(speed)} mph</span>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Real-time Updates */}
-      <Card className="border-0 shadow-sm">
+      {/* Real-time GPS Data */}
+      <Card className="border-0 shadow-sm bg-gradient-to-r from-blue-50 to-indigo-50">
         <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium">Live Tracking Active</span>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium">GPS Signal</span>
+              </div>
+              <Badge variant="outline" className="text-xs bg-white">
+                Strong
+              </Badge>
             </div>
-            <div className="text-xs text-muted-foreground">
-              Updated {Math.floor(Math.random() * 30)} sec ago
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Last Update</span>
+              <span className="text-xs font-mono">
+                {secondsSinceUpdate < 5 ? 'Just now' : `${secondsSinceUpdate}s ago`}
+              </span>
             </div>
+          </div>
+          <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+            <span>Route Status: {isOnRoute ? 'On planned route' : 'Recalculating route...'}</span>
+            <span>Bearing: {Math.round(bearing)}°</span>
           </div>
         </CardContent>
       </Card>
@@ -1685,7 +1866,19 @@ function App() {
 
         <div className="p-4 space-y-4 max-w-md mx-auto">
           {/* Enhanced Map */}
-          <InteractiveMap trip={currentTrip} driver={assignedDriver} />
+          <InteractiveMap 
+            trip={currentTrip} 
+            driver={assignedDriver} 
+            onLocationUpdate={(update) => {
+              // Handle real-time location updates
+              if (update.trafficDelay > 3) {
+                toast.info(`Traffic delay detected: +${update.trafficDelay} minutes`)
+              }
+              if (!update.isOnRoute) {
+                toast.warning("Driver is recalculating route...")
+              }
+            }} 
+          />
 
           {/* Driver Info with improved layout */}
           <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/95">
