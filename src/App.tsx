@@ -490,11 +490,6 @@ const useGeolocation = () => {
   const [speed, setSpeed] = useState<number | null>(null)
   const [watchId, setWatchId] = useState<number | null>(null)
 
-  // Stable references to prevent infinite loops
-  const getCurrentLocationRef = useRef<(() => void) | null>(null)
-  const startWatchingLocationRef = useRef<(() => number | null) | null>(null)
-  const stopWatchingLocationRef = useRef<(() => void) | null>(null)
-
   const getCurrentLocation = useCallback(() => {
     setLoading(true)
     setError(null)
@@ -599,11 +594,6 @@ const useGeolocation = () => {
     }
   }, [watchId])
 
-  // Set stable references
-  getCurrentLocationRef.current = getCurrentLocation
-  startWatchingLocationRef.current = startWatchingLocation  
-  stopWatchingLocationRef.current = stopWatchingLocation
-
   return { 
     location, 
     address, 
@@ -612,9 +602,9 @@ const useGeolocation = () => {
     accuracy, 
     heading, 
     speed,
-    getCurrentLocation: getCurrentLocationRef.current,
-    startWatchingLocation: startWatchingLocationRef.current,
-    stopWatchingLocation: stopWatchingLocationRef.current
+    getCurrentLocation,
+    startWatchingLocation,
+    stopWatchingLocation
   }
 }
 
@@ -900,44 +890,6 @@ const GoogleMapView = React.forwardRef<any, {
       }
     })
   }, [])
-
-  // Expose methods to parent component
-  useEffect(() => {
-    if (mapInstanceRef.current && ref) {
-      // Expose methods to parent via ref
-      if (typeof ref === 'function') {
-        ref({
-          showRoute,
-          toggleTraffic: () => {
-            if (trafficLayerRef.current) {
-              trafficLayerRef.current.setMap(
-                trafficLayerRef.current.getMap() ? null : mapInstanceRef.current
-              )
-            } else if (mapInstanceRef.current) {
-              // Create traffic layer if it doesn't exist
-              trafficLayerRef.current = new window.google.maps.TrafficLayer()
-              trafficLayerRef.current.setMap(mapInstanceRef.current)
-            }
-          }
-        })
-      } else if (ref && 'current' in ref) {
-        ref.current = {
-          showRoute,
-          toggleTraffic: () => {
-            if (trafficLayerRef.current) {
-              trafficLayerRef.current.setMap(
-                trafficLayerRef.current.getMap() ? null : mapInstanceRef.current
-              )
-            } else if (mapInstanceRef.current) {
-              // Create traffic layer if it doesn't exist
-              trafficLayerRef.current = new window.google.maps.TrafficLayer()
-              trafficLayerRef.current.setMap(mapInstanceRef.current)
-            }
-          }
-        }
-      }
-    }
-  }, [showRoute, ref])
 
   return <div ref={mapRef} className={className} />
 })
@@ -1436,7 +1388,6 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
   const [routeInfo, setRouteInfo] = useState<any>(null)
   const [isTrackingActive, setIsTrackingActive] = useState(true)
   const [lastUpdate, setLastUpdate] = useState(new Date())
-  const mapRef = useRef<any>(null)
 
   // Real-time driver position simulation with more realistic movement
   useEffect(() => {
@@ -1695,14 +1646,7 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
           size="sm"
           className="h-10 px-4"
           onClick={() => {
-            try {
-              if (mapRef.current && typeof mapRef.current.toggleTraffic === 'function') {
-                mapRef.current.toggleTraffic()
-              }
-            } catch (error) {
-              console.warn('Traffic toggle error:', error)
-              toast.error('Traffic layer temporarily unavailable')
-            }
+            toast.info('Traffic layer toggle coming soon')
           }}
         >
           Traffic
@@ -1767,9 +1711,12 @@ function App() {
       setHasSetInitialPickup(true)
       // Clear the finding location message and show success
       setStatusMessage('')
-      showPassengerStatus("📍 Location found - ready to book from here", 'success')
+      setTimeout(() => {
+        setStatusMessage("📍 Location found - ready to book from here")
+        setStatusType('success')
+      }, 100)
     }
-  }, [userLocation, userAddress, hasSetInitialPickup, showPassengerStatus])
+  }, [userLocation, userAddress, hasSetInitialPickup])
 
   // Initialize location and start watching when app loads
   useEffect(() => {
@@ -1785,7 +1732,8 @@ function App() {
         setIsLocationWatching(true)
         
         // Show location status to user
-        showPassengerStatus("📍 Finding your location for pickup...", 'info')
+        setStatusMessage("📍 Finding your location for pickup...")
+        setStatusType('info')
       }
     }
     
@@ -1798,7 +1746,7 @@ function App() {
       }
       setIsLocationWatching(false)
     }
-  }, []) // Empty dependency array to run only once on mount
+  }, [getCurrentLocation, startWatchingLocation, stopWatchingLocation])
 
   // Function to show passenger-relevant status messages
   const showPassengerStatus = useCallback((message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
@@ -1808,7 +1756,7 @@ function App() {
     if (type === 'info' || type === 'success') {
       setTimeout(() => setStatusMessage(''), 5000)
     }
-  }, []) // Added useCallback to prevent recreation on each render
+  }, [])
 
   // Example passenger status updates that would be appropriate:
   // - "🚗 Driver is 3 minutes away"
@@ -1876,7 +1824,7 @@ function App() {
       description: `${driver.vehicle} • ${driver.license}`
     })
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
-  }, [bookingForm, selectedService, showPassengerStatus, setRecentTrips]) // Added dependencies
+  }, [bookingForm, selectedService, setRecentTrips, showPassengerStatus])
 
   // Distance calculation helper
   const calculateDistance = useCallback((point1: any, point2: any) => {
@@ -1888,13 +1836,13 @@ function App() {
               Math.sin(dLng/2) * Math.sin(dLng/2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
     return Math.round(R * c * 100) / 100 // Round to 2 decimal places
-  }, []) // Added useCallback
+  }, [])
 
   const addToFavorites = useCallback((location: string, name: string) => {
     const newFavorite = { name, address: location, id: Date.now() }
     setFavorites((prev: any[]) => [...prev, newFavorite])
     // Don't show duplicate toast here since it's handled at the button level
-  }, [setFavorites]) // Added useCallback and dependencies
+  }, [setFavorites])
 
   // Home/Booking View
   if (currentView === 'home') {
