@@ -490,6 +490,11 @@ const useGeolocation = () => {
   const [speed, setSpeed] = useState<number | null>(null)
   const [watchId, setWatchId] = useState<number | null>(null)
 
+  // Stable references to prevent infinite loops
+  const getCurrentLocationRef = useRef<(() => void) | null>(null)
+  const startWatchingLocationRef = useRef<(() => number | null) | null>(null)
+  const stopWatchingLocationRef = useRef<(() => void) | null>(null)
+
   const getCurrentLocation = useCallback(() => {
     setLoading(true)
     setError(null)
@@ -550,7 +555,7 @@ const useGeolocation = () => {
   }, [])
 
   const startWatchingLocation = useCallback(() => {
-    if (!navigator.geolocation) return
+    if (!navigator.geolocation) return null
 
     const id = navigator.geolocation.watchPosition(
       (position) => {
@@ -594,6 +599,11 @@ const useGeolocation = () => {
     }
   }, [watchId])
 
+  // Set stable references
+  getCurrentLocationRef.current = getCurrentLocation
+  startWatchingLocationRef.current = startWatchingLocation  
+  stopWatchingLocationRef.current = stopWatchingLocation
+
   return { 
     location, 
     address, 
@@ -602,9 +612,9 @@ const useGeolocation = () => {
     accuracy, 
     heading, 
     speed,
-    getCurrentLocation,
-    startWatchingLocation,
-    stopWatchingLocation
+    getCurrentLocation: getCurrentLocationRef.current,
+    startWatchingLocation: startWatchingLocationRef.current,
+    stopWatchingLocation: stopWatchingLocationRef.current
   }
 }
 
@@ -1737,51 +1747,68 @@ function App() {
   const [statusMessage, setStatusMessage] = useState<string>('')
   const [statusType, setStatusType] = useState<'info' | 'success' | 'warning' | 'error'>('info')
 
-  // Update map center when user location is found
+  // Update map center when user location is found - with proper dependency management
   useEffect(() => {
     if (userLocation) {
       setMapCenter(userLocation)
-      if (!bookingForm.pickup && userAddress) {
-        setBookingForm(prev => ({ 
-          ...prev, 
-          pickup: userAddress,
-          pickupCoords: userLocation 
-        }))
-        // Clear the finding location message and show success
-        setStatusMessage('')
-        showPassengerStatus("📍 Location found - ready to book from here", 'success')
-      }
     }
-  }, [userLocation, userAddress, bookingForm.pickup])
+  }, [userLocation])
+
+  // Separate effect for setting pickup location to avoid infinite loops
+  const [hasSetInitialPickup, setHasSetInitialPickup] = useState(false)
+  
+  useEffect(() => {
+    if (userLocation && userAddress && !hasSetInitialPickup) {
+      setBookingForm(prev => ({ 
+        ...prev, 
+        pickup: userAddress,
+        pickupCoords: userLocation 
+      }))
+      setHasSetInitialPickup(true)
+      // Clear the finding location message and show success
+      setStatusMessage('')
+      showPassengerStatus("📍 Location found - ready to book from here", 'success')
+    }
+  }, [userLocation, userAddress, hasSetInitialPickup, showPassengerStatus])
 
   // Initialize location and start watching when app loads
   useEffect(() => {
-    getCurrentLocation()
+    let isMounted = true
     
-    // Start continuous tracking for better user experience
-    const watchId = startWatchingLocation()
-    setIsLocationWatching(true)
-    
-    // Show location status to user
-    if (!userLocation) {
-      showPassengerStatus("📍 Finding your location for pickup...", 'info')
+    const initLocation = () => {
+      if (isMounted && getCurrentLocation && startWatchingLocation) {
+        // Get current location once
+        getCurrentLocation()
+        
+        // Start continuous tracking
+        startWatchingLocation()
+        setIsLocationWatching(true)
+        
+        // Show location status to user
+        showPassengerStatus("📍 Finding your location for pickup...", 'info')
+      }
     }
+    
+    initLocation()
     
     return () => {
-      stopWatchingLocation()
+      isMounted = false
+      if (stopWatchingLocation) {
+        stopWatchingLocation()
+      }
       setIsLocationWatching(false)
     }
-  }, [getCurrentLocation, startWatchingLocation, stopWatchingLocation])
+  }, []) // Empty dependency array to run only once on mount
 
   // Function to show passenger-relevant status messages
-  const showPassengerStatus = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+  const showPassengerStatus = useCallback((message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
     setStatusMessage(message)
     setStatusType(type)
     // Auto-hide status after 5 seconds for non-critical messages
     if (type === 'info' || type === 'success') {
       setTimeout(() => setStatusMessage(''), 5000)
     }
-  }
+  }, []) // Added useCallback to prevent recreation on each render
 
   // Example passenger status updates that would be appropriate:
   // - "🚗 Driver is 3 minutes away"
@@ -1790,7 +1817,7 @@ function App() {
   // - "✅ Payment method confirmed"
   // - "🎯 Favorite location saved successfully"
 
-  const handleBookRide = () => {
+  const handleBookRide = useCallback(() => {
     if (!bookingForm.pickup || !bookingForm.destination || !selectedService) {
       toast.error("🚗 Please set pickup location, destination, and choose your ride type")
       return
@@ -1849,10 +1876,10 @@ function App() {
       description: `${driver.vehicle} • ${driver.license}`
     })
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
-  }
+  }, [bookingForm, selectedService, showPassengerStatus, setRecentTrips]) // Added dependencies
 
   // Distance calculation helper
-  const calculateDistance = (point1: any, point2: any) => {
+  const calculateDistance = useCallback((point1: any, point2: any) => {
     const R = 6371 // Earth's radius in kilometers
     const dLat = (point2.lat - point1.lat) * Math.PI / 180
     const dLng = (point2.lng - point1.lng) * Math.PI / 180
@@ -1861,13 +1888,13 @@ function App() {
               Math.sin(dLng/2) * Math.sin(dLng/2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
     return Math.round(R * c * 100) / 100 // Round to 2 decimal places
-  }
+  }, []) // Added useCallback
 
-  const addToFavorites = (location: string, name: string) => {
+  const addToFavorites = useCallback((location: string, name: string) => {
     const newFavorite = { name, address: location, id: Date.now() }
     setFavorites((prev: any[]) => [...prev, newFavorite])
     // Don't show duplicate toast here since it's handled at the button level
-  }
+  }, [setFavorites]) // Added useCallback and dependencies
 
   // Home/Booking View
   if (currentView === 'home') {
