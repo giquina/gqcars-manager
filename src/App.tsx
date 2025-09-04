@@ -86,6 +86,13 @@ declare namespace google {
       getMap(): Map | null
     }
     
+    class InfoWindow {
+      constructor(opts?: InfoWindowOptions)
+      open(map?: Map, anchor?: Marker): void
+      close(): void
+      setContent(content: string | Element): void
+    }
+    
     namespace places {
       class Autocomplete {
         constructor(inputField: HTMLInputElement, opts?: AutocompleteOptions)
@@ -150,12 +157,16 @@ declare namespace google {
       icon?: string | any
     }
     
-    interface Size {
-      constructor(width: number, height: number): Size
+    class Size {
+      constructor(width: number, height: number)
+      width: number
+      height: number
     }
     
-    interface Point {
-      constructor(x: number, y: number): Point
+    class Point {
+      constructor(x: number, y: number)
+      x: number
+      y: number
     }
     
     // Add other necessary interfaces
@@ -203,6 +214,11 @@ declare namespace google {
     interface DirectionsRendererOptions {
       suppressMarkers?: boolean
       polylineOptions?: any
+    }
+    
+    interface InfoWindowOptions {
+      content?: string | Element
+      position?: LatLng | LatLngLiteral
     }
     
     interface AutocompleteOptions {
@@ -869,6 +885,8 @@ const GoogleMapView = React.forwardRef<any, {
   return <div ref={mapRef} className={className} />
 })
 
+GoogleMapView.displayName = 'GoogleMapView'
+
 // Places Autocomplete component
 const PlacesAutocomplete = ({ 
   value, 
@@ -991,7 +1009,7 @@ const useGPSTracking = (initialPosition: any, destination: any, isActive: boolea
     }, 1500) // More frequent updates for smoother tracking
 
     return () => clearInterval(updateInterval)
-  }, [isActive, destination])
+  }, [isActive, destination, initialPosition])
 
   return { 
     currentPosition, 
