@@ -1,87 +1,219 @@
-# GQ Cars - UK Passenger Ride-Booking App
+# ARMORA - Premium Luxury Security Transport Platform
+*Drive in luxury, protected by shadows*
+
+---
 
 ## Core Purpose & Success
-- **Mission Statement**: Professional ride-booking service for UK passengers, providing reliable, comfortable transportation with transparent GBP pricing and excellent customer experience.
-- **Success Indicators**: Quick booking flow (under 60 seconds), high customer satisfaction, reliable driver matching, clear pricing with no hidden fees.
-- **Experience Qualities**: Professional, reliable, and straightforward - like a premium UK transport service.
+
+### Mission Statement
+Armora provides ultra-premium luxury transport services combined with professional security for discerning clients who demand both elegance and protection.
+
+### Success Indicators
+- Ultra-high customer satisfaction (4.9+ rating)
+- Premium pricing acceptance (£45-450+ per journey)
+- Repeat booking rate >80% for VIP clients
+- Zero security incidents on all protected journeys
+
+### Experience Qualities
+**Sophisticated** - Ultra-premium, exclusive, refined
+**Discreet** - Professional, unobtrusive, confidential
+**Protective** - Secure, reliable, professional security
+
+---
 
 ## Project Classification & Approach
-- **Complexity Level**: Light Application (ride booking with real-time tracking, payment processing, and user account management)
-- **Primary User Activity**: Booking and tracking rides - users need to quickly request transportation and monitor their journey
+
+### Complexity Level
+**Complex Premium Application** - Multi-tiered service platform with advanced security features, real-time coordination, and luxury service management
+
+### Primary User Activity
+**Creating** premium transport experiences with integrated security, from simple bookings to complex multi-vehicle coordination
+
+---
+
+## Core Problem Analysis
+
+### Specific Problem We're Solving
+High-net-worth individuals and business executives need luxury transport that doesn't compromise on security or privacy, with innovative options like driving themselves while having discrete security backup.
+
+### User Context
+- Business executives needing secure, luxury transport
+- Celebrities and VIPs requiring discrete protection
+- International visitors wanting familiar luxury with local security
+- Corporate clients managing group transport needs
+
+### Critical Path
+Location input → Service selection (including signature Shadow Escort) → Premium driver assignment → Real-time tracking with security features → Completion with discrete excellence
+
+### Key Moments
+1. **Service Selection** - Choosing between luxury chauffeur and innovative Shadow Escort
+2. **Driver Assignment** - Meeting SIA-certified professional with luxury vehicle
+3. **Journey Experience** - Feeling completely secure and luxuriously cared for
+
+---
 
 ## Essential Features
 
 ### Core Booking Features
-- **Quick Location Entry**: Simple pickup and destination input with UK postcode support
-- **Ride Type Selection**: Four service levels (Standard, Comfort, Executive, XL) with clear GBP pricing
-- **Payment Integration**: Secure payment processing with UK payment methods (contactless, chip & pin)
-- **Driver Matching**: Real-time driver assignment with profile, vehicle details, and ETA
-- **Live Tracking**: GPS tracking during rides with route visualization
-- **Trip History**: Complete record of past journeys with receipts
+- **Executive Transport** - Professional chauffeurs with luxury fleet (Mercedes S-Class, BMW 7, Bentley)
+- **Shadow Escort** (SIGNATURE) - Client drives while security follows discretely 50-200m behind
+- **Executive Protection** - SIA-licensed Close Protection Officers with armored vehicles
+- **Ultra-Luxury** - Rolls-Royce and Bentley fleet with white-glove service
+- **Airport Express** - Flight-monitored transfers with meet & greet
+- **Corporate Transport** - Business account management with bulk booking
 
-### UK Market Features
-- **GBP Currency**: All pricing in Great British Pounds with transparent estimates
-- **Local Integration**: UK postcodes, street names, and local landmarks
-- **Professional Service**: Clean, reliable vehicles with verified drivers
-- **Safety Features**: Emergency contacts, trip sharing, driver verification
+### Advanced Security Features
+- **Real-time GPS coordination** between client and security vehicles
+- **Silent panic button** for immediate security response
+- **Route optimization** with security risk assessment
+- **Professional driver verification** with SIA licensing display
+
+### Premium Service Features
+- **Concierge chat** via WhatsApp integration
+- **Preference management** for vehicles, routes, security levels
+- **Corporate billing** with detailed invoicing
+- **Multi-city service** coordination
+
+---
 
 ## Design Direction
 
 ### Visual Tone & Identity
-- **Emotional Response**: Confidence, reliability, and professional competence
-- **Design Personality**: Clean, modern, and trustworthy - like premium UK transport
-- **Visual Metaphors**: Professional transportation, reliability, and British quality standards
-- **Simplicity Spectrum**: Minimal interface that prioritizes speed and clarity
+**Emotional Response**: Sophisticated confidence, understated luxury, professional trust
+**Design Personality**: Premium, discrete, powerful, modern
+**Visual Metaphors**: Shields, armor, luxury materials, professional precision
 
 ### Color Strategy
-- **Color Scheme Type**: Monochromatic with professional accent
-- **Primary Color**: Clean black (#000000) for professional authority and premium feel
-- **Secondary Colors**: Light grays for backgrounds and supporting elements
-- **Accent Color**: Deep navy blue for interactive elements and highlights
-- **Color Psychology**: Black conveys premium service and reliability; whites create clean, trustworthy interface
-- **Foreground/Background Pairings**: 
-  - Black text on white backgrounds (primary content)
-  - White text on black buttons (calls-to-action)
-  - Dark gray text on light gray backgrounds (secondary content)
+**Color Scheme Type**: Sophisticated luxury palette with security accents
+**Primary**: Deep Navy Blue (sophistication & trust)
+**Secondary**: Charcoal Gray (professional & modern) 
+**Accent**: Metallic Gold (luxury & premium quality)
+**Security**: Emerald Green (protection & safety)
+**Background**: Pure whites and light grays for premium feel
 
 ### Typography System
-- **Font Pairing Strategy**: Single font family (Inter) with multiple weights for consistency
-- **Typographic Hierarchy**: Bold headings, medium subheadings, regular body text, small labels
-- **Font Personality**: Modern, clean, and highly legible for quick reading
-- **Readability Focus**: Optimized for mobile reading with appropriate sizing and spacing
-- **Which fonts**: Inter (400, 500, 600, 700 weights) for complete interface
-- **Legibility Check**: Excellent legibility across all screen sizes and conditions
+**Font Pairing**: Montserrat (headings) + Inter (body) for modern luxury
+**Hierarchy**: Bold sophisticated headers, clean readable body text
+**Premium Touch**: Subtle gradients and luxury spacing
+
+### Visual Hierarchy & Layout
+**Attention Direction**: Signature Shadow Escort service prominently featured
+**Premium Spacing**: Generous white space for luxury feel
+**Card-based Layout**: Clean shadows and premium materials
+**Mobile Excellence**: Touch-optimized for executive mobile usage
 
 ### UI Elements & Component Selection
-- **Component Usage**: 
-  - Cards for ride options and trip information
-  - Clean input fields for location entry
-  - Professional buttons for actions
-  - Bottom navigation for main sections
-- **Component Customization**: Rounded corners, subtle shadows, clean borders
-- **Component States**: Clear hover, active, and disabled states for all interactive elements
-- **Icon Selection**: Phosphor icons for consistency and clarity
-- **Spacing System**: Consistent padding and margins using Tailwind's spacing scale
-- **Mobile Adaptation**: Touch-friendly sizing with generous tap targets
+**Service Cards**: Highlight Shadow Escort as signature service with special badges
+**Driver Profiles**: Professional photos with SIA certifications displayed
+**Real-time Tracking**: Premium map styling with discrete security indicators
+**Payment**: Luxury payment interface supporting corporate billing
 
-### Layout & Navigation
-- **Bottom Navigation**: Uber-style bottom nav with Home, Activity, Saved, Account
-- **Single View Pattern**: One main view at a time with clear navigation
-- **Card-Based Layout**: Information organized in clean cards for easy scanning
-- **Mobile-First**: Designed primarily for mobile usage patterns
+---
 
-## Edge Cases & Problem Scenarios
-- **Location Recognition**: Handle unclear or incorrect addresses gracefully
-- **Driver Availability**: Clear messaging when no drivers available
-- **Payment Issues**: Fallback payment methods and clear error messages
-- **Trip Cancellations**: Easy cancellation with clear policies
-- **Emergency Situations**: Quick access to emergency features and support
+## Armora Service Implementation
+
+### Traditional Luxury Services ✅
+- **Executive Transport**: £45-75/hour - Mercedes S-Class, BMW 7 Series
+- **Ultra-Luxury**: £180-450/hour - Rolls-Royce, Bentley fleet
+- **Airport Express**: £65-120 - Flight monitoring, meet & greet
+- **Corporate Transport**: £40-85/hour - Business account management
+
+### Security-Enhanced Services ✅  
+- **Executive Protection**: £120-250/hour - SIA-licensed CPOs with luxury vehicles
+- **Shadow Escort**: £150-350/hour - Client drives, security follows discretely
+
+### Key Differentiators
+1. **Shadow Escort** - Revolutionary service allowing luxury independence with security backup
+2. **SIA-Licensed Professionals** - Highest-trained security and driving staff  
+3. **Ultra-Premium Fleet** - Access to finest luxury vehicles in London
+4. **Technology Integration** - AI-powered security assessment and route optimization
+5. **Discrete Excellence** - Premium service without compromising privacy
+
+---
+
+## Target Areas & Service Zones
+
+### Primary London Areas
+- **Mayfair** - Berkeley Square, Bond Street luxury district
+- **Knightsbridge** - Harrods, luxury shopping and hotels
+- **Belgravia** - Premium residential and diplomatic area
+- **Westminster** - Government and business district
+- **Canary Wharf** - Financial district and corporate towers
+
+### Airport Services
+All major London airports with VIP terminal access and diplomatic protocols
+
+---
+
+## Success Metrics
+
+### Business KPIs
+- Service booking volume and revenue per service type
+- Customer satisfaction ratings (target: 4.9+)
+- Repeat booking rates for VIP clients
+- Shadow Escort service adoption rate
+
+### Security & Quality Metrics
+- Zero security incidents across all services
+- Response time for emergency situations
+- Driver certification maintenance
+- Vehicle standards compliance
+
+---
 
 ## Implementation Considerations
-- **Real-time Updates**: Live driver tracking and trip progress
-- **Offline Functionality**: Basic functionality when connection is poor
-- **Performance**: Fast loading and smooth interactions
-- **UK Compliance**: Adherence to UK transport and data protection laws
+
+### Current Status ✅
+- **Core Platform**: Booking system with all Armora services
+- **Real-time Features**: GPS tracking and driver communication
+- **Premium Branding**: Sophisticated Navy/Gold color scheme
+- **Security Focus**: SIA-certified driver profiles
+- **Google Maps Integration**: Live location and route optimization
+
+### Phase 1 Priorities
+1. Enhanced Shadow Escort booking flow with security coordination
+2. Premium driver certification display
+3. Corporate account management
+4. Advanced payment processing for luxury pricing
+
+### Phase 2 Enhancement
+1. AI-powered security risk assessment
+2. Multi-vehicle coordination for complex journeys
+3. International service expansion
+4. White-label corporate solutions
+
+---
+
+## Brand Consistency Framework
+
+### Armora Brand Elements
+- **Name**: Armora (armor + aura = protected elegance)
+- **Tagline**: "Drive in luxury, protected by shadows"
+- **Personality**: Sophisticated, discrete, protective, premium
+- **Service Promise**: Uncompromising luxury with professional security
+
+### Design Standards
+- **Premium Materials**: Gradients, subtle shadows, luxury textures
+- **Sophisticated Colors**: Navy, gold, charcoal with premium whites
+- **Professional Typography**: Montserrat headers, Inter body text
+- **Security Indicators**: Discrete but clear security status
+- **Luxury Touch Points**: Every interaction reflects premium service
+
+---
 
 ## Reflection
-This approach focuses on creating a clean, professional passenger experience that feels distinctly British - reliable, straightforward, and premium without being ostentatious. The design prioritizes speed and clarity over flashy features, matching UK customer expectations for professional transport services.
+
+### What Makes This Approach Uniquely Suited
+The combination of luxury transport with innovative security services (especially Shadow Escort) creates a new category in premium mobility, serving clients who want both independence and protection.
+
+### Key Assumptions to Challenge
+- Premium pricing acceptance in competitive London market
+- Demand for Shadow Escort innovative service model
+- Technology adoption by ultra-high-net-worth demographic
+
+### What Would Make This Solution Truly Exceptional
+Perfect execution of the Shadow Escort service as the signature differentiator, combined with flawless luxury service delivery and complete discretion in all client interactions.
+
+---
+
+**This is not just transportation - it's comprehensive luxury mobility with professional security, delivered with sophistication and discretion.**

@@ -9,10 +9,16 @@
   body {
     font-family: 'Inter', sans-serif;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+  }
 }
 
 :root {
-  /* Modern Professional UK Transport App Color Scheme */
+  /* ARMORA Premium Luxury Security Transport Color Scheme */
+  /* "Drive in luxury, protected by shadows" */
+  
   --background: oklch(0.99 0.000 0);
   --foreground: oklch(0.09 0.005 220);
 
@@ -21,19 +27,23 @@
   --popover: oklch(1.00 0.000 0);
   --popover-foreground: oklch(0.09 0.005 220);
 
-  /* Premium Black - Primary Actions (Professional Feel) */
-  --primary: oklch(0.09 0.000 0);
+  /* Deep Navy Blue - Primary Actions (Sophistication & Trust) */
+  --primary: oklch(0.20 0.08 230);
   --primary-foreground: oklch(0.98 0.000 0);
   
-  /* Light Gray - Secondary Elements */
-  --secondary: oklch(0.97 0.000 0);
-  --secondary-foreground: oklch(0.09 0.000 0);
+  /* Charcoal Gray - Secondary Elements (Professional & Modern) */
+  --secondary: oklch(0.25 0.02 220);
+  --secondary-foreground: oklch(0.98 0.000 0);
   
-  /* Professional Blue - Interactive Elements */
-  --accent: oklch(0.45 0.15 250);
-  --accent-foreground: oklch(0.98 0.000 0);
+  /* Metallic Gold - Luxury Accents (Premium Quality) */
+  --accent: oklch(0.72 0.15 85);
+  --accent-foreground: oklch(0.09 0.000 0);
   
-  /* Safety Red - Cancellations and Warnings */
+  /* Emerald Green - Security Features (Protection & Safety) */
+  --security: oklch(0.55 0.18 155);
+  --security-foreground: oklch(0.98 0.000 0);
+  
+  /* Premium Red - Important Actions */
   --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.98 0.000 0);
 
@@ -41,9 +51,9 @@
   --muted-foreground: oklch(0.45 0.000 0);
   --border: oklch(0.89 0.000 0);
   --input: oklch(0.95 0.000 0);
-  --ring: oklch(0.45 0.15 250);
+  --ring: oklch(0.72 0.15 85);
 
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 }
 
 @theme {
@@ -66,6 +76,8 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-security: var(--security);
+  --color-security-foreground: var(--security-foreground);
 
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: var(--radius);

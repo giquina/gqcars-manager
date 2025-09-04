@@ -244,86 +244,133 @@ declare namespace google {
   }
 }
 
-// UK Ride Service Levels - Professional Service Types
-const rideServices = [
-  {
-    id: 'standard',
-    name: 'GQ Standard',
-    description: 'Reliable everyday rides',
-    priceRange: '£8.50 - £12.20',
-    eta: '2-4 min',
-    icon: Car,
-    capacity: '1-4 passengers',
-    vehicle: 'Economy cars'
-  },
-  {
-    id: 'comfort',
-    name: 'GQ Comfort',
-    description: 'Premium vehicles with extra space',
-    priceRange: '£12.80 - £16.40',
-    eta: '3-5 min',
-    icon: Shield,
-    capacity: '1-4 passengers',
-    vehicle: 'Premium cars'
-  },
+// ARMORA Premium Luxury Security Transport Services
+const armoraServices = [
   {
     id: 'executive',
-    name: 'GQ Executive', 
-    description: 'Luxury vehicles for business',
-    priceRange: '£18.50 - £24.90',
-    eta: '4-6 min',
-    icon: Star,
-    capacity: '1-4 passengers',
-    vehicle: 'Executive cars'
+    name: 'Executive Transport',
+    description: 'Professional chauffeurs with luxury sedans',
+    priceRange: '£45 - £75',
+    eta: '3-8 min',
+    icon: Car,
+    capacity: '1-3 passengers',
+    vehicle: 'Mercedes S-Class, BMW 7 Series',
+    features: ['Professional chauffeur', 'Premium vehicles', 'Wi-Fi & refreshments']
   },
   {
-    id: 'xl',
-    name: 'GQ XL',
-    description: 'Larger vehicles for groups',
-    priceRange: '£15.20 - £19.80',
-    eta: '5-7 min',
-    icon: Users,
+    id: 'shadow-escort',
+    name: 'Shadow Escort',
+    description: 'Drive yourself with discrete security following',
+    priceRange: '£150 - £350',
+    eta: '5-12 min',
+    icon: Shield,
+    capacity: '1-4 passengers',
+    vehicle: 'Your vehicle + Security escort',
+    features: ['SIA-licensed security', 'GPS coordination', 'Panic button'],
+    highlight: true, // This is the signature service
+    new: true
+  },
+  {
+    id: 'executive-protection', 
+    name: 'Executive Protection',
+    description: 'SIA-licensed Close Protection Officers',
+    priceRange: '£120 - £250',
+    eta: '8-15 min',
+    icon: Shield,
+    capacity: '1-3 passengers',
+    vehicle: 'Armored luxury vehicles',
+    features: ['Close protection officers', 'Secure vehicles', 'Route planning']
+  },
+  {
+    id: 'ultra-luxury',
+    name: 'Ultra-Luxury',
+    description: 'Rolls-Royce, Bentley premium fleet',
+    priceRange: '£180 - £450',
+    eta: '10-20 min',
+    icon: Star,
+    capacity: '1-4 passengers',
+    vehicle: 'Rolls-Royce, Bentley Flying Spur',
+    features: ['Ultra-luxury vehicles', 'White-glove service', 'Champagne service']
+  },
+  {
+    id: 'airport-express',
+    name: 'Airport Express',
+    description: 'Flight-monitored transfers with meet & greet',
+    priceRange: '£65 - £120',
+    eta: '15-30 min',
+    icon: NavigationArrow,
     capacity: '1-6 passengers',
-    vehicle: 'Large vehicles'
+    vehicle: 'Mercedes E-Class, Range Rover',
+    features: ['Flight monitoring', 'Meet & greet', 'Luggage assistance']
+  },
+  {
+    id: 'corporate',
+    name: 'Corporate Transport',
+    description: 'Business account management and bulk bookings',
+    priceRange: '£40 - £85',
+    eta: '5-12 min',
+    icon: Users,
+    capacity: '1-8 passengers',
+    vehicle: 'Mercedes V-Class, BMW X7',
+    features: ['Business accounts', 'Bulk booking', 'Invoice management']
   }
 ]
 
-// Sample drivers
-const drivers = [
+// ARMORA Premium Security Drivers & Chauffeurs
+const armoraDrivers = [
   {
     id: 1,
-    name: 'James Wilson',
+    name: 'James Wellington',
     rating: 4.9,
-    completedTrips: 1247,
-    vehicle: 'Toyota Prius - Silver',
-    license: 'GK67 XBN',
+    completedTrips: 847,
+    vehicle: 'Mercedes S-Class 580 - Obsidian Black',
+    license: 'ARMR001',
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-    eta: 3
+    eta: 5,
+    certifications: ['SIA Close Protection', 'Advanced Driving', 'First Aid'],
+    specialties: ['Executive Protection', 'Diplomatic Transport'],
+    languages: ['English', 'French']
   },
   {
     id: 2,
-    name: 'Sarah Mitchell',
+    name: 'Victoria Sterling',
     rating: 4.8,
-    completedTrips: 892,
-    vehicle: 'Honda Insight - Black',
-    license: 'BV19 MKL',
+    completedTrips: 623,
+    vehicle: 'Bentley Flying Spur - Sage Green',
+    license: 'ARMR002', 
     photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b586?w=400&q=80',
-    eta: 4
+    eta: 7,
+    certifications: ['SIA Close Protection', 'VIP Security', 'Defensive Driving'],
+    specialties: ['Celebrity Protection', 'Shadow Escort'],
+    languages: ['English', 'Italian', 'Spanish']
+  },
+  {
+    id: 3,
+    name: 'Marcus Blackwood',
+    rating: 4.9,
+    completedTrips: 1134,
+    vehicle: 'Rolls-Royce Ghost - Arctic White',
+    license: 'ARMR003',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
+    eta: 12,
+    certifications: ['SIA Close Protection', 'Counter-Surveillance', 'Tactical Driving'],
+    specialties: ['Ultra-Luxury', 'Government Transport'],
+    languages: ['English', 'German']
   }
 ]
 
-// Sample London locations for realistic GPS simulation
-const londonLocations = [
-  { lat: 51.5074, lng: -0.1278, name: "London Bridge" },
+// Premium London locations for Armora service areas (Mayfair, Knightsbridge, Belgravia, etc.)
+const premiumLondonLocations = [
+  { lat: 51.5113, lng: -0.1533, name: "Mayfair - Berkeley Square" },
+  { lat: 51.4994, lng: -0.1618, name: "Knightsbridge - Harrods" },
+  { lat: 51.4945, lng: -0.1447, name: "Belgravia - Eaton Square" },
+  { lat: 51.5033, lng: -0.1276, name: "Westminster - Parliament" },
   { lat: 51.5155, lng: -0.0922, name: "Tower Bridge" },
-  { lat: 51.4994, lng: -0.1244, name: "Borough Market" },
-  { lat: 51.5007, lng: -0.1246, name: "Southwark Cathedral" },
-  { lat: 51.5033, lng: -0.1195, name: "London Bridge Station" },
+  { lat: 51.5007, lng: -0.1246, name: "Borough Market" },
   { lat: 51.5081, lng: -0.0759, name: "Canary Wharf" },
   { lat: 51.5118, lng: -0.1301, name: "St Paul's Cathedral" },
   { lat: 51.5139, lng: -0.0986, name: "Bank Station" },
-  { lat: 51.5085, lng: -0.1257, name: "Mansion House" },
-  { lat: 51.5045, lng: -0.1123, name: "Monument" }
+  { lat: 51.4836, lng: -0.1629, name: "South Kensington - V&A Museum" }
 ]
 
 // Google Maps API loader with better error handling
@@ -1374,7 +1421,7 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
   driver: any,
   onArrival?: () => void
 }) => {
-  const [driverLocation, setDriverLocation] = useState(driver.location || londonLocations[0])
+  const [driverLocation, setDriverLocation] = useState(driver.location || premiumLondonLocations[0])
   const [estimatedArrival, setEstimatedArrival] = useState(driver.eta || 5)
   const [routeInfo, setRouteInfo] = useState<any>(null)
   const [isTrackingActive, setIsTrackingActive] = useState(true)
@@ -1754,8 +1801,8 @@ function App() {
       return
     }
     
-    const driver = drivers[Math.floor(Math.random() * drivers.length)]
-    const service = rideServices.find(s => s.id === selectedService)
+    const driver = armoraDrivers[Math.floor(Math.random() * armoraDrivers.length)]
+    const service = armoraServices.find(s => s.id === selectedService)
     
     const distance = calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords)
     const estimatedDuration = Math.ceil(distance * 2) // Rough estimation: 2 minutes per km in city traffic
@@ -1836,7 +1883,8 @@ function App() {
                 <Car size={20} className="text-primary-foreground" weight="bold" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">GQ Cars</h1>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Armora</h1>
+                <p className="text-xs text-muted-foreground italic">Protected by Shadows</p>
                 {userLocation && (
                   <p className="text-xs text-muted-foreground">
                     📍 {userAddress ? userAddress.split(',')[0] : 'Locating...'}
@@ -2252,7 +2300,7 @@ function App() {
             </div>
             
             <div className="space-y-2">
-              {rideServices.map(service => {
+              {armoraServices.map(service => {
                 const Icon = service.icon
                 return (
                   <Card 
@@ -2261,7 +2309,7 @@ function App() {
                       selectedService === service.id 
                         ? 'ring-2 ring-primary bg-gradient-to-r from-primary/5 to-accent/5 shadow-md' 
                         : 'hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10'
-                    }`}
+                    } ${service.highlight ? 'bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20' : ''}`}
                     onClick={() => {
                       setSelectedService(service.id)
                       showPassengerStatus(`${service.name} selected - ${service.priceRange}`, 'info')
@@ -2272,15 +2320,25 @@ function App() {
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
                           selectedService === service.id 
                             ? 'bg-primary text-primary-foreground' 
+                            : service.highlight 
+                            ? 'bg-accent text-accent-foreground'
                             : 'bg-primary/10'
                         }`}>
-                          <Icon size={18} className={selectedService === service.id ? '' : 'text-primary'} />
+                          <Icon size={18} className={selectedService === service.id ? '' : service.highlight ? '' : 'text-primary'} />
                         </div>
                         
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <div>
-                              <h3 className="font-semibold text-sm leading-tight">{service.name}</h3>
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-semibold text-sm leading-tight">{service.name}</h3>
+                                {service.new && (
+                                  <Badge className="h-4 px-1.5 text-xs bg-accent text-accent-foreground">NEW</Badge>
+                                )}
+                                {service.highlight && (
+                                  <Badge className="h-4 px-1.5 text-xs bg-gradient-to-r from-accent to-primary text-white">★ SIGNATURE</Badge>
+                                )}
+                              </div>
                               <p className="text-xs text-muted-foreground leading-tight">{service.capacity}</p>
                             </div>
                             <div className="text-right">
@@ -2324,7 +2382,7 @@ function App() {
                 'Select ride type' :
                 !bookingForm.pickupCoords || !bookingForm.destinationCoords ?
                 'Select valid locations' :
-                `Confirm ${rideServices.find(s => s.id === selectedService)?.name}`
+                `Confirm ${armoraServices.find(s => s.id === selectedService)?.name}`
               }
             </div>
           </Button>
@@ -2335,10 +2393,10 @@ function App() {
               <div className="flex items-start gap-2">
                 <CheckCircle size={14} className="text-accent mt-0.5 flex-shrink-0" />
                 <div className="space-y-1">
-                  <h4 className="font-medium text-xs">Quick tips</h4>
+                  <h4 className="font-medium text-xs">Premium Service Tips</h4>
                   <ul className="text-xs text-muted-foreground space-y-0.5">
-                    <li>• Enable GPS for precise pickup</li>
-                    <li>• Save favorites for faster booking</li>
+                    <li>• Enable GPS for precise pickup coordination</li>
+                    <li>• Try Shadow Escort for luxury & security</li>
                   </ul>
                 </div>
               </div>
@@ -2690,7 +2748,7 @@ function App() {
                 <List size={32} className="text-muted-foreground" />
               </div>
               <h3 className="text-xl font-bold mb-2">No trips yet</h3>
-              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">When you book your first ride with GQ Cars, it will appear here</p>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">When you book your first premium transport with Armora, it will appear here</p>
               <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
                 <Car size={18} className="mr-2" />
                 Book your first ride
