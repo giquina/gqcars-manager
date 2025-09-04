@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Progress } from "@/components/ui/progress"
 import { 
   Shield, 
   Phone, 
@@ -22,7 +23,13 @@ import {
   List,
   ArrowLeft,
   Plus,
-  X
+  X,
+  Navigation,
+  Speedometer,
+  Timer,
+  Crosshair,
+  Warning,
+  CheckCircle
 } from "@phosphor-icons/react"
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
@@ -91,76 +98,327 @@ const drivers = [
   }
 ]
 
-// Map component for ride tracking
-const RideTrackingMap = ({ trip, driver }: { trip: any, driver: any }) => {
-  const [driverPosition, setDriverPosition] = useState({ x: 20, y: 80 })
-  const [tripProgress, setTripProgress] = useState(0)
+// Enhanced GPS tracking and map data
+const londonLocations = [
+  { name: "Westminster Bridge", lat: 51.5007, lng: -0.1246 },
+  { name: "London Bridge", lat: 51.5079, lng: -0.0877 },
+  { name: "Tower Bridge", lat: 51.5055, lng: -0.0754 },
+  { name: "Kings Cross Station", lat: 51.5308, lng: -0.1238 },
+  { name: "Paddington Station", lat: 51.5154, lng: -0.1755 },
+  { name: "Oxford Circus", lat: 51.5154, lng: -0.1414 },
+  { name: "Piccadilly Circus", lat: 51.5100, lng: -0.1347 },
+  { name: "Covent Garden", lat: 51.5118, lng: -0.1226 }
+]
+
+// Real-time GPS simulation
+const useGPSTracking = (initialPosition: any, destination: any, isActive: boolean) => {
+  const [currentPosition, setCurrentPosition] = useState(initialPosition)
+  const [route, setRoute] = useState<any[]>([])
+  const [progress, setProgress] = useState(0)
+  const [eta, setEta] = useState(0)
+  const [speed, setSpeed] = useState(0)
+  const [bearing, setBearing] = useState(0)
 
   useEffect(() => {
+    if (!isActive || !destination) return
+
+    // Generate route points between pickup and destination
+    const routePoints = generateRoute(initialPosition, destination)
+    setRoute(routePoints)
+    setEta(Math.ceil(routePoints.length * 0.5)) // Rough ETA calculation
+
+    let currentIndex = 0
     const interval = setInterval(() => {
-      setDriverPosition(prev => ({
-        x: Math.min(prev.x + 1.5, 80),
-        y: Math.max(prev.y - 1, 20)
-      }))
-      setTripProgress(prev => Math.min(prev + 2, 100))
-    }, 3000)
+      if (currentIndex < routePoints.length - 1) {
+        const currentPoint = routePoints[currentIndex]
+        const nextPoint = routePoints[currentIndex + 1]
+        
+        setCurrentPosition(currentPoint)
+        setProgress((currentIndex / (routePoints.length - 1)) * 100)
+        setSpeed(25 + Math.random() * 15) // Simulated speed 25-40 mph
+        setBearing(calculateBearing(currentPoint, nextPoint))
+        setEta(Math.ceil((routePoints.length - currentIndex) * 0.5))
+        
+        currentIndex++
+      } else {
+        setProgress(100)
+        setSpeed(0)
+        setEta(0)
+        clearInterval(interval)
+      }
+    }, 2000) // Update every 2 seconds
 
     return () => clearInterval(interval)
-  }, [])
+  }, [isActive, destination])
+
+  return { currentPosition, route, progress, eta, speed, bearing }
+}
+
+// Route generation helper
+const generateRoute = (start: any, end: any) => {
+  const points = []
+  const steps = 15 // Number of route points
+  
+  for (let i = 0; i <= steps; i++) {
+    const ratio = i / steps
+    const lat = start.lat + (end.lat - start.lat) * ratio + (Math.random() - 0.5) * 0.002
+    const lng = start.lng + (end.lng - start.lng) * ratio + (Math.random() - 0.5) * 0.002
+    points.push({ lat, lng, timestamp: Date.now() + i * 2000 })
+  }
+  
+  return points
+}
+
+// Bearing calculation
+const calculateBearing = (point1: any, point2: any) => {
+  const dLng = point2.lng - point1.lng
+  const y = Math.sin(dLng) * Math.cos(point2.lat)
+  const x = Math.cos(point1.lat) * Math.sin(point2.lat) - 
+            Math.sin(point1.lat) * Math.cos(point2.lat) * Math.cos(dLng)
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360
+}
+
+// Enhanced Interactive Map Component
+const InteractiveMap = ({ trip, driver, onLocationUpdate }: { 
+  trip: any, 
+  driver: any, 
+  onLocationUpdate?: (location: any) => void 
+}) => {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const [mapCenter, setMapCenter] = useState({ lat: 51.5074, lng: -0.1278 }) // London center
+  const [zoom, setZoom] = useState(13)
+  const [isFollowingDriver, setIsFollowingDriver] = useState(true)
+  
+  // Get pickup and destination coordinates
+  const pickupLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
+  const destinationLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
+  
+  // Use GPS tracking
+  const { currentPosition, route, progress, eta, speed, bearing } = useGPSTracking(
+    pickupLocation, 
+    destinationLocation, 
+    true
+  )
+
+  // Convert real coordinates to screen position (simplified)
+  const coordsToScreen = useCallback((lat: number, lng: number) => {
+    const mapBounds = mapRef.current?.getBoundingClientRect()
+    if (!mapBounds) return { x: 50, y: 50 }
+    
+    // Simplified projection for demo - in real app would use proper map projection
+    const latRange = 0.02 // Rough degree range shown on map
+    const lngRange = 0.03
+    
+    const x = ((lng - (mapCenter.lng - lngRange/2)) / lngRange) * 100
+    const y = ((mapCenter.lat + latRange/2 - lat) / latRange) * 100
+    
+    return { 
+      x: Math.max(5, Math.min(95, x)), 
+      y: Math.max(5, Math.min(95, y)) 
+    }
+  }, [mapCenter])
+
+  // Update map center when following driver
+  useEffect(() => {
+    if (isFollowingDriver && currentPosition) {
+      setMapCenter(currentPosition)
+    }
+  }, [currentPosition, isFollowingDriver])
+
+  const driverScreen = coordsToScreen(currentPosition.lat, currentPosition.lng)
+  const pickupScreen = coordsToScreen(pickupLocation.lat, pickupLocation.lng)
+  const destinationScreen = coordsToScreen(destinationLocation.lat, destinationLocation.lng)
 
   return (
-    <div className="relative bg-gradient-to-br from-muted/10 to-muted/30 rounded-lg h-48 overflow-hidden border">
-      {/* Map grid background */}
-      <div className="absolute inset-0 opacity-5">
-        <svg width="100%" height="100%">
-          <defs>
-            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="1"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
-      </div>
-
-      {/* Route line */}
-      <svg className="absolute inset-0 w-full h-full">
-        <path
-          d="M 20% 80% Q 50% 50% 80% 20%"
-          stroke="rgb(100 116 139)"
-          strokeWidth="2"
-          fill="none"
-          strokeDasharray="5,5"
-        />
-      </svg>
-
-      {/* Pickup location */}
-      <div className="absolute" style={{ left: '20%', top: '80%', transform: 'translate(-50%, -50%)' }}>
-        <div className="bg-primary text-primary-foreground rounded-full p-1.5 shadow-md">
-          <MapPin size={12} weight="fill" />
+    <div className="space-y-4">
+      {/* Map Controls */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button 
+            variant={isFollowingDriver ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIsFollowingDriver(!isFollowingDriver)}
+            className="h-8 px-3 text-xs"
+          >
+            <Crosshair size={14} className="mr-1" />
+            {isFollowingDriver ? "Following" : "Follow"}
+          </Button>
+          <Badge variant="secondary" className="text-xs">
+            <Navigation size={12} className="mr-1" style={{transform: `rotate(${bearing}deg)`}} />
+            {Math.round(bearing)}°
+          </Badge>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="text-xs">
+            <Speedometer size={12} className="mr-1" />
+            {Math.round(speed)} mph
+          </Badge>
+          <Badge variant="outline" className="text-xs">
+            <Timer size={12} className="mr-1" />
+            {eta} min
+          </Badge>
         </div>
       </div>
 
-      {/* Driver position */}
-      <div 
-        className="absolute transition-all duration-3000" 
-        style={{ left: `${driverPosition.x}%`, top: `${driverPosition.y}%`, transform: 'translate(-50%, -50%)' }}
-      >
-        <div className="bg-accent text-accent-foreground rounded-full p-1.5 shadow-md">
-          <Car size={12} weight="fill" />
-        </div>
-      </div>
+      {/* Interactive Map */}
+      <Card className="overflow-hidden border-0 shadow-lg">
+        <CardContent className="p-0">
+          <div 
+            ref={mapRef}
+            className="relative bg-gradient-to-br from-slate-100 to-slate-200 h-64 overflow-hidden cursor-move"
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = ((e.clientX - rect.left) / rect.width) * 100
+              const y = ((e.clientY - rect.top) / rect.height) * 100
+              // Handle map interaction
+            }}
+          >
+            {/* Street Grid Pattern */}
+            <div className="absolute inset-0">
+              <svg width="100%" height="100%" className="opacity-20">
+                <defs>
+                  <pattern id="streets" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+                    <path d="M 20 0 L 20 40 M 0 20 L 40 20" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#streets)" />
+              </svg>
+            </div>
 
-      {/* Destination */}
-      <div className="absolute" style={{ left: '80%', top: '20%', transform: 'translate(-50%, -50%)' }}>
-        <div className="bg-destructive text-destructive-foreground rounded-full p-1.5 shadow-md">
-          <NavigationArrow size={12} weight="fill" />
-        </div>
-      </div>
+            {/* Route Path */}
+            <svg className="absolute inset-0 w-full h-full">
+              <path
+                d={`M ${pickupScreen.x}% ${pickupScreen.y}% Q ${(pickupScreen.x + destinationScreen.x)/2}% ${(pickupScreen.y + destinationScreen.y)/2 - 10}% ${destinationScreen.x}% ${destinationScreen.y}%`}
+                stroke="rgb(59 130 246)"
+                strokeWidth="3"
+                fill="none"
+                strokeDasharray="8,4"
+                className="opacity-60"
+              />
+              
+              {/* Progress Line */}
+              <path
+                d={`M ${pickupScreen.x}% ${pickupScreen.y}% Q ${(pickupScreen.x + destinationScreen.x)/2}% ${(pickupScreen.y + destinationScreen.y)/2 - 10}% ${destinationScreen.x}% ${destinationScreen.y}%`}
+                stroke="rgb(34 197 94)"
+                strokeWidth="4"
+                fill="none"
+                strokeDasharray={`${progress * 2},${200 - progress * 2}`}
+                className="opacity-80"
+              />
+            </svg>
 
-      {/* ETA display */}
-      <div className="absolute top-2 left-2 bg-background/90 backdrop-blur rounded px-2 py-1 text-xs font-medium">
-        {driver.eta} min away
-      </div>
+            {/* Pickup Location */}
+            <div 
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500"
+              style={{ left: `${pickupScreen.x}%`, top: `${pickupScreen.y}%` }}
+            >
+              <div className="relative">
+                <div className="w-4 h-4 bg-blue-500 rounded-full shadow-lg border-2 border-white">
+                  <div className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-25"></div>
+                </div>
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                  Pickup
+                </div>
+              </div>
+            </div>
+
+            {/* Driver Position */}
+            <div 
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-2000 ease-linear"
+              style={{ 
+                left: `${driverScreen.x}%`, 
+                top: `${driverScreen.y}%`,
+                transform: `translate(-50%, -50%) rotate(${bearing}deg)`
+              }}
+            >
+              <div className="relative">
+                <div className="w-5 h-5 bg-green-500 rounded-full shadow-xl border-2 border-white flex items-center justify-center">
+                  <Car size={12} className="text-white" style={{transform: `rotate(-${bearing}deg)`}} />
+                </div>
+                <div className="absolute inset-0 bg-green-500 rounded-full animate-pulse opacity-30"></div>
+                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-green-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                  {driver.name}
+                </div>
+              </div>
+            </div>
+
+            {/* Destination */}
+            <div 
+              className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-500"
+              style={{ left: `${destinationScreen.x}%`, top: `${destinationScreen.y}%` }}
+            >
+              <div className="relative">
+                <div className="w-4 h-4 bg-red-500 rounded-full shadow-lg border-2 border-white">
+                  <NavigationArrow size={10} className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+                </div>
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                  Destination
+                </div>
+              </div>
+            </div>
+
+            {/* Zoom Controls */}
+            <div className="absolute bottom-4 right-4 flex flex-col gap-1">
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                className="w-8 h-8 p-0"
+                onClick={() => setZoom(z => Math.min(z + 1, 18))}
+              >
+                +
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                className="w-8 h-8 p-0"
+                onClick={() => setZoom(z => Math.max(z - 1, 8))}
+              >
+                -
+              </Button>
+            </div>
+
+            {/* GPS Status */}
+            <div className="absolute top-4 left-4">
+              <Badge variant="outline" className="bg-background/90 text-xs">
+                <CheckCircle size={12} className="mr-1 text-green-500" />
+                GPS Active
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Trip Progress */}
+      <Card className="border-0 shadow-sm">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Trip Progress</span>
+            <span className="font-medium">{Math.round(progress)}% Complete</span>
+          </div>
+          <Progress value={progress} className="h-2" />
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>Started {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
+            <span>ETA: {eta} min</span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Real-time Updates */}
+      <Card className="border-0 shadow-sm">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">Live Tracking Active</span>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Updated {Math.floor(Math.random() * 30)} sec ago
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
@@ -187,15 +445,31 @@ function App() {
     const driver = drivers[Math.floor(Math.random() * drivers.length)]
     const service = rideServices.find(s => s.id === selectedService)
     
+    // Calculate estimated distance and duration based on selected locations
+    const pickupCoords = londonLocations.find(loc => loc.name === bookingForm.pickup) || londonLocations[0]
+    const destCoords = londonLocations.find(loc => loc.name === bookingForm.destination) || londonLocations[1]
+    
+    const distance = calculateDistance(pickupCoords, destCoords)
+    const estimatedDuration = Math.ceil(distance * 2) // Rough estimation: 2 minutes per km in city traffic
+    
     const trip = {
       id: Date.now(),
       service: service,
       pickup: bookingForm.pickup,
       destination: bookingForm.destination,
+      pickupCoords: pickupCoords,
+      destinationCoords: destCoords,
       driver: driver,
       status: 'driver_assigned',
       startTime: new Date(),
-      estimatedPrice: service?.priceRange
+      estimatedPrice: service?.priceRange,
+      estimatedDistance: distance,
+      estimatedDuration: estimatedDuration,
+      realTimeData: {
+        lastUpdate: new Date(),
+        trafficCondition: 'moderate',
+        weatherCondition: 'clear'
+      }
     }
     
     setCurrentTrip(trip)
@@ -205,8 +479,20 @@ function App() {
     // Add to recent trips
     setRecentTrips((prev: any[]) => [trip, ...prev.slice(0, 9)])
     
-    toast.success(`${driver.name} is on the way!`)
+    toast.success(`${driver.name} is on the way! GPS tracking active.`)
     setBookingForm({ pickup: '', destination: '' })
+  }
+
+  // Distance calculation helper
+  const calculateDistance = (point1: any, point2: any) => {
+    const R = 6371 // Earth's radius in kilometers
+    const dLat = (point2.lat - point1.lat) * Math.PI / 180
+    const dLng = (point2.lng - point1.lng) * Math.PI / 180
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
+              Math.sin(dLng/2) * Math.sin(dLng/2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    return Math.round(R * c * 100) / 100 // Round to 2 decimal places
   }
 
   const addToFavorites = (location: string, name: string) => {
@@ -237,22 +523,66 @@ function App() {
         </header>
 
         <div className="p-4 pb-20 space-y-5 max-w-md mx-auto">
-          {/* Map Preview Section */}
+          {/* Map Preview Section with GPS */}
           <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
             <CardContent className="p-0">
-              <div className="h-32 bg-gradient-to-br from-muted/20 to-muted/10 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMSIgZmlsbD0iY3VycmVudENvbG9yIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4K')] opacity-20"></div>
+              <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+                {/* Mini street grid */}
+                <div className="absolute inset-0">
+                  <svg width="100%" height="100%" className="opacity-15">
+                    <defs>
+                      <pattern id="miniStreets" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="1"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#miniStreets)" />
+                  </svg>
+                </div>
+                
+                {/* Current location indicator */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="relative">
+                    <div className="w-6 h-6 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                    <div className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-25"></div>
+                  </div>
+                </div>
+                
+                {/* GPS Status */}
+                <div className="absolute top-2 left-2">
+                  <Badge variant="secondary" className="text-xs bg-background/90">
+                    <CheckCircle size={12} className="mr-1 text-green-500" />
+                    GPS Ready
+                  </Badge>
+                </div>
+                
+                {/* Set Pickup Button */}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="absolute bottom-2 right-2 h-7 text-xs bg-background/90"
+                  onClick={() => {
+                    // Simulate getting current location
+                    const randomLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
+                    setBookingForm(prev => ({ ...prev, pickup: randomLocation.name }))
+                    toast.success("Current location set as pickup")
+                  }}
+                >
+                  <Crosshair size={12} className="mr-1" />
+                  Use Current
+                </Button>
+                
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center space-y-1">
-                    <MapPin size={24} className="text-primary mx-auto" weight="duotone" />
-                    <p className="text-xs text-muted-foreground font-medium">Tap to set pickup location</p>
+                    <p className="text-xs text-muted-foreground font-medium">Tap map to explore pickup options</p>
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Booking Form with enhanced styling */}
+          {/* Enhanced Booking Form with Location Suggestions */}
           <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/98">
             <CardContent className="p-5 space-y-4">
               <div className="space-y-3">
@@ -263,7 +593,20 @@ function App() {
                     onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
                     className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
                   />
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full shadow-sm"></div>
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full shadow-sm"></div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-10 px-3 text-xs"
+                    onClick={() => {
+                      const randomLocation = londonLocations[Math.floor(Math.random() * londonLocations.length)]
+                      setBookingForm(prev => ({ ...prev, pickup: randomLocation.name }))
+                      toast.success("GPS location set")
+                    }}
+                  >
+                    <Crosshair size={14} className="mr-1" />
+                    GPS
+                  </Button>
                 </div>
                 
                 <div className="relative">
@@ -273,9 +616,48 @@ function App() {
                     onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
                     className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
                   />
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-destructive rounded-full shadow-sm"></div>
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full shadow-sm"></div>
+                  {bookingForm.destination && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-10 px-2"
+                      onClick={() => {
+                        addToFavorites(bookingForm.destination, `Saved Location ${favorites.length + 1}`)
+                      }}
+                    >
+                      <Heart size={14} />
+                    </Button>
+                  )}
                 </div>
               </div>
+              
+              {/* Quick Location Suggestions */}
+              {(!bookingForm.pickup || !bookingForm.destination) && (
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground font-medium">Quick locations</p>
+                  <div className="flex flex-wrap gap-2">
+                    {londonLocations.slice(0, 4).map((location, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        size="sm"
+                        className="h-7 text-xs"
+                        onClick={() => {
+                          if (!bookingForm.pickup) {
+                            setBookingForm(prev => ({ ...prev, pickup: location.name }))
+                          } else if (!bookingForm.destination) {
+                            setBookingForm(prev => ({ ...prev, destination: location.name }))
+                          }
+                        }}
+                      >
+                        <MapPin size={12} className="mr-1" />
+                        {location.name}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -429,11 +811,7 @@ function App() {
 
         <div className="p-4 space-y-4 max-w-md mx-auto">
           {/* Enhanced Map */}
-          <Card className="overflow-hidden border-0 shadow-lg">
-            <CardContent className="p-0">
-              <RideTrackingMap trip={currentTrip} driver={assignedDriver} />
-            </CardContent>
-          </Card>
+          <InteractiveMap trip={currentTrip} driver={assignedDriver} />
 
           {/* Driver Info with improved layout */}
           <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/95">
@@ -473,29 +851,71 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Trip Details with better visual hierarchy */}
-          <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
-            <CardContent className="p-5 space-y-4">
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Trip Route</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-4">
-                  <div className="w-4 h-4 bg-primary rounded-full flex-shrink-0 shadow-sm"></div>
-                  <div>
-                    <p className="font-medium">{currentTrip.pickup}</p>
-                    <p className="text-xs text-muted-foreground">Pickup location</p>
+          {/* Enhanced Trip Details with Real-time Info */}
+          <div className="space-y-3">
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
+              <CardContent className="p-5 space-y-4">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Trip Route</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-4">
+                    <div className="w-4 h-4 bg-blue-500 rounded-full flex-shrink-0 shadow-sm"></div>
+                    <div>
+                      <p className="font-medium">{currentTrip.pickup}</p>
+                      <p className="text-xs text-muted-foreground">Pickup location</p>
+                    </div>
+                  </div>
+                  <div className="ml-2 w-0.5 h-8 bg-gradient-to-b from-blue-500 via-muted to-red-500"></div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-4 h-4 bg-red-500 rounded-full flex-shrink-0 shadow-sm"></div>
+                    <div>
+                      <p className="font-medium">{currentTrip.destination}</p>
+                      <p className="text-xs text-muted-foreground">Destination</p>
+                    </div>
                   </div>
                 </div>
-                <div className="ml-2 w-0.5 h-8 bg-gradient-to-b from-primary via-muted to-destructive"></div>
-                <div className="flex items-center gap-4">
-                  <div className="w-4 h-4 bg-destructive rounded-full flex-shrink-0 shadow-sm"></div>
+              </CardContent>
+            </Card>
+
+            {/* Real-time Trip Stats */}
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="font-medium">{currentTrip.destination}</p>
-                    <p className="text-xs text-muted-foreground">Destination</p>
+                    <p className="text-2xl font-bold text-primary">{currentTrip.estimatedDistance || '3.2'} km</p>
+                    <p className="text-xs text-muted-foreground">Distance</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-accent">{currentTrip.estimatedDuration || '12'} min</p>
+                    <p className="text-xs text-muted-foreground">Duration</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-green-600">£{currentTrip.estimatedPrice?.split(' - ')[0]?.substring(1) || '12.50'}</p>
+                    <p className="text-xs text-muted-foreground">Fare</p>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Traffic & Weather Conditions */}
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
+              <CardContent className="p-4">
+                <h4 className="font-medium text-sm mb-3">Current Conditions</h4>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                    <span className="text-sm">Moderate traffic</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="text-sm">Clear weather</span>
+                  </div>
+                </div>
+                <div className="mt-3 text-xs text-muted-foreground">
+                  Last updated: {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           <Button 
             variant="destructive" 
