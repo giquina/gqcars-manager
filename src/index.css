@@ -12,30 +12,38 @@
 }
 
 :root {
-  --background: oklch(0.97 0.004 220);
-  --foreground: oklch(0.12 0.04 240);
+  /* Premium Security Color Scheme */
+  --background: oklch(0.98 0.005 220);
+  --foreground: oklch(0.15 0.02 220);
 
-  --card: oklch(0.995 0.002 220);
-  --card-foreground: oklch(0.15 0.04 240);
-  --popover: oklch(0.995 0.002 220);
-  --popover-foreground: oklch(0.15 0.04 240);
+  --card: oklch(0.99 0.003 220);
+  --card-foreground: oklch(0.12 0.02 220);
+  --popover: oklch(0.99 0.003 220);
+  --popover-foreground: oklch(0.12 0.02 220);
 
-  --primary: oklch(0.25 0.12 255);
+  /* Deep Navy - Authority & Trust */
+  --primary: oklch(0.18 0.05 240);
   --primary-foreground: oklch(0.98 0.005 240);
-  --secondary: oklch(0.92 0.02 240);
-  --secondary-foreground: oklch(0.15 0.04 240);
-  --accent: oklch(0.55 0.22 160);
-  --accent-foreground: oklch(0.98 0.005 240);
-  --destructive: oklch(0.60 0.18 25);
+  
+  /* Platinum Silver - Premium Technology */
+  --secondary: oklch(0.92 0.008 220);
+  --secondary-foreground: oklch(0.18 0.02 240);
+  
+  /* Gold/Amber - Premium Service & Emergency */
+  --accent: oklch(0.72 0.18 75);
+  --accent-foreground: oklch(0.15 0.02 240);
+  
+  /* Professional Red - Emergency & Critical Actions */
+  --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.98 0.005 240);
 
-  --muted: oklch(0.95 0.01 240);
-  --muted-foreground: oklch(0.45 0.03 240);
-  --border: oklch(0.89 0.008 240);
-  --input: oklch(0.93 0.008 240);
-  --ring: oklch(0.55 0.22 160);
+  --muted: oklch(0.96 0.008 220);
+  --muted-foreground: oklch(0.45 0.02 220);
+  --border: oklch(0.90 0.008 220);
+  --input: oklch(0.94 0.008 220);
+  --ring: oklch(0.72 0.18 75);
 
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 }
 
 @theme {

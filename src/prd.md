@@ -1,128 +1,122 @@
-# GQCars Ride-Sharing Passenger App - Product Requirements Document
+# GQCars Security Transport - Passenger App PRD
 
 ## Core Purpose & Success
-- **Mission Statement**: To provide passengers with a seamless, reliable, and comfortable ride-booking experience for their transportation needs.
+- **Mission Statement**: Provide passengers with instant access to licensed security professionals for safe, premium transport services.
 - **Success Indicators**: 
-  - Quick and successful ride bookings
-  - High user satisfaction with driver matching
-  - Efficient trip tracking and completion
-  - Safe and comfortable travel experiences
-- **Experience Qualities**: Reliable, Intuitive, Safe
+  - Sub-60 second booking time for urgent situations
+  - 99.9% driver credential verification rate
+  - Premium trust perception comparable to executive protection services
+- **Experience Qualities**: Secure, Professional, Immediate
 
 ## Project Classification & Approach
-- **Complexity Level**: Light Application (multiple features with basic state)
-- **Primary User Activity**: Acting and Interacting (booking rides, tracking trips, managing preferences)
+- **Complexity Level**: Complex Application (advanced functionality, security verification, real-time tracking)
+- **Primary User Activity**: Acting (booking immediate security transport) with Critical Safety Elements
 
 ## Thought Process for Feature Selection
-- **Core Problem Analysis**: Passengers need a quick, reliable way to book transportation with real-time tracking, clear pricing, and safety features.
-- **User Context**: Users need transportation for daily commutes, errands, appointments, or special occasions with varying urgency levels.
-- **Critical Path**: Set pickup location → Choose destination → Select ride type → Book ride → Track driver → Complete trip
+- **Core Problem Analysis**: High-value individuals and those in vulnerable situations need immediate access to verified security professionals for transport, not amateur drivers
+- **User Context**: Emergency situations, high-risk environments, executive transport needs, personal safety concerns
+- **Critical Path**: Threat assessment → Security level selection → Driver verification → Real-time protection
 - **Key Moments**: 
-  1. Location selection and ride type choice
-  2. Driver matching and estimated arrival time
-  3. Real-time trip tracking and communication
+  1. Initial threat/risk assessment (determines service level)
+  2. Driver credential verification (builds trust)
+  3. Live tracking with emergency protocols (ensures safety)
 
 ## Essential Features
 
-### Ride Booking System
-- Quick location input for pickup and destination
-- Multiple ride type options (economy, premium, shared)
-- Real-time pricing estimates
-- Instant booking confirmation
+### Security Risk Assessment
+- **What it does**: 6-question evaluation to determine appropriate protection level
+- **Why it matters**: Different threats require different security responses
+- **Success criteria**: Appropriate security level assigned within 30 seconds
 
-### Driver Matching & Tracking
-- Real-time driver location and ETA
-- Driver profile and vehicle information
-- Trip progress tracking with map view
-- Communication options with driver
+### Driver Credential Display
+- **What it does**: Shows security licensing, photo, background verification, and professional experience
+- **Why it matters**: Trust is fundamental - passengers must feel confident in driver qualifications
+- **Success criteria**: 100% credential verification displayed before driver assignment
 
-### Trip Management
-- Active trip status and updates
-- Trip history and receipts
-- Ride sharing and safety features
-- Payment method management
+### Real-Time Security Tracking
+- **What it does**: Live GPS with emergency protocols, route monitoring, and threat detection
+- **Why it matters**: Continuous protection awareness and emergency response capability
+- **Success criteria**: Sub-5 second location updates with instant emergency response
 
-### Favorites & Quick Actions
-- Saved locations (home, work, frequent destinations)
-- Favorite drivers for repeat bookings
-- Quick rebooking from trip history
-- Scheduled ride options
+### Emergency Response System
+- **What it does**: One-tap emergency services, automatic threat escalation, emergency contact notification
+- **Why it matters**: Security transport must handle crisis situations immediately
+- **Success criteria**: Emergency response activated within 3 seconds of alert
 
-### Safety Features
-- Emergency contact sharing
-- Real-time trip sharing with contacts
-- Driver verification and ratings
-- In-app emergency button
+### Premium Service Levels
+- **What it does**: Solo security driver, security team, executive protection options
+- **Why it matters**: Different threat levels require different security responses
+- **Success criteria**: Clear service differentiation with appropriate pricing
 
 ## Design Direction
 
 ### Visual Tone & Identity
-- **Emotional Response**: Users should feel safe, confident, and in control of their transportation
-- **Design Personality**: Clean, modern, trustworthy with emphasis on clarity and efficiency
-- **Visual Metaphors**: Movement, navigation, connectivity, safety
-- **Simplicity Spectrum**: Minimal interface focused on core actions without distracting elements
+- **Emotional Response**: Confidence, Trust, Professional Competence, Immediate Safety
+- **Design Personality**: Executive, Authoritative, Reliable, Discreet, Premium
+- **Visual Metaphors**: Shield imagery, professional badges, secure transport, executive protection
+- **Simplicity Spectrum**: Professional minimalism - clean but authoritative interface
 
 ### Color Strategy
-- **Color Scheme Type**: Clean monochromatic with trust-building accent colors
-- **Primary Color**: Deep blue (trust, reliability, professionalism)
-- **Secondary Colors**: Light grays and whites (cleanliness, simplicity)
-- **Accent Color**: Vibrant green (go/action, safety, positive outcomes)
-- **Color Psychology**: Builds trust while encouraging action and movement
-- **Color Accessibility**: High contrast ratios ensuring visibility in various lighting conditions
+- **Color Scheme Type**: Monochromatic with strategic accent
+- **Primary Color**: Deep Navy/Charcoal (authority, trust, professionalism)
+- **Secondary Colors**: Platinum Silver (premium, technology, sophistication)
+- **Accent Color**: Gold/Amber (premium service, immediate action, warning/alert)
+- **Color Psychology**: Navy conveys trust and authority, Gold indicates premium positioning and urgency
+- **Color Accessibility**: High contrast ratios for critical emergency features
 - **Foreground/Background Pairings**: 
-  - Background (white) + Foreground (dark blue) = 12.6:1 ratio
-  - Card (light gray) + Card text (dark blue) = 11.8:1 ratio
-  - Primary (blue) + Primary text (white) = 12.6:1 ratio
-  - Accent (green) + Accent text (white) = 4.8:1 ratio
+  - White text on Navy backgrounds (4.7:1 ratio)
+  - Navy text on Light Gray backgrounds (8.2:1 ratio)
+  - White text on Gold accents (3.8:1 ratio)
+  - Navy text on White backgrounds (11.9:1 ratio)
 
 ### Typography System
-- **Font Pairing Strategy**: Single clean sans-serif optimized for mobile reading
-- **Typographic Hierarchy**: Clear distinction for locations, times, prices, and status updates
-- **Font Personality**: Friendly, accessible, highly legible for quick scanning
-- **Readability Focus**: Optimized for mobile usage and quick information consumption
-- **Typography Consistency**: Consistent sizing for similar information types
-- **Which fonts**: Inter (excellent mobile readability and modern feel)
-- **Legibility Check**: Inter performs excellently across all mobile screen sizes
+- **Font Pairing Strategy**: Single professional typeface family with varied weights
+- **Typographic Hierarchy**: Bold headers for security features, clean body text for credentials
+- **Font Personality**: Professional, Authoritative, Highly Legible, Executive
+- **Readability Focus**: Critical for emergency situations - must be readable under stress
+- **Typography Consistency**: Consistent weight and spacing for professional appearance
+- **Which fonts**: Inter (primary) - clean, professional, excellent readability
+- **Legibility Check**: Inter tested for emergency readability and stress situations
 
 ### Visual Hierarchy & Layout
-- **Attention Direction**: Location inputs → Ride options → Book button → Trip status
-- **White Space Philosophy**: Clean spacing for easy touch targets and reduced cognitive load
-- **Grid System**: Mobile-first grid optimized for one-handed usage
-- **Responsive Approach**: Mobile-optimized with tablet/desktop secondary considerations
-- **Content Density**: Focused information display avoiding overwhelming users
+- **Attention Direction**: Emergency features prominently placed, security credentials highlighted
+- **White Space Philosophy**: Professional breathing room without wasted space
+- **Grid System**: Structured layout reflecting security protocols and procedures
+- **Responsive Approach**: Emergency features always accessible regardless of device
+- **Content Density**: Dense information display for security details, spacious for booking flow
 
 ### Animations
-- **Purposeful Meaning**: Smooth transitions that indicate progress and provide feedback
-- **Hierarchy of Movement**: Focus on booking actions and status updates
-- **Contextual Appropriateness**: Quick, efficient animations that don't delay core actions
+- **Purposeful Meaning**: Subtle authority-building animations, immediate response feedback
+- **Hierarchy of Movement**: Emergency features animate immediately, tracking shows live movement
+- **Contextual Appropriateness**: Professional restraint with functional priority
 
 ### UI Elements & Component Selection
-- **Component Usage**: Cards for ride options, modals for trip details, forms for destinations
-- **Component Customization**: Large touch targets, clear buttons, accessible form inputs
-- **Component States**: Clear feedback for loading, success, and error states
-- **Icon Selection**: Transportation and navigation focused icons from Phosphor
-- **Component Hierarchy**: Primary (book ride), secondary (settings), tertiary (information)
-- **Spacing System**: Mobile-optimized spacing with generous touch targets
-- **Mobile Adaptation**: Mobile-first design with thumb-friendly interaction zones
+- **Component Usage**: Cards for driver credentials, prominent buttons for emergency features
+- **Component Customization**: Professional styling with security-focused visual language
+- **Component States**: Clear enabled/disabled states for security features
+- **Icon Selection**: Security-focused icons (shields, badges, emergency symbols)
+- **Component Hierarchy**: Emergency actions primary, booking secondary, information tertiary
+- **Spacing System**: Professional spacing using 8px base grid
+- **Mobile Adaptation**: Emergency features maintain prominence on mobile
 
 ### Visual Consistency Framework
-- **Design System Approach**: Component-based focused on transportation app patterns
-- **Style Guide Elements**: Color system, typography, spacing, interaction patterns
-- **Visual Rhythm**: Consistent card layouts and button treatments
-- **Brand Alignment**: Professional, reliable transportation service positioning
+- **Design System Approach**: Component-based with security protocol consistency
+- **Style Guide Elements**: Security badge styling, emergency color coding, credential displays
+- **Visual Rhythm**: Professional cadence reflecting security industry standards
+- **Brand Alignment**: Premium security service positioning
 
 ### Accessibility & Readability
-- **Contrast Goal**: WCAG AA compliance with extra attention to mobile usage scenarios
+- **Contrast Goal**: WCAG AAA compliance for all emergency and safety-critical features
 
 ## Edge Cases & Problem Scenarios
-- **Potential Obstacles**: Poor GPS signals, driver cancellations, payment issues, safety concerns
-- **Edge Case Handling**: Clear error messages, alternative booking options, emergency features
-- **Technical Constraints**: Real-time location updates, offline functionality, battery optimization
+- **Potential Obstacles**: Driver verification delays, emergency response coordination, high-stress booking
+- **Edge Case Handling**: Backup driver assignment, emergency service integration, offline emergency protocols
+- **Technical Constraints**: Real-time tracking reliability, emergency service integration
 
 ## Implementation Considerations
-- **Scalability Needs**: Multiple ride types, driver ratings, payment methods, trip history
-- **Testing Focus**: Booking flow efficiency, location accuracy, user safety features
-- **Critical Questions**: Can users quickly book rides and feel safe throughout their journey?
+- **Scalability Needs**: Regional expansion with local security provider integration
+- **Testing Focus**: Emergency response times, driver verification accuracy, stress-testing critical paths
+- **Critical Questions**: How quickly can we verify and assign qualified security drivers?
 
 ## Reflection
-This approach creates a passenger-focused transportation app that prioritizes safety, reliability, and ease of use while maintaining the efficient booking flow essential for ride-sharing success.
+This approach uniquely positions GQCars as executive protection transport rather than casual ride-sharing. The emphasis on credentials, emergency response, and professional security protocols creates clear differentiation from standard transportation apps. The premium visual language and security-focused features justify higher pricing while building essential trust with customers who need professional protection.
