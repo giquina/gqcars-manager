@@ -480,6 +480,7 @@ const GoogleMapsLoader = ({ children, fallback }: {
 
   return <>{children}</>
 }
+
 const useGeolocation = () => {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [address, setAddress] = useState<string>('')
@@ -522,7 +523,7 @@ const useGeolocation = () => {
         }
         
         setLoading(false)
-        // No notification needed - GPS is working silently in background
+        // GPS working silently in background
       },
       (error) => {
         let errorMessage = 'Unable to find your location'
@@ -539,7 +540,7 @@ const useGeolocation = () => {
         }
         setError(errorMessage)
         setLoading(false)
-        toast.error(errorMessage)
+        // Only show error for permission denied, not for timeout or unavailable
       },
       {
         enableHighAccuracy: true,
@@ -1104,21 +1105,9 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
       
       if (lastDriverMessage) {
         const messageAge = new Date().getTime() - new Date(lastDriverMessage.timestamp).getTime()
-        if (messageAge < 5000) { // Message is less than 5 seconds old
-          // This would trigger unread count update in parent component
-          // For demo purposes, we'll show a toast notification
-          if (typeof window !== 'undefined') {
-            toast.success(`New message from ${driver.name}: ${lastDriverMessage.text.substring(0, 50)}${lastDriverMessage.text.length > 50 ? '...' : ''}`, {
-              duration: 4000,
-              action: {
-                label: "Reply",
-                onClick: () => {
-                  // This would open the chat in a real implementation
-                  console.log("Open chat")
-                }
-              }
-            })
-          }
+        if (messageAge < 5000) { // Only show very recent messages
+          // Reduced frequency of chat notifications
+          console.log('New driver message received')
         }
       }
     }
@@ -1140,9 +1129,9 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
       setMessages([welcomeMessage])
     }
 
-    // Simulate driver responses
+    // Simulate driver responses less frequently
     const responseInterval = setInterval(() => {
-      if (Math.random() > 0.85 && messages.length > 0) { // 15% chance every 10 seconds
+      if (Math.random() > 0.95 && messages.length > 0) { // Reduced to 5% chance every 15 seconds
         const responses = [
           "On my way!",
           "Just around the corner",
@@ -1162,7 +1151,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
         
         setMessages(prev => [...prev, response])
       }
-    }, 10000)
+    }, 15000) // Increased interval to 15 seconds
 
     // Simulate driver typing indicator
     const typingInterval = setInterval(() => {
@@ -1709,12 +1698,14 @@ function App() {
         pickupCoords: userLocation 
       }))
       setHasSetInitialPickup(true)
-      // Clear the finding location message and show success
+      // Clear the finding location message and show success only once
       setStatusMessage('')
       setTimeout(() => {
-        setStatusMessage("📍 Location found - ready to book from here")
-        setStatusType('success')
-      }, 100)
+        if (!statusMessage.includes('ready to book')) {
+          setStatusMessage("📍 Location ready - tap to set pickup")
+          setStatusType('success')
+        }
+      }, 500)
     }
   }, [userLocation, userAddress, hasSetInitialPickup])
 
@@ -1731,8 +1722,8 @@ function App() {
         startWatchingLocation()
         setIsLocationWatching(true)
         
-        // Show location status to user
-        setStatusMessage("📍 Finding your location for pickup...")
+        // Show location status only initially
+        setStatusMessage("📍 Getting your location...")
         setStatusType('info')
       }
     }
@@ -1748,14 +1739,12 @@ function App() {
     }
   }, [getCurrentLocation, startWatchingLocation, stopWatchingLocation])
 
-  // Function to show passenger-relevant status messages
+  // Function to show passenger-relevant status messages (with auto-hide)
   const showPassengerStatus = useCallback((message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
     setStatusMessage(message)
     setStatusType(type)
-    // Auto-hide status after 5 seconds for non-critical messages
-    if (type === 'info' || type === 'success') {
-      setTimeout(() => setStatusMessage(''), 5000)
-    }
+    // Auto-hide status after 3 seconds for less intrusive experience
+    setTimeout(() => setStatusMessage(''), 3000)
   }, [])
 
   // Example passenger status updates that would be appropriate:
@@ -1808,22 +1797,20 @@ function App() {
     setIsChatOpen(false)
     setUnreadMessages(0)
     
-    // Clear any previous status and show driver assignment
+    // Clear any previous status and show driver assignment once
     setStatusMessage('')
-    setTimeout(() => {
-      showPassengerStatus(`🚗 ${driver.name} is your driver - arriving in ${driver.eta} minutes`, 'success')
-    }, 1000)
     
     // Add to recent trips
     setRecentTrips((prev: any[]) => [trip, ...prev.slice(0, 9)])
     
-    // Show passenger-relevant notification instead of technical details
-    showPassengerStatus(`🚗 ${driver.name} is your driver - arriving in ${driver.eta} minutes`, 'success')
-    toast.success(`🚗 ${driver.name} is your driver! They'll arrive in ${driver.eta} minutes`, {
+    // Show single success notification
+    toast.success(`🚗 ${driver.name} is your driver! ETA: ${driver.eta} minutes`, {
       duration: 5000,
       description: `${driver.vehicle} • ${driver.license}`
     })
+    // Clear both form fields when resetting
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
+    setHasSetInitialPickup(false)
   }, [bookingForm, selectedService, setRecentTrips, showPassengerStatus])
 
   // Distance calculation helper
@@ -1916,7 +1903,6 @@ function App() {
                           pickup: location.address,
                           pickupCoords: { lat: location.lat, lng: location.lng }
                         }))
-                        showPassengerStatus("📍 Pickup location confirmed", 'success')
                         toast.success("📍 Pickup location set")
                       } else if (!bookingForm.destination) {
                         setBookingForm(prev => ({
@@ -1924,7 +1910,6 @@ function App() {
                           destination: location.address,
                           destinationCoords: { lat: location.lat, lng: location.lng }
                         }))
-                        showPassengerStatus("🎯 Destination confirmed - ready to book", 'success')
                         toast.success("🎯 Destination confirmed")
                       }
                     }}
@@ -2023,8 +2008,6 @@ function App() {
                           pickup: userAddress,
                           pickupCoords: userLocation
                         }))
-                        showPassengerStatus("📍 Using current location for pickup", 'success')
-                        toast.success("📍 Current location set")
                       }
                     }}
                   >
@@ -2202,7 +2185,6 @@ function App() {
                     } ${service.highlight ? 'bg-gradient-to-br from-accent/10 to-primary/10 border border-accent/20' : ''}`}
                     onClick={() => {
                       setSelectedService(service.id)
-                      showPassengerStatus(`${service.name} selected - ${service.priceRange}`, 'info')
                     }}
                   >
                     <CardContent className="p-3">
@@ -2446,13 +2428,13 @@ function App() {
           </div>
         </header>
 
-        {/* Driver Status Updates */}
+        {/* Driver Status Updates - Only show when driver is assigned */}
         {currentTrip && assignedDriver && (
-          <div className="mx-4 mt-4 p-3 rounded-lg bg-green-50 border-l-4 border-green-500">
+          <div className="mx-4 mt-4 p-3 rounded-lg bg-green-50 border border-green-200">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <p className="text-sm font-medium text-green-700">
-                {assignedDriver.name} is {assignedDriver.eta} minutes away
+                {assignedDriver.name} is arriving in {assignedDriver.eta} minutes
               </p>
             </div>
           </div>
