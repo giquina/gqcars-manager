@@ -8,6 +8,20 @@
   
   body {
     font-family: 'Inter', sans-serif;
+    overflow: hidden; /* Prevent scrolling */
+    height: 100vh;
+    position: fixed;
+    width: 100%;
+  }
+  
+  html {
+    overflow: hidden; /* Prevent scrolling */
+    height: 100vh;
+  }
+  
+  #root {
+    height: 100vh;
+    overflow: hidden; /* Prevent scrolling */
   }
   
   h1, h2, h3, h4, h5, h6 {

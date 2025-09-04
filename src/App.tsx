@@ -2630,27 +2630,27 @@ function App() {
   // Home/Booking View
   if (currentView === 'home') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+      <div className="h-screen bg-gradient-to-br from-background to-background/95 flex flex-col overflow-hidden">
         <Toaster position="top-center" />
         
-        {/* Streamlined Header */}
-        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+        {/* Compact Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-3 sticky top-0 z-10">
           <div className="flex items-center justify-between max-w-md mx-auto">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <Car size={16} className="text-primary-foreground" weight="bold" />
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                <Car size={12} className="text-primary-foreground" weight="bold" />
               </div>
               <div>
-                <h1 className="text-lg font-bold">Armora</h1>
-                <p className="text-xs text-muted-foreground">Protected by Shadows</p>
+                <h1 className="text-base font-bold">Armora</h1>
+                <p className="text-[10px] text-muted-foreground">Protected by Shadows</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               {isLocationWatching && (
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="GPS active" />
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" title="GPS active" />
               )}
-              <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full">
-                <User size={16} />
+              <Button variant="ghost" size="sm" className="w-6 h-6 rounded-full">
+                <User size={12} />
               </Button>
             </div>
           </div>
@@ -2658,28 +2658,26 @@ function App() {
 
         {/* Essential Status Messages Only - Driver Related Info */}
         {statusMessage && (statusMessage.includes('Driver') || statusMessage.includes('arriving') || statusMessage.includes('assigned')) && (
-          <div className="mx-4 mt-3 p-3 rounded-lg bg-green-50 border border-green-200">
+          <div className="mx-4 mt-2 p-2 rounded-lg bg-green-50 border border-green-200">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <p className="text-sm font-medium text-green-700">{statusMessage}</p>
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+              <p className="text-xs font-medium text-green-700">{statusMessage}</p>
             </div>
           </div>
         )}
 
-        <div className="p-4 pb-24 space-y-3 max-w-md mx-auto"
-             style={{ paddingBottom: '6rem' }}>
-          {/* Enhanced Map Preview with Real Google Maps - Larger and More Interactive */}
-          <Card className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-card to-card/90 ring-1 ring-border/10">
+        <div className="flex-1 p-4 space-y-2 max-w-md mx-auto overflow-hidden flex flex-col">
+          {/* Compact Map Preview */}
+          <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/90">
             <CardContent className="p-0">
               <div className="relative">
                 <GoogleMapsLoader
                   fallback={
-                    <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden rounded-lg">
+                    <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden rounded-lg">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center space-y-3">
-                          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                          <p className="text-sm font-medium text-gray-700">Loading Interactive Map...</p>
-                          <p className="text-xs text-gray-500">Connecting to GPS services</p>
+                        <div className="text-center space-y-1">
+                          <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                          <p className="text-xs font-medium text-gray-700">Loading Map...</p>
                         </div>
                       </div>
                     </div>
@@ -2692,19 +2690,14 @@ function App() {
                       lng: userLocation.lng,
                       title: "Your Current Location",
                       icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="12" cy="12" r="10" fill="#3B82F6" stroke="white" stroke-width="2" opacity="0.9"/>
-                          <circle cx="12" cy="12" r="4" fill="white"/>
-                          <circle cx="12" cy="12" r="2" fill="#3B82F6"/>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="10" cy="10" r="8" fill="#3B82F6" stroke="white" stroke-width="2"/>
+                          <circle cx="10" cy="10" r="3" fill="white"/>
                         </svg>
                       `),
-                      animation: typeof window !== 'undefined' && window.google?.maps?.Animation ? window.google.maps.Animation.DROP : undefined,
                       infoWindow: `
-                        <div style="padding: 6px; font-family: Inter, sans-serif; text-align: center;">
-                          <h3 style="margin: 0 0 2px 0; font-size: 12px; font-weight: 600; color: #1f2937;">📍 You are here</h3>
-                          <p style="margin: 0; font-size: 10px; color: #6b7280;">
-                            Accurate to ${accuracy ? Math.round(accuracy) + 'm' : 'GPS precision'}
-                          </p>
+                        <div style="padding: 4px; font-family: Inter, sans-serif; text-align: center;">
+                          <h3 style="margin: 0; font-size: 10px; font-weight: 600; color: #1f2937;">📍 You are here</h3>
                         </div>
                       `
                     }] : []}
@@ -2725,122 +2718,71 @@ function App() {
                         toast.success("🎯 Destination confirmed")
                       }
                     }}
-                    className="h-48"
-                    showControls={true}
+                    className="h-32"
+                    showControls={false}
                     showCurrentLocation={true}
                     showTraffic={false}
                   />
                 </GoogleMapsLoader>
                 
-                {/* Simplified GPS Status */}
-                <div className="absolute top-3 left-3">
-                  <Badge variant="outline" className="bg-background/95 backdrop-blur-sm text-xs border-0 shadow-sm px-2 py-1">
-                    {userLocation ? (
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-green-700 font-medium">GPS Active</span>
-                      </div>
-                    ) : locationLoading ? (
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 border border-blue-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-blue-600">Finding...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1.5">
-                        <Warning size={10} className="text-amber-500" />
-                        <span className="text-amber-600">Enable GPS</span>
-                      </div>
-                    )}
-                  </Badge>
+                {/* Minimal GPS Status */}
+                <div className="absolute top-2 left-2">
+                  <div className={`w-2 h-2 rounded-full ${userLocation ? 'bg-green-500' : 'bg-gray-400'} animate-pulse`}></div>
                 </div>
                 
-                {/* Compact Map Guide */}
-                <div className="absolute bottom-3 left-3 right-3">
-                  <div className="bg-background/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm border border-border/20">
-                    <p className="text-xs font-medium text-center">
-                      {!bookingForm.pickup ? '👆 Tap map to set pickup' : 
-                       !bookingForm.destination ? '👆 Tap map for destination' : 
-                       '✅ Ready to book!'}
-                    </p>
-                  </div>
-                </div>
-                
-                {/* Compact Quick Actions */}
-                <div className="absolute top-3 right-3 flex gap-2">
+                {/* Quick GPS Action */}
+                <div className="absolute top-1 right-1">
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-8 h-8 p-0 bg-background/95 backdrop-blur-sm shadow-sm rounded-full border-0"
+                    className="w-6 h-6 p-0 bg-background/90 rounded-full border-0"
                     onClick={getCurrentLocation}
                     disabled={locationLoading}
-                    title="Find my location"
                   >
-                    {locationLoading ? (
-                      <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <Crosshair size={14} className={userLocation ? 'text-green-600' : ''} />
-                    )}
-                  </Button>
-                  <Button 
-                    variant="secondary" 
-                    size="sm" 
-                    className="w-8 h-8 p-0 bg-background/95 backdrop-blur-sm shadow-sm rounded-full border-0"
-                    onClick={() => setShowFullMap(true)}
-                    title="Full map"
-                  >
-                    <MagnifyingGlass size={14} />
+                    <Crosshair size={10} />
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Compact Current Location Display */}
-          {userLocation && (
-            <Card className="border-0 shadow-sm bg-gradient-to-r from-green-50 to-blue-50">
-              <CardContent className="p-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Crosshair size={14} className="text-green-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm">📍 Current Location Found</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {userAddress ? userAddress.split(',')[0] + (userAddress.split(',')[1] ? `, ${userAddress.split(',')[1]}` : '') : 'Getting address...'}
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 px-3 text-xs font-medium"
-                    onClick={() => {
-                      if (userAddress && userLocation) {
-                        setBookingForm(prev => ({
-                          ...prev,
-                          pickup: userAddress,
-                          pickupCoords: userLocation
-                        }))
-                      }
-                    }}
-                  >
-                    Use Here
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Minimal Current Location Display */}
+          {userLocation && userAddress && (
+            <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <p className="text-xs font-medium text-green-700 truncate flex-1">
+                📍 {userAddress.split(',')[0]}
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-6 px-2 text-xs"
+                onClick={() => {
+                  if (userAddress && userLocation) {
+                    setBookingForm(prev => ({
+                      ...prev,
+                      pickup: userAddress,
+                      pickupCoords: userLocation
+                    }))
+                  }
+                }}
+              >
+                Use
+              </Button>
+            </div>
           )}
 
-          {/* Compact Booking Form */}
+          {/* Ultra Compact Booking Form */}
           <Card className="border-0 shadow-sm bg-card">
-            <CardContent className="p-4 space-y-3">
-              <div className="space-y-2">
+            <CardContent className="p-3 space-y-2">
+              <div className="space-y-1.5">
                 <div className="relative">
                   <GoogleMapsLoader>
                     <PlacesAutocomplete
                       value={bookingForm.pickup}
                       onChange={(value) => setBookingForm(prev => ({ ...prev, pickup: value }))}
                       placeholder="Pickup location"
-                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
+                      className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
                       onPlaceSelect={(place) => {
                         if (place.geometry?.location) {
                           setBookingForm(prev => ({
@@ -2859,28 +2801,7 @@ function App() {
                       }}
                     />
                   </GoogleMapsLoader>
-                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-500 rounded-full shadow-sm"></div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-2 text-xs"
-                    onClick={() => {
-                      if (userLocation && userAddress) {
-                        setBookingForm(prev => ({
-                          ...prev,
-                          pickup: userAddress,
-                          pickupCoords: userLocation
-                        }))
-                        toast.success("📍 GPS location set")
-                      } else {
-                        getCurrentLocation()
-                      }
-                    }}
-                    disabled={locationLoading}
-                  >
-                    <Crosshair size={12} className="mr-1" />
-                    GPS
-                  </Button>
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
                 </div>
                 
                 <div className="relative">
@@ -2889,7 +2810,7 @@ function App() {
                       value={bookingForm.destination}
                       onChange={(value) => setBookingForm(prev => ({ ...prev, destination: value }))}
                       placeholder="Where to?"
-                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
+                      className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
                       onPlaceSelect={(place) => {
                         if (place.geometry?.location) {
                           setBookingForm(prev => ({
@@ -2904,20 +2825,7 @@ function App() {
                       }}
                     />
                   </GoogleMapsLoader>
-                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-red-500 rounded-full shadow-sm"></div>
-                  {bookingForm.destination && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-1.5"
-                      onClick={() => {
-                        addToFavorites(bookingForm.destination, `Saved Location ${favorites.length + 1}`)
-                        toast.success("❤️ Location saved")
-                      }}
-                    >
-                      <Heart size={12} />
-                    </Button>
-                  )}
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
                 </div>
               </div>
               
@@ -2928,71 +2836,27 @@ function App() {
                 const price = service ? calculateServicePrice(service, distance) : null
                 
                 return (
-                  <div className="p-2 bg-muted/30 rounded-lg">
-                    <div className="flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1">
-                          <NavigationArrow size={10} />
-                          <span>{distance.toFixed(1)} km</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock size={10} />
-                          <span>~{Math.ceil(distance * 2)} min</span>
-                        </div>
-                        {price && (
-                          <div className="flex items-center gap-1">
-                            <span className="font-bold text-green-600">{price}</span>
-                          </div>
-                        )}
-                      </div>
-                      {selectedService && (
-                        <div className="flex items-center gap-1">
-                          <CheckCircle size={10} className="text-green-600" />
-                          <span className="font-medium text-green-700">Ready</span>
-                        </div>
-                      )}
+                  <div className="p-1.5 bg-muted/30 rounded text-xs flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span>{distance.toFixed(1)} km</span>
+                      <span>~{Math.ceil(distance * 2)} min</span>
+                      {price && <span className="font-bold text-green-600">{price}</span>}
                     </div>
+                    {selectedService && (
+                      <span className="text-green-700 font-medium">Ready</span>
+                    )}
                   </div>
                 )
               })()}
-              
-              {/* Quick Favorites */}
-              {(!bookingForm.destination) && favorites.length > 0 && (
-                <div className="space-y-1.5">
-                  <p className="text-xs text-muted-foreground font-medium">Quick destinations</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {favorites.slice(0, 3).map((fav, index) => (
-                      <Button
-                        key={index}
-                        variant="outline"
-                        size="sm"
-                        className="h-6 text-xs px-2"
-                        onClick={() => {
-                          setBookingForm(prev => ({
-                            ...prev,
-                            destination: fav.address
-                          }))
-                        }}
-                      >
-                        <Heart size={10} className="mr-1" />
-                        {fav.name}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </CardContent>
           </Card>
 
-          {/* Clean Professional Service Selection - Enhanced Design */}
-          <div className="space-y-5">
-            <div className="px-1">
-              <h2 className="text-xl font-bold text-foreground mb-2">Choose your ride</h2>
-              <p className="text-sm text-muted-foreground">Professional transport for every need</p>
-            </div>
+          {/* Ultra Compact Service Selection */}
+          <div className="space-y-2">
+            <h2 className="text-lg font-bold">Choose your ride</h2>
             
-            {/* Enhanced Professional Service Grid - Fixed Layout and Text Containment */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Compact 3x2 Service Grid */}
+            <div className="grid grid-cols-3 gap-2">
               {armoraServices.map(service => {
                 const Icon = service.icon
                 const isSelected = selectedService === service.id
@@ -3001,67 +2865,49 @@ function App() {
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-300 h-[190px] overflow-hidden relative ${ 
+                    className={`cursor-pointer transition-all duration-200 h-[100px] overflow-hidden relative ${ 
                       isSelected
-                        ? 'ring-2 ring-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl transform scale-[1.02]' 
-                        : 'hover:shadow-lg hover:transform hover:scale-[1.01] bg-white border border-border/40'
-                    } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-white' : ''}`}
+                        ? 'ring-2 ring-primary bg-primary/10 shadow-lg' 
+                        : 'hover:shadow-md bg-white border border-border/40'
+                    } ${service.popular ? 'border-green-200' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    {/* Fixed Badge Positioning - Contained Within Card */}
+                    {/* Small Badge for Popular */}
                     {service.popular && (
-                      <div className="absolute top-2 right-2 z-10">
-                        <div className="bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-sm border border-white">
-                          Popular
-                        </div>
+                      <div className="absolute top-1 right-1 bg-green-500 text-white text-[6px] font-bold px-1 py-0.5 rounded-full">
+                        ★
                       </div>
                     )}
-                    <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center space-y-3">
-                      {/* Enhanced Icon */}
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 ${ 
-                        isSelected 
-                          ? 'bg-primary text-primary-foreground shadow-lg scale-110' 
-                          : service.popular 
-                          ? 'bg-green-500 text-white shadow-md'
-                          : 'bg-gradient-to-br from-muted to-muted/70 text-primary'
+                    <CardContent className="p-2 h-full flex flex-col items-center justify-center text-center space-y-1">
+                      {/* Icon */}
+                      <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${ 
+                        isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted/70 text-primary'
                       }`}>
-                        <Icon size={24} weight={isSelected ? "fill" : "regular"} />
+                        <Icon size={14} weight={isSelected ? "fill" : "regular"} />
                       </div>
                       
-                      {/* Service Name - Clear and Contained */}
-                      <div className="space-y-1 w-full">
-                        <h3 className={`font-bold text-sm leading-tight text-foreground text-center w-full line-clamp-2 ${ 
-                          isSelected ? 'text-primary' : ''
-                        }`}>
-                          {service.name}
-                        </h3>
-                      </div>
+                      {/* Service Name */}
+                      <h3 className={`font-bold text-[10px] leading-tight text-center line-clamp-2 ${ 
+                        isSelected ? 'text-primary' : 'text-foreground'
+                      }`}>
+                        {service.name}
+                      </h3>
                       
-                      {/* Dynamic Pricing - Route-Based */}
-                      <div className="space-y-2 w-full flex flex-col items-center">
-                        {/* Price Range - Most Important */}
-                        <div className="text-center">
-                          <p className={`font-bold text-lg leading-none ${ 
-                            isSelected ? 'text-primary' : 'text-foreground'
-                          }`}>
-                            {dynamicPrice}
-                          </p>
-                          {routeDistance > 0 && (
-                            <p className="text-[9px] text-muted-foreground mt-0.5">
-                              for {routeDistance.toFixed(1)}km trip
-                            </p>
-                          )}
-                        </div>
-                        
-                        {/* Wait Time and Capacity - Stacked */}
-                        <div className="space-y-1 text-center">
-                          <p className="text-xs text-muted-foreground font-medium leading-none">
-                            {service.eta}
-                          </p>
-                          <p className="text-xs text-muted-foreground leading-none">
-                            {service.capacity}
-                          </p>
-                        </div>
+                      {/* Price */}
+                      <p className={`font-bold text-xs leading-none ${ 
+                        isSelected ? 'text-primary' : 'text-foreground'
+                      }`}>
+                        {dynamicPrice}
+                      </p>
+                      
+                      {/* ETA and Capacity */}
+                      <div className="space-y-0.5 text-center">
+                        <p className="text-[8px] text-muted-foreground leading-none">
+                          {service.eta}
+                        </p>
+                        <p className="text-[8px] text-muted-foreground leading-none">
+                          {service.capacity}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -3069,101 +2915,80 @@ function App() {
               })}
             </div>
 
-            {/* Enhanced Service Description */}
+            {/* Selected Service Description */}
             {selectedService && (() => {
               const service = armoraServices.find(s => s.id === selectedService)
               const dynamicPrice = calculateServicePrice(service, routeDistance)
               return (
-                <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20 shadow-md">
-                  <CardContent className="p-4">
-                    <div className="text-center space-y-2">
-                      <div className="flex items-center justify-center gap-2 mb-2">
-                        {React.createElement(service?.icon || Car, {
-                          size: 20,
-                          className: "text-primary",
-                          weight: "fill"
-                        })}
-                        <h4 className="font-bold text-primary">
-                          {service?.name}
-                        </h4>
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {service?.description}
-                      </p>
-                      <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-primary/20">
-                        <div className="text-center">
-                          <p className="font-bold text-lg text-primary">
-                            {dynamicPrice}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {routeDistance > 0 ? `For ${routeDistance.toFixed(1)}km trip` : 'Price Range'}
-                          </p>
-                        </div>
-                        <div className="w-px h-8 bg-primary/20"></div>
-                        <div className="text-center">
-                          <p className="font-bold text-lg text-accent">
-                            {service?.eta}
-                          </p>
-                          <p className="text-xs text-muted-foreground">Arrival Time</p>
-                        </div>
-                      </div>
-                      {routeDistance > 0 && (
-                        <div className="mt-3 p-2 bg-green-50 rounded-lg border border-green-200">
-                          <div className="flex items-center justify-center gap-2">
-                            <CheckCircle size={12} className="text-green-600" />
-                            <p className="text-xs text-green-700 font-medium">
-                              Price calculated for your specific route
-                            </p>
-                          </div>
-                        </div>
-                      )}
+                <div className="p-2 bg-primary/10 rounded-lg border border-primary/20">
+                  <div className="text-center space-y-1">
+                    <div className="flex items-center justify-center gap-1">
+                      {React.createElement(service?.icon || Car, {
+                        size: 14,
+                        className: "text-primary",
+                        weight: "fill"
+                      })}
+                      <h4 className="font-bold text-sm text-primary">
+                        {service?.name}
+                      </h4>
                     </div>
-                  </CardContent>
-                </Card>
+                    <p className="text-xs text-muted-foreground">
+                      {service?.description}
+                    </p>
+                    <div className="flex items-center justify-center gap-3 pt-1">
+                      <div className="text-center">
+                        <p className="font-bold text-sm text-primary">
+                          {dynamicPrice}
+                        </p>
+                        <p className="text-[8px] text-muted-foreground">
+                          {routeDistance > 0 ? `For ${routeDistance.toFixed(1)}km` : 'Price Range'}
+                        </p>
+                      </div>
+                      <div className="w-px h-6 bg-primary/20"></div>
+                      <div className="text-center">
+                        <p className="font-bold text-sm text-accent">
+                          {service?.eta}
+                        </p>
+                        <p className="text-[8px] text-muted-foreground">Arrival</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               )
             })()}
           </div>
 
-          {/* Compact Payment Method */}
-          <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-            <div className="flex items-center gap-2">
-              <CreditCard size={14} className="text-muted-foreground" />
-              <span className="text-sm font-medium">Mastercard •••• 4321</span>
-            </div>
-            <NavigationArrow size={10} className="rotate-90 text-muted-foreground" />
-          </div>
-
-          {/* Enhanced Confirm Button with validation */}
-          <Button 
-            onClick={handleBookRide}
-            className="w-full h-12 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
-            disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.pickupCoords || !bookingForm.destinationCoords}
-          >
-            <div className="flex items-center gap-2">
-              {selectedService && <Car size={16} />}
-              {!bookingForm.pickup || !bookingForm.destination ? 
-                'Enter pickup & destination' :
-                !selectedService ? 
-                'Select ride type' :
-                !bookingForm.pickupCoords || !bookingForm.destinationCoords ?
-                'Select valid locations' :
-                (() => {
-                  const service = armoraServices.find(s => s.id === selectedService)
-                  const dynamicPrice = calculateServicePrice(service, routeDistance)
-                  return `Book ${service?.name} - ${dynamicPrice}`
-                })()
-              }
-            </div>
-          </Button>
-
-          {/* Compact Service Tips */}
-          <div className="p-3 bg-gradient-to-r from-green-50/50 to-blue-50/50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <CheckCircle size={12} className="text-green-600 flex-shrink-0" />
-              <div>
-                <p className="text-xs font-medium text-foreground">💡 Standard Transport is our most popular choice</p>
+          {/* Minimal Payment and Book Button */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
+              <div className="flex items-center gap-2">
+                <CreditCard size={12} className="text-muted-foreground" />
+                <span className="text-xs font-medium">Mastercard •••• 4321</span>
               </div>
+              <NavigationArrow size={8} className="rotate-90 text-muted-foreground" />
             </div>
+
+            <Button 
+              onClick={handleBookRide}
+              className="w-full h-10 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg disabled:opacity-50"
+              disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.pickupCoords || !bookingForm.destinationCoords}
+            >
+              <div className="flex items-center gap-2">
+                {selectedService && <Car size={14} />}
+                {!bookingForm.pickup || !bookingForm.destination ? 
+                  'Enter locations' :
+                  !selectedService ? 
+                  'Select ride' :
+                  !bookingForm.pickupCoords || !bookingForm.destinationCoords ?
+                  'Select valid locations' :
+                  (() => {
+                    const service = armoraServices.find(s => s.id === selectedService)
+                    const dynamicPrice = calculateServicePrice(service, routeDistance)
+                    return `Book ${service?.name} - ${dynamicPrice}`
+                  })()
+                }
+              </div>
+            </Button>
           </div>
         </div>
 
@@ -3230,48 +3055,47 @@ function App() {
           </div>
         )}
 
-        {/* Bottom Navigation with enhanced design and proper z-index */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50"
-             style={{ zIndex: 9999 }}>
-          <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
+        {/* Compact Bottom Navigation */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
+          <div className="grid grid-cols-4 h-12 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
-              className="flex flex-col items-center justify-center gap-1 text-primary transition-colors"
+              className="flex flex-col items-center justify-center gap-0.5 text-primary transition-colors"
             >
-              <div className="w-6 h-6 flex items-center justify-center">
-                <House size={20} weight="fill" />
+              <div className="w-5 h-5 flex items-center justify-center">
+                <House size={16} weight="fill" />
               </div>
-              <span className="text-xs font-semibold">Home</span>
+              <span className="text-[10px] font-semibold">Home</span>
             </button>
             
             <button
               onClick={() => setCurrentView('activity')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <div className="w-6 h-6 flex items-center justify-center">
-                <List size={20} />
+              <div className="w-5 h-5 flex items-center justify-center">
+                <List size={16} />
               </div>
-              <span className="text-xs">Activity</span>
+              <span className="text-[10px]">Activity</span>
             </button>
 
             <button
               onClick={() => setCurrentView('favorites')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <div className="w-6 h-6 flex items-center justify-center">
-                <Heart size={20} />
+              <div className="w-5 h-5 flex items-center justify-center">
+                <Heart size={16} />
               </div>
-              <span className="text-xs">Saved</span>
+              <span className="text-[10px]">Saved</span>
             </button>
 
             <button
               onClick={() => setCurrentView('account')}
-              className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <div className="w-6 h-6 flex items-center justify-center">
-                <User size={20} />
+              <div className="w-5 h-5 flex items-center justify-center">
+                <User size={16} />
               </div>
-              <span className="text-xs">Account</span>
+              <span className="text-[10px]">Account</span>
             </button>
           </div>
         </div>
