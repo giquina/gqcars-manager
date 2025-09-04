@@ -1875,63 +1875,37 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
         <Toaster position="top-center" />
         
-        {/* Header with enhanced gradient and location awareness */}
-        <header className="bg-gradient-to-r from-background/98 to-background/95 backdrop-blur-md border-b border-border/30 p-4 sticky top-0 z-10 shadow-sm">
+        {/* Streamlined Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
           <div className="flex items-center justify-between max-w-md mx-auto">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary via-primary/90 to-accent rounded-xl flex items-center justify-center shadow-lg">
-                <Car size={20} className="text-primary-foreground" weight="bold" />
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                <Car size={16} className="text-primary-foreground" weight="bold" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Armora</h1>
-                <p className="text-xs text-muted-foreground italic">Protected by Shadows</p>
-                {userLocation && (
-                  <p className="text-xs text-muted-foreground">
-                    📍 {userAddress ? userAddress.split(',')[0] : 'Locating...'}
-                  </p>
-                )}
+                <h1 className="text-lg font-bold">Armora</h1>
+                <p className="text-xs text-muted-foreground">Protected by Shadows</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               {isLocationWatching && (
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live GPS tracking active" />
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="GPS active" />
               )}
-              <Button variant="ghost" size="sm" className="w-10 h-10 rounded-full">
-                <User size={18} />
+              <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full">
+                <User size={16} />
               </Button>
             </div>
           </div>
         </header>
 
-        {/* Passenger Status Banner - Only show relevant information */}
+        {/* Simplified Status Messages */}
         {statusMessage && (
-          <div className={`mx-4 mt-4 p-3 rounded-lg border-l-4 ${
-            statusType === 'success' ? 'bg-green-50 border-green-500 text-green-700' :
-            statusType === 'warning' ? 'bg-amber-50 border-amber-500 text-amber-700' :
-            statusType === 'error' ? 'bg-red-50 border-red-500 text-red-700' :
-            'bg-blue-50 border-blue-500 text-blue-700'
-          }`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {statusType === 'success' && <CheckCircle size={16} />}
-                {statusType === 'warning' && <Warning size={16} />}
-                {statusType === 'error' && <X size={16} />}
-                {statusType === 'info' && <CheckCircle size={16} />}
-                <p className="text-sm font-medium">{statusMessage}</p>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setStatusMessage('')}
-                className="h-6 w-6 p-0 hover:bg-transparent"
-              >
-                <X size={12} />
-              </Button>
-            </div>
+          <div className="mx-4 mt-3 p-2 rounded-lg bg-blue-50 border-l-4 border-blue-500">
+            <p className="text-sm text-blue-700">{statusMessage}</p>
           </div>
         )}
 
-        <div className="p-4 pb-20 space-y-4 max-w-md mx-auto">
+        <div className="p-4 pb-20 space-y-3 max-w-md mx-auto">
           {/* Enhanced Map Preview with Real Google Maps - Larger and More Interactive */}
           <Card className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-card to-card/90 ring-1 ring-border/10">
             <CardContent className="p-0">
@@ -1944,17 +1918,17 @@ function App() {
                       lng: userLocation.lng,
                       title: "Your Current Location",
                       icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <circle cx="16" cy="16" r="14" fill="#3B82F6" stroke="white" stroke-width="3" opacity="0.9"/>
-                          <circle cx="16" cy="16" r="6" fill="white"/>
-                          <circle cx="16" cy="16" r="3" fill="#3B82F6"/>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" fill="#3B82F6" stroke="white" stroke-width="2" opacity="0.9"/>
+                          <circle cx="12" cy="12" r="4" fill="white"/>
+                          <circle cx="12" cy="12" r="2" fill="#3B82F6"/>
                         </svg>
                       `),
-                      animation: window.google?.maps?.Animation?.DROP,
+                      animation: typeof window !== 'undefined' && window.google?.maps?.Animation ? window.google.maps.Animation.DROP : undefined,
                       infoWindow: `
-                        <div style="padding: 8px; font-family: Inter, sans-serif; text-align: center;">
-                          <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #1f2937;">📍 You are here</h3>
-                          <p style="margin: 0; font-size: 12px; color: #6b7280;">
+                        <div style="padding: 6px; font-family: Inter, sans-serif; text-align: center;">
+                          <h3 style="margin: 0 0 2px 0; font-size: 12px; font-weight: 600; color: #1f2937;">📍 You are here</h3>
+                          <p style="margin: 0; font-size: 10px; color: #6b7280;">
                             Accurate to ${accuracy ? Math.round(accuracy) + 'm' : 'GPS precision'}
                           </p>
                         </div>
@@ -1979,143 +1953,94 @@ function App() {
                         toast.success("🎯 Destination confirmed")
                       }
                     }}
-                    className="h-64"
+                    className="h-48"
                     showControls={true}
                     showCurrentLocation={true}
                     showTraffic={false}
                   />
                 </GoogleMapsLoader>
                 
-                {/* Enhanced GPS Status with Location Details */}
-                <div className="absolute top-4 left-4 space-y-2">
-                  <Badge variant="outline" className="bg-background/95 backdrop-blur-sm text-xs border-0 shadow-lg px-3 py-1.5">
+                {/* Simplified GPS Status */}
+                <div className="absolute top-3 left-3">
+                  <Badge variant="outline" className="bg-background/95 backdrop-blur-sm text-xs border-0 shadow-sm px-2 py-1">
                     {userLocation ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-green-700 font-semibold">Live GPS</span>
-                        {accuracy && (
-                          <span className="text-green-600 text-xs">±{Math.round(accuracy)}m</span>
-                        )}
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                        <span className="text-green-700 font-medium">GPS Active</span>
                       </div>
                     ) : locationLoading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 border border-blue-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-blue-600 font-medium">Finding you...</span>
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 border border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <span className="text-blue-600">Finding...</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2">
-                        <Warning size={12} className="text-amber-500" />
-                        <span className="text-amber-600 font-medium">Enable GPS</span>
+                      <div className="flex items-center gap-1.5">
+                        <Warning size={10} className="text-amber-500" />
+                        <span className="text-amber-600">Enable GPS</span>
                       </div>
                     )}
                   </Badge>
-                  
-                  {/* Speed and Movement Info */}
-                  {userLocation && userSpeed !== null && userSpeed > 0 && (
-                    <Badge variant="outline" className="bg-background/95 backdrop-blur-sm text-xs border-0 shadow-sm px-2 py-1">
-                      <div className="flex items-center gap-1">
-                        <Speedometer size={10} className="text-blue-500" />
-                        <span className="text-blue-600">{Math.round(userSpeed * 3.6)} km/h</span>
-                      </div>
-                    </Badge>
-                  )}
                 </div>
                 
-                {/* Enhanced Interactive Map Guide */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="bg-gradient-to-r from-background/95 to-background/90 backdrop-blur-md rounded-xl px-4 py-3 shadow-lg border border-border/20">
-                    <div className="text-center space-y-1">
-                      <p className="text-sm font-medium text-foreground">
-                        {!bookingForm.pickup ? 'Tap map to set pickup location' : 
-                         !bookingForm.destination ? 'Tap map to set destination' : 
-                         'Locations set - ready to book!'}
-                      </p>
-                      {userLocation && (
-                        <p className="text-xs text-muted-foreground">
-                          📍 {userAddress ? userAddress.split(',')[0] : 'Getting address...'}
-                        </p>
-                      )}
-                    </div>
+                {/* Compact Map Guide */}
+                <div className="absolute bottom-3 left-3 right-3">
+                  <div className="bg-background/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm border border-border/20">
+                    <p className="text-xs font-medium text-center">
+                      {!bookingForm.pickup ? '👆 Tap map to set pickup' : 
+                       !bookingForm.destination ? '👆 Tap map for destination' : 
+                       '✅ Ready to book!'}
+                    </p>
                   </div>
                 </div>
                 
-                {/* Enhanced Quick Action Controls */}
-                <div className="absolute top-4 right-4 flex flex-col gap-3">
+                {/* Compact Quick Actions */}
+                <div className="absolute top-3 right-3 flex gap-2">
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-12 h-12 p-0 bg-background/95 backdrop-blur-sm shadow-lg rounded-full border-0 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                    className="w-8 h-8 p-0 bg-background/95 backdrop-blur-sm shadow-sm rounded-full border-0"
                     onClick={getCurrentLocation}
                     disabled={locationLoading}
                     title="Find my location"
                   >
                     {locationLoading ? (
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <Crosshair size={18} className={userLocation ? 'text-green-600' : ''} />
+                      <Crosshair size={14} className={userLocation ? 'text-green-600' : ''} />
                     )}
                   </Button>
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-12 h-12 p-0 bg-background/95 backdrop-blur-sm shadow-lg rounded-full border-0 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                    className="w-8 h-8 p-0 bg-background/95 backdrop-blur-sm shadow-sm rounded-full border-0"
                     onClick={() => setShowFullMap(true)}
-                    title="Open full map"
+                    title="Full map"
                   >
-                    <MagnifyingGlass size={18} />
-                  </Button>
-                  
-                  {/* Traffic Toggle */}
-                  <Button 
-                    variant="secondary" 
-                    size="sm" 
-                    className="w-12 h-12 p-0 bg-background/95 backdrop-blur-sm shadow-lg rounded-full border-0 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-                    onClick={() => {
-                      // This would toggle traffic layer in a real implementation
-                      toast.success("🚦 Traffic view toggled")
-                    }}
-                    title="Toggle traffic"
-                  >
-                    <Navigation size={18} />
+                    <MagnifyingGlass size={14} />
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Enhanced Current Location Display with Actions */}
+          {/* Compact Current Location Display */}
           {userLocation && (
-            <Card className="border-0 shadow-lg bg-gradient-to-r from-primary/8 to-accent/8 ring-1 ring-primary/20">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center flex-shrink-0 relative">
-                      <Compass size={16} className="text-primary" />
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-background animate-pulse"></div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-semibold text-sm">Your Current Location</p>
-                        {accuracy && accuracy < 50 && (
-                          <Badge variant="outline" className="h-5 px-1.5 text-xs bg-green-50 text-green-700 border-green-200">
-                            High accuracy
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground truncate leading-tight">
-                        {userAddress || 'Getting precise address...'}
-                      </p>
-                      {accuracy && (
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          Accurate to ±{Math.round(accuracy)} meters
-                        </p>
-                      )}
-                    </div>
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-green-50 to-blue-50">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Crosshair size={14} className="text-green-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm">📍 Current Location Found</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {userAddress ? userAddress.split(',')[0] + (userAddress.split(',')[1] ? `, ${userAddress.split(',')[1]}` : '') : 'Getting address...'}
+                    </p>
                   </div>
                   <Button
-                    variant="default"
+                    variant="outline"
                     size="sm"
-                    className="h-9 px-4 text-sm shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                    className="h-8 px-3 text-xs font-medium"
                     onClick={() => {
                       if (userAddress && userLocation) {
                         setBookingForm(prev => ({
@@ -2123,20 +2048,20 @@ function App() {
                           pickup: userAddress,
                           pickupCoords: userLocation
                         }))
-                        showPassengerStatus("📍 Using your current location as pickup", 'success')
-                        toast.success("📍 Current location set as pickup")
+                        showPassengerStatus("📍 Using current location for pickup", 'success')
+                        toast.success("📍 Current location set")
                       }
                     }}
                   >
-                    Use as Pickup
+                    Use Here
                   </Button>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Improved Booking Form */}
-          <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/98">
+          {/* Compact Booking Form */}
+          <Card className="border-0 shadow-sm bg-card">
             <CardContent className="p-4 space-y-3">
               <div className="space-y-2">
                 <div className="relative">
@@ -2176,7 +2101,7 @@ function App() {
                           pickup: userAddress,
                           pickupCoords: userLocation
                         }))
-                        toast.success("📍 GPS location set as pickup")
+                        toast.success("📍 GPS location set")
                       } else {
                         getCurrentLocation()
                       }
@@ -2217,7 +2142,7 @@ function App() {
                       className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-1.5"
                       onClick={() => {
                         addToFavorites(bookingForm.destination, `Saved Location ${favorites.length + 1}`)
-                        toast.success("❤️ Location saved to favorites")
+                        toast.success("❤️ Location saved")
                       }}
                     >
                       <Heart size={12} />
@@ -2226,15 +2151,11 @@ function App() {
                 </div>
               </div>
               
-              {/* Distance Display with Booking Ready Status */}
-              {bookingForm.pickupCoords && bookingForm.destinationCoords && selectedService && (
-                <div className="mt-2 p-2 bg-green-50 rounded-lg border border-green-200">
+              {/* Trip Summary */}
+              {bookingForm.pickupCoords && bookingForm.destinationCoords && (
+                <div className="p-2 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle size={12} className="text-green-600" />
-                      <span className="font-medium text-green-700">Ready to book</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-muted-foreground">
+                    <div className="flex items-center gap-3">
                       <div className="flex items-center gap-1">
                         <NavigationArrow size={10} />
                         <span>{calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords).toFixed(1)} km</span>
@@ -2244,27 +2165,17 @@ function App() {
                         <span>~{Math.ceil(calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords) * 2)} min</span>
                       </div>
                     </div>
+                    {selectedService && (
+                      <div className="flex items-center gap-1">
+                        <CheckCircle size={10} className="text-green-600" />
+                        <span className="font-medium text-green-700">Ready</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
               
-              {/* Compact Distance Display */}
-              {bookingForm.pickupCoords && bookingForm.destinationCoords && !selectedService && (
-                <div className="mt-2 p-2 bg-muted/30 rounded-lg">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5">
-                      <NavigationArrow size={12} className="text-muted-foreground" />
-                      <span className="font-medium">{calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords).toFixed(1)} km</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Clock size={12} className="text-muted-foreground" />
-                      <span className="font-medium">~{Math.ceil(calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords) * 2)} min</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Compact Quick Picks */}
+              {/* Quick Favorites */}
               {(!bookingForm.destination) && favorites.length > 0 && (
                 <div className="space-y-1.5">
                   <p className="text-xs text-muted-foreground font-medium">Quick destinations</p>
@@ -2292,14 +2203,18 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Compact Ride Options */}
-          <div className="space-y-2">
+          {/* Enhanced Ride Options - 2 Per Row Grid Layout */}
+          <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
-              <p className="text-xs text-muted-foreground font-medium">Choose your ride</p>
-              <Clock size={12} className="text-muted-foreground" />
+              <p className="text-sm font-semibold text-foreground">Choose Your Service</p>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Clock size={12} />
+                <span>Live pricing</span>
+              </div>
             </div>
             
-            <div className="space-y-2">
+            {/* Grid Layout - 2 services per row */}
+            <div className="grid grid-cols-2 gap-3">
               {armoraServices.map(service => {
                 const Icon = service.icon
                 return (
@@ -2307,44 +2222,51 @@ function App() {
                     key={service.id}
                     className={`cursor-pointer transition-all duration-200 border-0 shadow-sm hover:shadow-md ${ 
                       selectedService === service.id 
-                        ? 'ring-2 ring-primary bg-gradient-to-r from-primary/5 to-accent/5 shadow-md' 
-                        : 'hover:bg-gradient-to-r hover:from-muted/30 hover:to-muted/10'
-                    } ${service.highlight ? 'bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20' : ''}`}
+                        ? 'ring-2 ring-primary bg-gradient-to-br from-primary/8 to-accent/8 shadow-md' 
+                        : 'hover:bg-gradient-to-br hover:from-muted/20 hover:to-muted/5'
+                    } ${service.highlight ? 'bg-gradient-to-br from-accent/10 to-primary/10 border border-accent/20' : ''}`}
                     onClick={() => {
                       setSelectedService(service.id)
                       showPassengerStatus(`${service.name} selected - ${service.priceRange}`, 'info')
                     }}
                   >
                     <CardContent className="p-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
-                          selectedService === service.id 
-                            ? 'bg-primary text-primary-foreground' 
-                            : service.highlight 
-                            ? 'bg-accent text-accent-foreground'
-                            : 'bg-primary/10'
-                        }`}>
-                          <Icon size={18} className={selectedService === service.id ? '' : service.highlight ? '' : 'text-primary'} />
+                      <div className="space-y-2">
+                        {/* Icon and Badges Row */}
+                        <div className="flex items-center justify-between">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                            selectedService === service.id 
+                              ? 'bg-primary text-primary-foreground' 
+                              : service.highlight 
+                              ? 'bg-accent text-accent-foreground'
+                              : 'bg-primary/10'
+                          }`}>
+                            <Icon size={16} className={selectedService === service.id ? '' : service.highlight ? '' : 'text-primary'} />
+                          </div>
+                          
+                          <div className="flex gap-1">
+                            {service.new && (
+                              <Badge className="h-3 px-1 text-xs bg-accent text-accent-foreground">NEW</Badge>
+                            )}
+                            {service.highlight && (
+                              <Badge className="h-3 px-1 text-xs bg-gradient-to-r from-accent to-primary text-white">★</Badge>
+                            )}
+                          </div>
                         </div>
                         
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-semibold text-sm leading-tight">{service.name}</h3>
-                                {service.new && (
-                                  <Badge className="h-4 px-1.5 text-xs bg-accent text-accent-foreground">NEW</Badge>
-                                )}
-                                {service.highlight && (
-                                  <Badge className="h-4 px-1.5 text-xs bg-gradient-to-r from-accent to-primary text-white">★ SIGNATURE</Badge>
-                                )}
-                              </div>
-                              <p className="text-xs text-muted-foreground leading-tight">{service.capacity}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="font-bold text-sm leading-tight">{service.priceRange}</p>
-                              <p className="text-xs text-muted-foreground leading-tight">{service.eta}</p>
-                            </div>
+                        {/* Service Info */}
+                        <div>
+                          <h3 className="font-semibold text-sm leading-tight mb-1">{service.name}</h3>
+                          <p className="text-xs text-muted-foreground leading-tight mb-1">{service.capacity}</p>
+                        </div>
+                        
+                        {/* Price and ETA */}
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-bold text-sm leading-tight">{service.priceRange}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-muted-foreground leading-tight">{service.eta}</p>
                           </div>
                         </div>
                       </div>
@@ -2353,20 +2275,41 @@ function App() {
                 )
               })}
             </div>
+            
+            {/* Service Categories Quick Info */}
+            <div className="grid grid-cols-3 gap-2 mt-3">
+              <div className="text-center p-2 bg-muted/30 rounded-lg">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                  <Car size={12} className="text-blue-600" />
+                </div>
+                <p className="text-xs font-medium text-blue-700">Standard</p>
+                <p className="text-xs text-muted-foreground">Professional</p>
+              </div>
+              <div className="text-center p-2 bg-muted/30 rounded-lg">
+                <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                  <Shield size={12} className="text-amber-600" />
+                </div>
+                <p className="text-xs font-medium text-amber-700">Security</p>
+                <p className="text-xs text-muted-foreground">Protected</p>
+              </div>
+              <div className="text-center p-2 bg-muted/30 rounded-lg">
+                <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                  <Star size={12} className="text-purple-600" />
+                </div>
+                <p className="text-xs font-medium text-purple-700">Luxury</p>
+                <p className="text-xs text-muted-foreground">Premium</p>
+              </div>
+            </div>
           </div>
 
           {/* Compact Payment Method */}
-          <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CreditCard size={16} className="text-muted-foreground" />
-                  <span className="font-medium text-sm">Mastercard •••• 4321</span>
-                </div>
-                <NavigationArrow size={12} className="rotate-90 text-muted-foreground" />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+            <div className="flex items-center gap-2">
+              <CreditCard size={14} className="text-muted-foreground" />
+              <span className="text-sm font-medium">Mastercard •••• 4321</span>
+            </div>
+            <NavigationArrow size={10} className="rotate-90 text-muted-foreground" />
+          </div>
 
           {/* Enhanced Confirm Button with validation */}
           <Button 
@@ -2387,21 +2330,15 @@ function App() {
             </div>
           </Button>
 
-          {/* Compact Booking Tips */}
-          <Card className="border-0 shadow-sm bg-gradient-to-r from-accent/5 to-primary/5">
-            <CardContent className="p-3">
-              <div className="flex items-start gap-2">
-                <CheckCircle size={14} className="text-accent mt-0.5 flex-shrink-0" />
-                <div className="space-y-1">
-                  <h4 className="font-medium text-xs">Premium Service Tips</h4>
-                  <ul className="text-xs text-muted-foreground space-y-0.5">
-                    <li>• Enable GPS for precise pickup coordination</li>
-                    <li>• Try Shadow Escort for luxury & security</li>
-                  </ul>
-                </div>
+          {/* Compact Service Tips */}
+          <div className="p-3 bg-gradient-to-r from-accent/5 to-primary/5 rounded-lg">
+            <div className="flex items-center gap-2">
+              <CheckCircle size={12} className="text-accent flex-shrink-0" />
+              <div>
+                <p className="text-xs font-medium text-accent-foreground">💡 Try Shadow Escort for luxury + security</p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Full Map Modal */}
