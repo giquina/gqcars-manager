@@ -1987,6 +1987,25 @@ function App() {
   const [currentView, setCurrentView] = useState<string>('welcome')
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useKV("armora-onboarding-complete", false)
   const [isFirstLaunch, setIsFirstLaunch] = useKV("armora-first-launch", true)
+  const [onboardingStep, setOnboardingStep] = useState(0)
+  const [onboardingData, setOnboardingData] = useKV("armora-onboarding-data", {
+    workType: [],
+    workTypeCustom: '',
+    travelFrequency: '',
+    travelFrequencyCustom: '',
+    serviceStyle: '',
+    serviceStyleCustom: '',
+    securityComfort: '',
+    securityComfortCustom: '',
+    locations: [],
+    locationsCustom: '',
+    riskConcerns: [],
+    riskConcernsCustom: '',
+    emergencyContact1: { name: '', relationship: '', phone: '' },
+    emergencyContact2: { name: '', relationship: '', phone: '' },
+    emergencyResponse: '',
+    emergencyInstructions: ''
+  })
   const [selectedService, setSelectedService] = useState<string>('')
   const [currentTrip, setCurrentTrip] = useState<any>(null)
   const [assignedDriver, setAssignedDriver] = useState<any>(null)
@@ -2250,109 +2269,111 @@ function App() {
     // Don't show duplicate toast here since it's handled at the button level
   }, [setFavorites])
 
-  // Welcome Screen
+  // Luxury Welcome Screen
   if (currentView === 'welcome') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
         <Toaster position="top-center" />
         
-        <div className="max-w-sm mx-auto text-center space-y-8 animate-in fade-in duration-1000">
-          {/* Professional Logo and Branding */}
-          <div className="space-y-4">
-            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-primary to-accent rounded-3xl flex items-center justify-center shadow-2xl">
-              <Shield size={40} className="text-primary-foreground" weight="fill" />
+        {/* Luxury Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-slate-400/10 to-slate-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        </div>
+        
+        <div className="max-w-sm mx-auto text-center space-y-8 animate-in fade-in duration-1000 relative z-10">
+          {/* Luxury Logo and Branding */}
+          <div className="space-y-6">
+            <div className="relative">
+              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-3xl flex items-center justify-center shadow-2xl relative">
+                <Shield size={44} className="text-slate-900" weight="fill" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent to-white/20 rounded-3xl" />
+              </div>
+              <div className="absolute -inset-4 bg-gradient-to-r from-amber-400/30 to-amber-600/30 rounded-full blur-xl animate-pulse" />
             </div>
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            
+            <div className="space-y-3">
+              <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 bg-clip-text">
                 Armora
               </h1>
-              <p className="text-sm text-muted-foreground font-medium">
-                Protected by Shadows
+              <p className="text-lg text-amber-200/90 font-medium tracking-wide">
+                Premium Security Transport
               </p>
-              <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed">
-                Professional security transport with licensed close protection officers
+              <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
+                Protected by Shadows • Driven by Excellence
               </p>
             </div>
           </div>
 
-          {/* Value Proposition */}
+          {/* Luxury Value Proposition */}
           <div className="space-y-6">
-            <div className="grid gap-4">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/20">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Shield size={16} className="text-green-600" />
+            <div className="grid gap-3">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/60 backdrop-blur-sm border border-amber-400/20 shadow-lg">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center">
+                  <Shield size={18} className="text-amber-400" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold">Licensed Security</p>
-                  <p className="text-xs text-muted-foreground">SIA-trained protection officers</p>
+                  <p className="text-sm font-semibold text-white">Licensed Security</p>
+                  <p className="text-xs text-slate-300">SIA-trained protection officers</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/20">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Car size={16} className="text-blue-600" />
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/60 backdrop-blur-sm border border-amber-400/20 shadow-lg">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center">
+                  <Car size={18} className="text-amber-400" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold">Professional Vehicles</p>
-                  <p className="text-xs text-muted-foreground">Premium fleet with professional drivers</p>
+                  <p className="text-sm font-semibold text-white">Professional Vehicles</p>
+                  <p className="text-xs text-slate-300">Premium fleet with discrete service</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/20">
-                <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
-                  <Star size={16} className="text-amber-600" />
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/60 backdrop-blur-sm border border-amber-400/20 shadow-lg">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center">
+                  <Star size={18} className="text-amber-400" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold">Discrete Service</p>
-                  <p className="text-xs text-muted-foreground">Professional, confidential transport</p>
+                  <p className="text-sm font-semibold text-white">6000+ Trips Completed</p>
+                  <p className="text-xs text-slate-300">Professional, confidential transport</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Continue Button */}
+          {/* Luxury Continue Button */}
           <div className="space-y-4">
             <Button 
               onClick={() => {
                 setIsFirstLaunch(false)
                 setCurrentView('onboarding')
+                setOnboardingStep(0)
               }}
-              className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg"
+              className="w-full h-14 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
             >
-              Get Started
+              Begin Personal Assessment
             </Button>
             
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => {
-                setIsFirstLaunch(false)
-                setHasCompletedOnboarding(true)
-                setCurrentView('home')
-                toast.success("Welcome to Armora!")
-              }}
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              Skip intro
-            </Button>
+            <p className="text-xs text-slate-400 italic">
+              "Tailored protection for your lifestyle"
+            </p>
           </div>
 
-          {/* Trust Indicators */}
-          <div className="pt-4 border-t border-border/20">
-            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Shield size={10} />
+          {/* Luxury Trust Indicators */}
+          <div className="pt-6 border-t border-amber-400/20">
+            <div className="flex items-center justify-center gap-6 text-xs text-slate-300">
+              <div className="flex items-center gap-1.5">
+                <Shield size={12} className="text-amber-400" />
                 <span>SIA Licensed</span>
               </div>
-              <div className="w-px h-3 bg-border"></div>
-              <div className="flex items-center gap-1">
-                <CheckCircle size={10} />
-                <span>6000+ Trips</span>
+              <div className="w-px h-4 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle size={12} className="text-amber-400" />
+                <span>Premium Service</span>
               </div>
-              <div className="w-px h-3 bg-border"></div>
-              <div className="flex items-center gap-1">
-                <Star size={10} />
-                <span>5-Star Service</span>
+              <div className="w-px h-4 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1.5">
+                <Star size={12} className="text-amber-400" />
+                <span>5-Star Rating</span>
               </div>
             </div>
           </div>
@@ -2361,127 +2382,880 @@ function App() {
     )
   }
 
-  // Onboarding Flow
+  // Luxury Onboarding Flow with Hybrid Questions
   if (currentView === 'onboarding') {
+    const totalSteps = 10
+    const currentStep = onboardingStep + 1
+    const progressPercentage = (currentStep / totalSteps) * 100
+
+    const updateOnboardingData = (field: string, value: any) => {
+      setOnboardingData(prev => ({ ...prev, [field]: value }))
+    }
+
+    const toggleArrayValue = (field: string, value: string) => {
+      setOnboardingData(prev => ({
+        ...prev,
+        [field]: prev[field].includes(value) 
+          ? prev[field].filter((item: string) => item !== value)
+          : [...prev[field], value]
+      }))
+    }
+
+    const nextStep = () => {
+      if (onboardingStep < totalSteps - 1) {
+        setOnboardingStep(onboardingStep + 1)
+      } else {
+        // Complete onboarding
+        setHasCompletedOnboarding(true)
+        setCurrentView('onboarding-complete')
+      }
+    }
+
+    const prevStep = () => {
+      if (onboardingStep > 0) {
+        setOnboardingStep(onboardingStep - 1)
+      }
+    }
+
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
         <Toaster position="top-center" />
         
-        {/* Header */}
-        <header className="bg-background/95 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
-          <div className="flex items-center justify-between max-w-md mx-auto">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <Shield size={16} className="text-primary-foreground" weight="bold" />
+        {/* Luxury Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-gradient-to-r from-amber-400/10 to-amber-600/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-r from-slate-400/5 to-slate-600/5 rounded-full blur-3xl animate-pulse delay-1000" />
+        </div>
+        
+        {/* Luxury Header */}
+        <header className="relative z-10 p-6 border-b border-amber-400/20 bg-slate-900/80 backdrop-blur-sm">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Shield size={20} className="text-slate-900" weight="bold" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-white">Personal Assessment</h1>
+                  <p className="text-xs text-amber-200">Tailoring your protection experience</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-lg font-bold">Welcome to Armora</h1>
-                <p className="text-xs text-muted-foreground">Quick setup</p>
+              {onboardingStep > 0 && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={prevStep}
+                  className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30"
+                >
+                  Back
+                </Button>
+              )}
+            </div>
+            
+            {/* Luxury Progress Bar */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs text-amber-200">
+                <span>Step {currentStep} of {totalSteps}</span>
+                <span>{Math.round(progressPercentage)}%</span>
+              </div>
+              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-500 ease-out shadow-lg"
+                  style={{ width: `${progressPercentage}%` }}
+                />
               </div>
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => {
-                setHasCompletedOnboarding(true)
-                setCurrentView('home')
-              }}
-              className="text-xs"
-            >
-              Skip
-            </Button>
           </div>
         </header>
 
-        <div className="p-4 pb-24 space-y-6 max-w-md mx-auto">
-          {/* Service Introduction */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
-            <CardContent className="p-6 text-center space-y-4">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
-                <Shield size={32} className="text-primary" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold mb-2">Security-First Transport</h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Every Armora driver is a licensed close protection officer. You're not just getting a ride - 
-                  you're getting professional security service.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Service Levels Preview */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
-            <CardContent className="p-6 space-y-4">
-              <h3 className="font-semibold text-center mb-4">Choose Your Protection Level</h3>
-              
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                  <Car size={20} className="text-primary" />
-                  <div>
-                    <p className="font-medium text-sm">Standard Transport</p>
-                    <p className="text-xs text-muted-foreground">Discrete security officer</p>
-                  </div>
-                  <span className="ml-auto text-sm font-bold">£45-75</span>
+        <div className="relative z-10 p-6 max-w-md mx-auto">
+          {/* Slide 0: Assessment Introduction */}
+          {onboardingStep === 0 && (
+            <div className="space-y-8 animate-in fade-in duration-500">
+              <div className="text-center space-y-6">
+                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl flex items-center justify-center border border-amber-400/30">
+                  <User size={32} className="text-amber-400" />
                 </div>
                 
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                  <Shield size={20} className="text-accent" />
-                  <div>
-                    <p className="font-medium text-sm">Executive Protection</p>
-                    <p className="text-xs text-muted-foreground">Enhanced security measures</p>
-                  </div>
-                  <span className="ml-auto text-sm font-bold">£120-250</span>
+                <div className="space-y-4">
+                  <h2 className="text-2xl font-bold text-white">Tailored Protection for Your Lifestyle</h2>
+                  <p className="text-slate-300 leading-relaxed">
+                    We'll ask a few personalized questions to understand your security needs and preferences. 
+                    This ensures your protection is perfectly matched to your lifestyle.
+                  </p>
                 </div>
-                
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                  <Star size={20} className="text-amber-500" />
-                  <div>
-                    <p className="font-medium text-sm">Ultra-Luxury</p>
-                    <p className="text-xs text-muted-foreground">Premium vehicles + security</p>
-                  </div>
-                  <span className="ml-auto text-sm font-bold">£180-450</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Location Permission */}
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
-            <CardContent className="p-6 text-center space-y-4">
-              <div className="w-12 h-12 mx-auto bg-blue-100 rounded-xl flex items-center justify-center">
-                <MapPin size={24} className="text-blue-600" />
+                <div className="grid gap-3 text-left">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
+                    <CheckCircle size={16} className="text-amber-400 flex-shrink-0" />
+                    <span className="text-sm text-slate-200">Personal security assessment</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
+                    <CheckCircle size={16} className="text-amber-400 flex-shrink-0" />
+                    <span className="text-sm text-slate-200">Custom service recommendations</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
+                    <CheckCircle size={16} className="text-amber-400 flex-shrink-0" />
+                    <span className="text-sm text-slate-200">Optimal protection matching</span>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-amber-400/10 rounded-xl border border-amber-400/30">
+                  <p className="text-sm text-amber-200">
+                    ⏱️ <strong>2 minutes</strong> for a lifetime of personalized security
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold mb-2">Enable Location Services</h3>
-                <p className="text-sm text-muted-foreground">
-                  We need your location to provide accurate pickup times and route optimization.
-                </p>
-              </div>
+
               <Button 
-                onClick={() => {
-                  getCurrentLocation()
-                  toast.success("📍 Location access granted")
-                }}
-                className="w-full h-10"
+                onClick={nextStep}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300"
               >
-                <MapPin size={16} className="mr-2" />
-                Enable Location
+                Start My Assessment
               </Button>
+            </div>
+          )}
+
+          {/* Slide 1: Work Type Selection */}
+          {onboardingStep === 1 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">How can we best protect your professional needs?</h2>
+                <p className="text-sm text-slate-300">Select all that apply to your work situation</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'Corporate Executive', icon: '👔', desc: 'C-suite, senior management' },
+                  { value: 'Entrepreneur', icon: '🚀', desc: 'Business owner, startup founder' },
+                  { value: 'Public Figure', icon: '📺', desc: 'Media, politics, high-profile' },
+                  { value: 'Healthcare Professional', icon: '⚕️', desc: 'Medical, pharmaceutical' },
+                  { value: 'Legal Professional', icon: '⚖️', desc: 'Lawyer, judge, legal services' },
+                  { value: 'Financial Services', icon: '💼', desc: 'Banking, investment, finance' },
+                  { value: 'Technology Leader', icon: '💻', desc: 'Tech executive, innovation' },
+                  { value: 'Government Official', icon: '🏛️', desc: 'Public service, diplomatic' }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      onboardingData.workType.includes(option.value)
+                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => toggleArrayValue('workType', option.value)}
+                  >
+                    <CardContent className="p-3 text-center space-y-2">
+                      <div className="text-2xl">{option.icon}</div>
+                      <h3 className="font-semibold text-white text-xs leading-tight">{option.value}</h3>
+                      <p className="text-[10px] text-slate-300 leading-tight">{option.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-amber-200">Other profession or specific details:</label>
+                <textarea
+                  value={onboardingData.workTypeCustom}
+                  onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
+                  placeholder="Describe your profession or specific security requirements..."
+                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  maxLength={500}
+                />
+                <p className="text-xs text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 2: Travel Frequency */}
+          {onboardingStep === 2 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">How often will you require protection services?</h2>
+                <p className="text-sm text-slate-300">This helps us plan your service availability</p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { value: 'Occasionally', desc: 'Special events, rare occasions' },
+                  { value: 'Weekly', desc: 'Regular business meetings, social events' },
+                  { value: 'Daily', desc: 'Commuting, regular professional activities' },
+                  { value: 'Multiple Daily', desc: 'High-frequency travel, constant mobility' }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      onboardingData.travelFrequency === option.value
+                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => updateOnboardingData('travelFrequency', option.value)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-white">{option.value}</h3>
+                          <p className="text-sm text-slate-300">{option.desc}</p>
+                        </div>
+                        <div className={`w-4 h-4 rounded-full border-2 ${
+                          onboardingData.travelFrequency === option.value 
+                            ? 'bg-amber-400 border-amber-400' 
+                            : 'border-slate-500'
+                        }`} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-amber-200">Variable schedule or specific patterns:</label>
+                <textarea
+                  value={onboardingData.travelFrequencyCustom}
+                  onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
+                  placeholder="Describe your travel pattern, schedule variations, or seasonal needs..."
+                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  maxLength={300}
+                />
+                <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 3: Service Style Preference */}
+          {onboardingStep === 3 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">Which service approach suits your lifestyle?</h2>
+                <p className="text-sm text-slate-300">Choose the protection style that feels right</p>
+              </div>
+
+              <div className="grid gap-4">
+                {[
+                  { 
+                    value: 'Discrete Protection', 
+                    icon: '🕶️',
+                    desc: 'Subtle, professional, low-profile security',
+                    features: ['Unmarked vehicles', 'Civilian clothing', 'Minimal visibility']
+                  },
+                  { 
+                    value: 'Executive Security', 
+                    icon: '💼',
+                    desc: 'Visible, authoritative, business-focused',
+                    features: ['Professional presence', 'Clear identification', 'Business appropriate']
+                  },
+                  { 
+                    value: 'Ultra-Premium', 
+                    icon: '👑',
+                    desc: 'Comprehensive, luxury, full-service protection',
+                    features: ['Luxury vehicles', 'Multi-layer security', 'Concierge service']
+                  },
+                  { 
+                    value: 'Event-Specific', 
+                    icon: '🎭',
+                    desc: 'Conferences, galas, special occasions only',
+                    features: ['Event coordination', 'Venue familiarity', 'Flexible arrangements']
+                  }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      onboardingData.serviceStyle === option.value
+                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => updateOnboardingData('serviceStyle', option.value)}
+                  >
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="text-2xl">{option.icon}</div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-white">{option.value}</h3>
+                          <p className="text-sm text-slate-300">{option.desc}</p>
+                        </div>
+                        <div className={`w-4 h-4 rounded-full border-2 ${
+                          onboardingData.serviceStyle === option.value 
+                            ? 'bg-amber-400 border-amber-400' 
+                            : 'border-slate-500'
+                        }`} />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {option.features.map((feature, idx) => (
+                          <span key={idx} className="text-xs px-2 py-1 bg-slate-700/60 text-slate-300 rounded-full">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-amber-200">Custom requirements or preferences:</label>
+                <textarea
+                  value={onboardingData.serviceStyleCustom}
+                  onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
+                  placeholder="Describe your specific security preferences, special requirements, or unique situations..."
+                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  maxLength={500}
+                />
+                <p className="text-xs text-slate-400">{onboardingData.serviceStyleCustom.length}/500 characters</p>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 4: Security Comfort Level */}
+          {onboardingStep === 4 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">What level of security presence feels right?</h2>
+                <p className="text-sm text-slate-300">Your comfort level guides our approach</p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { value: 'Minimal Presence', intensity: 1, desc: 'Nearly invisible, emergency-only response' },
+                  { value: 'Subtle Approach', intensity: 2, desc: 'Professional but unobtrusive protection' },
+                  { value: 'Balanced Visibility', intensity: 3, desc: 'Clearly present but approachable' },
+                  { value: 'High Visibility', intensity: 4, desc: 'Obvious deterrent, authoritative presence' },
+                  { value: 'Maximum Security', intensity: 5, desc: 'Comprehensive, multi-layer protection' }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      onboardingData.securityComfort === option.value
+                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => updateOnboardingData('securityComfort', option.value)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold text-white">{option.value}</h3>
+                            <div className="flex gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <div key={i} className={`w-2 h-2 rounded-full ${
+                                  i < option.intensity ? 'bg-amber-400' : 'bg-slate-600'
+                                }`} />
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-sm text-slate-300">{option.desc}</p>
+                        </div>
+                        <div className={`w-4 h-4 rounded-full border-2 ${
+                          onboardingData.securityComfort === option.value 
+                            ? 'bg-amber-400 border-amber-400' 
+                            : 'border-slate-500'
+                        }`} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-amber-200">Situational needs or comfort preferences:</label>
+                <textarea
+                  value={onboardingData.securityComfortCustom}
+                  onChange={(e) => updateOnboardingData('securityComfortCustom', e.target.value)}
+                  placeholder="Explain your comfort preferences, concerns, or situational needs..."
+                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  maxLength={400}
+                />
+                <p className="text-xs text-slate-400">{onboardingData.securityComfortCustom.length}/400 characters</p>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.securityComfort && !onboardingData.securityComfortCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 5: Travel Patterns & Locations */}
+          {onboardingStep === 5 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">Where do you typically require protection?</h2>
+                <p className="text-sm text-slate-300">Select all locations that apply</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'City Center', icon: '🏙️', desc: 'Urban business districts' },
+                  { value: 'Airports & Transport', icon: '✈️', desc: 'Travel hubs, stations' },
+                  { value: 'Corporate Events', icon: '🏢', desc: 'Conferences, meetings' },
+                  { value: 'Social Events', icon: '🥂', desc: 'Galas, parties, entertainment' },
+                  { value: 'Residential Areas', icon: '🏠', desc: 'Home, neighborhoods' },
+                  { value: 'International Travel', icon: '🌍', desc: 'Cross-border, overseas' }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      onboardingData.locations.includes(option.value)
+                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => toggleArrayValue('locations', option.value)}
+                  >
+                    <CardContent className="p-3 text-center space-y-2">
+                      <div className="text-2xl">{option.icon}</div>
+                      <h3 className="font-semibold text-white text-xs leading-tight">{option.value}</h3>
+                      <p className="text-[10px] text-slate-300 leading-tight">{option.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-amber-200">Specific locations, venues, or areas:</label>
+                <textarea
+                  value={onboardingData.locationsCustom}
+                  onChange={(e) => updateOnboardingData('locationsCustom', e.target.value)}
+                  placeholder="List specific venues, addresses, areas, or regular destinations..."
+                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  maxLength={500}
+                />
+                <p className="text-xs text-slate-400">{onboardingData.locationsCustom.length}/500 characters</p>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={onboardingData.locations.length === 0 && !onboardingData.locationsCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 6: Risk Assessment */}
+          {onboardingStep === 6 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">Are there specific security concerns we should know about?</h2>
+                <p className="text-sm text-slate-300">This information helps us provide appropriate protection</p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { value: 'General Personal Safety', desc: 'Standard protection needs', level: 'standard' },
+                  { value: 'High-Profile Visibility', desc: 'Media attention, public recognition', level: 'elevated' },
+                  { value: 'Business Conflicts', desc: 'Corporate disputes, competitive concerns', level: 'elevated' },
+                  { value: 'Legal Proceedings', desc: 'Court appearances, legal matters', level: 'high' },
+                  { value: 'Threat Assessment', desc: 'Known risks, previous incidents', level: 'high' },
+                  { value: 'No Specific Concerns', desc: 'Preventive security only', level: 'standard' }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      onboardingData.riskConcerns.includes(option.value)
+                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => toggleArrayValue('riskConcerns', option.value)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3">
+                            <h3 className="font-semibold text-white">{option.value}</h3>
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              option.level === 'high' ? 'bg-red-400/20 text-red-300' :
+                              option.level === 'elevated' ? 'bg-yellow-400/20 text-yellow-300' :
+                              'bg-green-400/20 text-green-300'
+                            }`}>
+                              {option.level}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-300 mt-1">{option.desc}</p>
+                        </div>
+                        <div className={`w-4 h-4 rounded-full border-2 ${
+                          onboardingData.riskConcerns.includes(option.value) 
+                            ? 'bg-amber-400 border-amber-400' 
+                            : 'border-slate-500'
+                        }`} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-amber-200">Confidential details (encrypted storage):</label>
+                <textarea
+                  value={onboardingData.riskConcernsCustom}
+                  onChange={(e) => updateOnboardingData('riskConcernsCustom', e.target.value)}
+                  placeholder="Describe any specific concerns, threats, or security requirements (this information is encrypted and confidential)..."
+                  className="w-full h-24 px-4 py-3 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  maxLength={800}
+                />
+                <div className="flex justify-between items-center">
+                  <p className="text-xs text-slate-400">{onboardingData.riskConcernsCustom.length}/800 characters</p>
+                  <div className="flex items-center gap-1 text-xs text-amber-300">
+                    <Shield size={12} />
+                    <span>Encrypted & Confidential</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={onboardingData.riskConcerns.length === 0 && !onboardingData.riskConcernsCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 7: Emergency Contacts */}
+          {onboardingStep === 7 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">Emergency Contacts & Preferences</h2>
+                <p className="text-sm text-slate-300">Who should we contact in case of emergency?</p>
+              </div>
+
+              <div className="space-y-6">
+                {/* Primary Contact */}
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-amber-200">Primary Contact</h3>
+                  <div className="grid gap-3">
+                    <Input
+                      value={onboardingData.emergencyContact1.name}
+                      onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, name: e.target.value})}
+                      placeholder="Full name"
+                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <select
+                        value={onboardingData.emergencyContact1.relationship}
+                        onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, relationship: e.target.value})}
+                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                      >
+                        <option value="">Relationship</option>
+                        <option value="Spouse">Spouse</option>
+                        <option value="Partner">Partner</option>
+                        <option value="Family">Family</option>
+                        <option value="Friend">Friend</option>
+                        <option value="Colleague">Colleague</option>
+                        <option value="Assistant">Assistant</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <Input
+                        value={onboardingData.emergencyContact1.phone}
+                        onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, phone: e.target.value})}
+                        placeholder="Phone number"
+                        type="tel"
+                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Secondary Contact */}
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-amber-200">Secondary Contact (Optional)</h3>
+                  <div className="grid gap-3">
+                    <Input
+                      value={onboardingData.emergencyContact2.name}
+                      onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, name: e.target.value})}
+                      placeholder="Full name"
+                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <select
+                        value={onboardingData.emergencyContact2.relationship}
+                        onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, relationship: e.target.value})}
+                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                      >
+                        <option value="">Relationship</option>
+                        <option value="Spouse">Spouse</option>
+                        <option value="Partner">Partner</option>
+                        <option value="Family">Family</option>
+                        <option value="Friend">Friend</option>
+                        <option value="Colleague">Colleague</option>
+                        <option value="Assistant">Assistant</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <Input
+                        value={onboardingData.emergencyContact2.phone}
+                        onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, phone: e.target.value})}
+                        placeholder="Phone number"
+                        type="tel"
+                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.emergencyContact1.name || !onboardingData.emergencyContact1.phone}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Continue
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 8: Emergency Response Preferences */}
+          {onboardingStep === 8 && (
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">Emergency Response Preferences</h2>
+                <p className="text-sm text-slate-300">How should we respond in emergency situations?</p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { value: 'Contact family first', desc: 'Notify contacts before authorities', priority: '1st: Family, 2nd: Authorities' },
+                  { value: 'Authorities first', desc: 'Police/medical immediately, then contacts', priority: '1st: Emergency Services, 2nd: Family' },
+                  { value: 'Medical conditions priority', desc: 'Health information shared immediately', priority: 'Medical info shared first' },
+                  { value: 'Discrete response', desc: 'Minimize public attention during emergencies', priority: 'Low-profile emergency response' }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      onboardingData.emergencyResponse === option.value
+                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => updateOnboardingData('emergencyResponse', option.value)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-white">{option.value}</h3>
+                          <p className="text-sm text-slate-300">{option.desc}</p>
+                          <p className="text-xs text-amber-300 mt-1">{option.priority}</p>
+                        </div>
+                        <div className={`w-4 h-4 rounded-full border-2 ${
+                          onboardingData.emergencyResponse === option.value 
+                            ? 'bg-amber-400 border-amber-400' 
+                            : 'border-slate-500'
+                        }`} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-amber-200">Special instructions, medical info, or emergency preferences:</label>
+                <textarea
+                  value={onboardingData.emergencyInstructions}
+                  onChange={(e) => updateOnboardingData('emergencyInstructions', e.target.value)}
+                  placeholder="Emergency response preferences, medical conditions, allergies, medications, or special instructions..."
+                  className="w-full h-24 px-4 py-3 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  maxLength={600}
+                />
+                <div className="flex justify-between items-center">
+                  <p className="text-xs text-slate-400">{onboardingData.emergencyInstructions.length}/600 characters</p>
+                  <div className="flex items-center gap-1 text-xs text-amber-300">
+                    <Shield size={12} />
+                    <span>Medical Confidentiality</span>
+                  </div>
+                </div>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.emergencyResponse}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+              >
+                Complete Assessment
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Onboarding Complete - Service Recommendations
+  if (currentView === 'onboarding-complete') {
+    // Generate personalized recommendations based on collected data
+    const generateRecommendations = () => {
+      let recommendedService = 'Standard Transport'
+      let recommendationReason = 'Based on your general protection needs'
+      
+      if (onboardingData.riskConcerns.includes('Threat Assessment') || onboardingData.riskConcerns.includes('High-Profile Visibility')) {
+        recommendedService = 'Executive Protection'
+        recommendationReason = 'Enhanced security recommended due to elevated risk profile'
+      }
+      
+      if (onboardingData.serviceStyle === 'Ultra-Premium' || onboardingData.workType.includes('Public Figure')) {
+        recommendedService = 'Ultra-Luxury'
+        recommendationReason = 'Premium service matching your professional profile'
+      }
+      
+      if (onboardingData.workType.includes('Corporate Executive') && onboardingData.travelFrequency === 'Daily') {
+        recommendedService = 'Corporate Transport'
+        recommendationReason = 'Regular business transport with executive-level service'
+      }
+
+      return { service: recommendedService, reason: recommendationReason }
+    }
+
+    const recommendations = generateRecommendations()
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+        <Toaster position="top-center" />
+        
+        {/* Luxury Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-emerald-400/10 to-emerald-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        </div>
+        
+        <div className="max-w-lg mx-auto text-center space-y-8 animate-in fade-in duration-1000 relative z-10">
+          {/* Success Animation */}
+          <div className="space-y-6">
+            <div className="relative">
+              <div className="w-28 h-28 mx-auto bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-2xl relative">
+                <CheckCircle size={52} className="text-white" weight="fill" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent to-white/20 rounded-full" />
+              </div>
+              <div className="absolute -inset-6 bg-gradient-to-r from-emerald-400/30 to-emerald-600/30 rounded-full blur-xl animate-pulse" />
+            </div>
+            
+            <div className="space-y-4">
+              <h1 className="text-3xl font-bold text-white">Your Security Profile is Complete</h1>
+              <p className="text-lg text-emerald-200">Welcome to personalized protection with Armora</p>
+            </div>
+          </div>
+
+          {/* Personalized Recommendations */}
+          <Card className="bg-slate-800/60 border-amber-400/30 shadow-2xl">
+            <CardContent className="p-8 space-y-6">
+              <div className="text-center space-y-4">
+                <h2 className="text-xl font-bold text-white">Your Personalized Protection Profile</h2>
+                <div className="p-6 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl border border-amber-400/30">
+                  <h3 className="text-lg font-bold text-amber-200 mb-2">Recommended Service</h3>
+                  <p className="text-2xl font-bold text-white">{recommendations.service}</p>
+                  <p className="text-sm text-slate-300 mt-2">{recommendations.reason}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="font-semibold text-amber-200">Your Requirements Summary:</h3>
+                <div className="grid gap-3 text-left">
+                  {onboardingData.workType.length > 0 && (
+                    <div className="flex items-center gap-3 p-3 bg-slate-700/40 rounded-lg">
+                      <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                      <span className="text-sm text-slate-200">
+                        Professional: {onboardingData.workType.join(', ')}
+                        {onboardingData.workTypeCustom && ` - ${onboardingData.workTypeCustom.substring(0, 50)}${onboardingData.workTypeCustom.length > 50 ? '...' : ''}`}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {onboardingData.serviceStyle && (
+                    <div className="flex items-center gap-3 p-3 bg-slate-700/40 rounded-lg">
+                      <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                      <span className="text-sm text-slate-200">Style: {onboardingData.serviceStyle}</span>
+                    </div>
+                  )}
+                  
+                  {onboardingData.travelFrequency && (
+                    <div className="flex items-center gap-3 p-3 bg-slate-700/40 rounded-lg">
+                      <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                      <span className="text-sm text-slate-200">Frequency: {onboardingData.travelFrequency}</span>
+                    </div>
+                  )}
+                  
+                  {onboardingData.locations.length > 0 && (
+                    <div className="flex items-center gap-3 p-3 bg-slate-700/40 rounded-lg">
+                      <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                      <span className="text-sm text-slate-200">
+                        Locations: {onboardingData.locations.slice(0, 2).join(', ')}
+                        {onboardingData.locations.length > 2 && ` +${onboardingData.locations.length - 2} more`}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-600">
+                <div className="flex items-center gap-2 justify-center text-emerald-300">
+                  <Shield size={16} />
+                  <span className="text-sm">Your protection team will review these details</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          {/* Complete Setup */}
-          <Button 
-            onClick={() => {
-              setHasCompletedOnboarding(true)
-              setCurrentView('home')
-              toast.success("🎉 Welcome to Armora! You're all set.")
-            }}
-            className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg"
-          >
-            Start Using Armora
-          </Button>
+          {/* Next Steps */}
+          <div className="space-y-4">
+            <Button 
+              onClick={() => {
+                setHasCompletedOnboarding(true)
+                setCurrentView('home')
+                toast.success("🎉 Welcome to Armora! Your personalized profile is ready.")
+              }}
+              className="w-full h-14 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+            >
+              Begin Your Protected Journey
+            </Button>
+            
+            <p className="text-sm text-slate-300 italic">
+              "Your custom requirements have been securely recorded"
+            </p>
+          </div>
+
+          {/* Luxury Trust Indicators */}
+          <div className="pt-6 border-t border-amber-400/20">
+            <div className="flex items-center justify-center gap-6 text-xs text-slate-300">
+              <div className="flex items-center gap-1.5">
+                <Shield size={12} className="text-emerald-400" />
+                <span>Encrypted Storage</span>
+              </div>
+              <div className="w-px h-4 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle size={12} className="text-emerald-400" />
+                <span>Profile Complete</span>
+              </div>
+              <div className="w-px h-4 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1.5">
+                <Star size={12} className="text-emerald-400" />
+                <span>Ready to Serve</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )
