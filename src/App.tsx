@@ -290,13 +290,6 @@ const SecurityTrackingMap = ({ trip, driver }: { trip: any, driver: any }) => {
   )
 }
 
-  return (
-    <div className="h-screen bg-gradient-to-br from-background via-background to-muted/20 relative z-10">
-      <SecurityTrackingMap trip={currentTrip} driver={assignedDriver} />
-    </div>
-  )
-}
-
 function App() {
   const [activeTab, setActiveTab] = useState<string>('book')
   const [selectedService, setSelectedService] = useState<string>('')
