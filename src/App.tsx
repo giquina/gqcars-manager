@@ -2270,7 +2270,7 @@ function App() {
                 Protected by Shadows
               </p>
               <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed">
-                Premium security transport with licensed close protection officers
+                Professional security transport with licensed close protection officers
               </p>
             </div>
           </div>
@@ -2293,7 +2293,7 @@ function App() {
                   <Car size={16} className="text-blue-600" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold">Luxury Vehicles</p>
+                  <p className="text-sm font-semibold">Professional Vehicles</p>
                   <p className="text-xs text-muted-foreground">Premium fleet with professional drivers</p>
                 </div>
               </div>
@@ -2347,7 +2347,7 @@ function App() {
               <div className="w-px h-3 bg-border"></div>
               <div className="flex items-center gap-1">
                 <CheckCircle size={10} />
-                <span>Insured</span>
+                <span>6000+ Trips</span>
               </div>
               <div className="w-px h-3 bg-border"></div>
               <div className="flex items-center gap-1">
