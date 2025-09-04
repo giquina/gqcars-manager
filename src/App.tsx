@@ -723,6 +723,7 @@ function App() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
         </Tabs>
       </div>
 
