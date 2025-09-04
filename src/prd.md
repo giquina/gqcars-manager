@@ -1,122 +1,87 @@
-# GQCars Security Transport - Passenger App PRD
+# GQ Cars - UK Passenger Ride-Booking App
 
 ## Core Purpose & Success
-- **Mission Statement**: Provide passengers with instant access to licensed security professionals for safe, premium transport services.
-- **Success Indicators**: 
-  - Sub-60 second booking time for urgent situations
-  - 99.9% driver credential verification rate
-  - Premium trust perception comparable to executive protection services
-- **Experience Qualities**: Secure, Professional, Immediate
+- **Mission Statement**: Professional ride-booking service for UK passengers, providing reliable, comfortable transportation with transparent GBP pricing and excellent customer experience.
+- **Success Indicators**: Quick booking flow (under 60 seconds), high customer satisfaction, reliable driver matching, clear pricing with no hidden fees.
+- **Experience Qualities**: Professional, reliable, and straightforward - like a premium UK transport service.
 
 ## Project Classification & Approach
-- **Complexity Level**: Complex Application (advanced functionality, security verification, real-time tracking)
-- **Primary User Activity**: Acting (booking immediate security transport) with Critical Safety Elements
-
-## Thought Process for Feature Selection
-- **Core Problem Analysis**: High-value individuals and those in vulnerable situations need immediate access to verified security professionals for transport, not amateur drivers
-- **User Context**: Emergency situations, high-risk environments, executive transport needs, personal safety concerns
-- **Critical Path**: Threat assessment → Security level selection → Driver verification → Real-time protection
-- **Key Moments**: 
-  1. Initial threat/risk assessment (determines service level)
-  2. Driver credential verification (builds trust)
-  3. Live tracking with emergency protocols (ensures safety)
+- **Complexity Level**: Light Application (ride booking with real-time tracking, payment processing, and user account management)
+- **Primary User Activity**: Booking and tracking rides - users need to quickly request transportation and monitor their journey
 
 ## Essential Features
 
-### Security Risk Assessment
-- **What it does**: 6-question evaluation to determine appropriate protection level
-- **Why it matters**: Different threats require different security responses
-- **Success criteria**: Appropriate security level assigned within 30 seconds
+### Core Booking Features
+- **Quick Location Entry**: Simple pickup and destination input with UK postcode support
+- **Ride Type Selection**: Four service levels (Standard, Comfort, Executive, XL) with clear GBP pricing
+- **Payment Integration**: Secure payment processing with UK payment methods (contactless, chip & pin)
+- **Driver Matching**: Real-time driver assignment with profile, vehicle details, and ETA
+- **Live Tracking**: GPS tracking during rides with route visualization
+- **Trip History**: Complete record of past journeys with receipts
 
-### Driver Credential Display
-- **What it does**: Shows security licensing, photo, background verification, and professional experience
-- **Why it matters**: Trust is fundamental - passengers must feel confident in driver qualifications
-- **Success criteria**: 100% credential verification displayed before driver assignment
-
-### Real-Time Security Tracking
-- **What it does**: Live GPS with emergency protocols, route monitoring, and threat detection
-- **Why it matters**: Continuous protection awareness and emergency response capability
-- **Success criteria**: Sub-5 second location updates with instant emergency response
-
-### Emergency Response System
-- **What it does**: One-tap emergency services, automatic threat escalation, emergency contact notification
-- **Why it matters**: Security transport must handle crisis situations immediately
-- **Success criteria**: Emergency response activated within 3 seconds of alert
-
-### Premium Service Levels
-- **What it does**: Solo security driver, security team, executive protection options
-- **Why it matters**: Different threat levels require different security responses
-- **Success criteria**: Clear service differentiation with appropriate pricing
+### UK Market Features
+- **GBP Currency**: All pricing in Great British Pounds with transparent estimates
+- **Local Integration**: UK postcodes, street names, and local landmarks
+- **Professional Service**: Clean, reliable vehicles with verified drivers
+- **Safety Features**: Emergency contacts, trip sharing, driver verification
 
 ## Design Direction
 
 ### Visual Tone & Identity
-- **Emotional Response**: Confidence, Trust, Professional Competence, Immediate Safety
-- **Design Personality**: Executive, Authoritative, Reliable, Discreet, Premium
-- **Visual Metaphors**: Shield imagery, professional badges, secure transport, executive protection
-- **Simplicity Spectrum**: Professional minimalism - clean but authoritative interface
+- **Emotional Response**: Confidence, reliability, and professional competence
+- **Design Personality**: Clean, modern, and trustworthy - like premium UK transport
+- **Visual Metaphors**: Professional transportation, reliability, and British quality standards
+- **Simplicity Spectrum**: Minimal interface that prioritizes speed and clarity
 
 ### Color Strategy
-- **Color Scheme Type**: Monochromatic with strategic accent
-- **Primary Color**: Deep Navy/Charcoal (authority, trust, professionalism)
-- **Secondary Colors**: Platinum Silver (premium, technology, sophistication)
-- **Accent Color**: Gold/Amber (premium service, immediate action, warning/alert)
-- **Color Psychology**: Navy conveys trust and authority, Gold indicates premium positioning and urgency
-- **Color Accessibility**: High contrast ratios for critical emergency features
+- **Color Scheme Type**: Monochromatic with professional accent
+- **Primary Color**: Clean black (#000000) for professional authority and premium feel
+- **Secondary Colors**: Light grays for backgrounds and supporting elements
+- **Accent Color**: Deep navy blue for interactive elements and highlights
+- **Color Psychology**: Black conveys premium service and reliability; whites create clean, trustworthy interface
 - **Foreground/Background Pairings**: 
-  - White text on Navy backgrounds (4.7:1 ratio)
-  - Navy text on Light Gray backgrounds (8.2:1 ratio)
-  - White text on Gold accents (3.8:1 ratio)
-  - Navy text on White backgrounds (11.9:1 ratio)
+  - Black text on white backgrounds (primary content)
+  - White text on black buttons (calls-to-action)
+  - Dark gray text on light gray backgrounds (secondary content)
 
 ### Typography System
-- **Font Pairing Strategy**: Single professional typeface family with varied weights
-- **Typographic Hierarchy**: Bold headers for security features, clean body text for credentials
-- **Font Personality**: Professional, Authoritative, Highly Legible, Executive
-- **Readability Focus**: Critical for emergency situations - must be readable under stress
-- **Typography Consistency**: Consistent weight and spacing for professional appearance
-- **Which fonts**: Inter (primary) - clean, professional, excellent readability
-- **Legibility Check**: Inter tested for emergency readability and stress situations
-
-### Visual Hierarchy & Layout
-- **Attention Direction**: Emergency features prominently placed, security credentials highlighted
-- **White Space Philosophy**: Professional breathing room without wasted space
-- **Grid System**: Structured layout reflecting security protocols and procedures
-- **Responsive Approach**: Emergency features always accessible regardless of device
-- **Content Density**: Dense information display for security details, spacious for booking flow
-
-### Animations
-- **Purposeful Meaning**: Subtle authority-building animations, immediate response feedback
-- **Hierarchy of Movement**: Emergency features animate immediately, tracking shows live movement
-- **Contextual Appropriateness**: Professional restraint with functional priority
+- **Font Pairing Strategy**: Single font family (Inter) with multiple weights for consistency
+- **Typographic Hierarchy**: Bold headings, medium subheadings, regular body text, small labels
+- **Font Personality**: Modern, clean, and highly legible for quick reading
+- **Readability Focus**: Optimized for mobile reading with appropriate sizing and spacing
+- **Which fonts**: Inter (400, 500, 600, 700 weights) for complete interface
+- **Legibility Check**: Excellent legibility across all screen sizes and conditions
 
 ### UI Elements & Component Selection
-- **Component Usage**: Cards for driver credentials, prominent buttons for emergency features
-- **Component Customization**: Professional styling with security-focused visual language
-- **Component States**: Clear enabled/disabled states for security features
-- **Icon Selection**: Security-focused icons (shields, badges, emergency symbols)
-- **Component Hierarchy**: Emergency actions primary, booking secondary, information tertiary
-- **Spacing System**: Professional spacing using 8px base grid
-- **Mobile Adaptation**: Emergency features maintain prominence on mobile
+- **Component Usage**: 
+  - Cards for ride options and trip information
+  - Clean input fields for location entry
+  - Professional buttons for actions
+  - Bottom navigation for main sections
+- **Component Customization**: Rounded corners, subtle shadows, clean borders
+- **Component States**: Clear hover, active, and disabled states for all interactive elements
+- **Icon Selection**: Phosphor icons for consistency and clarity
+- **Spacing System**: Consistent padding and margins using Tailwind's spacing scale
+- **Mobile Adaptation**: Touch-friendly sizing with generous tap targets
 
-### Visual Consistency Framework
-- **Design System Approach**: Component-based with security protocol consistency
-- **Style Guide Elements**: Security badge styling, emergency color coding, credential displays
-- **Visual Rhythm**: Professional cadence reflecting security industry standards
-- **Brand Alignment**: Premium security service positioning
-
-### Accessibility & Readability
-- **Contrast Goal**: WCAG AAA compliance for all emergency and safety-critical features
+### Layout & Navigation
+- **Bottom Navigation**: Uber-style bottom nav with Home, Activity, Saved, Account
+- **Single View Pattern**: One main view at a time with clear navigation
+- **Card-Based Layout**: Information organized in clean cards for easy scanning
+- **Mobile-First**: Designed primarily for mobile usage patterns
 
 ## Edge Cases & Problem Scenarios
-- **Potential Obstacles**: Driver verification delays, emergency response coordination, high-stress booking
-- **Edge Case Handling**: Backup driver assignment, emergency service integration, offline emergency protocols
-- **Technical Constraints**: Real-time tracking reliability, emergency service integration
+- **Location Recognition**: Handle unclear or incorrect addresses gracefully
+- **Driver Availability**: Clear messaging when no drivers available
+- **Payment Issues**: Fallback payment methods and clear error messages
+- **Trip Cancellations**: Easy cancellation with clear policies
+- **Emergency Situations**: Quick access to emergency features and support
 
 ## Implementation Considerations
-- **Scalability Needs**: Regional expansion with local security provider integration
-- **Testing Focus**: Emergency response times, driver verification accuracy, stress-testing critical paths
-- **Critical Questions**: How quickly can we verify and assign qualified security drivers?
+- **Real-time Updates**: Live driver tracking and trip progress
+- **Offline Functionality**: Basic functionality when connection is poor
+- **Performance**: Fast loading and smooth interactions
+- **UK Compliance**: Adherence to UK transport and data protection laws
 
 ## Reflection
-This approach uniquely positions GQCars as executive protection transport rather than casual ride-sharing. The emphasis on credentials, emergency response, and professional security protocols creates clear differentiation from standard transportation apps. The premium visual language and security-focused features justify higher pricing while building essential trust with customers who need professional protection.
+This approach focuses on creating a clean, professional passenger experience that feels distinctly British - reliable, straightforward, and premium without being ostentatious. The design prioritizes speed and clarity over flashy features, matching UK customer expectations for professional transport services.
