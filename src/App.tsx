@@ -1975,6 +1975,14 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
 }
 
 function App() {
+  // Debug function to reset app state
+  const resetToWelcome = () => {
+    // Clear all stored data
+    localStorage.removeItem('armora-onboarding-complete')
+    localStorage.removeItem('armora-first-launch')
+    window.location.reload()
+  }
+
   // Enhanced state management with welcome screen and onboarding
   const [currentView, setCurrentView] = useState<string>('welcome')
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useKV("armora-onboarding-complete", false)
@@ -2017,17 +2025,15 @@ function App() {
   const [statusMessage, setStatusMessage] = useState<string>('')
   const [statusType, setStatusType] = useState<'info' | 'success' | 'warning' | 'error'>('info')
 
-  // Initialize app flow based on user state
+  // Initialize app flow based on user state - Force welcome screen to show
   useEffect(() => {
-    // Determine initial view based on user status
-    if (isFirstLaunch) {
-      setCurrentView('welcome')
-    } else if (!hasCompletedOnboarding) {
-      setCurrentView('onboarding')
-    } else {
-      setCurrentView('home')
-    }
-  }, [isFirstLaunch, hasCompletedOnboarding])
+    // Always show welcome screen first, regardless of stored values
+    setCurrentView('welcome')
+    
+    // Reset the values to ensure we see the full flow
+    setIsFirstLaunch(true)
+    setHasCompletedOnboarding(false)
+  }, [])
 
   // Update map center when user location is found - with proper dependency management
   useEffect(() => {
@@ -2649,7 +2655,18 @@ function App() {
               {isLocationWatching && (
                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" title="GPS active" />
               )}
-              <Button variant="ghost" size="sm" className="w-6 h-6 rounded-full">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-6 h-6 rounded-full"
+                onClick={() => {
+                  // Reset to welcome screen
+                  setCurrentView('welcome')
+                  setIsFirstLaunch(true)
+                  setHasCompletedOnboarding(false)
+                  toast.success("🔄 App reset to welcome screen")
+                }}
+              >
                 <User size={12} />
               </Button>
             </div>
@@ -2853,7 +2870,18 @@ function App() {
 
           {/* Ultra Compact Service Selection */}
           <div className="space-y-2">
-            <h2 className="text-lg font-bold">Choose your ride</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold">Choose your ride</h2>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={resetToWelcome}
+                className="h-6 px-2 text-xs bg-primary/10 border-primary/20 hover:bg-primary hover:text-primary-foreground"
+              >
+                <Shield size={10} className="mr-1" />
+                Welcome
+              </Button>
+            </div>
             
             {/* Compact 2x3 Service Grid - Two services per row */}
             <div className="grid grid-cols-2 gap-3">
@@ -3057,7 +3085,7 @@ function App() {
 
         {/* Compact Bottom Navigation */}
         <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
-          <div className="grid grid-cols-4 h-12 max-w-md mx-auto">
+          <div className="grid grid-cols-5 h-12 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
               className="flex flex-col items-center justify-center gap-0.5 text-primary transition-colors"
@@ -3096,6 +3124,21 @@ function App() {
                 <User size={16} />
               </div>
               <span className="text-[10px]">Account</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentView('welcome')
+                setIsFirstLaunch(true)
+                setHasCompletedOnboarding(false)
+                toast.success("🏠 Welcome Screen")
+              }}
+              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <div className="w-5 h-5 flex items-center justify-center">
+                <Shield size={16} />
+              </div>
+              <span className="text-[10px]">Reset</span>
             </button>
           </div>
         </div>
