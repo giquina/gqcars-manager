@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Car, Phone, Mail, MapPin, Star, Fuel, Users, Gauge } from "@phosphor-icons/react"
-import { toast } from 'sonner'
+import { Car, Phone, Mail, MapPin, Fuel, Users, Gauge } from "@phosphor-icons/react"
+import { toast, Toaster } from 'sonner'
 
 // Sample car data - in a real app this would come from an API
 const cars = [
@@ -125,6 +125,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Toaster />
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div 
