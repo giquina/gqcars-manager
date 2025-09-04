@@ -241,7 +241,7 @@ const armoraServices = [
   {
     id: 'standard',
     name: 'Standard Transport',
-    description: 'Licensed close protection officer with discrete vehicle',
+    description: 'Licensed protection officer with discrete vehicle',
     priceRange: '£45 - £75',
     eta: '3-8 min',
     icon: Car,
@@ -262,7 +262,7 @@ const armoraServices = [
   {
     id: 'executive-protection', 
     name: 'Executive Protection',
-    description: 'SIA-licensed Close Protection Officers',
+    description: 'SIA-licensed Protection Officers',
     priceRange: '£120 - £250',
     eta: '8-15 min',
     icon: Shield,
@@ -282,7 +282,7 @@ const armoraServices = [
   {
     id: 'airport-express',
     name: 'Airport Express',
-    description: 'Flight-monitored transfers with meet & greet',
+    description: 'Flight-monitored transfers & meet-greet',
     priceRange: '£65 - £120',
     eta: '15-30 min',
     icon: NavigationArrow,
@@ -292,7 +292,7 @@ const armoraServices = [
   {
     id: 'corporate',
     name: 'Corporate Transport',
-    description: 'Business account management and bulk bookings',
+    description: 'Business accounts & bulk bookings',
     priceRange: '£40 - £85',
     eta: '5-12 min',
     icon: Users,
@@ -312,7 +312,7 @@ const armoraDrivers = [
     license: 'ARMR001',
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
     eta: 5,
-    certifications: ['SIA Close Protection', 'Advanced Driving', 'First Aid'],
+    certifications: ['SIA Protection', 'Advanced Driving', 'First Aid'],
     specialties: ['Executive Protection', 'Diplomatic Transport'],
     languages: ['English', 'French']
   },
@@ -325,7 +325,7 @@ const armoraDrivers = [
     license: 'ARMR002', 
     photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b586?w=400&q=80',
     eta: 7,
-    certifications: ['SIA Close Protection', 'VIP Security', 'Defensive Driving'],
+    certifications: ['SIA Protection', 'VIP Security', 'Defensive Driving'],
     specialties: ['Celebrity Protection', 'Shadow Escort'],
     languages: ['English', 'Italian', 'Spanish']
   },
@@ -338,7 +338,7 @@ const armoraDrivers = [
     license: 'ARMR003',
     photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
     eta: 12,
-    certifications: ['SIA Close Protection', 'Counter-Surveillance', 'Tactical Driving'],
+    certifications: ['SIA Protection', 'Counter-Surveillance', 'Tactical Driving'],
     specialties: ['Ultra-Luxury', 'Government Transport'],
     languages: ['English', 'German']
   }
@@ -3384,7 +3384,7 @@ function App() {
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>SIA-licensed close protection officer</span>
+                  <span>SIA-licensed protection officer</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
@@ -3392,7 +3392,7 @@ function App() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>Professional background-checked driver</span>
+                  <span>Professional vetted driver</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
@@ -3711,7 +3711,7 @@ function App() {
                       </div>
                       
                       {/* Service Name */}
-                      <h3 className={`font-bold text-xs leading-tight text-center line-clamp-2 ${ 
+                      <h3 className={`font-bold text-[10px] leading-tight text-center line-clamp-1 ${ 
                         isSelected ? 'text-primary' : 'text-foreground'
                       }`}>
                         {service.name}
