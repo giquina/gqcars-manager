@@ -8,496 +8,483 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Car, Phone, Mail, MapPin, Fuel, Users, Gauge, Heart, HeartStraight } from "@phosphor-icons/react"
+import { Car, Phone, Mail, MapPin, Clock, Users, Star, Heart, HeartStraight, NavigationArrow, User } from "@phosphor-icons/react"
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
-// Sample car data - in a real app this would come from an API
-const cars = [
+// Sample ride types and recent trips data
+const rideTypes = [
   {
-    id: 1,
-    make: "BMW",
-    model: "M5 Competition",
-    year: 2024,
-    price: 125000,
-    image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80",
-    mileage: 1200,
-    fuel: "Gasoline",
-    transmission: "Automatic",
-    seats: 5,
-    features: ["Premium Sound", "Navigation", "Leather Seats", "Sunroof"],
-    description: "Experience the perfect balance of luxury and performance with the BMW M5 Competition. This sedan delivers extraordinary power while maintaining the sophistication expected from BMW."
+    id: 'economy',
+    name: 'Economy',
+    description: 'Affordable everyday rides',
+    price: 12,
+    eta: '3-5 min',
+    image: 'https://images.unsplash.com/photo-1549924231-f129b911e442?w=400&q=80'
   },
   {
-    id: 2,
-    make: "Mercedes-Benz",
-    model: "S-Class",
-    year: 2024,
-    price: 135000,
-    image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&q=80",
-    mileage: 800,
-    fuel: "Gasoline",
-    transmission: "Automatic",
-    seats: 5,
-    features: ["Massage Seats", "Premium Audio", "Advanced Safety", "Air Suspension"],
-    description: "The Mercedes-Benz S-Class represents the pinnacle of automotive luxury, featuring cutting-edge technology and unparalleled comfort for the most discerning drivers."
+    id: 'comfort',
+    name: 'Comfort',
+    description: 'Extra legroom and premium vehicles',
+    price: 18,
+    eta: '4-6 min',
+    image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=80'
   },
   {
-    id: 3,
-    make: "Audi",
-    model: "RS7 Sportback",
-    year: 2023,
-    price: 142000,
-    image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&q=80",
-    mileage: 2500,
-    fuel: "Gasoline",
-    transmission: "Automatic",
-    seats: 5,
-    features: ["Sport Exhaust", "Carbon Fiber", "Performance Seats", "Quattro AWD"],
-    description: "The Audi RS7 Sportback combines stunning design with incredible performance, delivering a driving experience that's both exhilarating and refined."
-  },
-  {
-    id: 4,
-    make: "Porsche",
-    model: "911 Turbo S",
-    year: 2024,
-    price: 235000,
-    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80",
-    mileage: 500,
-    fuel: "Gasoline",
-    transmission: "PDK",
-    seats: 4,
-    features: ["Sport Chrono", "PASM", "Carbon Brakes", "Sport Exhaust"],
-    description: "The legendary Porsche 911 Turbo S delivers uncompromising performance with everyday usability, representing the ultimate expression of the 911 lineage."
-  },
-  {
-    id: 5,
-    make: "Bentley",
-    model: "Continental GT",
-    year: 2023,
-    price: 285000,
-    image: "https://images.unsplash.com/photo-1563720223185-11003d516935?w=800&q=80",
-    mileage: 1800,
-    fuel: "Gasoline",
-    transmission: "Automatic",
-    seats: 4,
-    features: ["Handcrafted Interior", "Premium Leather", "Diamond Quilting", "Mulliner Spec"],
-    description: "The Bentley Continental GT epitomizes British luxury and craftsmanship, offering a perfect blend of performance and opulence for the most exclusive driving experience."
-  },
-  {
-    id: 6,
-    make: "Lamborghini",
-    model: "Huracán EVO",
-    year: 2024,
-    price: 275000,
-    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80",
-    mileage: 300,
-    fuel: "Gasoline",
-    transmission: "Dual-Clutch",
-    seats: 2,
-    features: ["Track Mode", "Carbon Fiber", "Sport Exhaust", "Alcantara"],
-    description: "The Lamborghini Huracán EVO delivers pure Italian supercar excellence with razor-sharp performance and unmistakable style that commands attention everywhere."
+    id: 'premium',
+    name: 'Premium',
+    description: 'High-end cars with top-rated drivers',
+    price: 32,
+    eta: '5-8 min',
+    image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=80'
   }
 ]
 
+const recentTrips = [
+  {
+    id: 1,
+    from: 'Home',
+    to: 'Downtown Office',
+    date: '2024-01-15',
+    price: 15,
+    driver: 'Michael Johnson',
+    rating: 4.9
+  },
+  {
+    id: 2,
+    from: 'Airport Terminal 1',
+    to: 'Hotel District',
+    date: '2024-01-12',
+    price: 28,
+    driver: 'Sarah Chen',
+    rating: 5.0
+  },
+  {
+    id: 3,
+    from: 'Shopping Mall',
+    to: 'Home',
+    date: '2024-01-10',
+    price: 12,
+    driver: 'David Rodriguez',
+    rating: 4.8
+  }
+]
+
+const favoriteLocations = [
+  { id: 1, name: 'Home', address: '123 Main Street, City' },
+  { id: 2, name: 'Work', address: '456 Business Ave, Downtown' },
+  { id: 3, name: 'Airport', address: 'International Airport Terminal' },
+  { id: 4, name: 'Gym', address: '789 Fitness Center Dr' }
+]
+
 function App() {
-  const [selectedCar, setSelectedCar] = useState<typeof cars[0] | null>(null)
-  const [filterBrand, setFilterBrand] = useState<string>("all")
-  const [activeTab, setActiveTab] = useState<string>("all")
-  const [favorites, setFavorites] = useKV("favorite-cars", [] as number[])
-  const [inquiryForm, setInquiryForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
+  const [selectedRide, setSelectedRide] = useState<string>('')
+  const [activeTab, setActiveTab] = useState<string>('book')
+  const [favoriteTrips, setFavoriteTrips] = useKV("favorite-trips", [] as number[])
+  const [pickupLocation, setPickupLocation] = useState('')
+  const [destination, setDestination] = useState('')
+  const [currentTrip, setCurrentTrip] = useState<any>(null)
+  const [bookingForm, setBookingForm] = useState({
+    pickup: '',
+    destination: '',
+    notes: ''
   })
 
-  const filteredCars = filterBrand === "all" 
-    ? cars 
-    : cars.filter(car => car.make.toLowerCase() === filterBrand.toLowerCase())
-
-  const displayedCars = activeTab === "favorites" 
-    ? filteredCars.filter(car => favorites.includes(car.id))
-    : filteredCars
-
-  const brands = ["all", ...Array.from(new Set(cars.map(car => car.make)))]
-
-  const toggleFavorite = (carId: number) => {
-    setFavorites((currentFavorites) => {
-      const isFavorited = currentFavorites.includes(carId)
+  const toggleFavoriteTrip = (tripId: number) => {
+    setFavoriteTrips((currentFavorites) => {
+      const isFavorited = currentFavorites.includes(tripId)
       if (isFavorited) {
-        toast.success("Removed from favorites")
-        return currentFavorites.filter(id => id !== carId)
+        toast.success("Removed from favorite trips")
+        return currentFavorites.filter(id => id !== tripId)
       } else {
-        toast.success("Added to favorites")
-        return [...currentFavorites, carId]
+        toast.success("Added to favorite trips")
+        return [...currentFavorites, tripId]
       }
     })
   }
 
-  const isFavorited = (carId: number) => favorites.includes(carId)
+  const isTripFavorited = (tripId: number) => favoriteTrips.includes(tripId)
 
-  const handleInquiry = () => {
-    if (!inquiryForm.name || !inquiryForm.email || !inquiryForm.message) {
-      toast.error("Please fill in all required fields")
+  const handleBookRide = () => {
+    if (!bookingForm.pickup || !bookingForm.destination || !selectedRide) {
+      toast.error("Please fill in pickup location, destination, and select a ride type")
       return
     }
-    toast.success("Thank you for your inquiry! We'll contact you within 24 hours.")
-    setInquiryForm({ name: '', email: '', phone: '', message: '' })
+    
+    // Simulate booking
+    const mockTrip = {
+      id: Date.now(),
+      type: selectedRide,
+      pickup: bookingForm.pickup,
+      destination: bookingForm.destination,
+      driver: 'Alex Thompson',
+      vehicle: '2023 Honda Accord',
+      plate: 'ABC-1234',
+      eta: '4 minutes',
+      status: 'driver_assigned'
+    }
+    
+    setCurrentTrip(mockTrip)
+    toast.success("Ride booked! Your driver is on the way.")
+    setBookingForm({ pickup: '', destination: '', notes: '' })
+    setSelectedRide('')
+    setActiveTab('active')
+  }
+
+  const handleQuickBook = (location: any) => {
+    setBookingForm(prev => ({ ...prev, destination: location.address }))
+    setActiveTab('book')
   }
 
   return (
     <div className="min-h-screen bg-background">
       <Toaster />
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80')",
-          }}
-        />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
+      
+      {/* Header */}
+      <header className="bg-card border-b px-6 py-4">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-primary">
             GQ<span className="text-accent">Cars</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-white/90 font-medium">
-            Premium Luxury Vehicles for Discerning Drivers
-          </p>
-          <p className="text-lg mb-12 text-white/80 max-w-2xl mx-auto">
-            Discover our curated collection of the world's finest automobiles, 
-            where exceptional quality meets uncompromising performance.
-          </p>
-          <Button 
-            size="lg" 
-            className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-6 text-lg"
-            onClick={() => document.getElementById('inventory')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            <Car className="mr-2" size={24} />
-            View Collection
+          <Button variant="outline" size="sm">
+            <User size={16} className="mr-2" />
+            Profile
           </Button>
         </div>
-      </section>
+      </header>
 
-      {/* Inventory Section */}
-      <section id="inventory" className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Premium Collection</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Each vehicle in our collection represents the pinnacle of automotive excellence, 
-            carefully selected for performance, luxury, and prestige.
-          </p>
-        </div>
+      <div className="max-w-4xl mx-auto px-6 py-6">
+        {/* Main Navigation */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="book" className="flex items-center gap-2">
+              <Car size={16} />
+              Book
+            </TabsTrigger>
+            <TabsTrigger value="active" className="flex items-center gap-2">
+              <NavigationArrow size={16} />
+              Active
+            </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center gap-2">
+              <Clock size={16} />
+              History
+            </TabsTrigger>
+            <TabsTrigger value="favorites" className="flex items-center gap-2">
+              <Heart size={16} />
+              Favorites
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Filter and Tabs */}
-        <div className="mb-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-            <TabsList className="grid w-full grid-cols-2 sm:w-auto">
-              <TabsTrigger value="all" className="flex items-center gap-2">
-                <Car size={16} />
-                All Vehicles ({cars.length})
-              </TabsTrigger>
-              <TabsTrigger value="favorites" className="flex items-center gap-2">
-                <Heart size={16} />
-                Favorites ({favorites.length})
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-          
-          <Select value={filterBrand} onValueChange={setFilterBrand}>
-            <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="Filter by brand" />
-            </SelectTrigger>
-            <SelectContent>
-              {brands.map(brand => (
-                <SelectItem key={brand} value={brand}>
-                  {brand === "all" ? "All Brands" : brand}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Book Ride Tab */}
+          <TabsContent value="book" className="space-y-6">
+            {/* Hero Section */}
+            <Card className="relative overflow-hidden">
+              <div 
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+                style={{
+                  backgroundImage: "url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80')",
+                }}
+              />
+              <CardContent className="relative p-8 text-center">
+                <h2 className="text-3xl font-bold mb-4">Where to?</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  Get a ride in minutes with GQCars
+                </p>
+              </CardContent>
+            </Card>
 
-        {/* Car Grid */}
-        {displayedCars.length === 0 && activeTab === "favorites" ? (
-          <div className="text-center py-16">
-            <HeartStraight size={64} className="mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-2xl font-semibold mb-2">No Favorites Yet</h3>
-            <p className="text-muted-foreground mb-6">
-              Start adding vehicles to your favorites by clicking the heart icon on any car.
-            </p>
-            <Button 
-              onClick={() => setActiveTab("all")}
-              className="bg-accent hover:bg-accent/90 text-accent-foreground"
-            >
-              Browse All Vehicles
-            </Button>
-          </div>
-        ) : displayedCars.length === 0 ? (
-          <div className="text-center py-16">
-            <Car size={64} className="mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-2xl font-semibold mb-2">No Vehicles Found</h3>
-            <p className="text-muted-foreground">
-              Try adjusting your filter to see more vehicles.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {displayedCars.map(car => (
-              <Card key={car.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden">
-                <div className="relative overflow-hidden">
-                  <img 
-                    src={car.image} 
-                    alt={`${car.make} ${car.model}`}
-                    className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+            {/* Booking Form */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Book Your Ride</CardTitle>
+                <CardDescription>Enter your pickup and destination</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="pickup">Pickup Location</Label>
+                  <Input
+                    id="pickup"
+                    placeholder="Enter pickup address"
+                    value={bookingForm.pickup}
+                    onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
                   />
-                  <div className="absolute top-4 left-4">
-                    <Button
-                      size="sm"
-                      variant={isFavorited(car.id) ? "default" : "secondary"}
-                      className={`${
-                        isFavorited(car.id) 
-                          ? "bg-accent hover:bg-accent/90 text-accent-foreground" 
-                          : "bg-white/80 hover:bg-white text-foreground"
-                      } shadow-lg`}
-                      onClick={() => toggleFavorite(car.id)}
-                    >
-                      {isFavorited(car.id) ? (
-                        <Heart size={16} weight="fill" />
-                      ) : (
-                        <Heart size={16} />
-                      )}
-                    </Button>
-                  </div>
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-accent text-accent-foreground font-semibold">
-                      {car.year}
-                    </Badge>
-                  </div>
                 </div>
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-2xl">
-                    {car.make} {car.model}
-                  </CardTitle>
-                  <CardDescription className="text-lg font-semibold text-accent">
-                    ${car.price.toLocaleString()}
-                  </CardDescription>
+                <div className="space-y-2">
+                  <Label htmlFor="destination">Destination</Label>
+                  <Input
+                    id="destination"
+                    placeholder="Where are you going?"
+                    value={bookingForm.destination}
+                    onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="notes">Notes (Optional)</Label>
+                  <Textarea
+                    id="notes"
+                    placeholder="Special instructions for your driver"
+                    value={bookingForm.notes}
+                    onChange={(e) => setBookingForm(prev => ({ ...prev, notes: e.target.value }))}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Ride Type Selection */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">Choose Your Ride</h3>
+              <div className="grid gap-4">
+                {rideTypes.map(ride => (
+                  <Card 
+                    key={ride.id} 
+                    className={`cursor-pointer transition-all ${
+                      selectedRide === ride.id ? 'ring-2 ring-accent bg-accent/5' : 'hover:shadow-md'
+                    }`}
+                    onClick={() => setSelectedRide(ride.id)}
+                  >
+                    <CardContent className="flex items-center p-4">
+                      <img 
+                        src={ride.image} 
+                        alt={ride.name}
+                        className="w-16 h-12 object-cover rounded mr-4"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-semibold">{ride.name}</h4>
+                        <p className="text-sm text-muted-foreground">{ride.description}</p>
+                        <p className="text-sm text-muted-foreground">ETA: {ride.eta}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold">${ride.price}</p>
+                        <Badge variant={selectedRide === ride.id ? "default" : "secondary"}>
+                          {selectedRide === ride.id ? 'Selected' : 'Select'}
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Book Button */}
+            <Button 
+              onClick={handleBookRide} 
+              size="lg" 
+              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+              disabled={!bookingForm.pickup || !bookingForm.destination || !selectedRide}
+            >
+              Book Ride
+            </Button>
+          </TabsContent>
+
+          {/* Active Trip Tab */}
+          <TabsContent value="active" className="space-y-6">
+            {currentTrip ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Your Active Trip</CardTitle>
+                  <CardDescription>Driver is on the way</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-3 gap-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Gauge size={16} />
-                      {car.mileage.toLocaleString()} mi
+                  <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg">
+                    <div>
+                      <p className="font-semibold">{currentTrip.driver}</p>
+                      <p className="text-sm text-muted-foreground">{currentTrip.vehicle}</p>
+                      <p className="text-sm text-muted-foreground">License: {currentTrip.plate}</p>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Fuel size={16} />
-                      {car.fuel}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users size={16} />
-                      {car.seats} seats
+                    <div className="text-right">
+                      <p className="text-lg font-bold">ETA: {currentTrip.eta}</p>
+                      <Badge className="bg-accent text-accent-foreground">En Route</Badge>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {car.features.slice(0, 2).map(feature => (
-                      <Badge key={feature} variant="secondary" className="text-xs">
-                        {feature}
-                      </Badge>
-                    ))}
-                    {car.features.length > 2 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{car.features.length - 2} more
-                      </Badge>
-                    )}
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin size={16} className="text-muted-foreground" />
+                      <span className="text-sm">From: {currentTrip.pickup}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <NavigationArrow size={16} className="text-muted-foreground" />
+                      <span className="text-sm">To: {currentTrip.destination}</span>
+                    </div>
                   </div>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button 
-                        className="w-full mt-4"
-                        onClick={() => setSelectedCar(car)}
-                      >
-                        View Details
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <DialogTitle className="text-3xl">
-                              {car.make} {car.model}
-                            </DialogTitle>
-                            <DialogDescription className="text-xl font-semibold text-accent">
-                              ${car.price.toLocaleString()}
-                            </DialogDescription>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant={isFavorited(car.id) ? "default" : "outline"}
-                            className={isFavorited(car.id) ? "bg-accent hover:bg-accent/90 text-accent-foreground" : ""}
-                            onClick={() => toggleFavorite(car.id)}
-                          >
-                            {isFavorited(car.id) ? (
-                              <>
-                                <Heart size={16} weight="fill" className="mr-2" />
-                                Favorited
-                              </>
-                            ) : (
-                              <>
-                                <Heart size={16} className="mr-2" />
-                                Add to Favorites
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      </DialogHeader>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                          <img 
-                            src={car.image} 
-                            alt={`${car.make} ${car.model}`}
-                            className="w-full h-80 object-cover rounded-lg"
-                          />
-                        </div>
-                        <div className="space-y-6">
-                          <p className="text-muted-foreground leading-relaxed">
-                            {car.description}
-                          </p>
-                          
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <Label className="font-semibold">Year</Label>
-                              <p>{car.year}</p>
-                            </div>
-                            <div>
-                              <Label className="font-semibold">Mileage</Label>
-                              <p>{car.mileage.toLocaleString()} miles</p>
-                            </div>
-                            <div>
-                              <Label className="font-semibold">Fuel Type</Label>
-                              <p>{car.fuel}</p>
-                            </div>
-                            <div>
-                              <Label className="font-semibold">Transmission</Label>
-                              <p>{car.transmission}</p>
-                            </div>
-                          </div>
 
-                          <div>
-                            <Label className="font-semibold mb-2 block">Features</Label>
-                            <div className="flex flex-wrap gap-1">
-                              {car.features.map(feature => (
-                                <Badge key={feature} variant="secondary">
-                                  {feature}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1">
+                      <Phone size={16} className="mr-2" />
+                      Call Driver
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Mail size={16} className="mr-2" />
+                      Message
+                    </Button>
+                  </div>
 
-                          <div className="space-y-4 pt-4 border-t">
-                            <h4 className="font-semibold">Interested in this vehicle?</h4>
-                            <div className="grid grid-cols-2 gap-3">
-                              <Input 
-                                placeholder="Your name"
-                                value={inquiryForm.name}
-                                onChange={(e) => setInquiryForm(prev => ({ ...prev, name: e.target.value }))}
-                              />
-                              <Input 
-                                placeholder="Email"
-                                type="email"
-                                value={inquiryForm.email}
-                                onChange={(e) => setInquiryForm(prev => ({ ...prev, email: e.target.value }))}
-                              />
-                            </div>
-                            <Input 
-                              placeholder="Phone (optional)"
-                              value={inquiryForm.phone}
-                              onChange={(e) => setInquiryForm(prev => ({ ...prev, phone: e.target.value }))}
-                            />
-                            <Textarea 
-                              placeholder="Message or questions..."
-                              value={inquiryForm.message}
-                              onChange={(e) => setInquiryForm(prev => ({ ...prev, message: e.target.value }))}
-                            />
-                            <Button onClick={handleInquiry} className="w-full">
-                              Send Inquiry
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                  <Button 
+                    variant="destructive" 
+                    className="w-full"
+                    onClick={() => {
+                      setCurrentTrip(null)
+                      toast.success("Trip cancelled")
+                    }}
+                  >
+                    Cancel Trip
+                  </Button>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        )}
-      </section>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Car size={64} className="mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-semibold mb-2">No Active Trips</h3>
+                  <p className="text-muted-foreground mb-6">
+                    You don't have any active trips right now.
+                  </p>
+                  <Button 
+                    onClick={() => setActiveTab('book')}
+                    className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                  >
+                    Book a Ride
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
 
-      {/* Contact Section */}
-      <section className="bg-muted py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8">Visit Our Showroom</h2>
-          <p className="text-xl text-muted-foreground mb-12">
-            Experience luxury firsthand at our premium dealership location
-          </p>
-          
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <Card className="p-6 text-center">
-              <MapPin size={32} className="mx-auto mb-4 text-accent" />
-              <h3 className="font-semibold mb-2">Location</h3>
-              <p className="text-muted-foreground">
-                123 Premium Drive<br />
-                Luxury District, NY 10001
-              </p>
-            </Card>
-            
-            <Card className="p-6 text-center">
-              <Phone size={32} className="mx-auto mb-4 text-accent" />
-              <h3 className="font-semibold mb-2">Phone</h3>
-              <p className="text-muted-foreground">
-                (555) 123-CARS<br />
-                Available 9 AM - 8 PM
-              </p>
-            </Card>
-            
-            <Card className="p-6 text-center">
-              <Mail size={32} className="mx-auto mb-4 text-accent" />
-              <h3 className="font-semibold mb-2">Email</h3>
-              <p className="text-muted-foreground">
-                sales@gqcars.com<br />
-                info@gqcars.com
-              </p>
-            </Card>
-          </div>
+          {/* Trip History Tab */}
+          <TabsContent value="history" className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">Recent Trips</h3>
+              {recentTrips.map(trip => (
+                <Card key={trip.id}>
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <MapPin size={16} className="text-muted-foreground" />
+                        <span className="font-medium">{trip.from}</span>
+                        <NavigationArrow size={16} className="text-muted-foreground" />
+                        <span className="font-medium">{trip.to}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{trip.date}</p>
+                      <p className="text-sm text-muted-foreground">Driver: {trip.driver}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="font-semibold">${trip.price}</p>
+                        <div className="flex items-center gap-1">
+                          <Star size={14} className="text-yellow-500" weight="fill" />
+                          <span className="text-sm">{trip.rating}</span>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant={isTripFavorited(trip.id) ? "default" : "outline"}
+                        onClick={() => toggleFavoriteTrip(trip.id)}
+                      >
+                        {isTripFavorited(trip.id) ? (
+                          <Heart size={16} weight="fill" />
+                        ) : (
+                          <Heart size={16} />
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
 
-          <div className="flex justify-center gap-4">
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              <Phone className="mr-2" size={20} />
-              Call Now
-            </Button>
-            <Button size="lg" variant="outline">
-              <Mail className="mr-2" size={20} />
-              Email Us
-            </Button>
-          </div>
-        </div>
-      </section>
+          {/* Favorites Tab */}
+          <TabsContent value="favorites" className="space-y-6">
+            {/* Favorite Locations */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">Favorite Locations</h3>
+              <div className="grid gap-3">
+                {favoriteLocations.map(location => (
+                  <Card key={location.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardContent className="flex items-center justify-between p-4">
+                      <div>
+                        <h4 className="font-semibold">{location.name}</h4>
+                        <p className="text-sm text-muted-foreground">{location.address}</p>
+                      </div>
+                      <Button 
+                        size="sm"
+                        onClick={() => handleQuickBook(location)}
+                        className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                      >
+                        Book Here
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Favorite Trips */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">Favorite Trips</h3>
+              {favoriteTrips.length === 0 ? (
+                <Card>
+                  <CardContent className="text-center py-8">
+                    <HeartStraight size={48} className="mx-auto mb-4 text-muted-foreground" />
+                    <h4 className="font-semibold mb-2">No Favorite Trips Yet</h4>
+                    <p className="text-muted-foreground text-sm">
+                      Mark trips as favorites from your trip history to see them here.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-3">
+                  {recentTrips.filter(trip => favoriteTrips.includes(trip.id)).map(trip => (
+                    <Card key={trip.id}>
+                      <CardContent className="flex items-center justify-between p-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <MapPin size={16} className="text-muted-foreground" />
+                            <span className="font-medium">{trip.from}</span>
+                            <NavigationArrow size={16} className="text-muted-foreground" />
+                            <span className="font-medium">{trip.to}</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">Last trip: {trip.date}</p>
+                        </div>
+                        <Button 
+                          size="sm"
+                          className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                        >
+                          Book Again
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12 px-6">
+      <footer className="bg-muted py-8 px-6 mt-12">
         <div className="max-w-4xl mx-auto text-center">
-          <h3 className="text-2xl font-bold mb-4">GQCars</h3>
-          <p className="text-primary-foreground/80 mb-6">
-            Your premier destination for luxury automotive excellence
-          </p>
-          <div className="flex justify-center gap-8 text-sm">
-            <span>© 2024 GQCars. All rights reserved.</span>
-            <span>•</span>
-            <span>Licensed Dealer</span>
-            <span>•</span>
-            <span>Premium Service</span>
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
+            <div>
+              <Phone size={24} className="mx-auto mb-2 text-accent" />
+              <p className="font-semibold">24/7 Support</p>
+              <p className="text-sm text-muted-foreground">(555) 123-RIDE</p>
+            </div>
+            <div>
+              <MapPin size={24} className="mx-auto mb-2 text-accent" />
+              <p className="font-semibold">Available Citywide</p>
+              <p className="text-sm text-muted-foreground">All neighborhoods</p>
+            </div>
+            <div>
+              <Car size={24} className="mx-auto mb-2 text-accent" />
+              <p className="font-semibold">Safe & Reliable</p>
+              <p className="text-sm text-muted-foreground">Licensed drivers</p>
+            </div>
           </div>
+          <p className="text-sm text-muted-foreground">
+            © 2024 GQCars. Your trusted ride-sharing partner.
+          </p>
         </div>
       </footer>
     </div>
