@@ -2269,87 +2269,86 @@ function App() {
     // Don't show duplicate toast here since it's handled at the button level
   }, [setFavorites])
 
-  // Modern Welcome Screen with Enhanced Design
+  // Modern Welcome Screen with Enhanced Design - Compact Version
   if (currentView === 'welcome') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
+      <div className="h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
         <Toaster position="top-center" />
         
         {/* Enhanced Background Elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-gradient-to-r from-blue-400/10 to-indigo-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-slate-400/5 to-slate-600/5 rounded-full blur-2xl" />
+          <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-indigo-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
         
-        <div className="max-w-sm mx-auto text-center space-y-10 animate-in fade-in duration-1000 relative z-10">
-          {/* Modern Logo and Branding */}
-          <div className="space-y-8">
+        <div className="max-w-sm mx-auto text-center space-y-6 animate-in fade-in duration-1000 relative z-10">
+          {/* Compact Logo and Branding */}
+          <div className="space-y-5">
             <div className="relative">
-              <div className="w-28 h-28 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
-                <Shield size={48} className="text-slate-900" weight="fill" />
+              <div className="w-20 h-20 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
+                <Shield size={36} className="text-slate-900" weight="fill" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 rounded-full" />
               </div>
-              <div className="absolute -inset-6 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-2xl animate-pulse" />
+              <div className="absolute -inset-4 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-xl animate-pulse" />
             </div>
             
-            <div className="space-y-4">
-              <h1 className="text-5xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
                 Armora
               </h1>
-              <p className="text-xl text-amber-100/90 font-medium tracking-wide">
+              <p className="text-lg text-amber-100/90 font-medium tracking-wide">
                 Premium Security Transport
               </p>
-              <p className="text-base text-slate-300 max-w-xs mx-auto leading-relaxed">
+              <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
                 Protected by Shadows • Driven by Excellence
               </p>
             </div>
           </div>
 
-          {/* Clean Feature Highlights */}
-          <div className="space-y-6">
-            <div className="grid gap-4">
-              <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-800/40 backdrop-blur-sm border border-amber-400/20 shadow-xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-400/30 to-amber-600/30 rounded-xl flex items-center justify-center">
-                  <Shield size={20} className="text-amber-300" />
+          {/* Compact Feature Highlights */}
+          <div className="space-y-3">
+            <div className="grid gap-2.5">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/40 backdrop-blur-sm border border-amber-400/20 shadow-lg">
+                <div className="w-8 h-8 bg-gradient-to-br from-amber-400/30 to-amber-600/30 rounded-lg flex items-center justify-center">
+                  <Shield size={16} className="text-amber-300" />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="text-base font-semibold text-white">Licensed Security</p>
-                  <p className="text-sm text-slate-300">SIA-trained protection officers</p>
+                  <p className="text-sm font-semibold text-white">Licensed Security</p>
+                  <p className="text-xs text-slate-300">SIA-trained protection officers</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-800/40 backdrop-blur-sm border border-amber-400/20 shadow-xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-400/30 to-amber-600/30 rounded-xl flex items-center justify-center">
-                  <Car size={20} className="text-amber-300" />
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/40 backdrop-blur-sm border border-amber-400/20 shadow-lg">
+                <div className="w-8 h-8 bg-gradient-to-br from-amber-400/30 to-amber-600/30 rounded-lg flex items-center justify-center">
+                  <Car size={16} className="text-amber-300" />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="text-base font-semibold text-white">Professional Fleet</p>
-                  <p className="text-sm text-slate-300">Premium vehicles, discrete service</p>
+                  <p className="text-sm font-semibold text-white">Professional Fleet</p>
+                  <p className="text-xs text-slate-300">Premium vehicles, discrete service</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4 p-5 rounded-2xl bg-slate-800/40 backdrop-blur-sm border border-amber-400/20 shadow-xl">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-400/30 to-amber-600/30 rounded-xl flex items-center justify-center">
-                  <Star size={20} className="text-amber-300" />
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/40 backdrop-blur-sm border border-amber-400/20 shadow-lg">
+                <div className="w-8 h-8 bg-gradient-to-br from-amber-400/30 to-amber-600/30 rounded-lg flex items-center justify-center">
+                  <Star size={16} className="text-amber-300" />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="text-base font-semibold text-white">6000+ Completed</p>
-                  <p className="text-sm text-slate-300">Professional, confidential transport</p>
+                  <p className="text-sm font-semibold text-white">6000+ Completed</p>
+                  <p className="text-xs text-slate-300">Professional, confidential transport</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Elegant Continue Button */}
-          <div className="space-y-4">
+          {/* Compact Continue Button */}
+          <div className="space-y-3">
             <Button 
               onClick={() => {
                 setIsFirstLaunch(false)
                 setCurrentView('onboarding')
                 setOnboardingStep(0)
               }}
-              className="w-full h-14 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+              className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
             >
               Start Assessment
             </Button>
@@ -2359,21 +2358,21 @@ function App() {
             </p>
           </div>
 
-          {/* Modern Trust Indicators */}
-          <div className="pt-8 border-t border-amber-400/20">
-            <div className="flex items-center justify-center gap-8 text-xs text-slate-300">
-              <div className="flex items-center gap-2">
-                <Shield size={14} className="text-amber-400" />
+          {/* Compact Trust Indicators */}
+          <div className="pt-4 border-t border-amber-400/20">
+            <div className="flex items-center justify-center gap-4 text-xs text-slate-300">
+              <div className="flex items-center gap-1.5">
+                <Shield size={12} className="text-amber-400" />
                 <span>SIA Licensed</span>
               </div>
-              <div className="w-px h-4 bg-amber-400/30"></div>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={14} className="text-amber-400" />
+              <div className="w-px h-3 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle size={12} className="text-amber-400" />
                 <span>Premium Service</span>
               </div>
-              <div className="w-px h-4 bg-amber-400/30"></div>
-              <div className="flex items-center gap-2">
-                <Star size={14} className="text-amber-400" />
+              <div className="w-px h-3 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1.5">
+                <Star size={12} className="text-amber-400" />
                 <span>5-Star Rating</span>
               </div>
             </div>
