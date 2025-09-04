@@ -39,6 +39,21 @@
   -webkit-line-clamp: 3;
   line-clamp: 3;
 }
+
+/* Badge container positioning - prevent overflow */
+.badge-container {
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+}
+
+.badge-container .badge-element {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  max-width: calc(100% - 1rem);
+}
 :root {
   /* ARMORA Premium Luxury Security Transport Color Scheme */
   /* "Drive in luxury, protected by shadows" */

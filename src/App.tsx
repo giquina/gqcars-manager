@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -1951,7 +1951,8 @@ function App() {
           </div>
         )}
 
-        <div className="p-4 pb-20 space-y-3 max-w-md mx-auto">
+        <div className="p-4 pb-24 space-y-3 max-w-md mx-auto"
+             style={{ paddingBottom: '6rem' }}>
           {/* Enhanced Map Preview with Real Google Maps - Larger and More Interactive */}
           <Card className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-card to-card/90 ring-1 ring-border/10">
             <CardContent className="p-0">
@@ -2283,74 +2284,72 @@ function App() {
                 const dynamicPrice = calculateServicePrice(service, routeDistance)
                 
                 return (
-                  <div key={service.id} className="relative">
-                    {/* Small Corner Badge - No Text Overlap */}
+                  <Card 
+                    key={service.id}
+                    className={`cursor-pointer transition-all duration-300 h-[190px] overflow-hidden relative ${ 
+                      isSelected
+                        ? 'ring-2 ring-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl transform scale-[1.02]' 
+                        : 'hover:shadow-lg hover:transform hover:scale-[1.01] bg-white border border-border/40'
+                    } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-white' : ''}`}
+                    onClick={() => setSelectedService(service.id)}
+                  >
+                    {/* Fixed Badge Positioning - Contained Within Card */}
                     {service.popular && (
-                      <div className="absolute -top-1 -right-1 z-10">
+                      <div className="absolute top-2 right-2 z-10">
                         <div className="bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-sm border border-white">
                           Popular
                         </div>
                       </div>
                     )}
-                    
-                    <Card 
-                      className={`cursor-pointer transition-all duration-300 h-[190px] overflow-hidden relative ${ 
-                        isSelected
-                          ? 'ring-2 ring-primary bg-gradient-to-br from-primary/10 to-primary/5 shadow-xl transform scale-[1.02]' 
-                          : 'hover:shadow-lg hover:transform hover:scale-[1.01] bg-white border border-border/40'
-                      } ${service.popular ? 'border-green-200 bg-gradient-to-br from-green-50/50 to-white' : ''}`}
-                      onClick={() => setSelectedService(service.id)}
-                    >
-                      <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center space-y-3">
-                        {/* Enhanced Icon */}
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 ${ 
-                          isSelected 
-                            ? 'bg-primary text-primary-foreground shadow-lg scale-110' 
-                            : service.popular 
-                            ? 'bg-green-500 text-white shadow-md'
-                            : 'bg-gradient-to-br from-muted to-muted/70 text-primary'
+                    <CardContent className="p-4 h-full flex flex-col items-center justify-center text-center space-y-3">
+                      {/* Enhanced Icon */}
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 ${ 
+                        isSelected 
+                          ? 'bg-primary text-primary-foreground shadow-lg scale-110' 
+                          : service.popular 
+                          ? 'bg-green-500 text-white shadow-md'
+                          : 'bg-gradient-to-br from-muted to-muted/70 text-primary'
+                      }`}>
+                        <Icon size={24} weight={isSelected ? "fill" : "regular"} />
+                      </div>
+                      
+                      {/* Service Name - Clear and Contained */}
+                      <div className="space-y-1 w-full">
+                        <h3 className={`font-bold text-sm leading-tight text-foreground text-center w-full line-clamp-2 ${ 
+                          isSelected ? 'text-primary' : ''
                         }`}>
-                          <Icon size={24} weight={isSelected ? "fill" : "regular"} />
-                        </div>
-                        
-                        {/* Service Name - Clear and Contained */}
-                        <div className="space-y-1 w-full">
-                          <h3 className={`font-bold text-sm leading-tight text-foreground text-center w-full line-clamp-2 ${ 
-                            isSelected ? 'text-primary' : ''
+                          {service.name}
+                        </h3>
+                      </div>
+                      
+                      {/* Dynamic Pricing - Route-Based */}
+                      <div className="space-y-2 w-full flex flex-col items-center">
+                        {/* Price Range - Most Important */}
+                        <div className="text-center">
+                          <p className={`font-bold text-lg leading-none ${ 
+                            isSelected ? 'text-primary' : 'text-foreground'
                           }`}>
-                            {service.name}
-                          </h3>
+                            {dynamicPrice}
+                          </p>
+                          {routeDistance > 0 && (
+                            <p className="text-[9px] text-muted-foreground mt-0.5">
+                              for {routeDistance.toFixed(1)}km trip
+                            </p>
+                          )}
                         </div>
                         
-                        {/* Dynamic Pricing - Route-Based */}
-                        <div className="space-y-2 w-full flex flex-col items-center">
-                          {/* Price Range - Most Important */}
-                          <div className="text-center">
-                            <p className={`font-bold text-lg leading-none ${ 
-                              isSelected ? 'text-primary' : 'text-foreground'
-                            }`}>
-                              {dynamicPrice}
-                            </p>
-                            {routeDistance > 0 && (
-                              <p className="text-[9px] text-muted-foreground mt-0.5">
-                                for {routeDistance.toFixed(1)}km trip
-                              </p>
-                            )}
-                          </div>
-                          
-                          {/* Wait Time and Capacity - Stacked */}
-                          <div className="space-y-1 text-center">
-                            <p className="text-xs text-muted-foreground font-medium leading-none">
-                              {service.eta}
-                            </p>
-                            <p className="text-xs text-muted-foreground leading-none">
-                              {service.capacity}
-                            </p>
-                          </div>
+                        {/* Wait Time and Capacity - Stacked */}
+                        <div className="space-y-1 text-center">
+                          <p className="text-xs text-muted-foreground font-medium leading-none">
+                            {service.eta}
+                          </p>
+                          <p className="text-xs text-muted-foreground leading-none">
+                            {service.capacity}
+                          </p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 )
               })}
             </div>
@@ -2516,8 +2515,9 @@ function App() {
           </div>
         )}
 
-        {/* Bottom Navigation with enhanced design */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+        {/* Bottom Navigation with enhanced design and proper z-index */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50"
+             style={{ zIndex: 9999 }}>
           <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
@@ -2595,7 +2595,7 @@ function App() {
           </div>
         )}
 
-        <div className="p-4 space-y-4 max-w-md mx-auto">{/* Enhanced Live Tracking Map */}
+        <div className="p-4 pb-24 space-y-4 max-w-md mx-auto">{/* Enhanced Live Tracking Map */}
           <LiveTrackingMap 
             trip={currentTrip} 
             driver={{...assignedDriver, location: userLocation}} 
@@ -2790,7 +2790,7 @@ function App() {
           </div>
         </header>
 
-        <div className="p-4 pb-20 max-w-md mx-auto">
+        <div className="p-4 pb-24 max-w-md mx-auto">
           {recentTrips.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -2850,8 +2850,8 @@ function App() {
           )}
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+        {/* Bottom Navigation Activity */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
           <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
@@ -2911,7 +2911,7 @@ function App() {
           </div>
         </header>
 
-        <div className="p-4 pb-20 max-w-md mx-auto">
+        <div className="p-4 pb-24 max-w-md mx-auto">
           {favorites.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -2959,8 +2959,8 @@ function App() {
           )}
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+        {/* Bottom Navigation Favorites */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
           <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
@@ -3020,7 +3020,7 @@ function App() {
           </div>
         </header>
 
-        <div className="p-4 pb-20 space-y-6 max-w-md mx-auto">
+        <div className="p-4 pb-24 space-y-6 max-w-md mx-auto">
           {/* Profile Section with enhanced design */}
           <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
             <CardContent className="p-6">
@@ -3120,8 +3120,8 @@ function App() {
           </div>
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
+        {/* Bottom Navigation Account */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
           <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
