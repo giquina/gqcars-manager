@@ -546,16 +546,7 @@ const useGeolocation = () => {
 }
 
 // Enhanced Google Maps component with real-time tracking
-const GoogleMapView = ({ 
-  center, 
-  markers = [], 
-  onLocationSelect,
-  className = "h-64",
-  showControls = true,
-  showTraffic = false,
-  showCurrentLocation = true,
-  trackingMode = false
-}: {
+const GoogleMapView = React.forwardRef<any, { 
   center: { lat: number; lng: number }
   markers?: any[]
   onLocationSelect?: (location: { lat: number; lng: number; address: string }) => void
@@ -564,7 +555,16 @@ const GoogleMapView = ({
   showTraffic?: boolean
   showCurrentLocation?: boolean
   trackingMode?: boolean
-}) => {
+}>(({ 
+  center, 
+  markers = [], 
+  onLocationSelect,
+  className = "h-64",
+  showControls = true,
+  showTraffic = false,
+  showCurrentLocation = true,
+  trackingMode = false
+}, ref) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<google.maps.Map | null>(null)
   const markersRef = useRef<google.maps.Marker[]>([])
@@ -830,21 +830,44 @@ const GoogleMapView = ({
 
   // Expose methods to parent component
   useEffect(() => {
-    if (mapInstanceRef.current) {
-      // Add custom methods to the map instance for external access
-      (mapInstanceRef.current as any).showRoute = showRoute
-      (mapInstanceRef.current as any).toggleTraffic = () => {
-        if (trafficLayerRef.current) {
-          trafficLayerRef.current.setMap(
-            trafficLayerRef.current.getMap() ? null : mapInstanceRef.current
-          )
+    if (mapInstanceRef.current && ref) {
+      // Expose methods to parent via ref
+      if (typeof ref === 'function') {
+        ref({
+          showRoute,
+          toggleTraffic: () => {
+            if (trafficLayerRef.current) {
+              trafficLayerRef.current.setMap(
+                trafficLayerRef.current.getMap() ? null : mapInstanceRef.current
+              )
+            } else if (mapInstanceRef.current) {
+              // Create traffic layer if it doesn't exist
+              trafficLayerRef.current = new window.google.maps.TrafficLayer()
+              trafficLayerRef.current.setMap(mapInstanceRef.current)
+            }
+          }
+        })
+      } else if (ref && 'current' in ref) {
+        ref.current = {
+          showRoute,
+          toggleTraffic: () => {
+            if (trafficLayerRef.current) {
+              trafficLayerRef.current.setMap(
+                trafficLayerRef.current.getMap() ? null : mapInstanceRef.current
+              )
+            } else if (mapInstanceRef.current) {
+              // Create traffic layer if it doesn't exist
+              trafficLayerRef.current = new window.google.maps.TrafficLayer()
+              trafficLayerRef.current.setMap(mapInstanceRef.current)
+            }
+          }
         }
       }
     }
-  }, [showRoute])
+  }, [showRoute, ref])
 
   return <div ref={mapRef} className={className} />
-}
+})
 
 // Places Autocomplete component
 const PlacesAutocomplete = ({ 
@@ -1504,7 +1527,6 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
             showControls={true}
             showTraffic={true}
             trackingMode={true}
-            ref={mapRef}
           />
           
           {/* Map overlay controls */}
@@ -1598,8 +1620,13 @@ const LiveTrackingMap = ({ trip, driver, onArrival }: {
           size="sm"
           className="h-10 px-4"
           onClick={() => {
-            if (mapRef.current?.toggleTraffic) {
-              mapRef.current.toggleTraffic()
+            try {
+              if (mapRef.current && typeof mapRef.current.toggleTraffic === 'function') {
+                mapRef.current.toggleTraffic()
+              }
+            } catch (error) {
+              console.warn('Traffic toggle error:', error)
+              toast.error('Traffic layer temporarily unavailable')
             }
           }}
         >
