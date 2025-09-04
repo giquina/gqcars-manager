@@ -475,19 +475,19 @@ const useGeolocation = () => {
         }
         
         setLoading(false)
-        toast.success('Location found successfully')
+        // Don't show technical location messages to passengers
       },
       (error) => {
-        let errorMessage = 'Unable to retrieve your location'
+        let errorMessage = 'Unable to find your location'
         switch(error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Location access denied. Please enable location services.'
+            errorMessage = '📍 Please enable location access to find nearby pickup points'
             break
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'Location information unavailable'
+            errorMessage = '📍 Location not available - you can manually set your pickup location'
             break
           case error.TIMEOUT:
-            errorMessage = 'Location request timed out'
+            errorMessage = '📍 Location search timed out - please try again'
             break
         }
         setError(errorMessage)
@@ -1193,7 +1193,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
     setIsTyping(true)
     setTimeout(() => setIsTyping(false), 1000)
     
-    toast.success("Message sent")
+    toast.success("💬 Message sent")
   }
 
   const sendQuickMessage = (text: string) => {
@@ -1206,7 +1206,7 @@ const ChatSystem = ({ trip, driver, isOpen, onClose }: {
     }
 
     setMessages(prev => [...prev, message])
-    toast.success("Quick message sent")
+    toast.success("💬 Quick message sent")
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -1718,12 +1718,12 @@ function App() {
 
   const handleBookRide = () => {
     if (!bookingForm.pickup || !bookingForm.destination || !selectedService) {
-      toast.error("Please enter pickup location, destination and select a ride type")
+      toast.error("🚗 Please set pickup location, destination, and choose your ride type")
       return
     }
     
     if (!bookingForm.pickupCoords || !bookingForm.destinationCoords) {
-      toast.error("Please ensure both locations are properly selected")
+      toast.error("📍 Please select valid locations from the suggestions")
       return
     }
     
@@ -1762,7 +1762,11 @@ function App() {
     // Add to recent trips
     setRecentTrips((prev: any[]) => [trip, ...prev.slice(0, 9)])
     
-    toast.success(`${driver.name} is on the way! GPS tracking active.`)
+    // Show passenger-relevant notification instead of technical details
+    toast.success(`🚗 ${driver.name} is your driver! They'll arrive in ${driver.eta} minutes`, {
+      duration: 5000,
+      description: `${driver.vehicle} • ${driver.license}`
+    })
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
   }
 
@@ -1781,7 +1785,7 @@ function App() {
   const addToFavorites = (location: string, name: string) => {
     const newFavorite = { name, address: location, id: Date.now() }
     setFavorites((prev: any[]) => [...prev, newFavorite])
-    toast.success("Location saved to favorites")
+    // Don't show duplicate toast here since it's handled at the button level
   }
 
   // Home/Booking View
@@ -1832,14 +1836,14 @@ function App() {
                           pickup: location.address,
                           pickupCoords: { lat: location.lat, lng: location.lng }
                         }))
-                        toast.success("Pickup location set")
+                        toast.success("📍 Pickup location set")
                       } else if (!bookingForm.destination) {
                         setBookingForm(prev => ({
                           ...prev,
                           destination: location.address,
                           destinationCoords: { lat: location.lat, lng: location.lng }
                         }))
-                        toast.success("Destination set")
+                        toast.success("🎯 Destination confirmed")
                       }
                     }}
                     className="h-40"
@@ -1932,7 +1936,7 @@ function App() {
                           pickup: userAddress,
                           pickupCoords: userLocation
                         }))
-                        toast.success("Current location set as pickup")
+                        toast.success("📍 Using current location as pickup")
                       }
                     }}
                   >
@@ -1984,7 +1988,7 @@ function App() {
                           pickup: userAddress,
                           pickupCoords: userLocation
                         }))
-                        toast.success("GPS location set")
+                        toast.success("📍 GPS location set as pickup")
                       } else {
                         getCurrentLocation()
                       }
@@ -2025,6 +2029,7 @@ function App() {
                       className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-1.5"
                       onClick={() => {
                         addToFavorites(bookingForm.destination, `Saved Location ${favorites.length + 1}`)
+                        toast.success("❤️ Location saved to favorites")
                       }}
                     >
                       <Heart size={12} />
@@ -2312,7 +2317,7 @@ function App() {
             trip={currentTrip} 
             driver={{...assignedDriver, location: userLocation}} 
             onArrival={() => {
-              toast.success("Driver has arrived!")
+              toast.success("🚗 Driver has arrived!")
               // Could transition to in-trip mode here
             }}
           />
@@ -2349,7 +2354,7 @@ function App() {
                   className="h-11 font-medium"
                   onClick={() => {
                     // Simulate calling driver
-                    toast.success("Calling driver...")
+                    toast.success("📞 Calling driver...")
                   }}
                 >
                   <Phone size={16} className="mr-2" />
@@ -2451,7 +2456,7 @@ function App() {
               setIsChatOpen(false)
               setUnreadMessages(0)
               setCurrentView('home')
-              toast.success("Trip cancelled")
+              toast.success("❌ Trip cancelled")
             }}
           >
             Cancel Trip
@@ -2658,7 +2663,7 @@ function App() {
                         onClick={() => {
                           setBookingForm(prev => ({ ...prev, destination: location.address }))
                           setCurrentView('home')
-                          toast.success("Destination set from favorites")
+                          toast.success("🎯 Destination set from favorites")
                         }}
                       >
                         Use
