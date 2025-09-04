@@ -42,7 +42,7 @@ import {
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
-// UK Ride Service Levels
+// UK Ride Service Levels - Professional Service Types
 const rideServices = [
   {
     id: 'standard',
@@ -51,7 +51,8 @@ const rideServices = [
     priceRange: '£8.50 - £12.20',
     eta: '2-4 min',
     icon: Car,
-    capacity: '1-4 passengers'
+    capacity: '1-4 passengers',
+    vehicle: 'Economy cars'
   },
   {
     id: 'comfort',
@@ -60,7 +61,8 @@ const rideServices = [
     priceRange: '£12.80 - £16.40',
     eta: '3-5 min',
     icon: Shield,
-    capacity: '1-4 passengers'
+    capacity: '1-4 passengers',
+    vehicle: 'Premium cars'
   },
   {
     id: 'executive',
@@ -69,7 +71,8 @@ const rideServices = [
     priceRange: '£18.50 - £24.90',
     eta: '4-6 min',
     icon: Star,
-    capacity: '1-4 passengers'
+    capacity: '1-4 passengers',
+    vehicle: 'Executive cars'
   },
   {
     id: 'xl',
@@ -78,7 +81,8 @@ const rideServices = [
     priceRange: '£15.20 - £19.80',
     eta: '5-7 min',
     icon: Users,
-    capacity: '1-6 passengers'
+    capacity: '1-6 passengers',
+    vehicle: 'Large vehicles'
   }
 ]
 
@@ -1341,7 +1345,7 @@ function App() {
           </div>
         </header>
 
-        <div className="p-4 pb-20 space-y-5 max-w-md mx-auto">
+        <div className="p-4 pb-20 space-y-4 max-w-md mx-auto">
           {/* Enhanced Map Preview with Real Google Maps */}
           <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/95">
             <CardContent className="p-0">
@@ -1377,11 +1381,11 @@ function App() {
                         toast.success("Destination set")
                       }
                     }}
-                    className="h-40"
+                    className="h-32"
                     showControls={false}
                   />
                 ) : (
-                  <div className="h-40 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+                  <div className="h-32 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center space-y-2">
                         <div className="w-8 h-8 bg-blue-500 rounded-full mx-auto animate-pulse"></div>
@@ -1392,21 +1396,21 @@ function App() {
                 )}
                 
                 {/* Enhanced GPS Status */}
-                <div className="absolute top-3 left-3 flex gap-2">
+                <div className="absolute top-2 left-2 flex gap-2">
                   <Badge variant="outline" className="bg-background/95 text-xs border-0 shadow-sm">
                     {userLocation ? (
                       <>
-                        <CheckCircle size={12} className="mr-1 text-green-500" />
+                        <CheckCircle size={10} className="mr-1 text-green-500" />
                         GPS Active
                       </>
                     ) : locationLoading ? (
                       <>
-                        <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-1" />
+                        <div className="w-2 h-2 border border-blue-500 border-t-transparent rounded-full animate-spin mr-1" />
                         Finding...
                       </>
                     ) : (
                       <>
-                        <Warning size={12} className="mr-1 text-amber-500" />
+                        <Warning size={10} className="mr-1 text-amber-500" />
                         GPS Off
                       </>
                     )}
@@ -1414,7 +1418,7 @@ function App() {
                 </div>
                 
                 {/* Map Interaction Hint */}
-                <div className="absolute bottom-3 left-3 right-3">
+                <div className="absolute bottom-2 left-2 right-2">
                   <div className="bg-background/95 backdrop-blur-sm rounded-lg p-2 shadow-sm">
                     <p className="text-xs text-muted-foreground text-center">
                       Tap map to set {!bookingForm.pickup ? 'pickup' : !bookingForm.destination ? 'destination' : 'location'}
@@ -1423,27 +1427,27 @@ function App() {
                 </div>
                 
                 {/* Quick Actions */}
-                <div className="absolute top-3 right-3 flex flex-col gap-2">
+                <div className="absolute top-2 right-2 flex flex-col gap-1">
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-9 h-9 p-0 bg-background/95 shadow-sm"
+                    className="w-8 h-8 p-0 bg-background/95 shadow-sm"
                     onClick={getCurrentLocation}
                     disabled={locationLoading}
                   >
                     {locationLoading ? (
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
                     ) : (
-                      <Crosshair size={14} />
+                      <Crosshair size={12} />
                     )}
                   </Button>
                   <Button 
                     variant="secondary" 
                     size="sm" 
-                    className="w-9 h-9 p-0 bg-background/95 shadow-sm"
+                    className="w-8 h-8 p-0 bg-background/95 shadow-sm"
                     onClick={() => setShowFullMap(true)}
                   >
-                    <MagnifyingGlass size={14} />
+                    <MagnifyingGlass size={12} />
                   </Button>
                 </div>
               </div>
@@ -1453,21 +1457,21 @@ function App() {
           {/* Enhanced Location Quick Actions */}
           {userLocation && (
             <Card className="border-0 shadow-sm bg-gradient-to-r from-primary/5 to-accent/5">
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Compass size={18} className="text-primary" />
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Compass size={14} className="text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm">Current Location</p>
+                      <p className="font-medium text-xs">Current Location</p>
                       <p className="text-xs text-muted-foreground truncate">{userAddress || 'Getting address...'}</p>
                     </div>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-8 px-3 text-xs"
+                    className="h-7 px-2 text-xs"
                     onClick={() => {
                       if (userAddress && userLocation) {
                         setBookingForm(prev => ({
@@ -1488,15 +1492,15 @@ function App() {
 
           {/* Enhanced Booking Form with Google Places */}
           <Card className="border-0 shadow-md bg-gradient-to-br from-card to-card/98">
-            <CardContent className="p-5 space-y-4">
-              <div className="space-y-3">
+            <CardContent className="p-4 space-y-3">
+              <div className="space-y-2">
                 <div className="relative">
                   {window.google?.maps?.places ? (
                     <PlacesAutocomplete
                       value={bookingForm.pickup}
                       onChange={(value) => setBookingForm(prev => ({ ...prev, pickup: value }))}
                       placeholder="Pickup location"
-                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
                       onPlaceSelect={(place) => {
                         if (place.geometry?.location) {
                           setBookingForm(prev => ({
@@ -1519,14 +1523,14 @@ function App() {
                       placeholder="Pickup location"
                       value={bookingForm.pickup}
                       onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
-                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
                     />
                   )}
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-blue-500 rounded-full shadow-sm"></div>
+                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-blue-500 rounded-full shadow-sm"></div>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-10 px-3 text-xs"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-2 text-xs"
                     onClick={() => {
                       if (userLocation && userAddress) {
                         setBookingForm(prev => ({
@@ -1541,7 +1545,7 @@ function App() {
                     }}
                     disabled={locationLoading}
                   >
-                    <Crosshair size={14} className="mr-1" />
+                    <Crosshair size={12} className="mr-1" />
                     GPS
                   </Button>
                 </div>
@@ -1552,7 +1556,7 @@ function App() {
                       value={bookingForm.destination}
                       onChange={(value) => setBookingForm(prev => ({ ...prev, destination: value }))}
                       placeholder="Where to?"
-                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
                       onPlaceSelect={(place) => {
                         if (place.geometry?.location) {
                           setBookingForm(prev => ({
@@ -1571,20 +1575,20 @@ function App() {
                       placeholder="Where to?"
                       value={bookingForm.destination}
                       onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
-                      className="pl-10 h-12 border-0 bg-muted/50 focus:bg-background transition-colors"
+                      className="pl-8 h-10 border-0 bg-muted/50 focus:bg-background transition-colors text-sm"
                     />
                   )}
-                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 bg-red-500 rounded-full shadow-sm"></div>
+                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-red-500 rounded-full shadow-sm"></div>
                   {bookingForm.destination && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-10 px-2"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 px-1.5"
                       onClick={() => {
                         addToFavorites(bookingForm.destination, `Saved Location ${favorites.length + 1}`)
                       }}
                     >
-                      <Heart size={14} />
+                      <Heart size={12} />
                     </Button>
                   )}
                 </div>
@@ -1592,15 +1596,15 @@ function App() {
               
               {/* Distance and Time Estimation */}
               {bookingForm.pickupCoords && bookingForm.destinationCoords && (
-                <div className="mt-3 p-3 bg-muted/30 rounded-lg">
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2">
-                      <NavigationArrow size={14} className="text-muted-foreground" />
+                <div className="mt-2 p-2 bg-muted/30 rounded-lg">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <NavigationArrow size={12} className="text-muted-foreground" />
                       <span className="text-muted-foreground">Distance:</span>
                       <span className="font-medium">{calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords).toFixed(1)} km</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock size={14} className="text-muted-foreground" />
+                    <div className="flex items-center gap-1.5">
+                      <Clock size={12} className="text-muted-foreground" />
                       <span className="font-medium">~{Math.ceil(calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords) * 2)} min</span>
                     </div>
                   </div>
@@ -1609,15 +1613,15 @@ function App() {
               
               {/* Recent/Favorite Quick Picks */}
               {(!bookingForm.destination) && favorites.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <p className="text-xs text-muted-foreground font-medium">Quick destinations</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {favorites.slice(0, 3).map((fav, index) => (
                       <Button
                         key={index}
                         variant="outline"
                         size="sm"
-                        className="h-7 text-xs"
+                        className="h-6 text-xs px-2"
                         onClick={() => {
                           setBookingForm(prev => ({
                             ...prev,
@@ -1625,7 +1629,7 @@ function App() {
                           }))
                         }}
                       >
-                        <Heart size={12} className="mr-1" />
+                        <Heart size={10} className="mr-1" />
                         {fav.name}
                       </Button>
                     ))}
@@ -1636,10 +1640,10 @@ function App() {
           </Card>
 
           {/* Ride Options with improved spacing */}
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex items-center justify-between px-1">
-              <p className="text-sm text-muted-foreground font-medium">Choose your ride</p>
-              <Clock size={14} className="text-muted-foreground" />
+              <p className="text-xs text-muted-foreground font-medium">Choose your ride</p>
+              <Clock size={12} className="text-muted-foreground" />
             </div>
             
             <div className="space-y-2">
@@ -1655,24 +1659,24 @@ function App() {
                     }`}
                     onClick={() => setSelectedService(service.id)}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+                    <CardContent className="p-3">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
                           selectedService === service.id 
                             ? 'bg-primary text-primary-foreground' 
                             : 'bg-primary/10'
                         }`}>
-                          <Icon size={22} className={selectedService === service.id ? '' : 'text-primary'} />
+                          <Icon size={18} className={selectedService === service.id ? '' : 'text-primary'} />
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between">
+                          <div className="flex items-center justify-between">
                             <div>
-                              <h3 className="font-semibold text-base">{service.name}</h3>
-                              <p className="text-sm text-muted-foreground">{service.description}</p>
+                              <h3 className="font-semibold text-sm">{service.name}</h3>
+                              <p className="text-xs text-muted-foreground">{service.vehicle} • {service.capacity}</p>
                             </div>
                             <div className="text-right">
-                              <p className="font-bold text-base">{service.priceRange}</p>
+                              <p className="font-bold text-sm">{service.priceRange}</p>
                               <p className="text-xs text-muted-foreground">{service.eta} away</p>
                             </div>
                           </div>
@@ -1687,17 +1691,17 @@ function App() {
 
           {/* Payment Method with improved design */}
           <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95">
-            <CardContent className="p-4">
+            <CardContent className="p-3">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-muted/50 rounded-lg flex items-center justify-center">
-                    <CreditCard size={16} />
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-muted/50 rounded-md flex items-center justify-center">
+                    <CreditCard size={12} />
                   </div>
-                  <span className="font-medium">Payment</span>
+                  <span className="font-medium text-sm">Payment</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Mastercard •••• 4321</span>
-                  <NavigationArrow size={14} className="rotate-90 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Mastercard •••• 4321</span>
+                  <NavigationArrow size={12} className="rotate-90 text-muted-foreground" />
                 </div>
               </div>
             </CardContent>
@@ -1706,11 +1710,11 @@ function App() {
           {/* Enhanced Confirm Button with validation */}
           <Button 
             onClick={handleBookRide}
-            className="w-full h-14 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-base rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+            className="w-full h-12 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
             disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !bookingForm.pickupCoords || !bookingForm.destinationCoords}
           >
             <div className="flex items-center gap-2">
-              {selectedService && <Car size={18} />}
+              {selectedService && <Car size={16} />}
               {!bookingForm.pickup || !bookingForm.destination ? 
                 'Enter pickup & destination' :
                 !selectedService ? 
@@ -1724,14 +1728,14 @@ function App() {
 
           {/* Booking Tips */}
           <Card className="border-0 shadow-sm bg-gradient-to-r from-accent/5 to-primary/5">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <CheckCircle size={16} className="text-accent" />
+            <CardContent className="p-3">
+              <div className="flex items-start gap-2">
+                <div className="w-6 h-6 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <CheckCircle size={12} className="text-accent" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-medium text-sm">Tips for better rides</h4>
-                  <ul className="text-xs text-muted-foreground space-y-1">
+                  <h4 className="font-medium text-xs">Tips for better rides</h4>
+                  <ul className="text-xs text-muted-foreground space-y-0.5">
                     <li>• Enable location services for accurate pickup</li>
                     <li>• Add multiple stops during booking if needed</li>
                     <li>• Save frequent destinations to favorites</li>
