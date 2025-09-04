@@ -8,25 +8,24 @@
   
   body {
     font-family: 'Inter', sans-serif;
-    overflow: hidden; /* Prevent scrolling */
-    height: 100vh;
-    position: fixed;
-    width: 100%;
-  }
-  
-  html {
-    overflow: hidden; /* Prevent scrolling */
-    height: 100vh;
-  }
-  
-  #root {
-    height: 100vh;
-    overflow: hidden; /* Prevent scrolling */
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
   }
+}
+
+/* No-scroll classes for specific pages only */
+.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed !important;
+  width: 100% !important;
+}
+
+.no-scroll-container {
+  height: 100vh !important;
+  overflow: hidden !important;
 }
 
 /* Add line-clamp utilities for text overflow control */

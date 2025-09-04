@@ -2035,6 +2035,28 @@ function App() {
     setHasCompletedOnboarding(false)
   }, [])
 
+  // Apply no-scroll only to welcome and onboarding pages
+  useEffect(() => {
+    const body = document.body
+    const root = document.getElementById('root')
+    
+    if (currentView === 'welcome' || currentView === 'onboarding') {
+      // Prevent scrolling on welcome and onboarding pages
+      body.classList.add('no-scroll')
+      if (root) root.classList.add('no-scroll-container')
+    } else {
+      // Allow scrolling on all other pages
+      body.classList.remove('no-scroll')
+      if (root) root.classList.remove('no-scroll-container')
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      body.classList.remove('no-scroll')
+      if (root) root.classList.remove('no-scroll-container')
+    }
+  }, [currentView])
+
   // Update map center when user location is found - with proper dependency management
   useEffect(() => {
     if (userLocation) {
@@ -2636,7 +2658,7 @@ function App() {
   // Home/Booking View
   if (currentView === 'home') {
     return (
-      <div className="h-screen bg-gradient-to-br from-background to-background/95 flex flex-col overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col">
         <Toaster position="top-center" />
         
         {/* Compact Header */}
@@ -2683,7 +2705,7 @@ function App() {
           </div>
         )}
 
-        <div className="flex-1 p-4 space-y-2 max-w-md mx-auto overflow-hidden flex flex-col">
+        <div className="flex-1 p-4 space-y-2 max-w-md mx-auto pb-20">{/* Added pb-20 for bottom navigation space */}
           {/* Compact Map Preview */}
           <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/90">
             <CardContent className="p-0">
