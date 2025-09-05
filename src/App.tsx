@@ -251,6 +251,7 @@ function App() {
   })
   const [favorites, setFavorites] = useKV("favorite-locations", [] as any[])
   const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
+  const [paymentReservations, setPaymentReservations] = useKV("payment-reservations", [] as any[])
 
   // Questionnaire state management
   const [questionnaireStep, setQuestionnaireStep] = useState<number>(0)
@@ -283,6 +284,56 @@ function App() {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
     return Math.round(R * c * 100) / 100
   }, [])
+
+  // Payment system functions
+  const createPaymentReservation = useCallback((serviceId: string, amount: number) => {
+    const reservation = {
+      id: Date.now().toString(),
+      serviceId,
+      amount,
+      status: 'reserved',
+      createdAt: new Date().toISOString(),
+      type: 'service_selection'
+    }
+    
+    setPaymentReservations(prev => [...prev, reservation])
+    toast.success(`£${amount} reserved for service selection`)
+    return reservation.id
+  }, [setPaymentReservations])
+
+  const cancelPaymentReservation = useCallback((reservationId: string) => {
+    setPaymentReservations(prev => 
+      prev.map(res => 
+        res.id === reservationId 
+          ? { ...res, status: 'cancelled', cancelledAt: new Date().toISOString() }
+          : res
+      )
+    )
+    
+    // Charge cancellation fee
+    const cancellationFee = {
+      id: Date.now().toString(),
+      amount: 25,
+      status: 'charged',
+      createdAt: new Date().toISOString(),
+      type: 'cancellation_fee',
+      description: 'Service cancellation fee'
+    }
+    
+    setPaymentReservations(prev => [...prev, cancellationFee])
+    toast.warning("Service cancelled. £25 cancellation fee charged.")
+  }, [setPaymentReservations])
+
+  const confirmPaymentReservation = useCallback((reservationId: string) => {
+    setPaymentReservations(prev => 
+      prev.map(res => 
+        res.id === reservationId 
+          ? { ...res, status: 'confirmed', confirmedAt: new Date().toISOString() }
+          : res
+      )
+    )
+    toast.success("Service selected! Payment confirmed.")
+  }, [setPaymentReservations])
 
   // Dynamic pricing calculation
   const calculateServicePrice = useCallback((service: any, distance: number = 0) => {
@@ -1318,77 +1369,113 @@ function App() {
 
                         {/* Expanded Information Panel */}
                         {isExpanded && (
-                          <Card className="border-t-0 bg-gradient-to-br from-amber-50/30 to-amber-100/20 border border-amber-200/50 rounded-t-none animate-in slide-in-from-top-2 duration-300">
-                            <CardContent className="p-4 space-y-4">
-                              <div className="space-y-3">
-                                <div>
-                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                    <Users size={14} className="text-amber-600" />
-                                    Who is this service for?
-                                  </h4>
-                                  <ul className="space-y-1">
-                                    {service.detailedInfo.whoItsFor.map((item, index) => (
-                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                        {item}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
+                          <>
+                            <Card className="border-t-0 bg-gradient-to-br from-amber-50/30 to-amber-100/20 border border-amber-200/50 rounded-t-none animate-in slide-in-from-top-2 duration-300">
+                              <CardContent className="p-4 space-y-4">
+                                <div className="space-y-3">
+                                  <div>
+                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                      <Users size={14} className="text-amber-600" />
+                                      Who is this service for?
+                                    </h4>
+                                    <ul className="space-y-1">
+                                      {service.detailedInfo.whoItsFor.map((item, index) => (
+                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                          {item}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
 
-                                <div>
-                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                    <Star size={14} className="text-amber-600" />
-                                    Why people choose this service
-                                  </h4>
-                                  <ul className="space-y-1">
-                                    {service.detailedInfo.whyPeopleChoose.map((item, index) => (
-                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                        {item}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
+                                  <div>
+                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                      <Star size={14} className="text-amber-600" />
+                                      Why people choose this service
+                                    </h4>
+                                    <ul className="space-y-1">
+                                      {service.detailedInfo.whyPeopleChoose.map((item, index) => (
+                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                          {item}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
 
-                                <div>
-                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                    <Shield size={14} className="text-amber-600" />
-                                    What you get
-                                  </h4>
-                                  <ul className="space-y-1">
-                                    {service.detailedInfo.whatYouGet.map((item, index) => (
-                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                        {item}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
+                                  <div>
+                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                      <Shield size={14} className="text-amber-600" />
+                                      What you get
+                                    </h4>
+                                    <ul className="space-y-1">
+                                      {service.detailedInfo.whatYouGet.map((item, index) => (
+                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                          {item}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
 
-                                <div>
-                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                    <MapPin size={14} className="text-amber-600" />
-                                    Ideal situations
-                                  </h4>
-                                  <ul className="space-y-1">
-                                    {service.detailedInfo.idealSituations.map((item, index) => (
-                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                        {item}
-                                      </li>
-                                    ))}
-                                  </ul>
+                                  <div>
+                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                      <MapPin size={14} className="text-amber-600" />
+                                      Ideal situations
+                                    </h4>
+                                    <ul className="space-y-1">
+                                      {service.detailedInfo.idealSituations.map((item, index) => (
+                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                          {item}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
                                 </div>
+                              </CardContent>
+                            </Card>
+
+                            {/* CTA Buttons - Fixed at Bottom */}
+                            <div className="fixed bottom-16 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-40">
+                              <div className="max-w-md mx-auto flex gap-3">
+                                <Button 
+                                  variant="outline" 
+                                  onClick={() => {
+                                    setExpandedService('')
+                                    // If there's an active reservation for this service, cancel it
+                                    const activeReservation = paymentReservations.find(
+                                      res => res.serviceId === service.id && res.status === 'reserved'
+                                    )
+                                    if (activeReservation) {
+                                      cancelPaymentReservation(activeReservation.id)
+                                    }
+                                  }}
+                                  className="flex-1 h-12 text-sm font-medium border-2 border-red-200 text-red-600 hover:bg-red-50"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button 
+                                  onClick={() => {
+                                    // Create payment reservation
+                                    const reservationId = createPaymentReservation(service.id, 50)
+                                    
+                                    // Set as selected service
+                                    setSelectedService(service.id)
+                                    setExpandedService('')
+                                    
+                                    // Confirm the reservation
+                                    setTimeout(() => {
+                                      confirmPaymentReservation(reservationId)
+                                    }, 500)
+                                  }}
+                                  className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+                                >
+                                  Select Service
+                                </Button>
                               </div>
-
-                              <div className="pt-2 border-t border-amber-200/50">
-                                <p className="text-xs text-amber-600 font-medium text-center">
-                                  Tap again to close details
-                                </p>
-                              </div>
-                            </CardContent>
-                          </Card>
+                            </div>
+                          </>
                         )}
                       </div>
                     )
@@ -1405,23 +1492,47 @@ function App() {
                 toast.error("Please enter pickup, destination and select a service")
                 return
               }
+              
+              // Check if there's already a confirmed reservation
+              const confirmedReservation = paymentReservations.find(
+                res => res.serviceId === selectedService && res.status === 'confirmed'
+              )
+              
+              if (!confirmedReservation) {
+                toast.error("Please select a service to continue")
+                return
+              }
+              
               const selectedServiceName = armoraServices.find(s => s.id === selectedService)?.name || 'service'
               toast.success(`Booking confirmed! Your ${selectedServiceName} driver will be assigned shortly.`)
+              
+              // Add to recent trips
+              const newTrip = {
+                id: Date.now().toString(),
+                service: selectedServiceName,
+                pickup: bookingForm.pickup,
+                destination: bookingForm.destination,
+                date: new Date().toISOString(),
+                status: 'confirmed'
+              }
+              setRecentTrips(prev => [newTrip, ...prev])
             }}
             className="w-full h-10 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg disabled:opacity-50"
-            disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService}
+            disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !paymentReservations.find(res => res.serviceId === selectedService && res.status === 'confirmed')}
           >
             {!bookingForm.pickup || !bookingForm.destination ? 
               'Enter locations' :
               !selectedService ? 
               'Select service' :
+              !paymentReservations.find(res => res.serviceId === selectedService && res.status === 'confirmed') ?
+              'Please select a service above' :
               `Book ${armoraServices.find(s => s.id === selectedService)?.name || 'Security Cab'}`
             }
           </Button>
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
+        <div className={`fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50 ${expandedService ? 'hidden' : 'block'}`}>
           <div className="grid grid-cols-5 h-12 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
@@ -1498,6 +1609,65 @@ function App() {
             </div>
             <h3 className="text-xl font-bold mb-2">No trips yet</h3>
             <p className="text-muted-foreground mb-6 max-w-sm mx-auto">Your security cab bookings will appear here</p>
+            
+            {/* Show recent trips if available */}
+            {recentTrips.length > 0 && (
+              <div className="space-y-3 mb-6">
+                <h4 className="font-semibold text-left">Recent Bookings</h4>
+                {recentTrips.slice(0, 3).map((trip) => (
+                  <Card key={trip.id} className="text-left">
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h5 className="font-medium text-sm">{trip.service}</h5>
+                          <p className="text-xs text-muted-foreground">{trip.pickup} → {trip.destination}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(trip.date).toLocaleDateString()}</p>
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          {trip.status}
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+            
+            {/* Show payment history */}
+            {paymentReservations.length > 0 && (
+              <div className="space-y-3 mb-6">
+                <h4 className="font-semibold text-left">Payment Activity</h4>
+                {paymentReservations.slice(0, 3).map((payment) => (
+                  <Card key={payment.id} className="text-left">
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h5 className="font-medium text-sm">
+                            {payment.type === 'cancellation_fee' ? 'Cancellation Fee' : 'Service Reservation'}
+                          </h5>
+                          <p className="text-xs text-muted-foreground">
+                            {payment.description || `Service: ${payment.serviceId}`}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(payment.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium text-sm">£{payment.amount}</p>
+                          <Badge 
+                            variant={payment.status === 'charged' ? 'destructive' : payment.status === 'confirmed' ? 'default' : 'secondary'} 
+                            className="text-xs"
+                          >
+                            {payment.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+            
             <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
               <Car size={18} className="mr-2" />
               Book your first cab
