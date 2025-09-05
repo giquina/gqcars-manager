@@ -3078,7 +3078,8 @@ function App() {
                 )}
               </div>
             </div>
-          })()}
+          )
+        })()}
 
           {/* Slide 1: Work Type Selection - Professional Single-Line Layout */}
           {onboardingStep === 1 && (() => {
