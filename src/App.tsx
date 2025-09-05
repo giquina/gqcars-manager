@@ -370,13 +370,17 @@ function App() {
     if (questionnaireStep === 0) {
       const workOptions = [
         { id: 'business-leader', title: 'Business Leader', subtitle: 'CEO, manager, executive roles', perfectFor: 'Board meetings, investor presentations, strategic planning' },
-        { id: 'business-owner', title: 'Business Owner', subtitle: 'Own a company, startup founder', perfectFor: 'Investor meetings, client pitches, business development', popular: true },
+        { id: 'business-owner', title: 'Business Owner', subtitle: 'Own a company, startup founder', perfectFor: 'Investor meetings, client pitches, business development' },
         { id: 'lawyer-legal', title: 'Lawyer/Legal', subtitle: 'Attorney, legal work, court cases', perfectFor: 'Court appearances, client consultations, sensitive legal meetings' },
         { id: 'doctor-medical', title: 'Doctor/Medical', subtitle: 'Healthcare, medical professional', perfectFor: 'Hospital visits, medical conferences, patient consultations' },
         { id: 'banking-finance', title: 'Banking/Finance', subtitle: 'Money, investments, financial services', perfectFor: 'Client portfolio meetings, investment presentations' },
         { id: 'tech-computer', title: 'Tech/Computer', subtitle: 'Software, IT, technology work', perfectFor: 'Client demos, tech conferences, startup meetings' },
         { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, buying/selling homes/buildings', perfectFor: 'Property viewings, client meetings, market tours' },
-        { id: 'sales-travel', title: 'Sales/Travel', subtitle: 'Selling, traveling for work', perfectFor: 'Client sales meetings, trade shows, territory visits' }
+        { id: 'sales-travel', title: 'Sales/Travel', subtitle: 'Selling, traveling for work', perfectFor: 'Client sales meetings, trade shows, territory visits' },
+        { id: 'entertainment', title: 'Entertainment', subtitle: 'Artists, dancers, performers', perfectFor: 'Shows, performances, rehearsals, entertainment venues' },
+        { id: 'musician', title: 'Musician', subtitle: 'Music industry professional', perfectFor: 'Concerts, studio sessions, music events, tours' },
+        { id: 'celebrity', title: 'Celebrity/Public Figure', subtitle: 'High-profile public personalities', perfectFor: 'Public appearances, events, discrete travel, media activities' },
+        { id: 'prefer-not-say', title: 'Prefer Not to Say', subtitle: 'Keep work information private', perfectFor: 'Any professional activities requiring discrete transport' }
       ]
 
       return (
@@ -410,7 +414,7 @@ function App() {
                     isSelected 
                       ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
                       : 'hover:shadow-md bg-white border border-border/40'
-                  } ${option.popular ? 'work-type-card has-badge' : 'work-type-card'}`}
+                  } work-type-card`}
                   onClick={() => {
                     const currentSelection = questionnaireAnswers.workType
                     if (isSelected) {
@@ -420,9 +424,6 @@ function App() {
                     }
                   }}
                 >
-                  {option.popular && (
-                    <div className="popular-badge">Most Popular</div>
-                  )}
                   <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
                     <div className="check-dot"></div>
                   </div>
@@ -477,7 +478,8 @@ function App() {
         { id: 'sometimes', title: 'Just Sometimes', subtitle: 'Special events and rare occasions', perfectFor: 'Important meetings, special events, airport trips' },
         { id: 'weekly', title: 'About Once a Week', subtitle: 'Regular meetings and weekly commitments', perfectFor: 'Weekly client meetings, regular business appointments' },
         { id: 'daily', title: 'Almost Every Day', subtitle: 'Daily commute and regular work transport', perfectFor: 'Daily office commute, regular work schedule' },
-        { id: 'multiple', title: 'Multiple Times Daily', subtitle: 'Very busy schedule with frequent travel', perfectFor: 'Back-to-back meetings, multiple daily appointments' }
+        { id: 'multiple', title: 'Multiple Times Daily', subtitle: 'Very busy schedule with frequent travel', perfectFor: 'Back-to-back meetings, multiple daily appointments' },
+        { id: 'prefer-not-say', title: 'Prefer Not to Say', subtitle: 'Keep travel frequency private', perfectFor: 'Any transport needs requiring discrete service' }
       ]
 
       return (
@@ -564,7 +566,8 @@ function App() {
       const styleOptions = [
         { id: 'quiet', title: 'Quiet & Discreet', subtitle: 'Barely noticeable, low-key protection', perfectFor: 'Daily routines, business meetings, family outings' },
         { id: 'professional', title: 'Professional & Visible', subtitle: 'Clearly there but business-like', perfectFor: 'Business meetings, corporate events, professional settings' },
-        { id: 'premium', title: 'Full Premium Service', subtitle: 'Complete security with top protection', perfectFor: 'High-profile events, VIP occasions, maximum security needs' }
+        { id: 'premium', title: 'Full Premium Service', subtitle: 'Complete security with top protection', perfectFor: 'High-profile events, VIP occasions, maximum security needs' },
+        { id: 'prefer-not-say', title: 'Prefer Not to Say', subtitle: 'Keep security preferences private', perfectFor: 'Any protection needs requiring discrete coordination' }
       ]
 
       return (
@@ -652,7 +655,8 @@ function App() {
         { id: 'minimal', title: 'Barely There', subtitle: 'Almost invisible, emergency-only', perfectFor: 'Normal daily activities, family time, casual outings' },
         { id: 'subtle', title: 'Quietly Present', subtitle: 'Professional but unobtrusive', perfectFor: 'Business meetings, professional settings, client visits' },
         { id: 'visible', title: 'Clearly Visible', subtitle: 'Obviously providing security', perfectFor: 'Public events, high-profile situations, deterrent presence' },
-        { id: 'maximum', title: 'Maximum Protection', subtitle: 'Full security, very visible', perfectFor: 'High-risk situations, VIP events, maximum safety needs' }
+        { id: 'maximum', title: 'Maximum Protection', subtitle: 'Full security, very visible', perfectFor: 'High-risk situations, VIP events, maximum safety needs' },
+        { id: 'prefer-not-say', title: 'Prefer Not to Say', subtitle: 'Keep comfort preferences private', perfectFor: 'Any security transport requiring discrete planning' }
       ]
 
       return (
@@ -742,7 +746,8 @@ function App() {
         { id: 'corporate', title: 'Corporate Events', subtitle: 'Conferences, meetings, business functions', perfectFor: 'Board meetings, presentations, networking events' },
         { id: 'social', title: 'Social Events', subtitle: 'Galas, parties, entertainment venues', perfectFor: 'Evening events, celebrations, entertainment' },
         { id: 'residential', title: 'Residential Areas', subtitle: 'Home, neighborhoods, private locations', perfectFor: 'Daily routine, family activities, personal errands' },
-        { id: 'multiple', title: 'Various Locations', subtitle: 'All over London and beyond', perfectFor: 'Flexible needs, changing schedules, diverse activities' }
+        { id: 'multiple', title: 'Various Locations', subtitle: 'All over London and beyond', perfectFor: 'Flexible needs, changing schedules, diverse activities' },
+        { id: 'prefer-not-say', title: 'Prefer Not to Say', subtitle: 'Keep location information private', perfectFor: 'Any destinations requiring maximum discrete service' }
       ]
 
       return (
