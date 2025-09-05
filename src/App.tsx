@@ -48,18 +48,23 @@ const GoogleMapComponent = ({
   onLocationSelect, 
   selectedLocation, 
   currentLocation,
-  destinationLocation 
+  destinationLocation,
+  driverLocation,
+  isTrackingMode = false
 }: {
   onLocationSelect: (location: { lat: number; lng: number; address: string }) => void
   selectedLocation?: { lat: number; lng: number }
   currentLocation?: { lat: number; lng: number }
   destinationLocation?: { lat: number; lng: number }
+  driverLocation?: { lat: number; lng: number }
+  isTrackingMode?: boolean
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const googleMapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
   const destinationMarkerRef = useRef<any>(null)
   const currentLocationMarkerRef = useRef<any>(null)
+  const driverMarkerRef = useRef<any>(null)
   const [isMapLoaded, setIsMapLoaded] = useState(false)
   const geocoderRef = useRef<any>(null)
 
@@ -115,62 +120,64 @@ const GoogleMapComponent = ({
         })
       }
 
-      // Add click listener
-      map.addListener('click', (event: any) => {
-        if (event.latLng) {
-          const location = {
-            lat: event.latLng.lat(),
-            lng: event.latLng.lng()
-          }
-          
-          // Add/update pickup marker
-          if (markerRef.current) {
-            markerRef.current.setMap(null)
-          }
-          
-          markerRef.current = new window.google.maps.Marker({
-            position: location,
-            map: map,
-            icon: {
-              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EF4444" stroke="white" stroke-width="1"/>
-                  <circle cx="12" cy="9" r="2.5" fill="white"/>
-                </svg>
-              `),
-              scaledSize: new window.google.maps.Size(32, 32),
-              anchor: new window.google.maps.Point(16, 32)
-            },
-            title: "Pickup location"
-          })
+      // Add click listener only if not in tracking mode
+      if (!isTrackingMode) {
+        map.addListener('click', (event: any) => {
+          if (event.latLng) {
+            const location = {
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng()
+            }
+            
+            // Add/update pickup marker
+            if (markerRef.current) {
+              markerRef.current.setMap(null)
+            }
+            
+            markerRef.current = new window.google.maps.Marker({
+              position: location,
+              map: map,
+              icon: {
+                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EF4444" stroke="white" stroke-width="1"/>
+                    <circle cx="12" cy="9" r="2.5" fill="white"/>
+                  </svg>
+                `),
+                scaledSize: new window.google.maps.Size(32, 32),
+                anchor: new window.google.maps.Point(16, 32)
+              },
+              title: "Pickup location"
+            })
 
-          // Reverse geocode to get address
-          if (geocoderRef.current) {
-            geocoderRef.current.geocode(
-              { location: location },
-              (results: any, status: string) => {
-                if (status === 'OK' && results && results[0]) {
-                  const address = results[0].formatted_address
-                  onLocationSelect({
-                    lat: location.lat,
-                    lng: location.lng,
-                    address: address
-                  })
-                  toast.success("Pickup location selected", {
-                    description: address
-                  })
-                } else {
-                  onLocationSelect({
-                    lat: location.lat,
-                    lng: location.lng,
-                    address: `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`
-                  })
+            // Reverse geocode to get address
+            if (geocoderRef.current) {
+              geocoderRef.current.geocode(
+                { location: location },
+                (results: any, status: string) => {
+                  if (status === 'OK' && results && results[0]) {
+                    const address = results[0].formatted_address
+                    onLocationSelect({
+                      lat: location.lat,
+                      lng: location.lng,
+                      address: address
+                    })
+                    toast.success("Pickup location selected", {
+                      description: address
+                    })
+                  } else {
+                    onLocationSelect({
+                      lat: location.lat,
+                      lng: location.lng,
+                      address: `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`
+                    })
+                  }
                 }
-              }
-            )
+              )
+            }
           }
-        }
-      })
+        })
+      }
 
       setIsMapLoaded(true)
     }
@@ -189,7 +196,57 @@ const GoogleMapComponent = ({
         window.removeEventListener('google-maps-loaded', handleMapsLoad)
       }
     }
-  }, [currentLocation, onLocationSelect])
+  }, [currentLocation, onLocationSelect, isTrackingMode])
+
+  // Update driver location marker with real-time tracking
+  useEffect(() => {
+    if (googleMapRef.current && driverLocation && isTrackingMode) {
+      // Remove existing driver marker
+      if (driverMarkerRef.current) {
+        driverMarkerRef.current.setMap(null)
+      }
+      
+      // Add new driver marker with car icon
+      driverMarkerRef.current = new window.google.maps.Marker({
+        position: driverLocation,
+        map: googleMapRef.current,
+        icon: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="11" width="18" height="8" rx="2" fill="#1D4ED8" stroke="white" stroke-width="1"/>
+              <circle cx="7" cy="17" r="1.5" fill="white"/>
+              <circle cx="17" cy="17" r="1.5" fill="white"/>
+              <path d="M5 11V9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2" stroke="white" stroke-width="1"/>
+              <circle cx="12" cy="12" r="1" fill="white"/>
+            </svg>
+          `),
+          scaledSize: new window.google.maps.Size(32, 32),
+          anchor: new window.google.maps.Point(16, 16)
+        },
+        title: "Your security driver",
+        zIndex: 1000
+      })
+
+      // Auto-center map to show both driver and pickup location
+      if (selectedLocation) {
+        const bounds = new window.google.maps.LatLngBounds()
+        bounds.extend(driverLocation)
+        bounds.extend(selectedLocation)
+        
+        // Add some padding to the bounds
+        googleMapRef.current.fitBounds(bounds, {
+          padding: { top: 50, right: 50, bottom: 50, left: 50 }
+        })
+        
+        // Ensure minimum zoom level for city view
+        window.google.maps.event.addListenerOnce(googleMapRef.current, 'bounds_changed', () => {
+          if (googleMapRef.current.getZoom() > 16) {
+            googleMapRef.current.setZoom(16)
+          }
+        })
+      }
+    }
+  }, [driverLocation, selectedLocation, isTrackingMode])
 
   // Update destination marker when destination changes
   useEffect(() => {
@@ -315,10 +372,21 @@ const GoogleMapComponent = ({
       {isMapLoaded && (
         <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs font-medium text-slate-700">
-              {selectedLocation ? 'Pickup selected' : 'Tap to select pickup'}
-            </span>
+            {isTrackingMode ? (
+              <>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <span className="text-xs font-medium text-slate-700">
+                  Live tracking active
+                </span>
+              </>
+            ) : (
+              <>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs font-medium text-slate-700">
+                  {selectedLocation ? 'Pickup selected' : 'Tap to select pickup'}
+                </span>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -575,6 +643,9 @@ const App = () => {
   const [assignedDriver, setAssignedDriver] = useState<any>(null)
   const [driverLocation, setDriverLocation] = useState<{lat: number, lng: number} | null>(null)
   const [tripStatus, setTripStatus] = useState<'searching' | 'driver_assigned' | 'driver_arriving' | 'arrived' | 'in_progress' | 'completed'>('searching')
+  const [driverTrackingInterval, setDriverTrackingInterval] = useState<NodeJS.Timeout | null>(null)
+  const [driverDistance, setDriverDistance] = useState<number>(0)
+  const [estimatedArrival, setEstimatedArrival] = useState<number>(0)
 
   // Driver chat state
   const [messages, setMessages] = useState([
@@ -582,6 +653,98 @@ const App = () => {
     { id: 2, from: 'driver', text: 'I\'m driving a black Mercedes S-Class. Look for license plate MB21 ABC.', time: '2:35 PM' }
   ])
   const [newMessage, setNewMessage] = useState('')
+
+  // Notification system for driver updates
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false)
+  const [lastNotification, setLastNotification] = useState('')
+
+  // Enable notifications on first interaction
+  useEffect(() => {
+    const enableNotifications = async () => {
+      if ('Notification' in window && Notification.permission === 'default') {
+        const permission = await Notification.requestPermission()
+        setNotificationsEnabled(permission === 'granted')
+      } else if (Notification.permission === 'granted') {
+        setNotificationsEnabled(true)
+      }
+    }
+    
+    // Request permissions when app loads
+    enableNotifications()
+  }, [])
+
+  // Play notification sound
+  const playNotificationSound = useCallback((type: 'arrival' | 'approaching' | 'assigned' = 'arrival') => {
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+      
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+      
+      // Different tones for different notifications
+      const frequencies = {
+        assigned: [440, 550], // A4 to C#5
+        approaching: [523, 659], // C5 to E5
+        arrival: [659, 784, 880] // E5 to G5 to A5
+      }
+      
+      const notes = frequencies[type]
+      
+      notes.forEach((freq, index) => {
+        setTimeout(() => {
+          oscillator.frequency.setValueAtTime(freq, audioContext.currentTime)
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
+        }, index * 200)
+      })
+      
+      oscillator.start()
+      oscillator.stop(audioContext.currentTime + (notes.length * 0.3))
+    } catch (error) {
+      console.log('Audio notification failed:', error)
+    }
+    
+    // Vibration fallback
+    if ('vibrate' in navigator) {
+      const patterns = {
+        assigned: [100],
+        approaching: [100, 100, 100],
+        arrival: [200, 100, 200, 100, 200]
+      }
+      navigator.vibrate(patterns[type])
+    }
+  }, [])
+
+  // Send push notification
+  const sendNotification = useCallback((title: string, body: string, type: 'arrival' | 'approaching' | 'assigned' = 'arrival') => {
+    if (notificationsEnabled && 'Notification' in window) {
+      const notification = new Notification(title, {
+        body,
+        icon: '/favicon.ico',
+        badge: '/favicon.ico',
+        tag: 'armora-driver-update',
+        requireInteraction: type === 'arrival',
+        actions: type === 'arrival' ? [
+          { action: 'view', title: 'View Trip' }
+        ] : undefined
+      })
+      
+      notification.onclick = () => {
+        window.focus()
+        setCurrentView('trip-tracking')
+        notification.close()
+      }
+      
+      setTimeout(() => notification.close(), 8000) // Auto close after 8 seconds
+    }
+    
+    // Play sound
+    playNotificationSound(type)
+    
+    setLastNotification(title)
+  }, [notificationsEnabled, playNotificationSound])
 
   // Trip rating state
   const [rating, setRating] = useState(0)
@@ -865,54 +1028,170 @@ const App = () => {
     return Math.round(R * c * 100) / 100
   }, [])
 
-  // Driver assignment simulation
+  // Enhanced driver assignment with real-time tracking simulation
   const assignDriver = useCallback(() => {
     const randomDriver = armoraDrivers[Math.floor(Math.random() * armoraDrivers.length)]
     setAssignedDriver(randomDriver)
     setTripStatus('driver_assigned')
     
-    // Simulate driver location (near pickup)
-    setDriverLocation({
-      lat: 51.5074 + (Math.random() - 0.5) * 0.01, // Random location near London
-      lng: -0.1278 + (Math.random() - 0.5) * 0.01
-    })
+    // Simulate initial driver location (2-5km away from pickup)
+    if (selectedPickupLocation) {
+      const initialDriverLocation = {
+        lat: selectedPickupLocation.lat + (Math.random() - 0.5) * 0.05, // ~2.5km radius
+        lng: selectedPickupLocation.lng + (Math.random() - 0.5) * 0.05
+      }
+      setDriverLocation(initialDriverLocation)
+      
+      // Calculate initial distance and ETA
+      const distance = calculateDistance(initialDriverLocation, selectedPickupLocation)
+      setDriverDistance(distance)
+      setEstimatedArrival(Math.round(distance * 2 + Math.random() * 5)) // Rough ETA in minutes
+    }
     
     toast.success(`${randomDriver.name} has been assigned as your security driver!`, {
       description: `${randomDriver.vehicle} • ETA: ${randomDriver.eta} minutes`,
       action: {
-        label: "View Profile",
-        onClick: () => setCurrentView('driver-profile')
+        label: "Track Live",
+        onClick: () => setCurrentView('trip-tracking')
       }
     })
     
-    // Simulate driver arriving
-    setTimeout(() => {
-      setTripStatus('driver_arriving')
-      toast.success(`${randomDriver.name} is approaching your location`, {
-        description: "Your security driver will arrive in 2-3 minutes"
-      })
-    }, 3000)
+    // Enhanced driver assignment notification
+    sendNotification(
+      "Security Driver Assigned!",
+      `${randomDriver.name} is on the way in ${randomDriver.vehicle}`,
+      'assigned'
+    )
     
-    // Simulate driver arrival
-    setTimeout(() => {
-      setTripStatus('arrived')
-      toast.success(`${randomDriver.name} has arrived!`, {
-        description: "Your security driver is waiting at the pickup location"
-      })
-    }, 8000)
+    // Start real-time location updates
+    startDriverTracking()
     
-  }, [])
+  }, [selectedPickupLocation, calculateDistance, sendNotification, startDriverTracking])
 
-  // Trip completion
+  // Real-time driver location tracking
+  const startDriverTracking = useCallback(() => {
+    if (driverTrackingInterval) {
+      clearInterval(driverTrackingInterval)
+    }
+    
+    const interval = setInterval(() => {
+      setDriverLocation(currentDriverLocation => {
+        if (!currentDriverLocation || !selectedPickupLocation || tripStatus === 'completed') {
+          return currentDriverLocation
+        }
+        
+        // Calculate movement towards pickup location
+        const targetLat = selectedPickupLocation.lat
+        const targetLng = selectedPickupLocation.lng
+        
+        // Move driver closer to pickup (simulate GPS updates every 5 seconds)
+        const speed = 0.0003 // Approximate movement per update (roughly 30-40mph in city)
+        const latDiff = targetLat - currentDriverLocation.lat
+        const lngDiff = targetLng - currentDriverLocation.lng
+        const distance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff)
+        
+        if (distance < 0.0005) { // Very close to pickup (within ~50m)
+          if (tripStatus !== 'arrived') {
+            setTripStatus('arrived')
+            setDriverDistance(0)
+            setEstimatedArrival(0)
+            
+            // Enhanced arrival notification
+            sendNotification(
+              "Your Security Driver Has Arrived!",
+              `${assignedDriver?.name} is waiting at your pickup location`,
+              'arrival'
+            )
+            
+            toast.success("Your security driver has arrived!", {
+              description: "Driver is waiting at pickup location",
+              action: {
+                label: "View",
+                onClick: () => setCurrentView('trip-tracking')
+              }
+            })
+          }
+          return currentDriverLocation
+        }
+        
+        // Calculate new position moving towards target
+        const newLat = currentDriverLocation.lat + (latDiff / distance) * speed
+        const newLng = currentDriverLocation.lng + (lngDiff / distance) * speed
+        
+        const newLocation = { lat: newLat, lng: newLng }
+        
+        // Update distance and ETA
+        const newDistance = calculateDistance(newLocation, selectedPickupLocation)
+        setDriverDistance(newDistance)
+        
+        // Calculate ETA based on distance (city driving speed ~20-30mph average)
+        const etaMinutes = Math.max(1, Math.round(newDistance * 2.5 + Math.random() * 2))
+        setEstimatedArrival(etaMinutes)
+        
+        // Update trip status based on distance
+        if (newDistance < 0.5 && tripStatus === 'driver_assigned') { // Within 500m
+          setTripStatus('driver_arriving')
+          
+          // Enhanced approaching notification
+          sendNotification(
+            "Your Security Driver is Approaching!",
+            `${assignedDriver?.name} will arrive in ${etaMinutes} minute${etaMinutes > 1 ? 's' : ''}`,
+            'approaching'
+          )
+          
+          toast.success("Your security driver is approaching!", {
+            description: `Arriving in ${etaMinutes} minute${etaMinutes > 1 ? 's' : ''}`,
+            action: {
+              label: "Track",
+              onClick: () => setCurrentView('trip-tracking')
+            }
+          })
+        }
+        
+        return newLocation
+      })
+    }, 5000) // Update every 5 seconds for real-time feel
+    
+    setDriverTrackingInterval(interval)
+  }, [selectedPickupLocation, tripStatus, calculateDistance, sendNotification, assignedDriver])
+
+  // Stop tracking when component unmounts or trip completes
+  useEffect(() => {
+    return () => {
+      if (driverTrackingInterval) {
+        clearInterval(driverTrackingInterval)
+      }
+    }
+  }, [driverTrackingInterval])
+
+  // Stop tracking when trip is completed
+  useEffect(() => {
+    if (tripStatus === 'completed' && driverTrackingInterval) {
+      clearInterval(driverTrackingInterval)
+      setDriverTrackingInterval(null)
+    }
+  }, [tripStatus, driverTrackingInterval])
+
+  // Enhanced trip completion with tracking cleanup
   const completeTrip = useCallback(() => {
     setTripStatus('completed')
     setCurrentTrip(null)
     setAssignedDriver(null)
+    setDriverLocation(null)
+    setDriverDistance(0)
+    setEstimatedArrival(0)
+    
+    // Stop real-time tracking
+    if (driverTrackingInterval) {
+      clearInterval(driverTrackingInterval)
+      setDriverTrackingInterval(null)
+    }
+    
     toast.success("Trip completed successfully!", {
       description: "Please rate your security transport experience"
     })
     setCurrentView('trip-rating')
-  }, [])
+  }, [driverTrackingInterval])
   const createPaymentReservation = useCallback((serviceId: string, amount: number) => {
     const reservation = {
       id: Date.now().toString(),
@@ -2722,34 +3001,54 @@ const App = () => {
         </header>
 
         <div className="p-4 space-y-4 max-w-md mx-auto pb-24">
-          {/* Live Map */}
+          {/* Live Map with Real-time Driver Tracking */}
           <Card className="border-0 shadow-lg overflow-hidden">
-            <div className="h-64 bg-gradient-to-br from-slate-100 to-slate-200 relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center space-y-2">
-                  <div className="w-12 h-12 bg-green-500 rounded-full mx-auto flex items-center justify-center animate-pulse">
-                    <Car size={24} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-700">Driver Location</p>
-                    <p className="text-xs text-slate-500">Live tracking active</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Status Badge */}
-              <div className="absolute top-3 left-3 bg-green-500/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                  <span className="text-xs font-medium text-white">
-                    {tripStatus === 'driver_assigned' && 'Driver assigned'}
-                    {tripStatus === 'driver_arriving' && 'Driver approaching'}
-                    {tripStatus === 'arrived' && 'Driver has arrived'}
-                    {tripStatus === 'in_progress' && 'Trip in progress'}
-                  </span>
-                </div>
+            <GoogleMapComponent
+              currentLocation={currentLocation}
+              selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
+              destinationLocation={selectedDestinationLocation ? { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng } : undefined}
+              driverLocation={driverLocation}
+              onLocationSelect={() => {}} // No location selection in tracking mode
+              isTrackingMode={true}
+            />
+            
+            {/* Live Status Overlay */}
+            <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full animate-pulse ${
+                  tripStatus === 'arrived' ? 'bg-green-500' : 
+                  tripStatus === 'driver_arriving' ? 'bg-yellow-500' : 
+                  'bg-blue-500'
+                }`}></div>
+                <span className="text-xs font-medium text-slate-700">
+                  {tripStatus === 'driver_assigned' && `${Math.round(driverDistance * 10) / 10}km away`}
+                  {tripStatus === 'driver_arriving' && `${estimatedArrival} min`}
+                  {tripStatus === 'arrived' && 'Arrived'}
+                  {tripStatus === 'in_progress' && 'In transit'}
+                </span>
               </div>
             </div>
+            
+            {/* Driver ETA Banner */}
+            {tripStatus !== 'arrived' && tripStatus !== 'in_progress' && (
+              <div className="absolute bottom-3 left-3 right-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg px-4 py-3 shadow-lg">
+                <div className="flex items-center justify-between text-white">
+                  <div>
+                    <p className="text-sm font-semibold">
+                      {assignedDriver?.name} is {tripStatus === 'driver_arriving' ? 'approaching' : 'on the way'}
+                    </p>
+                    <p className="text-xs opacity-90">
+                      {Math.round(driverDistance * 10) / 10}km • ETA {estimatedArrival} min
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                      <Car size={16} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </Card>
 
           {/* Driver Info */}
@@ -2778,8 +3077,21 @@ const App = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-bold text-green-600">{assignedDriver.eta} min</p>
-                  <p className="text-xs text-muted-foreground">ETA</p>
+                  <p className={`text-lg font-bold ${
+                    tripStatus === 'arrived' ? 'text-green-600' : 
+                    estimatedArrival <= 2 ? 'text-yellow-600' : 
+                    'text-blue-600'
+                  }`}>
+                    {tripStatus === 'arrived' ? 'Here!' : `${estimatedArrival} min`}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {tripStatus === 'arrived' ? 'Arrived' : 'ETA'}
+                  </p>
+                  {driverDistance > 0 && tripStatus !== 'arrived' && (
+                    <p className="text-xs text-muted-foreground">
+                      {Math.round(driverDistance * 10) / 10}km away
+                    </p>
+                  )}
                 </div>
               </div>
               
