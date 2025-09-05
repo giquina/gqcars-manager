@@ -3021,8 +3021,7 @@ function App() {
       if (onboardingStep < totalSteps - 1) {
         const newStep = onboardingStep + 1
         setOnboardingStep(newStep)
-        // Auto-save progress
-        toast.success("💾 Progress saved", { duration: 1500 })
+        // Auto-save progress silently
       } else {
         // Complete onboarding
         setHasCompletedOnboarding(true)
@@ -3035,14 +3034,12 @@ function App() {
       if (onboardingStep > 0) {
         const newStep = onboardingStep - 1
         setOnboardingStep(newStep)
-        // Auto-save progress
-        toast.success("💾 Progress saved", { duration: 1500 })
+        // Auto-save progress silently
       }
     }
 
     const saveAndExit = () => {
-      // Save current progress and return to welcome
-      toast.success("✅ Your security transport profile progress has been saved. Resume anytime!")
+      // Save current progress and return to welcome silently
       setCurrentView('welcome')
     }
 
