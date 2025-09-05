@@ -1,0 +1,113 @@
+{
+  "name": "GQ Cars - Premium Ride Booking",
+  "short_name": "GQ Cars",
+  "description": "Book premium rides in the UK with real-time tracking and professional drivers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f2937",
+  "orientation": "portrait-primary",
+  "categories": ["travel", "transportation"],
+  "lang": "en-GB",
+  "dir": "ltr",
+  "scope": "/",
+  
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Book a Ride",
+      "short_name": "Book",
+      "description": "Quickly book a new ride",
+      "url": "/?action=book",
+      "icons": [
+        {
+          "src": "/icon-book-ride.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Trip History",
+      "short_name": "History", 
+      "description": "View your recent trips",
+      "url": "/activity",
+      "icons": [
+        {
+          "src": "/icon-history.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Saved Places",
+      "short_name": "Saved",
+      "description": "Quick access to favorite locations", 
+      "url": "/favorites",
+      "icons": [
+        {
+          "src": "/icon-favorites.png",
+          "sizes": "96x96", 
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "/screenshot-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Home screen with live GPS and booking interface"
+    },
+    {
+      "src": "/screenshot-2.png", 
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Real-time trip tracking with driver location"
+    }
+  ],
+
+  "prefer_related_applications": false,
+  
+  "protocol_handlers": [
+    {
+      "protocol": "web+gqcars",
+      "url": "/?booking=%s"
+    }
+  ],
+
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}
