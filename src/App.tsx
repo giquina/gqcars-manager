@@ -3152,25 +3152,35 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 h-[60px] ${ 
+                    className={`cursor-pointer transition-all duration-200 h-[72px] relative overflow-hidden ${ 
                       onboardingData.travelFrequency === option.value
-                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
                     }`}
                     onClick={() => updateOnboardingData('travelFrequency', option.value)}
                   >
-                    <CardContent className="p-2 h-full flex flex-col justify-center relative">
-                      <div className={`absolute top-1 right-1 w-3 h-3 rounded-full border border-amber-400 ${ 
+                    <CardContent className="p-3 h-full flex flex-col justify-between text-center relative">
+                      {/* Improved selection indicator positioned outside content area */}
+                      <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 ${ 
                         onboardingData.travelFrequency === option.value 
-                          ? 'bg-amber-400' 
-                          : 'bg-transparent'
+                          ? 'bg-amber-400 scale-110 shadow-lg' 
+                          : 'bg-transparent scale-100'
                       }`}>
                         {onboardingData.travelFrequency === option.value && (
-                          <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                          <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                         )}
                       </div>
-                      <h3 className="font-semibold text-white text-xs leading-tight mb-0.5 text-center">{option.value}</h3>
-                      <p className="text-[9px] text-slate-300 leading-tight text-center">{option.desc}</p>
+                      
+                      {/* Content area with proper spacing */}
+                      <div className="flex-1 flex flex-col justify-center space-y-1 pr-6">
+                        <h3 className="font-bold text-white text-xs leading-tight">{option.value}</h3>
+                        <p className="text-[9px] text-slate-300 leading-snug">{option.desc}</p>
+                      </div>
+                      
+                      {/* Selection glow effect */}
+                      {onboardingData.travelFrequency === option.value && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse"></div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -3226,36 +3236,44 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${ 
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
                       onboardingData.serviceStyle === option.value
-                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
                     }`}
                     onClick={() => updateOnboardingData('serviceStyle', option.value)}
                   >
-                    <CardContent className="p-2.5 space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-white text-xs">{option.value}</h3>
-                          <p className="text-[9px] text-slate-300">{option.desc}</p>
+                    <CardContent className="p-3 space-y-2">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 pr-6">
+                          <h3 className="font-bold text-white text-xs mb-1">{option.value}</h3>
+                          <p className="text-[9px] text-slate-300 leading-tight">{option.desc}</p>
                         </div>
-                        <div className={`w-3 h-3 rounded-full border border-amber-400 ${ 
+                        {/* Improved selection indicator */}
+                        <div className={`w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
                           onboardingData.serviceStyle === option.value 
-                            ? 'bg-amber-400' 
-                            : 'bg-transparent'
+                            ? 'bg-amber-400 scale-110 shadow-lg' 
+                            : 'bg-transparent scale-100'
                         }`}>
                           {onboardingData.serviceStyle === option.value && (
-                            <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                            <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                           )}
                         </div>
                       </div>
-                      <div className="flex flex-wrap gap-1">
+                      
+                      {/* Feature tags with better spacing */}
+                      <div className="flex flex-wrap gap-1 mt-2">
                         {option.features.map((feature, idx) => (
-                          <span key={idx} className="text-[8px] px-1 py-0.5 bg-slate-700/60 text-slate-300 rounded-full">
+                          <span key={idx} className="text-[8px] px-1.5 py-0.5 bg-slate-700/60 text-slate-300 rounded-full whitespace-nowrap">
                             {feature}
                           </span>
                         ))}
                       </div>
+                      
+                      {/* Selection glow effect */}
+                      {onboardingData.serviceStyle === option.value && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -3301,38 +3319,46 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${ 
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
                       onboardingData.securityComfort === option.value
-                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
                     }`}
                     onClick={() => updateOnboardingData('securityComfort', option.value)}
                   >
-                    <CardContent className="p-2.5">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <h3 className="font-semibold text-white text-xs">{option.value}</h3>
+                        <div className="flex-1 pr-6">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-bold text-white text-xs">{option.value}</h3>
+                            {/* Intensity indicator dots */}
                             <div className="flex gap-0.5">
                               {[...Array(5)].map((_, i) => (
-                                <div key={i} className={`w-1 h-1 rounded-full ${ 
-                                  i < option.intensity ? 'bg-amber-400' : 'bg-slate-600'
+                                <div key={i} className={`w-1 h-1 rounded-full transition-colors duration-200 ${ 
+                                  i < option.intensity ? 'bg-amber-400 shadow-sm' : 'bg-slate-600'
                                 }`} />
                               ))}
                             </div>
                           </div>
-                          <p className="text-[9px] text-slate-300">{option.desc}</p>
+                          <p className="text-[9px] text-slate-300 leading-tight">{option.desc}</p>
                         </div>
-                        <div className={`w-3 h-3 rounded-full border border-amber-400 ${ 
+                        
+                        {/* Improved selection indicator */}
+                        <div className={`w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
                           onboardingData.securityComfort === option.value 
-                            ? 'bg-amber-400' 
-                            : 'bg-transparent'
+                            ? 'bg-amber-400 scale-110 shadow-lg' 
+                            : 'bg-transparent scale-100'
                         }`}>
                           {onboardingData.securityComfort === option.value && (
-                            <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                            <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                           )}
                         </div>
                       </div>
+                      
+                      {/* Selection glow effect */}
+                      {onboardingData.securityComfort === option.value && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -3450,19 +3476,19 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${
                       onboardingData.riskConcerns.includes(option.value)
-                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
                     }`}
                     onClick={() => toggleArrayValue('riskConcerns', option.value)}
                   >
-                    <CardContent className="p-2.5">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-white text-xs">{option.value}</h3>
-                            <span className={`text-[8px] px-1 py-0.5 rounded-full ${
+                        <div className="flex-1 pr-6">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-bold text-white text-xs">{option.value}</h3>
+                            <span className={`text-[8px] px-1.5 py-0.5 rounded-full font-medium ${
                               option.level === 'enhanced' ? 'bg-blue-400/20 text-blue-300' :
                               option.level === 'elevated' ? 'bg-yellow-400/20 text-yellow-300' :
                               'bg-green-400/20 text-green-300'
@@ -3470,18 +3496,25 @@ function App() {
                               {option.level}
                             </span>
                           </div>
-                          <p className="text-[9px] text-slate-300 mt-0.5">{option.desc}</p>
+                          <p className="text-[9px] text-slate-300 leading-tight">{option.desc}</p>
                         </div>
-                        <div className={`w-3 h-3 border border-amber-400 rounded ${
+                        
+                        {/* Improved checkbox indicator */}
+                        <div className={`w-4 h-4 border-2 border-amber-400 rounded flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
                           onboardingData.riskConcerns.includes(option.value) 
-                            ? 'bg-amber-400 text-slate-900' 
-                            : 'bg-transparent'
-                        } text-center flex items-center justify-center`}>
+                            ? 'bg-amber-400 scale-110 shadow-lg' 
+                            : 'bg-transparent scale-100'
+                        }`}>
                           {onboardingData.riskConcerns.includes(option.value) && (
-                            <span className="text-[8px] font-bold">✓</span>
+                            <div className="text-slate-900 text-[8px] font-bold animate-in zoom-in duration-200">✓</div>
                           )}
                         </div>
                       </div>
+                      
+                      {/* Selection glow effect */}
+                      {onboardingData.riskConcerns.includes(option.value) && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -3624,30 +3657,37 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${
                       onboardingData.emergencyResponse === option.value
-                        ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
                     }`}
                     onClick={() => updateOnboardingData('emergencyResponse', option.value)}
                   >
-                    <CardContent className="p-2.5">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-white text-xs">{option.value}</h3>
-                          <p className="text-[9px] text-slate-300">{option.desc}</p>
-                          <p className="text-[8px] text-amber-300 mt-0.5">{option.priority}</p>
+                        <div className="flex-1 pr-6">
+                          <h3 className="font-bold text-white text-xs mb-1">{option.value}</h3>
+                          <p className="text-[9px] text-slate-300 leading-tight mb-1">{option.desc}</p>
+                          <p className="text-[8px] text-amber-300 font-medium">{option.priority}</p>
                         </div>
-                        <div className={`w-3 h-3 rounded-full border border-amber-400 ${
+                        
+                        {/* Improved radio button indicator */}
+                        <div className={`w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
                           onboardingData.emergencyResponse === option.value 
-                            ? 'bg-amber-400' 
-                            : 'bg-transparent'
+                            ? 'bg-amber-400 scale-110 shadow-lg' 
+                            : 'bg-transparent scale-100'
                         }`}>
                           {onboardingData.emergencyResponse === option.value && (
-                            <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                            <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                           )}
                         </div>
                       </div>
+                      
+                      {/* Selection glow effect */}
+                      {onboardingData.emergencyResponse === option.value && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
