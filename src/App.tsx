@@ -956,6 +956,145 @@ function App() {
     )
   }
 
+  // Service Selection View
+  if (currentView === 'service-selection') {
+    const serviceOptions = [
+      { 
+        id: 'essential', 
+        title: 'Armora Essential', 
+        subtitle: 'Professional protection, everyday value', 
+        description: 'Perfect for: Daily commutes, business meetings, airport transfers. SIA-licensed driver, unmarked vehicle, basic security protocols.',
+        priceRange: '£45 - £75',
+        recommended: true
+      },
+      { 
+        id: 'professional', 
+        title: 'Armora Professional', 
+        subtitle: 'Enhanced security for important meetings', 
+        description: 'Perfect for: High-stakes meetings, competitive environments. Enhanced vehicle features, trained security specialist, threat assessment.',
+        priceRange: '£150 - £350'
+      },
+      { 
+        id: 'business', 
+        title: 'Armora Business', 
+        subtitle: 'Reliable security for regular schedules', 
+        description: 'Perfect for: Weekly meetings, consistent business travel. Dedicated driver team, priority scheduling, business-appropriate vehicles.',
+        priceRange: '£120 - £250'
+      },
+      { 
+        id: 'executive', 
+        title: 'Armora Executive', 
+        subtitle: 'VIP protection for high-profile travel', 
+        description: 'Perfect for: High-profile events, maximum security needs. Multiple personnel, luxury vehicles, comprehensive protection coverage.',
+        priceRange: '£180 - £450'
+      },
+      { 
+        id: 'group', 
+        title: 'Armora Group', 
+        subtitle: 'Secure transport for larger parties', 
+        description: 'Perfect for: Team travel, corporate events, group transport. Large security vehicles, group coordination, team protection.',
+        priceRange: '£65 - £120'
+      },
+      { 
+        id: 'express', 
+        title: 'Armora Express', 
+        subtitle: 'Quick secure transport for teams', 
+        description: 'Perfect for: Fast team transport, efficient group travel. Quick coordination, team-friendly vehicles, time-sensitive movements.',
+        priceRange: '£40 - £85'
+      }
+    ]
+
+    // Set default selection to Essential if none selected
+    if (!selectedService) {
+      setSelectedService('essential')
+    }
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center justify-between mb-3">
+              <h1 className="questionnaire-title">
+                <h3>Choose Your Security Service</h3>
+              </h1>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-6 h-6 rounded-full"
+                onClick={() => setCurrentView('home')}
+              >
+                <X size={12} />
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-2">Select the service level that matches your needs</p>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+          {serviceOptions.map(option => {
+            const isSelected = selectedService === option.id
+            return (
+              <Card 
+                key={option.id}
+                className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
+                  isSelected 
+                    ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                    : 'hover:shadow-md bg-white border border-border/40'
+                }`}
+                onClick={() => setSelectedService(option.id)}
+              >
+                {option.recommended && (
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-5">
+                    Recommended
+                  </div>
+                )}
+                <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                  <div className="check-dot"></div>
+                </div>
+                <CardContent className="content-padding">
+                  <div className="space-y-2">
+                    <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                    <p className="text-sm font-medium text-muted-foreground">{option.subtitle}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+                    <p className="text-sm font-bold text-primary">{option.priceRange}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+
+        {/* Bottom Actions */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+          <div className="max-w-md mx-auto flex gap-3">
+            <Button 
+              variant="outline" 
+              onClick={() => setCurrentView('home')}
+              className="w-20 h-12 text-sm font-medium"
+            >
+              Back
+            </Button>
+            <Button 
+              onClick={() => {
+                setCurrentView('home')
+                const selectedServiceName = serviceOptions.find(s => s.id === selectedService)?.title || 'service'
+                toast.success(`${selectedServiceName} selected! Enter your locations to continue.`)
+              }}
+              disabled={!selectedService}
+              className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+            >
+              Continue with {serviceOptions.find(s => s.id === selectedService)?.title || 'Service'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // Home/Booking View
   if (currentView === 'home') {
     return (
@@ -1013,86 +1152,35 @@ function App() {
             </CardContent>
           </Card>
 
-          {/* Service Selection */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">Choose Your Security Cab Service</h2>
-            </div>
-            
-            {/* Recommendation Banner */}
-            <div className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-lg p-3 mb-3">
-              <div className="flex items-center gap-2">
-                <Star size={16} className="text-amber-600" weight="fill" />
-                <p className="text-sm font-medium text-amber-800">
-                  Based on your assessment, we recommend <span className="font-bold">Armora Essential</span>
-                </p>
+          {/* Current Service Selection */}
+          <Card className="border-0 shadow-sm bg-card">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-sm">
+                    {selectedService ? 
+                      armoraServices.find(s => s.id === selectedService)?.name || 'Choose Service' 
+                      : 'Choose Service'
+                    }
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedService ? 
+                      armoraServices.find(s => s.id === selectedService)?.tagline || 'Tap to change'
+                      : 'Select your security level'
+                    }
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setCurrentView('service-selection')}
+                  className="text-xs"
+                >
+                  {selectedService ? 'Change' : 'Select'}
+                </Button>
               </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              {armoraServices.map(service => {
-                const Icon = service.icon
-                const isSelected = selectedService === service.id
-                const dynamicPrice = calculateServicePrice(service, routeDistance)
-                
-                return (
-                  <Card 
-                    key={service.id}
-                    className={`cursor-pointer transition-all duration-200 h-[140px] overflow-hidden relative ${ 
-                      isSelected
-                        ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                        : 'hover:shadow-md bg-white border border-border/40'
-                    } ${service.popular ? 'border-amber-200 bg-gradient-to-br from-amber-50/30 to-white' : ''}`}
-                    onClick={() => setSelectedService(service.id)}
-                  >
-                    {service.popular && (
-                      <div className="absolute top-1 right-1 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[7px] font-bold px-1.5 py-0.5 rounded-full">
-                        Recommended
-                      </div>
-                    )}
-                    <CardContent className="p-3 h-full flex flex-col justify-between text-center space-y-1">
-                      <div className="space-y-1">
-                        <div className={`w-8 h-8 mx-auto rounded-lg flex items-center justify-center ${ 
-                          isSelected ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900' : 'bg-muted/70 text-primary'
-                        }`}>
-                          <Icon size={18} weight={isSelected ? "fill" : "regular"} />
-                        </div>
-                        
-                        <h3 className={`font-bold text-[10px] leading-tight text-center line-clamp-2 ${ 
-                          isSelected ? 'text-amber-700' : 'text-foreground'
-                        }`}>
-                          {service.name}
-                        </h3>
-                        
-                        <p className={`text-[8px] text-muted-foreground line-clamp-1 ${ 
-                          isSelected ? 'text-amber-600' : ''
-                        }`}>
-                          {service.tagline}
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-0.5">
-                        <p className={`font-bold text-sm leading-none ${ 
-                          isSelected ? 'text-amber-700' : 'text-foreground'
-                        }`}>
-                          {dynamicPrice}
-                        </p>
-                        
-                        <div className="space-y-0.5 text-center">
-                          <p className="text-[9px] text-muted-foreground leading-none">
-                            {service.eta}
-                          </p>
-                          <p className="text-[9px] text-muted-foreground leading-none">
-                            {service.capacity}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Book Button */}
           <Button 
