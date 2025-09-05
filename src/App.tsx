@@ -3154,8 +3154,8 @@ function App() {
                 <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30 mb-2">
                   <h4 className="text-sm font-semibold text-amber-200 mb-2">📅 Service Matching:</h4>
                   <div className="space-y-1 text-xs text-amber-100">
-                    <p>• <strong>Occasional:</strong> Event-based service, pay-per-trip</p>
-                    <p>• <strong>Weekly:</strong> Regular schedule, preferred rates</p>
+                    <p>• <strong>Occasional:</strong> Event-based service, flexible booking</p>
+                    <p>• <strong>Weekly:</strong> Regular schedule, consistent service</p>
                     <p>• <strong>Daily:</strong> Dedicated service, priority booking</p>
                   </div>
                 </div>
@@ -3174,7 +3174,7 @@ function App() {
                       desc: 'Regular meetings, weekly events',
                       details: 'Ideal for regular business activities, weekly client meetings, consistent professional needs',
                       serviceType: 'Regular service',
-                      benefits: 'Preferred rates, consistent officer'
+                      benefits: 'Consistent officer, priority support'
                     },
                     { 
                       value: 'Almost Every Day', 
@@ -3285,8 +3285,7 @@ function App() {
                       features: ['Unmarked cars', 'Normal clothing', 'Almost invisible'],
                       perfectFor: 'Family outings, personal errands, casual activities',
                       whatToExpect: 'Security stays 30+ feet away, uses civilian vehicles, blends in completely',
-                      idealIf: 'You value privacy and want protection without drawing attention',
-                      priceRange: '£45-75'
+                      idealIf: 'You value privacy and want protection without drawing attention'
                     },
                     { 
                       value: 'Professional & Visible', 
@@ -3294,8 +3293,7 @@ function App() {
                       features: ['Professional look', 'Clear identification', 'Business appropriate'],
                       perfectFor: 'Business meetings, corporate events, professional settings',
                       whatToExpected: 'Suited security officers, marked vehicles, obvious but respectful presence',
-                      idealIf: 'You want visible deterrent while maintaining professional image',
-                      priceRange: '£85-150'
+                      idealIf: 'You want visible deterrent while maintaining professional image'
                     },
                     { 
                       value: 'Full Premium Service', 
@@ -3303,8 +3301,7 @@ function App() {
                       features: ['Luxury cars', 'Multiple security', 'VIP treatment'],
                       perfectFor: 'High-profile events, VIP occasions, maximum security situations',
                       whatToExpected: 'Multiple officers, luxury transport, comprehensive coverage',
-                      idealIf: 'You require maximum protection with premium experience',
-                      priceRange: '£200-450'
+                      idealIf: 'You require maximum protection with premium experience'
                     }
                   ].map((option) => (
                     <Card 
@@ -3356,7 +3353,6 @@ function App() {
                                 </span>
                               ))}
                             </div>
-                            <span className="text-xs font-bold text-green-400">{option.priceRange}</span>
                           </div>
                         </div>
                         
