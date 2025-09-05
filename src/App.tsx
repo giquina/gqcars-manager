@@ -529,11 +529,13 @@ function App() {
           {/* Header */}
           <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
             <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h1 className="questionnaire-title">
-                  <h3>What kind of work do you do?</h3>
-                </h1>
-                <div className="text-sm text-muted-foreground">Step 1 of 6</div>
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between">
+                  <div className="questionnaire-title flex-1 pr-2">
+                    <h3>What kind of work do you do?</h3>
+                  </div>
+                  <div className="text-sm text-muted-foreground whitespace-nowrap">Step 1 of 6</div>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick all that describe your work (you can choose more than one)</p>
               <div className="w-full bg-border/30 rounded-full h-1">
@@ -628,11 +630,13 @@ function App() {
           {/* Header */}
           <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
             <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h1 className="questionnaire-title">
-                  <h3>How often do you need secure transport?</h3>
-                </h1>
-                <div className="text-sm text-muted-foreground">Step 2 of 6</div>
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between">
+                  <div className="questionnaire-title flex-1 pr-2">
+                    <h3>How often do you need secure transport?</h3>
+                  </div>
+                  <div className="text-sm text-muted-foreground whitespace-nowrap">Step 2 of 6</div>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick the one that best matches your needs</p>
               <div className="w-full bg-border/30 rounded-full h-1">
@@ -716,11 +720,13 @@ function App() {
           {/* Header */}
           <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
             <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h1 className="questionnaire-title">
-                  <h3>How do you want your security to look?</h3>
-                </h1>
-                <div className="text-sm text-muted-foreground">Step 3 of 6</div>
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between">
+                  <div className="questionnaire-title flex-1 pr-2">
+                    <h3>How do you want your security to look?</h3>
+                  </div>
+                  <div className="text-sm text-muted-foreground whitespace-nowrap">Step 3 of 6</div>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick the style that feels right for you</p>
               <div className="w-full bg-border/30 rounded-full h-1">
@@ -805,11 +811,13 @@ function App() {
           {/* Header */}
           <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
             <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h1 className="questionnaire-title">
-                  <h3>How much security presence feels right?</h3>
-                </h1>
-                <div className="text-sm text-muted-foreground">Step 4 of 6</div>
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between">
+                  <div className="questionnaire-title flex-1 pr-2">
+                    <h3>How much security presence feels right?</h3>
+                  </div>
+                  <div className="text-sm text-muted-foreground whitespace-nowrap">Step 4 of 6</div>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Choose what feels comfortable for you</p>
               <div className="w-full bg-border/30 rounded-full h-1">
@@ -896,11 +904,13 @@ function App() {
           {/* Header */}
           <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
             <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h1 className="questionnaire-title">
-                  <h3>Where do you typically need protection?</h3>
-                </h1>
-                <div className="text-sm text-muted-foreground">Step 5 of 6</div>
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between">
+                  <div className="questionnaire-title flex-1 pr-2">
+                    <h3>Where do you typically need protection?</h3>
+                  </div>
+                  <div className="text-sm text-muted-foreground whitespace-nowrap">Step 5 of 6</div>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick all areas where you need security transport</p>
               <div className="w-full bg-border/30 rounded-full h-1">
@@ -984,11 +994,13 @@ function App() {
           {/* Header */}
           <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
             <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h1 className="questionnaire-title">
-                  <h3>Any specific security needs?</h3>
-                </h1>
-                <div className="text-sm text-muted-foreground">Step 6 of 6</div>
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center justify-between">
+                  <div className="questionnaire-title flex-1 pr-2">
+                    <h3>Any specific security needs?</h3>
+                  </div>
+                  <div className="text-sm text-muted-foreground whitespace-nowrap">Step 6 of 6</div>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Tell us about any special requirements (optional)</p>
               <div className="w-full bg-border/30 rounded-full h-1">
@@ -1142,18 +1154,20 @@ function App() {
         {/* Header */}
         <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
           <div className="max-w-md mx-auto">
-            <div className="flex items-center justify-between mb-3">
-              <h1 className="questionnaire-title">
-                <h3>Choose Your Security Service</h3>
-              </h1>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-6 h-6 rounded-full"
-                onClick={() => setCurrentView('home')}
-              >
-                <X size={12} />
-              </Button>
+            <div className="space-y-2 mb-3">
+              <div className="flex items-center justify-between">
+                <div className="questionnaire-title flex-1 pr-2">
+                  <h3>Choose Your Security Service</h3>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-6 h-6 rounded-full flex-shrink-0"
+                  onClick={() => setCurrentView('home')}
+                >
+                  <X size={12} />
+                </Button>
+              </div>
             </div>
             <p className="text-sm text-muted-foreground mb-2">Select the service level that matches your needs</p>
           </div>
