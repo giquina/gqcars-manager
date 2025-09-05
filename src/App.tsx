@@ -3686,35 +3686,109 @@ function App() {
                 <p className="text-sm text-slate-300">Choose all that you visit</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-3">
                 {[
-                  { value: 'City Center', desc: 'Downtown, business districts' },
-                  { value: 'Airports & Travel', desc: 'Flights, train stations' },
-                  { value: 'Work Events', desc: 'Meetings, conferences' },
-                  { value: 'Social Events', desc: 'Parties, entertainment' },
-                  { value: 'Home Areas', desc: 'Neighborhoods, home' },
-                  { value: 'International', desc: 'Overseas, other countries' }
+                  { 
+                    value: 'City Center & Business Districts', 
+                    shortDesc: 'Downtown areas, corporate offices, business meetings',
+                    perfectFor: 'Client meetings, corporate events, business lunches',
+                    coverage: 'Financial districts, office buildings, corporate headquarters',
+                    whyChoose: 'Professional presence in business environments',
+                    locations: 'Canary Wharf, City of London, business parks'
+                  },
+                  { 
+                    value: 'Airports & Transportation Hubs', 
+                    shortDesc: 'Flight terminals, train stations, travel connections',
+                    perfectFor: 'Business trips, international travel, connecting flights',
+                    coverage: 'All major airports, train stations, ferry terminals',
+                    whyChoose: 'Reliable timing for critical travel connections',
+                    locations: 'Heathrow, Gatwick, King\'s Cross, Eurostar terminals'
+                  },
+                  { 
+                    value: 'Work Events & Professional Gatherings', 
+                    shortDesc: 'Conferences, meetings, corporate functions',
+                    perfectFor: 'Industry conferences, board meetings, corporate events',
+                    coverage: 'Convention centers, hotels, corporate venues',
+                    whyChoose: 'Professional image for important business occasions',
+                    locations: 'ExCeL London, conference hotels, corporate event spaces'
+                  },
+                  { 
+                    value: 'Social Events & Entertainment', 
+                    shortDesc: 'Restaurants, entertainment venues, personal occasions',
+                    perfectFor: 'Client dinners, networking events, personal celebrations',
+                    coverage: 'Fine dining, theaters, private clubs, entertainment venues',
+                    whyChoose: 'Discrete protection while maintaining social atmosphere',
+                    locations: 'Michelin restaurants, West End theaters, private members\' clubs'
+                  },
+                  { 
+                    value: 'Home Areas & Residential Locations', 
+                    shortDesc: 'Your neighborhood, residential areas, family locations',
+                    perfectFor: 'Daily commutes, family activities, personal errands',
+                    coverage: 'Residential neighborhoods, local amenities, family venues',
+                    whyChoose: 'Blend naturally into your personal environment',
+                    locations: 'Your home, children\'s schools, local shopping, family restaurants'
+                  },
+                  { 
+                    value: 'International & Overseas Travel', 
+                    shortDesc: 'Foreign business trips, global coverage, overseas protection',
+                    perfectFor: 'International business, overseas meetings, global travel',
+                    coverage: 'Partner networks in major cities worldwide',
+                    whyChoose: 'Consistent security standards across countries',
+                    locations: 'International offices, global conferences, overseas client meetings'
+                  }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 h-[80px] relative ${ 
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
                       onboardingData.locations.includes(option.value)
-                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
                     }`}
                     onClick={() => toggleArrayValue('locations', option.value)}
                   >
-                    {/* Professional checkbox indicator */}
-                    <div className={`absolute top-2 right-2 w-5 h-5 border border-amber-400 rounded text-center text-xs leading-4 ${
-                      onboardingData.locations.includes(option.value) 
-                        ? 'bg-amber-400 text-slate-900' 
-                        : 'bg-transparent'
-                    }`}>
-                      {onboardingData.locations.includes(option.value) ? '✓' : ''}
-                    </div>
-                    <CardContent className="p-3 text-center h-full flex flex-col justify-center">
-                      <h3 className="font-semibold text-white text-sm leading-tight mb-1">{option.value}</h3>
-                      <p className="text-xs text-slate-300 leading-tight">{option.desc}</p>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex-1 pr-6">
+                          <h3 className="font-bold text-white text-sm mb-2">{option.value}</h3>
+                          <p className="text-xs text-slate-300 leading-relaxed mb-2">{option.shortDesc}</p>
+                        </div>
+                        
+                        {/* Checkbox indicator */}
+                        <div className={`w-5 h-5 border-2 border-amber-400 rounded flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
+                          onboardingData.locations.includes(option.value) 
+                            ? 'bg-amber-400 scale-110 shadow-lg' 
+                            : 'bg-transparent scale-100'
+                        }`}>
+                          {onboardingData.locations.includes(option.value) && (
+                            <div className="text-slate-900 text-xs font-bold animate-in zoom-in duration-200">✓</div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Enhanced Details */}
+                      <div className="space-y-2 border-t border-slate-600/50 pt-2">
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium">Perfect for:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.perfectFor}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium">What we cover:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.coverage}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium">Why choose this:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.whyChoose}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium">Typical locations:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.locations}</p>
+                        </div>
+                      </div>
+                      
+                      {/* Selection glow effect */}
+                      {onboardingData.locations.includes(option.value) && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
