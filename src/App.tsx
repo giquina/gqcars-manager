@@ -2522,17 +2522,17 @@ function App() {
     }
   }, [])
 
-  // Apply no-scroll only to welcome and onboarding pages
+  // Apply no-scroll only to welcome and onboarding step 0 and 1
   useEffect(() => {
     const body = document.body
     const root = document.getElementById('root')
     
-    if (currentView === 'welcome' || currentView === 'onboarding') {
-      // Prevent scrolling on welcome and onboarding pages
+    if (currentView === 'welcome' || (currentView === 'onboarding' && onboardingStep <= 1)) {
+      // Prevent scrolling on welcome and first two onboarding pages
       body.classList.add('no-scroll')
       if (root) root.classList.add('no-scroll-container')
     } else {
-      // Allow scrolling on all other pages
+      // Allow scrolling on all other pages including onboarding step 2+
       body.classList.remove('no-scroll')
       if (root) root.classList.remove('no-scroll-container')
     }
@@ -2542,7 +2542,7 @@ function App() {
       body.classList.remove('no-scroll')
       if (root) root.classList.remove('no-scroll-container')
     }
-  }, [currentView])
+  }, [currentView, onboardingStep])
 
   // Update map center when user location is found - with proper dependency management
   useEffect(() => {
@@ -2994,7 +2994,7 @@ function App() {
           </div>
         </header>
 
-        <div className="relative z-10 max-w-md mx-auto p-4 pb-6">{/* No overflow restrictions - content should fit */}
+        <div className="relative z-10 max-w-md mx-auto p-4 pb-6 overflow-y-auto min-h-screen">{/* Added scroll container for step 2+ */}
           {/* Slide 0: Assessment Introduction */}
           {onboardingStep === 0 && (
             <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
@@ -3131,77 +3131,187 @@ function App() {
             </div>
           )}
 
-          {/* Slide 2: Travel Frequency - Simplified */}
+          {/* Slide 2: Travel Frequency - Enhanced Design with Proper Checkbox Positioning */}
           {onboardingStep === 2 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
-                <p className="text-sm text-slate-300">Pick what matches your schedule</p>
+            <div className="space-y-6 animate-in fade-in duration-500 pb-8">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">How often do you need secure transport?</h2>
+                <p className="text-sm text-slate-300 leading-relaxed">Pick what matches your schedule</p>
               </div>
 
-              {/* Simplified Cards */}
-              <div className="space-y-3">
+              {/* Enhanced Cards with Better Layout */}
+              <div className="space-y-4">
                 {[
                   { 
                     value: 'Just Sometimes', 
                     subtitle: 'Special events, rare occasions',
-                    pricingTier: '$',
+                    details: 'Perfect for: Important meetings, special events, airport trips',
+                    pricingTier: '£',
                     popular: false
                   },
                   { 
                     value: 'About Once a Week', 
                     subtitle: 'Regular meetings, weekly trips',
-                    pricingTier: '$$',
+                    details: 'Perfect for: Weekly client meetings, regular business appointments',
+                    pricingTier: '££',
                     popular: true
                   },
                   { 
                     value: 'Almost Every Day', 
                     subtitle: 'Daily commute, regular schedule',
-                    pricingTier: '$$$',
+                    details: 'Perfect for: Daily office commute, regular work schedule',
+                    pricingTier: '£££',
                     popular: false
                   },
                   { 
                     value: 'Multiple Times Daily', 
                     subtitle: 'Very busy, frequent travel',
-                    pricingTier: '$$$$',
+                    details: 'Perfect for: Back-to-back meetings, complex daily schedules',
+                    pricingTier: '££££',
                     popular: false
                   }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
+                    className={`cursor-pointer transition-all duration-300 relative overflow-hidden border-2 ${
                       onboardingData.travelFrequency === option.value
-                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
-                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
+                        ? 'bg-gradient-to-br from-amber-400/30 to-amber-600/30 border-amber-400 shadow-xl transform scale-[1.02]' 
+                        : 'bg-slate-800/80 border-slate-600/80 hover:border-amber-400/60 hover:bg-slate-800/90 hover:shadow-lg hover:scale-[1.01]'
                     }`}
                     onClick={() => updateOnboardingData('travelFrequency', option.value)}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-1">
-                            <h3 className="font-bold text-white text-base">{option.value}</h3>
-                            <span className="text-xs px-2 py-1 bg-amber-400/20 text-amber-300 rounded-full font-medium">
-                              {option.pricingTier}
+                    <CardContent className="p-5 relative">
+                      {/* Properly positioned checkbox indicator */}
+                      <div className={`absolute top-4 right-4 w-6 h-6 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-300 ${
+                        onboardingData.travelFrequency === option.value 
+                          ? 'bg-amber-400 scale-110 shadow-lg' 
+                          : 'bg-transparent scale-100'
+                      }`}>
+                        {onboardingData.travelFrequency === option.value && (
+                          <div className="w-2.5 h-2.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                        )}
+                      </div>
+                      
+                      {/* Content area with proper spacing */}
+                      <div className="pr-10"> {/* Right padding to avoid checkbox */}
+                        <div className="flex items-center gap-3 mb-3">
+                          <h3 className="font-bold text-white text-lg leading-tight">{option.value}</h3>
+                          <span className="text-xs px-2.5 py-1 bg-amber-400/25 text-amber-200 rounded-full font-medium border border-amber-400/30">
+                            {option.pricingTier}
+                          </span>
+                          {option.popular && (
+                            <span className="text-xs px-2.5 py-1 bg-green-400/25 text-green-200 rounded-full font-medium border border-green-400/30">
+                              Most Popular
                             </span>
-                            {option.popular && (
-                              <span className="text-xs px-2 py-1 bg-green-400/20 text-green-300 rounded-full font-medium">
-                                Most Popular
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-slate-300">{option.subtitle}</p>
-                        </div>
-                        
-                        {/* Radio button indicator */}
-                        <div className={`w-6 h-6 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
-                          onboardingData.travelFrequency === option.value 
-                            ? 'bg-amber-400 scale-110 shadow-lg' 
-                            : 'bg-transparent scale-100'
-                        }`}>
-                          {onboardingData.travelFrequency === option.value && (
-                            <div className="w-2.5 h-2.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                           )}
+                        </div>
+                        <p className="text-sm text-slate-300 mb-2 font-medium">{option.subtitle}</p>
+                        <p className="text-xs text-slate-400 leading-relaxed">{option.details}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Enhanced Custom Input Section */}
+              <div className="space-y-3 bg-slate-800/40 rounded-xl p-4 border border-slate-600/50">
+                <label className="text-sm font-semibold text-amber-200 flex items-center gap-2">
+                  <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                  Different schedule?
+                </label>
+                <textarea
+                  value={onboardingData.travelFrequencyCustom}
+                  onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
+                  placeholder="Tell us about your specific travel needs... e.g., 'I need transport every Tuesday and Thursday for client meetings, plus occasional airport runs'"
+                  className="w-full h-16 px-4 py-3 bg-slate-700/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all resize-none text-sm leading-relaxed"
+                  maxLength={300}
+                />
+                <div className="flex justify-between items-center">
+                  <p className="text-xs text-slate-500">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
+                  <div className="flex items-center gap-1 text-xs text-amber-300">
+                    <div className="w-1 h-1 bg-amber-400 rounded-full"></div>
+                    <span>Optional</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Service Matching Preview */}
+              {onboardingData.travelFrequency && (
+                <div className="p-4 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-xl border border-amber-400/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle size={16} className="text-amber-400" />
+                    <h4 className="font-semibold text-amber-200 text-sm">Service Recommendation</h4>
+                  </div>
+                  <p className="text-xs text-amber-100 leading-relaxed">
+                    Based on "{onboardingData.travelFrequency}" - we'll recommend the most suitable protection transport plan for your schedule.
+                  </p>
+                </div>
+              )}
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
+                className="w-full h-13 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-6"
+              >
+                Continue to Service Style
+              </Button>
+            </div>
+          )}
+
+          {/* Slide 3: Service Style - Enhanced Design */}
+          {onboardingStep === 3 && (
+            <div className="space-y-6 animate-in fade-in duration-500 pb-8">
+              <div className="text-center space-y-3">
+                <h2 className="text-xl font-bold text-white">How do you want your security to look?</h2>
+                <p className="text-sm text-slate-300 leading-relaxed">Pick the style that feels right for your lifestyle</p>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  { 
+                    value: 'Quiet & Discrete', 
+                    desc: 'Barely noticeable, low-key protection',
+                    bestFor: 'Family time, personal activities, everyday life',
+                    icon: '🤫'
+                  },
+                  { 
+                    value: 'Professional & Visible', 
+                    desc: 'Business-like, clearly present',
+                    bestFor: 'Work meetings, business events, corporate settings',
+                    icon: '👔'
+                  },
+                  { 
+                    value: 'Full Premium Service', 
+                    desc: 'Complete luxury with maximum protection',
+                    bestFor: 'VIP events, high-profile occasions, special circumstances',
+                    icon: '⭐'
+                  }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`questionnaire-card cursor-pointer transition-all duration-300 relative overflow-hidden border-2 ${
+                      onboardingData.serviceStyle === option.value
+                        ? 'selected bg-gradient-to-br from-amber-400/30 to-amber-600/30 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/80 border-slate-600/80 hover:border-amber-400/60 hover:bg-slate-800/90 hover:shadow-lg'
+                    }`}
+                    onClick={() => updateOnboardingData('serviceStyle', option.value)}
+                  >
+                    <CardContent className="content-area p-5">
+                      {/* Properly positioned checkbox */}
+                      <div className={`checkbox-indicator ${onboardingData.serviceStyle === option.value ? 'checked' : ''}`}>
+                        <div className="check-dot"></div>
+                      </div>
+                      
+                      <div className="flex items-start gap-4">
+                        <div className="text-2xl flex-shrink-0 mt-1">{option.icon}</div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-white text-lg mb-2 leading-tight">{option.value}</h3>
+                          <p className="text-sm text-slate-300 mb-3 font-medium">{option.desc}</p>
+                          <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/20">
+                            <p className="text-xs text-amber-200 leading-relaxed">
+                              <strong>Best for:</strong> {option.bestFor}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </CardContent>
@@ -3210,104 +3320,33 @@ function App() {
               </div>
 
               {/* Enhanced Custom Input */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-amber-200">Different schedule:</label>
-                <textarea
-                  value={onboardingData.travelFrequencyCustom}
-                  onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
-                  placeholder="Tell us about your travel schedule..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                  maxLength={200}
-                />
-                <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/200</p>
-              </div>
-
-              <Button 
-                onClick={nextStep}
-                disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
-              >
-                Continue
-              </Button>
-            </div>
-          )}
-
-          {/* Slide 3: Service Style - Simplified */}
-          {onboardingStep === 3 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">How do you want your security to look?</h2>
-                <p className="text-sm text-slate-300">Pick the style that feels right for you</p>
-              </div>
-
-              <div className="space-y-3">
-                {[
-                  { 
-                    value: 'Quiet & Discrete', 
-                    desc: 'Barely noticeable, low-key',
-                    bestFor: 'Family time, personal activities'
-                  },
-                  { 
-                    value: 'Professional & Visible', 
-                    desc: 'Business-like, clearly there',
-                    bestFor: 'Work meetings, business events'
-                  },
-                  { 
-                    value: 'Full Premium Service', 
-                    desc: 'Luxury with maximum protection',
-                    bestFor: 'VIP events, high-profile occasions'
-                  }
-                ].map((option) => (
-                  <Card 
-                    key={option.value}
-                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
-                      onboardingData.serviceStyle === option.value
-                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
-                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
-                    }`}
-                    onClick={() => updateOnboardingData('serviceStyle', option.value)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-bold text-white text-sm mb-1">{option.value}</h3>
-                          <p className="text-xs text-slate-300 mb-2">{option.desc}</p>
-                          <p className="text-xs text-amber-200">Best for: {option.bestFor}</p>
-                        </div>
-                        
-                        {/* Selection indicator */}
-                        <div className={`w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
-                          onboardingData.serviceStyle === option.value 
-                            ? 'bg-amber-400 scale-110 shadow-lg' 
-                            : 'bg-transparent scale-100'
-                        }`}>
-                          {onboardingData.serviceStyle === option.value && (
-                            <div className="w-2 h-2 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-amber-200">Other preferences:</label>
+              <div className="space-y-3 bg-slate-800/40 rounded-xl p-4 border border-slate-600/50">
+                <label className="text-sm font-semibold text-amber-200 flex items-center gap-2">
+                  <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                  Special preferences or requirements:
+                </label>
                 <textarea
                   value={onboardingData.serviceStyleCustom}
                   onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
-                  placeholder="Any special requests..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                  maxLength={200}
+                  placeholder="Tell us about any specific style preferences, special requirements, or unique circumstances we should know about..."
+                  className="w-full h-16 px-4 py-3 bg-slate-700/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all resize-none text-sm leading-relaxed"
+                  maxLength={250}
                 />
+                <div className="flex justify-between items-center">
+                  <p className="text-xs text-slate-500">{onboardingData.serviceStyleCustom.length}/250 characters</p>
+                  <div className="flex items-center gap-1 text-xs text-amber-300">
+                    <div className="w-1 h-1 bg-amber-400 rounded-full"></div>
+                    <span>Optional</span>
+                  </div>
+                </div>
               </div>
 
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                className="w-full h-13 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-6"
               >
-                Continue
+                Continue to Security Comfort
               </Button>
             </div>
           )}

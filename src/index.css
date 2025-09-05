@@ -68,7 +68,7 @@
   max-width: calc(100% - 1rem);
 }
 
-/* Enhanced questionnaire card styling */
+/* Enhanced questionnaire card styling with proper positioning */
 .questionnaire-card {
   position: relative;
   overflow: hidden;
@@ -76,14 +76,23 @@
 
 .questionnaire-card .selection-indicator {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 1rem;
+  right: 1rem;
   z-index: 10;
   pointer-events: none;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
 .questionnaire-card .content-area {
-  padding-right: 1.5rem; /* Ensure content doesn't overlap with indicator */
+  padding-right: 3rem; /* Ensure content doesn't overlap with indicator */
+  position: relative;
+  z-index: 1;
+}
+
+.questionnaire-card.selected .selection-indicator {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.4);
 }
 
 /* Improved selection states */
@@ -92,6 +101,14 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
+}
+
+.questionnaire-card:hover {
+  transform: translateY(-2px);
+}
+
+.questionnaire-card.selected {
+  transform: translateY(-2px) scale(1.02);
 }
 
 /* Better touch targets */
@@ -103,6 +120,43 @@
 /* Enhanced animation states */
 .animate-selection-in {
   animation: selection-bounce 0.3s ease-out;
+}
+
+/* Checkbox positioning fix */
+.checkbox-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.checkbox-indicator.checked {
+  background-color: #d97706;
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(217, 119, 6, 0.3);
+}
+
+.checkbox-indicator .check-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #1e293b;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+
+.checkbox-indicator.checked .check-dot {
+  opacity: 1;
+  transform: scale(1);
 }
 
 @keyframes selection-bounce {
