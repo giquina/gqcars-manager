@@ -2954,20 +2954,20 @@ function App() {
           <div className="max-w-md mx-auto">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-lg">
-                  <Shield size={12} className="text-slate-900" weight="bold" />
+                <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-lg">
+                  <Shield size={10} className="text-slate-900" weight="bold" />
                 </div>
                 <div>
-                  <h1 className="text-sm font-bold text-white">Professional Security Assessment</h1>
-                  <p className="text-[9px] text-amber-200">Industry best practice consultation</p>
+                  <h1 className="text-xs font-bold text-white">Professional Security Assessment</h1>
+                  <p className="text-[8px] text-amber-200">Industry best practice consultation</p>
                 </div>
               </div>
-              <div className="flex gap-1.5">
+              <div className="flex gap-1">
                 <Button 
                   variant="ghost" 
                   size="sm"
                   onClick={saveAndExit}
-                  className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-6 px-2 text-[10px]"
+                  className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-5 px-1.5 text-[9px]"
                 >
                   Save & Exit
                 </Button>
@@ -2976,7 +2976,7 @@ function App() {
                     variant="ghost" 
                     size="sm"
                     onClick={prevStep}
-                    className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-6 px-2 text-[10px]"
+                    className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-5 px-1.5 text-[9px]"
                   >
                     Back
                   </Button>
@@ -2986,7 +2986,7 @@ function App() {
             
             {/* Compact Progress Bar */}
             <div className="space-y-1">
-              <div className="flex justify-between text-[9px] text-amber-200">
+              <div className="flex justify-between text-[8px] text-amber-200">
                 <span>Step {currentStep} of {totalSteps}</span>
                 <span>{Math.round(progressPercentage)}%</span>
               </div>
@@ -3000,48 +3000,50 @@ function App() {
           </div>
         </header>
 
-        <div className="relative z-10 p-3 max-w-md mx-auto">{/* Further reduced padding */}
+        <div className="relative z-10 flex flex-col min-h-[calc(100vh-100px)] max-w-md mx-auto p-4">{/* Adjusted for smaller header */}
           {/* Slide 0: Assessment Introduction */}
           {onboardingStep === 0 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <div className="w-10 h-10 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-lg flex items-center justify-center border border-amber-400/30">
-                  <User size={20} className="text-amber-400" />
-                </div>
-                
-                <div className="space-y-2">
-                  <h2 className="text-base font-bold text-white">Create your personal security transport profile</h2>
-                  <p className="text-xs text-slate-300 leading-snug">
-                    Professional consultation to match your protection transport needs with industry best practices.
-                  </p>
-                </div>
+            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
+              <div className="flex-1 flex flex-col justify-center space-y-6">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
+                    <User size={28} className="text-amber-400" />
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h2 className="text-lg font-bold text-white">Create your personal security transport profile</h2>
+                    <p className="text-sm text-slate-300 leading-relaxed px-2">
+                      Professional consultation to match your protection transport needs with industry best practices.
+                    </p>
+                  </div>
 
-                <div className="grid gap-1.5 text-left">
-                  <div className="flex items-center gap-2 p-1.5 rounded-lg bg-slate-800/60 border border-amber-400/20">
-                    <CheckCircle size={10} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-[10px] text-slate-200">Professional risk assessment and service matching</span>
+                  <div className="grid gap-3 text-left">
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
+                      <CheckCircle size={14} className="text-amber-400 flex-shrink-0" />
+                      <span className="text-xs text-slate-200">Professional risk assessment and service matching</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
+                      <CheckCircle size={14} className="text-amber-400 flex-shrink-0" />
+                      <span className="text-xs text-slate-200">Industry best practice consultation process</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
+                      <CheckCircle size={14} className="text-amber-400 flex-shrink-0" />
+                      <span className="text-xs text-slate-200">Duty of care and professional responsibility</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 p-1.5 rounded-lg bg-slate-800/60 border border-amber-400/20">
-                    <CheckCircle size={10} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-[10px] text-slate-200">Industry best practice consultation process</span>
-                  </div>
-                  <div className="flex items-center gap-2 p-1.5 rounded-lg bg-slate-800/60 border border-amber-400/20">
-                    <CheckCircle size={10} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-[10px] text-slate-200">Duty of care and professional responsibility</span>
-                  </div>
-                </div>
 
-                <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/30">
-                  <p className="text-[10px] text-amber-200">
-                    🛡️ <strong>Professional standard:</strong> Working to SIA industry best practices
-                  </p>
+                  <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30">
+                    <p className="text-xs text-amber-200">
+                      🛡️ <strong>Professional standard:</strong> Working to SIA industry best practices
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="mt-6 space-y-3">
                 <Button 
                   onClick={nextStep}
-                  className="w-full h-9 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 text-sm"
+                  className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 text-base"
                 >
                   Start Assessment
                 </Button>
@@ -3052,7 +3054,7 @@ function App() {
                       variant="ghost"
                       size="sm"
                       onClick={resetAssessment}
-                      className="text-slate-400 hover:text-slate-300 text-xs h-6"
+                      className="text-slate-400 hover:text-slate-300 text-sm h-8"
                     >
                       Reset Assessment
                     </Button>
@@ -3064,240 +3066,252 @@ function App() {
 
           {/* Slide 1: Work Type Selection */}
           {onboardingStep === 1 && (
-            <div className="space-y-3 animate-in fade-in duration-500">
-              <div className="text-center space-y-1.5">
-                <h2 className="text-base font-bold text-white">What kind of work do you do?</h2>
-                <p className="text-xs text-amber-200">✓ You can pick more than one option</p>
-                <p className="text-xs text-slate-300">Choose all that describe your work</p>
+            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
+              <div className="flex-1 flex flex-col justify-center space-y-5">
+                <div className="text-center space-y-3">
+                  <h2 className="text-lg font-bold text-white">What kind of work do you do?</h2>
+                  <p className="text-sm text-amber-200">✓ You can pick more than one option</p>
+                  <p className="text-sm text-slate-300">Choose all that describe your work</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { value: 'Business Leader', desc: 'CEO, manager, executive' },
+                    { value: 'Business Owner', desc: 'Own a company, startup founder' },
+                    { value: 'Doctor/Medical', desc: 'Healthcare, medical professional' },
+                    { value: 'Lawyer/Legal', desc: 'Attorney, legal work, court cases' },
+                    { value: 'Tech/Computer', desc: 'Software, IT, technology work' },
+                    { value: 'Banking/Finance', desc: 'Money, investments, financial services' },
+                    { value: 'Real Estate', desc: 'Property, buying/selling homes/buildings' },
+                    { value: 'Sales/Travel', desc: 'Selling, traveling for work' }
+                  ].map((option) => (
+                    <Card 
+                      key={option.value}
+                      className={`cursor-pointer transition-all duration-200 h-[75px] relative ${ 
+                        onboardingData.workType.includes(option.value)
+                          ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                          : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                      }`}
+                      onClick={() => toggleArrayValue('workType', option.value)}
+                    >
+                      {/* Professional checkbox indicator */}
+                      <div className={`absolute top-2 right-2 w-5 h-5 border border-amber-400 rounded text-center text-sm leading-4 ${ 
+                        onboardingData.workType.includes(option.value) 
+                          ? 'bg-amber-400 text-slate-900' 
+                          : 'bg-transparent'
+                      }`}>
+                        {onboardingData.workType.includes(option.value) ? '✓' : ''}
+                      </div>
+                      <CardContent className="p-3 text-center h-full flex flex-col justify-center">
+                        <h3 className="font-semibold text-white text-sm leading-tight mb-1">{option.value}</h3>
+                        <p className="text-xs text-slate-300 leading-tight">{option.desc}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-amber-200">Other work you do:</label>
+                  <textarea
+                    value={onboardingData.workTypeCustom}
+                    onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
+                    placeholder="Describe your work in simple terms..."
+                    className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                    maxLength={500}
+                  />
+                  <p className="text-xs text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
+                </div>
+
+                <div className="p-3 bg-amber-400/10 rounded-lg border border-amber-400/30">
+                  <p className="text-sm text-amber-200">
+                    <strong>Example:</strong> You can pick both "Business Owner" and "Tech Work"
+                  </p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { value: 'Business Leader', desc: 'CEO, manager, executive' },
-                  { value: 'Business Owner', desc: 'Own a company, startup founder' },
-                  { value: 'Doctor/Medical', desc: 'Healthcare, medical professional' },
-                  { value: 'Lawyer/Legal', desc: 'Attorney, legal work, court cases' },
-                  { value: 'Tech/Computer', desc: 'Software, IT, technology work' },
-                  { value: 'Banking/Finance', desc: 'Money, investments, financial services' },
-                  { value: 'Real Estate', desc: 'Property, buying/selling homes/buildings' },
-                  { value: 'Sales/Travel', desc: 'Selling, traveling for work' }
-                ].map((option) => (
-                  <Card 
-                    key={option.value}
-                    className={`cursor-pointer transition-all duration-200 h-[60px] relative ${ 
-                      onboardingData.workType.includes(option.value)
-                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
-                    }`}
-                    onClick={() => toggleArrayValue('workType', option.value)}
-                  >
-                    {/* Professional checkbox indicator */}
-                    <div className={`absolute top-1 right-1 w-4 h-4 border border-amber-400 rounded text-center text-xs leading-3 ${
-                      onboardingData.workType.includes(option.value) 
-                        ? 'bg-amber-400 text-slate-900' 
-                        : 'bg-transparent'
-                    }`}>
-                      {onboardingData.workType.includes(option.value) ? '✓' : ''}
-                    </div>
-                    <CardContent className="p-2.5 text-center h-full flex flex-col justify-center">
-                      <h3 className="font-semibold text-white text-xs leading-tight mb-0.5">{option.value}</h3>
-                      <p className="text-[9px] text-slate-300 leading-tight">{option.desc}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+              <div className="mt-6">
+                <Button 
+                  onClick={nextStep}
+                  disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
+                  className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                >
+                  Continue
+                </Button>
               </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-amber-200">Other work you do:</label>
-                <textarea
-                  value={onboardingData.workTypeCustom}
-                  onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
-                  placeholder="Describe your work in simple terms..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
-                  maxLength={500}
-                />
-                <p className="text-[9px] text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
-              </div>
-
-              <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/30">
-                <p className="text-xs text-amber-200">
-                  <strong>Example:</strong> You can pick both "Business Owner" and "Tech Work"
-                </p>
-              </div>
-
-              <Button 
-                onClick={nextStep}
-                disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
-                className="w-full h-9 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
-              >
-                Continue
-              </Button>
             </div>
           )}
 
           {/* Slide 2: Travel Frequency */}
           {onboardingStep === 2 && (
-            <div className="space-y-3 animate-in fade-in duration-500">
-              <div className="text-center space-y-1.5">
-                <h2 className="text-sm font-bold text-white">How often do you need secure transport?</h2>
-                <p className="text-xs text-slate-300">Pick the one that best matches your needs</p>
-              </div>
+            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
+              <div className="flex-1 flex flex-col justify-center space-y-6">
+                <div className="text-center space-y-3">
+                  <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
+                  <p className="text-sm text-slate-300">Pick the one that best matches your needs</p>
+                </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { value: 'Just Sometimes', desc: 'Special events, rare occasions' },
-                  { value: 'About Once a Week', desc: 'Regular meetings, weekly events' },
-                  { value: 'Almost Every Day', desc: 'Daily commute, regular work travel' },
-                  { value: 'Multiple Times Daily', desc: 'Very busy, lots of travel' }
-                ].map((option) => (
-                  <Card 
-                    key={option.value}
-                    className={`cursor-pointer transition-all duration-200 h-[72px] relative overflow-hidden ${ 
-                      onboardingData.travelFrequency === option.value
-                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
-                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
-                    }`}
-                    onClick={() => updateOnboardingData('travelFrequency', option.value)}
-                  >
-                    <CardContent className="p-3 h-full flex flex-col justify-between text-center relative">
-                      {/* Improved selection indicator positioned outside content area */}
-                      <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 ${ 
-                        onboardingData.travelFrequency === option.value 
-                          ? 'bg-amber-400 scale-110 shadow-lg' 
-                          : 'bg-transparent scale-100'
-                      }`}>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { value: 'Just Sometimes', desc: 'Special events, rare occasions' },
+                    { value: 'About Once a Week', desc: 'Regular meetings, weekly events' },
+                    { value: 'Almost Every Day', desc: 'Daily commute, regular work travel' },
+                    { value: 'Multiple Times Daily', desc: 'Very busy, lots of travel' }
+                  ].map((option) => (
+                    <Card 
+                      key={option.value}
+                      className={`cursor-pointer transition-all duration-200 h-[85px] relative overflow-hidden ${ 
+                        onboardingData.travelFrequency === option.value
+                          ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                          : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
+                      }`}
+                      onClick={() => updateOnboardingData('travelFrequency', option.value)}
+                    >
+                      <CardContent className="p-4 h-full flex flex-col justify-between text-center relative">
+                        {/* Improved selection indicator positioned outside content area */}
+                        <div className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 ${ 
+                          onboardingData.travelFrequency === option.value 
+                            ? 'bg-amber-400 scale-110 shadow-lg' 
+                            : 'bg-transparent scale-100'
+                        }`}>
+                          {onboardingData.travelFrequency === option.value && (
+                            <div className="w-2 h-2 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                          )}
+                        </div>
+                        
+                        {/* Content area with proper spacing */}
+                        <div className="flex-1 flex flex-col justify-center space-y-2 pr-6">
+                          <h3 className="font-bold text-white text-sm leading-tight">{option.value}</h3>
+                          <p className="text-xs text-slate-300 leading-snug">{option.desc}</p>
+                        </div>
+                        
+                        {/* Selection glow effect */}
                         {onboardingData.travelFrequency === option.value && (
-                          <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse"></div>
                         )}
-                      </div>
-                      
-                      {/* Content area with proper spacing */}
-                      <div className="flex-1 flex flex-col justify-center space-y-1 pr-6">
-                        <h3 className="font-bold text-white text-xs leading-tight">{option.value}</h3>
-                        <p className="text-[9px] text-slate-300 leading-snug">{option.desc}</p>
-                      </div>
-                      
-                      {/* Selection glow effect */}
-                      {onboardingData.travelFrequency === option.value && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse"></div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-amber-200">Different schedule or specific details:</label>
+                  <textarea
+                    value={onboardingData.travelFrequencyCustom}
+                    onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
+                    placeholder="Tell us about your travel schedule..."
+                    className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                    maxLength={300}
+                  />
+                  <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-amber-200">Different schedule or specific details:</label>
-                <textarea
-                  value={onboardingData.travelFrequencyCustom}
-                  onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
-                  placeholder="Tell us about your travel schedule..."
-                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
-                  maxLength={300}
-                />
-                <p className="text-[9px] text-slate-400">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
+              <div className="mt-6">
+                <Button 
+                  onClick={nextStep}
+                  disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
+                  className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                >
+                  Continue
+                </Button>
               </div>
-
-              <Button 
-                onClick={nextStep}
-                disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
-                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
-              >
-                Continue
-              </Button>
             </div>
           )}
 
           {/* Slide 3: Service Style Preference */}
           {onboardingStep === 3 && (
-            <div className="space-y-3 animate-in fade-in duration-500">
-              <div className="text-center space-y-1.5">
-                <h2 className="text-sm font-bold text-white">How do you want your security to look?</h2>
-                <p className="text-xs text-slate-300">Pick the style that feels right for you</p>
-              </div>
+            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
+              <div className="flex-1 flex flex-col justify-center space-y-5">
+                <div className="text-center space-y-3">
+                  <h2 className="text-lg font-bold text-white">How do you want your security to look?</h2>
+                  <p className="text-sm text-slate-300">Pick the style that feels right for you</p>
+                </div>
 
-              <div className="space-y-2">
-                {[
-                  { 
-                    value: 'Quiet & Discrete', 
-                    desc: 'Barely noticeable, low-key protection',
-                    features: ['Unmarked cars', 'Normal clothing', 'Almost invisible']
-                  },
-                  { 
-                    value: 'Professional & Visible', 
-                    desc: 'Clearly there but business-like',
-                    features: ['Professional look', 'Clear identification', 'Business appropriate']
-                  },
-                  { 
-                    value: 'Full Premium Service', 
-                    desc: 'Complete luxury with top protection',
-                    features: ['Luxury cars', 'Multiple security', 'VIP treatment']
-                  }
-                ].map((option) => (
-                  <Card 
-                    key={option.value}
-                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
-                      onboardingData.serviceStyle === option.value
-                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
-                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
-                    }`}
-                    onClick={() => updateOnboardingData('serviceStyle', option.value)}
-                  >
-                    <CardContent className="p-3 space-y-2">
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 pr-6">
-                          <h3 className="font-bold text-white text-xs mb-1">{option.value}</h3>
-                          <p className="text-[9px] text-slate-300 leading-tight">{option.desc}</p>
+                <div className="space-y-3">
+                  {[
+                    { 
+                      value: 'Quiet & Discrete', 
+                      desc: 'Barely noticeable, low-key protection',
+                      features: ['Unmarked cars', 'Normal clothing', 'Almost invisible']
+                    },
+                    { 
+                      value: 'Professional & Visible', 
+                      desc: 'Clearly there but business-like',
+                      features: ['Professional look', 'Clear identification', 'Business appropriate']
+                    },
+                    { 
+                      value: 'Full Premium Service', 
+                      desc: 'Complete luxury with top protection',
+                      features: ['Luxury cars', 'Multiple security', 'VIP treatment']
+                    }
+                  ].map((option) => (
+                    <Card 
+                      key={option.value}
+                      className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
+                        onboardingData.serviceStyle === option.value
+                          ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                          : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
+                      }`}
+                      onClick={() => updateOnboardingData('serviceStyle', option.value)}
+                    >
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex items-center gap-4">
+                          <div className="flex-1 pr-6">
+                            <h3 className="font-bold text-white text-sm mb-2">{option.value}</h3>
+                            <p className="text-xs text-slate-300 leading-tight">{option.desc}</p>
+                          </div>
+                          {/* Improved selection indicator */}
+                          <div className={`w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
+                            onboardingData.serviceStyle === option.value 
+                              ? 'bg-amber-400 scale-110 shadow-lg' 
+                              : 'bg-transparent scale-100'
+                          }`}>
+                            {onboardingData.serviceStyle === option.value && (
+                              <div className="w-2 h-2 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                            )}
+                          </div>
                         </div>
-                        {/* Improved selection indicator */}
-                        <div className={`w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
-                          onboardingData.serviceStyle === option.value 
-                            ? 'bg-amber-400 scale-110 shadow-lg' 
-                            : 'bg-transparent scale-100'
-                        }`}>
-                          {onboardingData.serviceStyle === option.value && (
-                            <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
-                          )}
+                        
+                        {/* Feature tags with better spacing */}
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          {option.features.map((feature, idx) => (
+                            <span key={idx} className="text-xs px-2 py-1 bg-slate-700/60 text-slate-300 rounded-full whitespace-nowrap">
+                              {feature}
+                            </span>
+                          ))}
                         </div>
-                      </div>
-                      
-                      {/* Feature tags with better spacing */}
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {option.features.map((feature, idx) => (
-                          <span key={idx} className="text-[8px] px-1.5 py-0.5 bg-slate-700/60 text-slate-300 rounded-full whitespace-nowrap">
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      {/* Selection glow effect */}
-                      {onboardingData.serviceStyle === option.value && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+                        
+                        {/* Selection glow effect */}
+                        {onboardingData.serviceStyle === option.value && (
+                          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-amber-200">Special requests or other needs:</label>
+                  <textarea
+                    value={onboardingData.serviceStyleCustom}
+                    onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
+                    placeholder="Tell us what you need in simple words..."
+                    className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                    maxLength={500}
+                  />
+                  <p className="text-xs text-slate-400">{onboardingData.serviceStyleCustom.length}/500 characters</p>
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-amber-200">Special requests or other needs:</label>
-                <textarea
-                  value={onboardingData.serviceStyleCustom}
-                  onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
-                  placeholder="Tell us what you need in simple words..."
-                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
-                  maxLength={500}
-                />
-                <p className="text-[9px] text-slate-400">{onboardingData.serviceStyleCustom.length}/500 characters</p>
+              <div className="mt-6">
+                <Button 
+                  onClick={nextStep}
+                  disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
+                  className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                >
+                  Continue
+                </Button>
               </div>
-
-              <Button 
-                onClick={nextStep}
-                disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
-                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
-              >
-                Continue
-              </Button>
             </div>
           )}
 
