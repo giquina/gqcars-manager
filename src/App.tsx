@@ -34,33 +34,37 @@ import {
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
-// ARMORA Premium Personal Security Transport Services
+// ARMORA Premium Branded Security Transport Services
 const armoraServices = [
   {
     id: 'essential',
-    name: 'Your Essential Protection Cab',
-    description: 'SIA-licensed security professional driver with industry best practice protocols - available 24/7',
+    name: 'Armora Essential',
+    tagline: 'Professional protection, everyday value',
+    description: 'Perfect for daily business needs',
     priceRange: '£45 - £75',
     eta: '3-8 min',
     icon: Car,
     capacity: '1-3 passengers',
     vehicle: 'Professional vehicle, discrete service',
-    popular: true // Most popular choice
+    popular: true, // Most popular choice
+    recommended: true
   },
   {
-    id: 'shadow-escort',
-    name: 'Shadow Escort Cab',
-    description: 'Drive yourself with professional security coordination - your freedom with protection backup, 24/7 available',
+    id: 'professional',
+    name: 'Armora Professional',
+    tagline: 'Enhanced security for important meetings',
+    description: 'Premium protection level',
     priceRange: '£150 - £350',
     eta: '5-12 min',
     icon: Shield,
     capacity: '1-4 passengers',
-    vehicle: 'Your vehicle + Professional security coordination'
+    vehicle: 'Enhanced security coordination'
   },
   {
-    id: 'executive-security', 
-    name: 'Your Executive Security Cab',
-    description: 'Enhanced protection transport with SIA close protection officers meeting professional standards - 24/7 service',
+    id: 'business', 
+    name: 'Armora Business',
+    tagline: 'Reliable security for regular schedules',
+    description: 'Consistent professional service',
     priceRange: '£120 - £250',
     eta: '8-15 min',
     icon: Shield,
@@ -68,9 +72,10 @@ const armoraServices = [
     vehicle: 'Executive protection vehicles'
   },
   {
-    id: 'signature-experience',
-    name: 'Your Signature Experience Cab',
-    description: 'Personal security transport concierge - completely tailored to your travel lifestyle, 24/7 availability',
+    id: 'executive',
+    name: 'Armora Executive',
+    tagline: 'VIP protection for high-profile travel',
+    description: 'Maximum security coverage',
     priceRange: '£180 - £450',
     eta: '10-20 min',
     icon: Star,
@@ -78,9 +83,10 @@ const armoraServices = [
     vehicle: 'Rolls-Royce, Bentley premium fleet'
   },
   {
-    id: 'airport-express',
-    name: 'Airport Security Cab Express',
-    description: 'Personal protection for your flight transfers with meet-greet service - 24/7 airport coverage',
+    id: 'group',
+    name: 'Armora Group',
+    tagline: 'Secure transport for larger parties',
+    description: 'Group protection specialist',
     priceRange: '£65 - £120',
     eta: '15-30 min',
     icon: NavigationArrow,
@@ -88,9 +94,10 @@ const armoraServices = [
     vehicle: 'Mercedes E-Class, Range Rover'
   },
   {
-    id: 'corporate',
-    name: 'Corporate Security Cab Service',
-    description: 'Your business protection transport - designed for professional demands, available around the clock',
+    id: 'express',
+    name: 'Armora Express',
+    tagline: 'Quick secure transport for teams',
+    description: 'Fast, efficient group service',
     priceRange: '£40 - £85',
     eta: '5-12 min',
     icon: Users,
@@ -165,8 +172,7 @@ function App() {
     securityStyle: '',
     comfortLevel: '',
     locations: [] as string[],
-    customRequirements: '',
-    emergencyContact: { name: '', relationship: '', phone: '' }
+    customRequirements: ''
   })
 
   // Initialize app flow based on user state
@@ -198,11 +204,11 @@ function App() {
 
     const pricingStructure = {
       'essential': { base: 18.00, perKm: 2.15, securityFee: 2.00 },
-      'shadow-escort': { base: 85.00, perKm: 18.50, securityFee: 45.00 },
-      'executive-security': { base: 95.00, perKm: 15.80, securityFee: 35.00 },
-      'signature-experience': { base: 150.00, perKm: 22.50, securityFee: 28.00 },
-      'airport-express': { base: 45.00, perKm: 8.75, securityFee: 12.00 },
-      'corporate': { base: 28.00, perKm: 6.20, securityFee: 8.00 }
+      'professional': { base: 85.00, perKm: 18.50, securityFee: 45.00 },
+      'business': { base: 95.00, perKm: 15.80, securityFee: 35.00 },
+      'executive': { base: 150.00, perKm: 22.50, securityFee: 28.00 },
+      'group': { base: 45.00, perKm: 8.75, securityFee: 12.00 },
+      'express': { base: 28.00, perKm: 6.20, securityFee: 8.00 }
     } as const
 
     const pricing = pricingStructure[service.id as keyof typeof pricingStructure]
@@ -337,7 +343,7 @@ function App() {
 
     const handleContinue = () => {
       window.scrollTo(0, 0)
-      if (questionnaireStep < 6) {
+      if (questionnaireStep < 5) {
         setQuestionnaireStep(prev => prev + 1)
       } else {
         // Complete questionnaire
@@ -384,11 +390,11 @@ function App() {
                 <h1 className="questionnaire-title">
                   <h3>What kind of work do you do?</h3>
                 </h1>
-                <div className="text-sm text-muted-foreground">Step 1 of 7</div>
+                <div className="text-sm text-muted-foreground">Step 1 of 6</div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick all that describe your work (you can choose more than one)</p>
               <div className="w-full bg-border/30 rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full" style={{ width: '14%' }}></div>
+                <div className="bg-primary h-1 rounded-full" style={{ width: '17%' }}></div>
               </div>
             </div>
           </div>
@@ -485,11 +491,11 @@ function App() {
                 <h1 className="questionnaire-title">
                   <h3>How often do you need secure transport?</h3>
                 </h1>
-                <div className="text-sm text-muted-foreground">Step 2 of 7</div>
+                <div className="text-sm text-muted-foreground">Step 2 of 6</div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick the one that best matches your needs</p>
               <div className="w-full bg-border/30 rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full" style={{ width: '28%' }}></div>
+                <div className="bg-primary h-1 rounded-full" style={{ width: '33%' }}></div>
               </div>
             </div>
           </div>
@@ -572,11 +578,11 @@ function App() {
                 <h1 className="questionnaire-title">
                   <h3>How do you want your security to look?</h3>
                 </h1>
-                <div className="text-sm text-muted-foreground">Step 3 of 7</div>
+                <div className="text-sm text-muted-foreground">Step 3 of 6</div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick the style that feels right for you</p>
               <div className="w-full bg-border/30 rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full" style={{ width: '42%' }}></div>
+                <div className="bg-primary h-1 rounded-full" style={{ width: '50%' }}></div>
               </div>
             </div>
           </div>
@@ -660,11 +666,11 @@ function App() {
                 <h1 className="questionnaire-title">
                   <h3>How much security presence feels right?</h3>
                 </h1>
-                <div className="text-sm text-muted-foreground">Step 4 of 7</div>
+                <div className="text-sm text-muted-foreground">Step 4 of 6</div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Choose what feels comfortable for you</p>
               <div className="w-full bg-border/30 rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full" style={{ width: '57%' }}></div>
+                <div className="bg-primary h-1 rounded-full" style={{ width: '67%' }}></div>
               </div>
             </div>
           </div>
@@ -750,11 +756,11 @@ function App() {
                 <h1 className="questionnaire-title">
                   <h3>Where do you typically need protection?</h3>
                 </h1>
-                <div className="text-sm text-muted-foreground">Step 5 of 7</div>
+                <div className="text-sm text-muted-foreground">Step 5 of 6</div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Pick all areas where you need security transport</p>
               <div className="w-full bg-border/30 rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full" style={{ width: '71%' }}></div>
+                <div className="bg-primary h-1 rounded-full" style={{ width: '83%' }}></div>
               </div>
             </div>
           </div>
@@ -825,7 +831,7 @@ function App() {
       )
     }
 
-    // Step 5: Custom Requirements
+    // Step 5: Custom Requirements (Final Step)
     if (questionnaireStep === 5) {
       return (
         <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
@@ -838,11 +844,11 @@ function App() {
                 <h1 className="questionnaire-title">
                   <h3>Any specific security needs?</h3>
                 </h1>
-                <div className="text-sm text-muted-foreground">Step 6 of 7</div>
+                <div className="text-sm text-muted-foreground">Step 6 of 6</div>
               </div>
               <p className="text-sm text-muted-foreground mb-2">Tell us about any special requirements (optional)</p>
               <div className="w-full bg-border/30 rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full" style={{ width: '85%' }}></div>
+                <div className="bg-primary h-1 rounded-full" style={{ width: '100%' }}></div>
               </div>
             </div>
           </div>
@@ -910,130 +916,6 @@ function App() {
                 onClick={handleContinue}
                 className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
               >
-                Continue
-              </Button>
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    // Step 6: Emergency Contact
-    if (questionnaireStep === 6) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
-          <Toaster position="top-center" />
-          
-          {/* Header */}
-          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
-            <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <h1 className="questionnaire-title">
-                  <h3>Emergency contact information</h3>
-                </h1>
-                <div className="text-sm text-muted-foreground">Step 7 of 7</div>
-              </div>
-              <p className="text-sm text-muted-foreground mb-2">Just in case - someone who can reach you if needed</p>
-              <div className="w-full bg-border/30 rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full" style={{ width: '100%' }}></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="p-4 pb-32 max-w-md mx-auto space-y-4">
-            <Card className="border border-border/40 bg-white">
-              <CardContent className="p-4 space-y-4">
-                <div>
-                  <h3 className="font-bold text-base mb-3">Emergency Contact Details</h3>
-                  
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium text-foreground block mb-1">Contact Name *</label>
-                      <Input
-                        value={questionnaireAnswers.emergencyContact.name}
-                        onChange={(e) => handleQuestionnaireAnswer('emergencyContact', {
-                          ...questionnaireAnswers.emergencyContact,
-                          name: e.target.value
-                        })}
-                        placeholder="Full name"
-                        className="text-sm"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-foreground block mb-1">Relationship *</label>
-                      <Input
-                        value={questionnaireAnswers.emergencyContact.relationship}
-                        onChange={(e) => handleQuestionnaireAnswer('emergencyContact', {
-                          ...questionnaireAnswers.emergencyContact,
-                          relationship: e.target.value
-                        })}
-                        placeholder="e.g., spouse, business partner, friend"
-                        className="text-sm"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-foreground block mb-1">Phone Number *</label>
-                      <Input
-                        value={questionnaireAnswers.emergencyContact.phone}
-                        onChange={(e) => handleQuestionnaireAnswer('emergencyContact', {
-                          ...questionnaireAnswers.emergencyContact,
-                          phone: e.target.value
-                        })}
-                        placeholder="+44 7XXX XXXXXX"
-                        className="text-sm"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-emerald-100/20">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Shield size={16} className="text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-emerald-800 mb-1">Safety Requirement</h4>
-                    <p className="text-xs text-emerald-700">
-                      This is standard safety practice - someone who can reach you if needed. 
-                      Used only in emergencies or if you request it.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Bottom Actions */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
-            <div className="max-w-md mx-auto flex gap-3">
-              <Button 
-                variant="outline" 
-                onClick={handleBack}
-                className="w-20 h-12 text-sm font-medium"
-              >
-                Back
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={handleSaveAndExit}
-                className="flex-1 h-12 text-sm font-medium"
-              >
-                Save & Exit
-              </Button>
-              <Button 
-                onClick={handleContinue}
-                disabled={!questionnaireAnswers.emergencyContact.name || !questionnaireAnswers.emergencyContact.relationship || !questionnaireAnswers.emergencyContact.phone}
-                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
-              >
                 Complete
               </Button>
             </div>
@@ -1052,7 +934,7 @@ function App() {
           <div>
             <h2 className="text-2xl font-bold mb-2">Assessment Complete!</h2>
             <p className="text-muted-foreground mb-6">
-              Based on your responses, we recommend our Standard Transport service for your security needs.
+              Based on your responses, we recommend our Armora Essential service for your security needs.
             </p>
           </div>
           <Button 
@@ -1128,7 +1010,19 @@ function App() {
 
           {/* Service Selection */}
           <div className="space-y-2">
-            <h2 className="text-lg font-bold">Choose Your Security Cab Service</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold">Choose Your Security Cab Service</h2>
+            </div>
+            
+            {/* Recommendation Banner */}
+            <div className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-lg p-3 mb-3">
+              <div className="flex items-center gap-2">
+                <Star size={16} className="text-amber-600" weight="fill" />
+                <p className="text-sm font-medium text-amber-800">
+                  Based on your assessment, we recommend <span className="font-bold">Armora Essential</span>
+                </p>
+              </div>
+            </div>
             
             <div className="grid grid-cols-2 gap-3">
               {armoraServices.map(service => {
@@ -1139,44 +1033,54 @@ function App() {
                 return (
                   <Card 
                     key={service.id}
-                    className={`cursor-pointer transition-all duration-200 h-[120px] overflow-hidden relative ${ 
+                    className={`cursor-pointer transition-all duration-200 h-[140px] overflow-hidden relative ${ 
                       isSelected
                         ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
                         : 'hover:shadow-md bg-white border border-border/40'
-                    } ${service.popular ? 'border-amber-200' : ''}`}
+                    } ${service.popular ? 'border-amber-200 bg-gradient-to-br from-amber-50/30 to-white' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
                     {service.popular && (
-                      <div className="absolute top-1 right-1 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[6px] font-bold px-1 py-0.5 rounded-full">
-                        ★
+                      <div className="absolute top-1 right-1 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[7px] font-bold px-1.5 py-0.5 rounded-full">
+                        Recommended
                       </div>
                     )}
-                    <CardContent className="p-3 h-full flex flex-col items-center justify-center text-center space-y-1.5">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${ 
-                        isSelected ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900' : 'bg-muted/70 text-primary'
-                      }`}>
-                        <Icon size={18} weight={isSelected ? "fill" : "regular"} />
+                    <CardContent className="p-3 h-full flex flex-col justify-between text-center space-y-1">
+                      <div className="space-y-1">
+                        <div className={`w-8 h-8 mx-auto rounded-lg flex items-center justify-center ${ 
+                          isSelected ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900' : 'bg-muted/70 text-primary'
+                        }`}>
+                          <Icon size={18} weight={isSelected ? "fill" : "regular"} />
+                        </div>
+                        
+                        <h3 className={`font-bold text-[10px] leading-tight text-center line-clamp-2 ${ 
+                          isSelected ? 'text-amber-700' : 'text-foreground'
+                        }`}>
+                          {service.name}
+                        </h3>
+                        
+                        <p className={`text-[8px] text-muted-foreground line-clamp-1 ${ 
+                          isSelected ? 'text-amber-600' : ''
+                        }`}>
+                          {service.tagline}
+                        </p>
                       </div>
                       
-                      <h3 className={`font-bold text-[10px] leading-tight text-center line-clamp-1 ${ 
-                        isSelected ? 'text-amber-700' : 'text-foreground'
-                      }`}>
-                        {service.name}
-                      </h3>
-                      
-                      <p className={`font-bold text-sm leading-none ${ 
-                        isSelected ? 'text-amber-700' : 'text-foreground'
-                      }`}>
-                        {dynamicPrice}
-                      </p>
-                      
-                      <div className="space-y-0.5 text-center">
-                        <p className="text-[9px] text-muted-foreground leading-none">
-                          {service.eta}
+                      <div className="space-y-0.5">
+                        <p className={`font-bold text-sm leading-none ${ 
+                          isSelected ? 'text-amber-700' : 'text-foreground'
+                        }`}>
+                          {dynamicPrice}
                         </p>
-                        <p className="text-[9px] text-muted-foreground leading-none">
-                          {service.capacity}
-                        </p>
+                        
+                        <div className="space-y-0.5 text-center">
+                          <p className="text-[9px] text-muted-foreground leading-none">
+                            {service.eta}
+                          </p>
+                          <p className="text-[9px] text-muted-foreground leading-none">
+                            {service.capacity}
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -1192,7 +1096,8 @@ function App() {
                 toast.error("Please enter pickup, destination and select a service")
                 return
               }
-              toast.success("Booking confirmed! Driver will be assigned shortly.")
+              const selectedServiceName = armoraServices.find(s => s.id === selectedService)?.name || 'service'
+              toast.success(`Booking confirmed! Your ${selectedServiceName} driver will be assigned shortly.`)
             }}
             className="w-full h-10 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg disabled:opacity-50"
             disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService}
@@ -1201,7 +1106,7 @@ function App() {
               'Enter locations' :
               !selectedService ? 
               'Select service' :
-              'Book Security Cab'
+              `Book ${armoraServices.find(s => s.id === selectedService)?.name || 'Security Cab'}`
             }
           </Button>
         </div>
@@ -1421,6 +1326,23 @@ function App() {
                     <div>
                       <span className="font-medium">Payment Methods</span>
                       <p className="text-xs text-muted-foreground">Manage cards and billing</p>
+                    </div>
+                  </div>
+                  <NavigationArrow size={16} className="rotate-90 text-muted-foreground" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-sm bg-gradient-to-r from-card to-card/95 hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-muted/50 rounded-lg flex items-center justify-center">
+                      <Phone size={20} />
+                    </div>
+                    <div>
+                      <span className="font-medium">Emergency Contacts</span>
+                      <p className="text-xs text-muted-foreground">Manage emergency contact info</p>
                     </div>
                   </div>
                   <NavigationArrow size={16} className="rotate-90 text-muted-foreground" />
