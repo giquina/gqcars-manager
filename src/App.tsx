@@ -3270,73 +3270,38 @@ function App() {
             </div>
           )}
 
-          {/* Slide 2: Travel Frequency with Enhanced Decision Support */}
+          {/* Slide 2: Travel Frequency - Simplified */}
           {onboardingStep === 2 && (
             <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
+              <div className="text-center space-y-2">
                 <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
-                <p className="text-sm text-slate-300">This helps us recommend the right service level for you</p>
+                <p className="text-sm text-slate-300">Pick what matches your schedule</p>
               </div>
 
-              {/* Enhanced Frequency Decision Guide */}
-              <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30">
-                <h4 className="text-sm font-semibold text-amber-200 mb-2">📅 Service Level Matching:</h4>
-                <div className="space-y-1 text-xs text-amber-100">
-                  <p>• <strong>Occasional:</strong> Event-based service with flexible booking</p>
-                  <p>• <strong>Weekly:</strong> Regular schedule with consistent security officer</p>
-                  <p>• <strong>Daily:</strong> Dedicated service with priority scheduling</p>
-                  <p>• <strong>Multiple daily:</strong> On-call service with immediate availability</p>
-                </div>
-              </div>
-
-              {/* Single Column Layout with Detailed Cards */}
+              {/* Simplified Cards */}
               <div className="space-y-3">
                 {[
                   { 
                     value: 'Just Sometimes', 
-                    subtitle: 'Special events and rare occasions',
-                    frequency: '1-3 times per month or less',
-                    perfectFor: 'Important meetings, special events, airport trips when you need professional security',
-                    whatThisMeans: 'Flexible booking when you need professional transport - no commitment required',
-                    serviceStyle: 'Premium on-demand service - book as needed',
-                    bestFor: 'Executives who rarely travel, special occasion transport, infrequent but important journeys',
-                    recommendedService: 'Event-based service with flexible booking - perfect for your occasional needs',
+                    subtitle: 'Special events, rare occasions',
                     pricingTier: '$',
                     popular: false
                   },
                   { 
                     value: 'About Once a Week', 
-                    subtitle: 'Regular meetings and weekly commitments',
-                    frequency: '1-2 times per week, consistent schedule',
-                    perfectFor: 'Weekly client meetings, regular business appointments, consistent professional activities',
-                    whatThisMeans: 'Semi-regular service with preferred scheduling and priority booking',
-                    serviceStyle: 'Scheduled service with consistent security officer and priority support',
-                    bestFor: 'Professionals with regular but not daily transport needs, weekly business routines',
-                    recommendedService: 'Regular schedule service with consistent officer - ideal for your weekly routine',
+                    subtitle: 'Regular meetings, weekly trips',
                     pricingTier: '$$',
                     popular: true
                   },
                   { 
                     value: 'Almost Every Day', 
-                    subtitle: 'Daily commute and regular work transport',
-                    frequency: '4-6 days per week, consistent routine',
-                    perfectFor: 'Daily office commute, regular work schedule, extensive business travel',
-                    whatThisMeans: 'Priority scheduling with dedicated service team and backup coverage',
-                    serviceStyle: 'Scheduled daily service with dedicated officer and priority scheduling',
-                    bestFor: 'Executives with regular office schedules, daily transport needs, consistent work routine',
-                    recommendedService: 'Dedicated service with priority booking - designed for your daily schedule',
+                    subtitle: 'Daily commute, regular schedule',
                     pricingTier: '$$$',
                     popular: false
                   },
                   { 
                     value: 'Multiple Times Daily', 
-                    subtitle: 'Very busy schedule with frequent travel',
-                    frequency: '2+ trips per day, complex scheduling',
-                    perfectFor: 'Back-to-back meetings, multiple daily appointments, intensive schedules',
-                    whatThisMeans: 'Dedicated driver/vehicle with immediate availability and comprehensive coverage',
-                    serviceStyle: 'On-call service with dedicated resources and multiple officers available',
-                    bestFor: 'High-level executives, complex daily schedules, time-critical transport, VIP requirements',
-                    recommendedService: 'Dedicated driver/vehicle with immediate availability - built for your complex schedule',
+                    subtitle: 'Very busy, frequent travel',
                     pricingTier: '$$$$',
                     popular: false
                   }
@@ -3351,22 +3316,20 @@ function App() {
                     onClick={() => updateOnboardingData('travelFrequency', option.value)}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex-1 pr-6">
-                          <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
                             <h3 className="font-bold text-white text-base">{option.value}</h3>
-                            {/* Pricing tier indicator */}
                             <span className="text-xs px-2 py-1 bg-amber-400/20 text-amber-300 rounded-full font-medium">
                               {option.pricingTier}
                             </span>
-                            {/* Most popular badge */}
                             {option.popular && (
                               <span className="text-xs px-2 py-1 bg-green-400/20 text-green-300 rounded-full font-medium">
                                 Most Popular
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-amber-200 font-medium mb-2">{option.subtitle}</p>
+                          <p className="text-sm text-slate-300">{option.subtitle}</p>
                         </div>
                         
                         {/* Radio button indicator */}
@@ -3380,45 +3343,6 @@ function App() {
                           )}
                         </div>
                       </div>
-                      
-                      {/* Detailed Information */}
-                      <div className="space-y-3 border-t border-slate-600/50 pt-3">
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium mb-1">Frequency:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.frequency}</p>
-                        </div>
-                        
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium mb-1">Perfect for:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.perfectFor}</p>
-                        </div>
-                        
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium mb-1">What this means:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.whatThisMeans}</p>
-                        </div>
-                        
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium mb-1">Service style:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.serviceStyle}</p>
-                        </div>
-                        
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium mb-1">Best for:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.bestFor}</p>
-                        </div>
-                        
-                        {/* Integrated Service Matching */}
-                        <div className="pt-2 border-t border-amber-400/30">
-                          <p className="text-xs text-green-200 font-medium mb-1">🎯 Recommended:</p>
-                          <p className="text-xs text-green-100 leading-relaxed italic">{option.recommendedService}</p>
-                        </div>
-                      </div>
-                      
-                      {/* Selection glow effect */}
-                      {onboardingData.travelFrequency === option.value && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
-                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -3426,26 +3350,15 @@ function App() {
 
               {/* Enhanced Custom Input */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-amber-200">Different schedule or specific details:</label>
+                <label className="text-sm font-medium text-amber-200">Different schedule:</label>
                 <textarea
                   value={onboardingData.travelFrequencyCustom}
                   onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
-                  placeholder="e.g., I need transport every Tuesday and Thursday for client meetings, plus occasional airport runs..."
-                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                  maxLength={500}
+                  placeholder="Tell us about your travel schedule..."
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  maxLength={200}
                 />
-                <div className="flex justify-between items-center">
-                  <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/500 - The more details you provide, the better we can tailor your service</p>
-                </div>
-              </div>
-
-              {/* User Guidance */}
-              <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
-                <div className="space-y-1 text-xs text-slate-300">
-                  <p>💡 <strong>Not sure?</strong> We can adjust your plan anytime</p>
-                  <p>📅 <strong>Schedule changes?</strong> Pick the closest match to your typical needs</p>
-                  <p>👥 <strong>Most clients choose:</strong> "About Once a Week" for regular business needs</p>
-                </div>
+                <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/200</p>
               </div>
 
               <Button 
@@ -3458,154 +3371,92 @@ function App() {
             </div>
           )}
 
-          {/* Slide 3: Service Style Preference with Enhanced Decision Guide */}
+          {/* Slide 3: Service Style - Simplified */}
           {onboardingStep === 3 && (
-            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
-              <div className="flex-1 flex flex-col justify-center space-y-4">
-                <div className="text-center space-y-3">
-                  <h2 className="text-lg font-bold text-white">How do you want your security to look?</h2>
-                  <p className="text-sm text-slate-300">Choose the approach that matches your lifestyle and preferences</p>
-                </div>
-
-                {/* Decision Helper */}
-                <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30 mb-2">
-                  <h4 className="text-sm font-semibold text-amber-200 mb-2">💡 Decision Guide:</h4>
-                  <div className="space-y-1 text-xs text-amber-100">
-                    <p>• <strong>Discrete:</strong> Perfect for personal time, family activities, low-profile needs</p>
-                    <p>• <strong>Professional:</strong> Ideal for business, meetings, corporate events</p>
-                    <p>• <strong>Premium:</strong> Best for high-profile events, VIP occasions, maximum protection</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {[
-                    { 
-                      value: 'Quiet & Discrete', 
-                      desc: 'Barely noticeable, low-key protection',
-                      features: ['Unmarked cars', 'Normal clothing', 'Almost invisible'],
-                      perfectFor: 'Family outings, personal errands, casual activities',
-                      whatToExpect: 'Security stays 30+ feet away, uses civilian vehicles, blends in completely',
-                      idealIf: 'You value privacy and want protection without drawing attention'
-                    },
-                    { 
-                      value: 'Professional & Visible', 
-                      desc: 'Clearly there but business-like',
-                      features: ['Professional look', 'Clear identification', 'Business appropriate'],
-                      perfectFor: 'Business meetings, corporate events, professional settings',
-                      whatToExpected: 'Suited security officers, marked vehicles, obvious but respectful presence',
-                      idealIf: 'You want visible deterrent while maintaining professional image'
-                    },
-                    { 
-                      value: 'Full Premium Service', 
-                      desc: 'Complete luxury with top protection',
-                      features: ['Luxury cars', 'Multiple security', 'VIP treatment'],
-                      perfectFor: 'High-profile events, VIP occasions, maximum security situations',
-                      whatToExpected: 'Multiple officers, luxury transport, comprehensive coverage',
-                      idealIf: 'You require maximum protection with premium experience'
-                    }
-                  ].map((option) => (
-                    <Card 
-                      key={option.value}
-                      className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
-                        onboardingData.serviceStyle === option.value
-                          ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
-                          : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
-                      }`}
-                      onClick={() => updateOnboardingData('serviceStyle', option.value)}
-                    >
-                      <CardContent className="p-4 space-y-3">
-                        <div className="flex items-center gap-4">
-                          <div className="flex-1 pr-6">
-                            <h3 className="font-bold text-white text-sm mb-2">{option.value}</h3>
-                            <p className="text-xs text-slate-300 leading-tight">{option.desc}</p>
-                          </div>
-                          {/* Improved selection indicator */}
-                          <div className={`w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
-                            onboardingData.serviceStyle === option.value 
-                              ? 'bg-amber-400 scale-110 shadow-lg' 
-                              : 'bg-transparent scale-100'
-                          }`}>
-                            {onboardingData.serviceStyle === option.value && (
-                              <div className="w-2 h-2 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
-                            )}
-                          </div>
-                        </div>
-                        
-                        {/* Enhanced Details */}
-                        <div className="space-y-2 border-t border-slate-600/50 pt-2">
-                          <div>
-                            <p className="text-xs text-amber-200 font-medium">Perfect for:</p>
-                            <p className="text-xs text-slate-300">{option.perfectFor}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-amber-200 font-medium">What to expect:</p>
-                            <p className="text-xs text-slate-300">{option.whatToExpected}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-amber-200 font-medium">Ideal if:</p>
-                            <p className="text-xs text-slate-300">{option.idealIf}</p>
-                          </div>
-                          <div className="flex items-center justify-between pt-1">
-                            <div className="flex flex-wrap gap-1">
-                              {option.features.slice(0, 2).map((feature, idx) => (
-                                <span key={idx} className="text-xs px-1.5 py-0.5 bg-slate-700/60 text-slate-300 rounded whitespace-nowrap">
-                                  {feature}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Selection glow effect */}
-                        {onboardingData.serviceStyle === option.value && (
-                          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-amber-200">Special requests or other needs:</label>
-                  <textarea
-                    value={onboardingData.serviceStyleCustom}
-                    onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
-                    placeholder="Tell us what you need in simple words..."
-                    className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                    maxLength={500}
-                  />
-                  <p className="text-xs text-slate-400">{onboardingData.serviceStyleCustom.length}/500 characters</p>
-                </div>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">How do you want your security to look?</h2>
+                <p className="text-sm text-slate-300">Pick the style that feels right for you</p>
               </div>
 
-              <div className="mt-6">
-                <Button 
-                  onClick={nextStep}
-                  disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
-                  className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
-                >
-                  Continue
-                </Button>
+              <div className="space-y-3">
+                {[
+                  { 
+                    value: 'Quiet & Discrete', 
+                    desc: 'Barely noticeable, low-key',
+                    bestFor: 'Family time, personal activities'
+                  },
+                  { 
+                    value: 'Professional & Visible', 
+                    desc: 'Business-like, clearly there',
+                    bestFor: 'Work meetings, business events'
+                  },
+                  { 
+                    value: 'Full Premium Service', 
+                    desc: 'Luxury with maximum protection',
+                    bestFor: 'VIP events, high-profile occasions'
+                  }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
+                      onboardingData.serviceStyle === option.value
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
+                    }`}
+                    onClick={() => updateOnboardingData('serviceStyle', option.value)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-white text-sm mb-1">{option.value}</h3>
+                          <p className="text-xs text-slate-300 mb-2">{option.desc}</p>
+                          <p className="text-xs text-amber-200">Best for: {option.bestFor}</p>
+                        </div>
+                        
+                        {/* Selection indicator */}
+                        <div className={`w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
+                          onboardingData.serviceStyle === option.value 
+                            ? 'bg-amber-400 scale-110 shadow-lg' 
+                            : 'bg-transparent scale-100'
+                        }`}>
+                          {onboardingData.serviceStyle === option.value && (
+                            <div className="w-2 h-2 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-amber-200">Other preferences:</label>
+                <textarea
+                  value={onboardingData.serviceStyleCustom}
+                  onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
+                  placeholder="Any special requests..."
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  maxLength={200}
+                />
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+              >
+                Continue
+              </Button>
             </div>
           )}
 
-          {/* Slide 4: Security Comfort Level with Enhanced Explanations */}
+          {/* Slide 4: Security Comfort Level - Simplified */}
           {onboardingStep === 4 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">How much security presence makes you feel comfortable?</h2>
-                <p className="text-sm text-slate-300">Choose what feels right for your peace of mind</p>
-              </div>
-
-              {/* Enhanced Decision Guide */}
-              <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30">
-                <h4 className="text-sm font-semibold text-amber-200 mb-2">🎯 Finding Your Comfort Level:</h4>
-                <div className="space-y-1 text-xs text-amber-100">
-                  <p>• <strong>Lower presence:</strong> More privacy, normal daily activities</p>
-                  <p>• <strong>Balanced presence:</strong> Visible protection, professional deterrent</p>
-                  <p>• <strong>Higher presence:</strong> Maximum security, comprehensive coverage</p>
-                </div>
+                <h2 className="text-lg font-bold text-white">How much security presence feels right?</h2>
+                <p className="text-sm text-slate-300">Choose what makes you comfortable</p>
               </div>
 
               <div className="space-y-3">
@@ -3613,47 +3464,27 @@ function App() {
                   { 
                     value: 'Barely There', 
                     intensity: 1, 
-                    desc: 'Almost invisible, emergency only',
-                    realWorld: 'Security professional stays very far away, only intervenes in emergencies',
-                    goodFor: 'Personal time, family activities, when you want complete privacy',
-                    example: 'Officer remains 100+ meters away, appears like any other person',
-                    consideration: 'Less immediate protection, slower response time'
+                    desc: 'Almost invisible, emergency only'
                   },
                   { 
                     value: 'Quietly Present', 
                     intensity: 2, 
-                    desc: 'There but not obvious',
-                    realWorld: 'Professional maintains discrete distance but stays aware of surroundings',
-                    goodFor: 'Shopping, casual meetings, everyday activities with subtle protection',
-                    example: 'Officer positioned nearby but blends in, not obviously providing security',
-                    consideration: 'Balanced approach - protection without drawing attention'
+                    desc: 'There but not obvious'
                   },
                   { 
                     value: 'Clearly Visible', 
                     intensity: 3, 
-                    desc: 'Obviously providing security',
-                    realWorld: 'Professional security officer clearly identifiable as your protection',
-                    goodFor: 'Business events, public appearances, when visible deterrent is helpful',
-                    example: 'Officer in professional attire, clearly accompanying you',
-                    consideration: 'Strong deterrent effect, some attention from others'
+                    desc: 'Obviously providing security'
                   },
                   { 
                     value: 'High Visibility', 
                     intensity: 4, 
-                    desc: 'Very obvious, strong deterrent',
-                    realWorld: 'Multiple professionals or highly visible single officer with clear security presence',
-                    goodFor: 'High-profile events, areas with elevated risk, maximum deterrence needed',
-                    example: 'Officer(s) in security uniforms or suits, obvious protection detail',
-                    consideration: 'Maximum deterrent but draws significant attention'
+                    desc: 'Very obvious, strong deterrent'
                   },
                   { 
                     value: 'Maximum Protection', 
                     intensity: 5, 
-                    desc: 'Full security, multiple people',
-                    realWorld: 'Complete protection team with multiple professionals covering all angles',
-                    goodFor: 'VIP events, high-risk situations, when comprehensive security is essential',
-                    example: 'Multiple officers, advance team, vehicle coordination, full protection detail',
-                    consideration: 'Complete security coverage but very high visibility'
+                    desc: 'Full security, multiple people'
                   }
                 ].map((option) => (
                   <Card 
@@ -3666,20 +3497,20 @@ function App() {
                     onClick={() => updateOnboardingData('securityComfort', option.value)}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex-1 pr-6">
-                          <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
                             <h3 className="font-bold text-white text-sm">{option.value}</h3>
                             {/* Intensity indicator dots */}
                             <div className="flex gap-1">
                               {[...Array(5)].map((_, i) => (
-                                <div key={i} className={`w-2 h-2 rounded-full transition-colors duration-200 ${ 
+                                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${ 
                                   i < option.intensity ? 'bg-amber-400 shadow-sm' : 'bg-slate-600'
                                 }`} />
                               ))}
                             </div>
                           </div>
-                          <p className="text-xs text-slate-300 leading-relaxed mb-2">{option.desc}</p>
+                          <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
                         
                         {/* Selection indicator */}
@@ -3693,46 +3524,20 @@ function App() {
                           )}
                         </div>
                       </div>
-                      
-                      {/* Enhanced Details */}
-                      <div className="space-y-2 border-t border-slate-600/50 pt-2">
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">In practice:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.realWorld}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Good for:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.goodFor}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Example:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.example}</p>
-                        </div>
-                        <div className="pt-1">
-                          <p className="text-xs text-yellow-200 font-medium">Consider:</p>
-                          <p className="text-xs text-yellow-100 leading-relaxed">{option.consideration}</p>
-                        </div>
-                      </div>
-                      
-                      {/* Selection glow effect */}
-                      {onboardingData.securityComfort === option.value && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
-                      )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-amber-200">What makes you feel most comfortable:</label>
+                <label className="text-sm font-medium text-amber-200">What makes you feel comfortable:</label>
                 <textarea
                   value={onboardingData.securityComfortCustom}
                   onChange={(e) => updateOnboardingData('securityComfortCustom', e.target.value)}
-                  placeholder="Tell us what makes you feel safe and comfortable..."
-                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                  maxLength={400}
+                  placeholder="Tell us what feels right for you..."
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  maxLength={200}
                 />
-                <p className="text-xs text-slate-400">{onboardingData.securityComfortCustom.length}/400 characters</p>
               </div>
 
               <Button 
@@ -3745,64 +3550,39 @@ function App() {
             </div>
           )}
 
-          {/* Slide 5: Travel Patterns & Locations */}
+          {/* Slide 5: Travel Patterns & Locations - Simplified */}
           {onboardingStep === 5 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">Where do you usually need secure transport?</h2>
-                <p className="text-sm text-amber-200">✓ You can pick more than one place</p>
-                <p className="text-sm text-slate-300">Choose all that you visit</p>
+                <h2 className="text-lg font-bold text-white">Where do you need secure transport?</h2>
+                <p className="text-sm text-amber-200">✓ You can pick multiple places</p>
               </div>
 
               <div className="space-y-3">
                 {[
                   { 
-                    value: 'City Center & Business Districts', 
-                    shortDesc: 'Downtown areas, corporate offices, business meetings',
-                    perfectFor: 'Client meetings, corporate events, business lunches',
-                    coverage: 'Financial districts, office buildings, corporate headquarters',
-                    whyChoose: 'Professional presence in business environments',
-                    locations: 'Canary Wharf, City of London, business parks'
+                    value: 'City Center & Business', 
+                    desc: 'Downtown, offices, meetings'
                   },
                   { 
-                    value: 'Airports & Transportation Hubs', 
-                    shortDesc: 'Flight terminals, train stations, travel connections',
-                    perfectFor: 'Business trips, international travel, connecting flights',
-                    coverage: 'All major airports, train stations, ferry terminals',
-                    whyChoose: 'Reliable timing for critical travel connections',
-                    locations: 'Heathrow, Gatwick, King\'s Cross, Eurostar terminals'
+                    value: 'Airports & Transport', 
+                    desc: 'Flights, trains, travel hubs'
                   },
                   { 
-                    value: 'Work Events & Professional Gatherings', 
-                    shortDesc: 'Conferences, meetings, corporate functions',
-                    perfectFor: 'Industry conferences, board meetings, corporate events',
-                    coverage: 'Convention centers, hotels, corporate venues',
-                    whyChoose: 'Professional image for important business occasions',
-                    locations: 'ExCeL London, conference hotels, corporate event spaces'
+                    value: 'Work Events', 
+                    desc: 'Conferences, corporate events'
                   },
                   { 
-                    value: 'Social Events & Entertainment', 
-                    shortDesc: 'Restaurants, entertainment venues, personal occasions',
-                    perfectFor: 'Client dinners, networking events, personal celebrations',
-                    coverage: 'Fine dining, theaters, private clubs, entertainment venues',
-                    whyChoose: 'Discrete protection while maintaining social atmosphere',
-                    locations: 'Michelin restaurants, West End theaters, private members\' clubs'
+                    value: 'Social & Entertainment', 
+                    desc: 'Restaurants, venues, events'
                   },
                   { 
-                    value: 'Home Areas & Residential Locations', 
-                    shortDesc: 'Your neighborhood, residential areas, family locations',
-                    perfectFor: 'Daily commutes, family activities, personal errands',
-                    coverage: 'Residential neighborhoods, local amenities, family venues',
-                    whyChoose: 'Blend naturally into your personal environment',
-                    locations: 'Your home, children\'s schools, local shopping, family restaurants'
+                    value: 'Home & Residential', 
+                    desc: 'Neighborhood, family areas'
                   },
                   { 
-                    value: 'International & Overseas Travel', 
-                    shortDesc: 'Foreign business trips, global coverage, overseas protection',
-                    perfectFor: 'International business, overseas meetings, global travel',
-                    coverage: 'Partner networks in major cities worldwide',
-                    whyChoose: 'Consistent security standards across countries',
-                    locations: 'International offices, global conferences, overseas client meetings'
+                    value: 'International Travel', 
+                    desc: 'Overseas, global coverage'
                   }
                 ].map((option) => (
                   <Card 
@@ -3815,10 +3595,10 @@ function App() {
                     onClick={() => toggleArrayValue('locations', option.value)}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex-1 pr-6">
-                          <h3 className="font-bold text-white text-sm mb-2">{option.value}</h3>
-                          <p className="text-xs text-slate-300 leading-relaxed mb-2">{option.shortDesc}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-white text-sm mb-1">{option.value}</h3>
+                          <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
                         
                         {/* Checkbox indicator */}
@@ -3832,52 +3612,20 @@ function App() {
                           )}
                         </div>
                       </div>
-                      
-                      {/* Enhanced Details */}
-                      <div className="space-y-2 border-t border-slate-600/50 pt-2">
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Perfect for:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.perfectFor}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">What we cover:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.coverage}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Why choose this:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.whyChoose}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Typical locations:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.locations}</p>
-                        </div>
-                      </div>
-                      
-                      {/* Selection glow effect */}
-                      {onboardingData.locations.includes(option.value) && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
-                      )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-amber-200">Specific places you go to:</label>
+                <label className="text-sm font-medium text-amber-200">Specific places:</label>
                 <textarea
                   value={onboardingData.locationsCustom}
                   onChange={(e) => updateOnboardingData('locationsCustom', e.target.value)}
-                  placeholder="List specific places, addresses, or areas you visit..."
-                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                  maxLength={500}
+                  placeholder="Any specific addresses or areas..."
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  maxLength={200}
                 />
-                <p className="text-xs text-slate-400">{onboardingData.locationsCustom.length}/500 characters</p>
-              </div>
-
-              <div className="p-3 bg-amber-400/10 rounded-lg border border-amber-400/30">
-                <p className="text-sm text-amber-200">
-                  <strong>Example:</strong> You can pick "City Center" and "Work Events"
-                </p>
               </div>
 
               <Button 
@@ -3890,79 +3638,45 @@ function App() {
             </div>
           )}
 
-          {/* Slide 6: Risk Assessment with Enhanced Professional Context */}
+          {/* Slide 6: Risk Assessment - Simplified */}
           {onboardingStep === 6 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">Professional risk assessment consultation</h2>
-                <p className="text-sm text-slate-300">Industry best practice requires understanding your security transport context</p>
-              </div>
-
-              {/* Enhanced Risk Assessment Guide */}
-              <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30">
-                <h4 className="text-sm font-semibold text-amber-200 mb-2">🛡️ Professional Risk Levels:</h4>
-                <div className="space-y-1 text-xs text-amber-100">
-                  <p>• <strong>Standard:</strong> Regular business travel, no specific threats</p>
-                  <p>• <strong>Elevated:</strong> Higher profile, competitive environments</p>
-                  <p>• <strong>Enhanced:</strong> Legal matters, known concerns, previous incidents</p>
-                </div>
+                <h2 className="text-lg font-bold text-white">Security assessment</h2>
+                <p className="text-sm text-slate-300">Help us understand your protection needs</p>
               </div>
 
               <div className="space-y-3">
                 {[
                   { 
-                    value: 'Standard Business Travel', 
-                    desc: 'Regular professional transport needs', 
-                    level: 'standard',
-                    details: 'Typical business meetings, conferences, airport transfers',
-                    securityFocus: 'General awareness, standard protocols, incident prevention',
-                    whatThisMeans: 'Professional driver with security training, standard vehicle, basic protection',
-                    typicalScenarios: 'Daily commute, client meetings, business lunches, airport runs'
+                    value: 'Standard Business', 
+                    desc: 'Regular work, no specific risks', 
+                    level: 'standard'
                   },
                   { 
-                    value: 'High-Profile Professional', 
-                    desc: 'Public recognition, media attention', 
-                    level: 'elevated',
-                    details: 'Public figures, executives featured in media, industry leaders',
-                    securityFocus: 'Crowd management awareness, media consideration, discrete protection',
-                    whatThisMeans: 'Experienced security professional, route planning, discrete but visible presence',
-                    typicalScenarios: 'Public events, industry conferences, media appearances, high-profile meetings'
+                    value: 'High-Profile', 
+                    desc: 'Public attention, media visibility', 
+                    level: 'elevated'
                   },
                   { 
                     value: 'Business Competition', 
-                    desc: 'Competitive industry considerations', 
-                    level: 'elevated',
-                    details: 'Industries with corporate espionage risks, hostile takeovers, sensitive negotiations',
-                    securityFocus: 'Information security, surveillance detection, competitive threat awareness',
-                    whatThisMeans: 'Counter-surveillance trained officer, secure communication, operational security',
-                    typicalScenarios: 'M&A meetings, board meetings, competitive negotiations, sensitive business travel'
+                    desc: 'Competitive industry concerns', 
+                    level: 'elevated'
                   },
                   { 
-                    value: 'Legal Proceedings', 
-                    desc: 'Court appearances, legal matters', 
-                    level: 'enhanced',
-                    details: 'High-stakes litigation, contentious legal disputes, court testimony',
-                    securityFocus: 'Court security protocols, threat assessment, safe transport to/from legal venues',
-                    whatThisMeans: 'Legal security specialist, court liaison, secure transport protocols',
-                    typicalScenarios: 'Court appearances, depositions, legal meetings, tribunal hearings'
+                    value: 'Legal Matters', 
+                    desc: 'Court cases, legal proceedings', 
+                    level: 'enhanced'
                   },
                   { 
-                    value: 'Previous Security Concerns', 
-                    desc: 'Past incidents or ongoing considerations', 
-                    level: 'enhanced',
-                    details: 'Prior threats, stalking incidents, workplace violence concerns, personal safety issues',
-                    securityFocus: 'Threat history review, enhanced surveillance, proactive security measures',
-                    whatThisMeans: 'Specialist security officer, detailed threat assessment, enhanced protection protocols',
-                    typicalScenarios: 'All travel requiring heightened awareness, secure transport, threat mitigation'
+                    value: 'Previous Concerns', 
+                    desc: 'Past incidents, ongoing issues', 
+                    level: 'enhanced'
                   },
                   { 
-                    value: 'Preventive Security Only', 
-                    desc: 'No specific concerns, standard protection', 
-                    level: 'standard',
-                    details: 'Proactive security as a professional standard, no identified threats',
-                    securityFocus: 'General protection, professional presence, incident prevention',
-                    whatThisMeans: 'Professional security driver, standard protocols, peace of mind protection',
-                    typicalScenarios: 'Regular business travel, social events, general professional transport'
+                    value: 'Preventive Only', 
+                    desc: 'General protection, peace of mind', 
+                    level: 'standard'
                   }
                 ].map((option) => (
                   <Card 
@@ -3975,9 +3689,9 @@ function App() {
                     onClick={() => toggleArrayValue('riskConcerns', option.value)}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex-1 pr-6">
-                          <div className="flex items-center gap-3 mb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
                             <h3 className="font-bold text-white text-sm">{option.value}</h3>
                             <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                               option.level === 'enhanced' ? 'bg-blue-400/20 text-blue-300' :
@@ -3987,7 +3701,7 @@ function App() {
                               {option.level}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-300 leading-relaxed mb-2">{option.desc}</p>
+                          <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
                         
                         {/* Checkbox indicator */}
@@ -4001,50 +3715,25 @@ function App() {
                           )}
                         </div>
                       </div>
-                      
-                      {/* Enhanced Professional Details */}
-                      <div className="space-y-2 border-t border-slate-600/50 pt-2">
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Details:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.details}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Security focus:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.securityFocus}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">What this means:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.whatThisMeans}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Typical scenarios:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.typicalScenarios}</p>
-                        </div>
-                      </div>
-                      
-                      {/* Selection glow effect */}
-                      {onboardingData.riskConcerns.includes(option.value) && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
-                      )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-amber-200">Additional context for professional assessment:</label>
+                <label className="text-sm font-medium text-amber-200">Additional details (confidential):</label>
                 <textarea
                   value={onboardingData.riskConcernsCustom}
                   onChange={(e) => updateOnboardingData('riskConcernsCustom', e.target.value)}
-                  placeholder="Share any specific requirements or considerations for your security transport service (confidential)..."
-                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                  maxLength={800}
+                  placeholder="Any specific requirements (secure & confidential)..."
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  maxLength={300}
                 />
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-slate-400">{onboardingData.riskConcernsCustom.length}/800 characters</p>
+                  <p className="text-xs text-slate-400">{onboardingData.riskConcernsCustom.length}/300</p>
                   <div className="flex items-center gap-1 text-xs text-amber-300">
                     <Shield size={10} />
-                    <span>Confidential & Secure</span>
+                    <span>Secure</span>
                   </div>
                 </div>
               </div>
@@ -4151,61 +3840,35 @@ function App() {
             </div>
           )}
 
-          {/* Slide 8: Emergency Response Preferences with Enhanced Professional Context */}
+          {/* Slide 8: Emergency Response - Simplified */}
           {onboardingStep === 8 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="space-y-2 text-center">
-                <h2 className="text-lg font-bold text-white">Professional response preferences</h2>
-                <p className="text-sm text-slate-300">How should we coordinate in exceptional situations?</p>
-              </div>
-
-              {/* Professional Response Guide */}
-              <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30">
-                <h4 className="text-sm font-semibold text-amber-200 mb-2">📋 Response Coordination:</h4>
-                <div className="space-y-1 text-xs text-amber-100">
-                  <p>• <strong>Contact sequence:</strong> Who to notify first in incidents</p>
-                  <p>• <strong>Information sharing:</strong> What details to provide</p>
-                  <p>• <strong>Professional discretion:</strong> How to handle situations appropriately</p>
-                </div>
+                <h2 className="text-lg font-bold text-white">Emergency response preferences</h2>
+                <p className="text-sm text-slate-300">How should we coordinate in emergencies?</p>
               </div>
 
               <div className="space-y-3">
                 {[
                   { 
                     value: 'Contact family first', 
-                    desc: 'Notify contacts before authorities', 
-                    priority: '1st: Family, 2nd: Local authorities',
-                    explanation: 'Security professional contacts your family/contacts first, then coordinates with local authorities if needed',
-                    bestFor: 'When you want family informed immediately, prefer family coordination over official channels',
-                    process: 'Officer calls emergency contact → Family decides next steps → Official services if required',
-                    considerations: 'Gives you/family control over situation, may delay official response if needed'
+                    desc: 'Family contacts, then authorities',
+                    priority: 'Family → Authorities'
                   },
                   { 
                     value: 'Authorities first', 
-                    desc: 'Local authorities immediately, then contacts', 
-                    priority: '1st: Local authorities, 2nd: Family',
-                    explanation: 'Security professional contacts police/medical services first, then notifies your emergency contacts',
-                    bestFor: 'When immediate official response is priority, serious incidents requiring professional services',
-                    process: 'Officer calls 999/relevant authorities → Official response initiated → Family notified of situation',
-                    considerations: 'Fastest official response, family notified after official services mobilized'
+                    desc: 'Police/medical, then family',
+                    priority: 'Authorities → Family'
                   },
                   { 
-                    value: 'Medical conditions priority', 
-                    desc: 'Health information shared immediately', 
-                    priority: 'Medical info shared first',
-                    explanation: 'Any medical conditions, allergies, medications shared immediately with responders',
-                    bestFor: 'When you have medical conditions that responders need to know about immediately',
-                    process: 'Medical information provided first → Appropriate medical response → Family notified',
-                    considerations: 'Ensures proper medical care, may involve sharing sensitive health information'
+                    value: 'Medical priority', 
+                    desc: 'Health info shared first',
+                    priority: 'Medical info → Response'
                   },
                   { 
                     value: 'Discrete response', 
-                    desc: 'Minimize public attention during incidents', 
-                    priority: 'Low-profile incident response',
-                    explanation: 'Security professional handles situations quietly, avoiding unnecessary public attention or media',
-                    bestFor: 'High-profile individuals, when privacy is important, avoiding media attention',
-                    process: 'Discrete assessment → Quiet resolution if possible → Minimal official involvement',
-                    considerations: 'Protects privacy and reputation, may limit response options in serious situations'
+                    desc: 'Low-profile handling',
+                    priority: 'Privacy → Resolution'
                   }
                 ].map((option) => (
                   <Card 
@@ -4218,10 +3881,10 @@ function App() {
                     onClick={() => updateOnboardingData('emergencyResponse', option.value)}
                   >
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex-1 pr-6">
-                          <h3 className="font-bold text-white text-sm mb-2">{option.value}</h3>
-                          <p className="text-xs text-slate-300 leading-relaxed mb-2">{option.desc}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-white text-sm mb-1">{option.value}</h3>
+                          <p className="text-xs text-slate-300 mb-1">{option.desc}</p>
                           <p className="text-xs text-amber-300 font-medium">{option.priority}</p>
                         </div>
                         
@@ -4236,50 +3899,25 @@ function App() {
                           )}
                         </div>
                       </div>
-                      
-                      {/* Enhanced Professional Details */}
-                      <div className="space-y-2 border-t border-slate-600/50 pt-2">
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Explanation:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.explanation}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Best for:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.bestFor}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-amber-200 font-medium">Process:</p>
-                          <p className="text-xs text-slate-300 leading-relaxed">{option.process}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-yellow-200 font-medium">Considerations:</p>
-                          <p className="text-xs text-yellow-100 leading-relaxed">{option.considerations}</p>
-                        </div>
-                      </div>
-                      
-                      {/* Selection glow effect */}
-                      {onboardingData.emergencyResponse === option.value && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
-                      )}
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-amber-200">Professional considerations, medical info, or special instructions:</label>
+                <label className="text-sm font-medium text-amber-200">Medical info or special instructions:</label>
                 <textarea
                   value={onboardingData.emergencyInstructions}
                   onChange={(e) => updateOnboardingData('emergencyInstructions', e.target.value)}
-                  placeholder="Response preferences, medical conditions, allergies, medications, or special instructions for professional coordination..."
-                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                  maxLength={600}
+                  placeholder="Medical conditions, allergies, special instructions..."
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  maxLength={300}
                 />
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-slate-400">{onboardingData.emergencyInstructions.length}/600 characters</p>
+                  <p className="text-xs text-slate-400">{onboardingData.emergencyInstructions.length}/300</p>
                   <div className="flex items-center gap-1 text-xs text-amber-300">
                     <Shield size={10} />
-                    <span>Professional Confidentiality</span>
+                    <span>Confidential</span>
                   </div>
                 </div>
               </div>
