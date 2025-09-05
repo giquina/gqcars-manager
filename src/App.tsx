@@ -855,6 +855,17 @@ const App = () => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [paymentErrors, setPaymentErrors] = useState<{[key: string]: string}>({})
 
+  // Calculate route distance for pricing - MOVED HERE to fix initialization order
+  const routeDistance = useMemo(() => {
+    if (selectedPickupLocation && selectedDestinationLocation) {
+      return calculateDistance(
+        { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng },
+        { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng }
+      )
+    }
+    return 0
+  }, [selectedPickupLocation, selectedDestinationLocation, calculateDistance])
+
   // Questionnaire state management
   const [questionnaireStep, setQuestionnaireStep] = useState<number>(0)
 
@@ -2448,17 +2459,6 @@ const App = () => {
     const total = pricing.base + (distance * pricing.perKm) + pricing.securityFee
     return `£${total.toFixed(2)}`
   }, [])
-
-  // Calculate route distance for pricing
-  const routeDistance = useMemo(() => {
-    if (selectedPickupLocation && selectedDestinationLocation) {
-      return calculateDistance(
-        { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng },
-        { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng }
-      )
-    }
-    return 0
-  }, [selectedPickupLocation, selectedDestinationLocation, calculateDistance])
 
 
 
