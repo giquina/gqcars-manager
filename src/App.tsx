@@ -1472,7 +1472,7 @@ function App() {
                                   className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
                                 >
                                   Select {
-                                    service.id === 'shadow-escort' ? 'Shadow' :
+                                    service.id === 'shadow-escort' ? 'Escort' :
                                     service.id === 'essential' ? 'Essential' :
                                     service.id === 'executive' ? 'Executive' :
                                     service.id === 'group' ? 'Group' :
