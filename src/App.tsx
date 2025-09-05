@@ -34,7 +34,7 @@ import {
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
-// ARMORA Premium Branded Security Transport Services
+// ARMORA Premium Branded Security Transport Services with detailed information
 const armoraServices = [
   {
     id: 'essential',
@@ -46,8 +46,35 @@ const armoraServices = [
     icon: Car,
     capacity: '1-3 passengers',
     vehicle: 'Professional vehicle, discrete service',
-    popular: true, // Most popular choice
-    recommended: true
+    popular: true,
+    recommended: true,
+    detailedInfo: {
+      whoItsFor: [
+        'Business professionals with regular transport needs',
+        'Executives attending daily meetings and appointments', 
+        'Professionals requiring reliable, secure transport',
+        'Anyone wanting professional service without premium cost'
+      ],
+      whyPeopleChoose: [
+        'Most cost-effective way to get SIA-licensed security',
+        'Perfect balance of professionalism and affordability',
+        'Reliable service with trained security professionals',
+        'Discrete protection that doesn\'t draw attention'
+      ],
+      whatYouGet: [
+        'SIA-licensed professional security driver',
+        'Unmarked vehicle for discrete transport',
+        'Basic security protocols and route planning',
+        'Professional communication and service',
+        'Emergency response capabilities'
+      ],
+      idealSituations: [
+        'Daily commute to office or business meetings',
+        'Airport transfers and travel connections',
+        'Regular business appointments and client visits',
+        'Shopping trips and personal errands requiring security'
+      ]
+    }
   },
   {
     id: 'shadow-escort',
@@ -59,7 +86,34 @@ const armoraServices = [
     icon: NavigationArrow,
     capacity: '1-4 passengers',
     vehicle: 'Your vehicle + discrete security escort',
-    new: true
+    new: true,
+    detailedInfo: {
+      whoItsFor: [
+        'Luxury car owners who want to drive themselves',
+        'High-profile individuals who value independence',
+        'Business executives with expensive personal vehicles',
+        'Clients who want security backup without giving up control'
+      ],
+      whyPeopleChoose: [
+        'Unique service - drive your own luxury vehicle safely',
+        'Maintain personal freedom while having security backup',
+        'Perfect for luxury shopping and social events',
+        'Revolutionary concept not available elsewhere'
+      ],
+      whatYouGet: [
+        'Professional security vehicle following 50-200m behind',
+        'Real-time GPS coordination between vehicles',
+        'Immediate response if any incidents occur',
+        'Route coordination and traffic management',
+        'Emergency backup and assistance'
+      ],
+      idealSituations: [
+        'Luxury shopping in Mayfair and Knightsbridge',
+        'Business meetings where you want to arrive in your own car',
+        'Social events and evening entertainment',
+        'Any situation where you want independence with security'
+      ]
+    }
   },
   {
     id: 'executive',
@@ -70,7 +124,34 @@ const armoraServices = [
     eta: '10-20 min',
     icon: Star,
     capacity: '1-4 passengers',
-    vehicle: 'Rolls-Royce, Bentley premium fleet'
+    vehicle: 'Rolls-Royce, Bentley premium fleet',
+    detailedInfo: {
+      whoItsFor: [
+        'High-profile executives and VIPs',
+        'Celebrities and public figures',
+        'Government officials and diplomats',
+        'Ultra-high-net-worth individuals'
+      ],
+      whyPeopleChoose: [
+        'Maximum security with luxury transport',
+        'Multiple security personnel for comprehensive protection',
+        'Ultra-luxury vehicles (Rolls-Royce, Bentley)',
+        'Highest level of professional service available'
+      ],
+      whatYouGet: [
+        'Multiple SIA-licensed close protection officers',
+        'Ultra-luxury vehicle fleet (Rolls-Royce, Bentley)',
+        'Comprehensive security planning and risk assessment',
+        'Advanced security protocols and procedures',
+        'Concierge-level service and attention to detail'
+      ],
+      idealSituations: [
+        'High-profile business events and conferences',
+        'VIP social events and galas',
+        'Government and diplomatic functions',
+        'Any situation requiring maximum security and luxury'
+      ]
+    }
   },
   {
     id: 'group',
@@ -81,7 +162,34 @@ const armoraServices = [
     eta: '15-30 min',
     icon: Users,
     capacity: '1-6 passengers',
-    vehicle: 'Mercedes E-Class, Range Rover'
+    vehicle: 'Mercedes E-Class, Range Rover',
+    detailedInfo: {
+      whoItsFor: [
+        'Business teams and corporate groups',
+        'Families requiring group security transport',
+        'Executive teams attending events together',
+        'Corporate clients with multiple passengers'
+      ],
+      whyPeopleChoose: [
+        'Cost-effective security for multiple passengers',
+        'Specialized in group coordination and logistics',
+        'Professional vehicles suitable for team transport',
+        'Group security planning and management'
+      ],
+      whatYouGet: [
+        'Large capacity vehicles (Mercedes E-Class, Range Rover)',
+        'Group coordination and logistics management',
+        'Security planning for multiple passengers',
+        'Professional team transport service',
+        'Coordinated arrival and departure planning'
+      ],
+      idealSituations: [
+        'Corporate team meetings and conferences',
+        'Group airport transfers and travel',
+        'Family events requiring security transport',
+        'Business events with multiple executives'
+      ]
+    }
   }
 ]
 
@@ -134,6 +242,7 @@ function App() {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useKV("armora-onboarding-complete", false)
   const [isFirstLaunch, setIsFirstLaunch] = useKV("armora-first-launch", true)
   const [selectedService, setSelectedService] = useState<string>('')
+  const [expandedService, setExpandedService] = useState<string>('') // New state for expanded service details
   const [bookingForm, setBookingForm] = useState({
     pickup: '',
     destination: '',
@@ -1135,6 +1244,7 @@ function App() {
                 <div className="space-y-3">
                   {armoraServices.map(service => {
                     const isSelected = selectedService === service.id
+                    const isExpanded = expandedService === service.id
                     const IconComponent = service.icon
                     
                     // Show callout price if no locations, otherwise show route-based or original price
@@ -1143,52 +1253,144 @@ function App() {
                       : "£50 minimum"
                     
                     return (
-                      <Card 
-                        key={service.id}
-                        className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${
-                          isSelected 
-                            ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                            : 'hover:shadow-md bg-white border border-border/40'
-                        }`}
-                        onClick={() => setSelectedService(service.id)}
-                      >
-                        {service.popular && (
-                          <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-10">
-                            Popular
-                          </div>
-                        )}
-                        {service.new && (
-                          <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
-                            NEW
-                          </div>
-                        )}
-                        <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 ${
-                          isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/50'
-                        } flex items-center justify-center`}>
-                          {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
-                        </div>
-                        <CardContent className="p-4 pt-8">
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-3">
-                              <IconComponent size={20} className="text-primary flex-shrink-0" />
-                              <h4 className="font-bold text-base text-foreground">{service.name}</h4>
+                      <div key={service.id} className="space-y-0">
+                        <Card 
+                          className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${
+                            isSelected 
+                              ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                              : 'hover:shadow-md bg-white border border-border/40'
+                          }`}
+                          onClick={() => {
+                            setSelectedService(service.id)
+                            // Toggle expansion when clicking on the card
+                            if (isExpanded) {
+                              setExpandedService('')
+                            } else {
+                              setExpandedService(service.id)
+                            }
+                          }}
+                        >
+                          {service.popular && (
+                            <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-10">
+                              Popular
                             </div>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{service.tagline}</p>
-                            <div className="flex items-center justify-between">
-                              <div className="space-y-1">
-                                <p className="text-sm font-semibold text-primary">{displayPrice}</p>
-                                {!hasLocations && (
-                                  <p className="text-xs text-amber-600 font-medium">Callout charge</p>
-                                )}
-                                <p className="text-xs text-muted-foreground">{service.eta} • {service.capacity}</p>
+                          )}
+                          {service.new && (
+                            <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+                              NEW
+                            </div>
+                          )}
+                          <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 ${
+                            isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/50'
+                          } flex items-center justify-center`}>
+                            {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
+                          </div>
+                          <CardContent className="p-4 pt-8">
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-3">
+                                <IconComponent size={20} className="text-primary flex-shrink-0" />
+                                <h4 className="font-bold text-base text-foreground">{service.name}</h4>
+                                <div className={`ml-auto transition-transform duration-200 ${
+                                  isExpanded ? 'rotate-180' : 'rotate-0'
+                                }`}>
+                                  <NavigationArrow size={16} className="text-muted-foreground" />
+                                </div>
                               </div>
-                              <div className="text-right">
-                                <p className="text-xs text-muted-foreground">{service.vehicle}</p>
+                              <p className="text-sm text-muted-foreground leading-relaxed">{service.tagline}</p>
+                              <div className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                  <p className="text-sm font-semibold text-primary">{displayPrice}</p>
+                                  {!hasLocations && (
+                                    <p className="text-xs text-amber-600 font-medium">Callout charge</p>
+                                  )}
+                                  <p className="text-xs text-muted-foreground">{service.eta} • {service.capacity}</p>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-xs text-muted-foreground">{service.vehicle}</p>
+                                </div>
+                              </div>
+                              <div className="pt-1">
+                                <p className="text-xs text-primary/70 font-medium">Tap for detailed information ↓</p>
                               </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+
+                        {/* Expanded Information Panel */}
+                        {isExpanded && (
+                          <Card className="border-t-0 bg-gradient-to-br from-amber-50/30 to-amber-100/20 border border-amber-200/50 rounded-t-none animate-in slide-in-from-top-2 duration-300">
+                            <CardContent className="p-4 space-y-4">
+                              <div className="space-y-3">
+                                <div>
+                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                    <Users size={14} className="text-amber-600" />
+                                    Who is this service for?
+                                  </h4>
+                                  <ul className="space-y-1">
+                                    {service.detailedInfo.whoItsFor.map((item, index) => (
+                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                        {item}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                <div>
+                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                    <Star size={14} className="text-amber-600" />
+                                    Why people choose this service
+                                  </h4>
+                                  <ul className="space-y-1">
+                                    {service.detailedInfo.whyPeopleChoose.map((item, index) => (
+                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                        {item}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                <div>
+                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                    <Shield size={14} className="text-amber-600" />
+                                    What you get
+                                  </h4>
+                                  <ul className="space-y-1">
+                                    {service.detailedInfo.whatYouGet.map((item, index) => (
+                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                        {item}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                <div>
+                                  <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
+                                    <MapPin size={14} className="text-amber-600" />
+                                    Ideal situations
+                                  </h4>
+                                  <ul className="space-y-1">
+                                    {service.detailedInfo.idealSituations.map((item, index) => (
+                                      <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
+                                        <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
+                                        {item}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+
+                              <div className="pt-2 border-t border-amber-200/50">
+                                <p className="text-xs text-amber-600 font-medium text-center">
+                                  Tap again to close details
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
+                      </div>
                     )
                   })}
                 </div>
