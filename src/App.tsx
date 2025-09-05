@@ -2737,7 +2737,7 @@ function App() {
     // Don't show duplicate toast here since it's handled at the button level
   }, [setFavorites])
 
-  // Modern Welcome Screen with Enhanced Design - Compact Version
+  // Amazing Welcome Screen - Clean, Visual, and Powerful
   if (currentView === 'welcome') {
     return (
       <div className="h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
@@ -2749,204 +2749,88 @@ function App() {
           <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-indigo-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
         
-        <div className="max-w-sm mx-auto text-center space-y-6 animate-in fade-in duration-1000 relative z-10">
-          {/* Compact Logo and Branding */}
-          <div className="space-y-5">
+        <div className="max-w-sm mx-auto text-center space-y-8 animate-in fade-in duration-1000 relative z-10">
+          {/* Logo and Main Branding */}
+          <div className="space-y-6">
             <div className="relative">
-              <div className="w-20 h-20 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
-                <Shield size={36} className="text-slate-900" weight="fill" />
+              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
+                <Shield size={40} className="text-slate-900" weight="fill" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 rounded-full" />
               </div>
-              <div className="absolute -inset-4 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-xl animate-pulse" />
+              <div className="absolute -inset-6 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-xl animate-pulse" />
             </div>
             
-            <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
+            <div className="space-y-3">
+              <h1 className="text-5xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
                 Armora
               </h1>
-              <p className="text-lg text-amber-100/90 font-medium tracking-wide">
-                Personalizing your security service
+              <p className="text-xl text-amber-100/90 font-medium tracking-wide">
+                Premium Security Transport
               </p>
               <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
-                Your protection, perfectly tailored
+                Professional protection, perfectly tailored
               </p>
             </div>
           </div>
 
-          {/* Impressive Trust Indicators - Enhanced Credentials */}
+          {/* Visual Trust Badges - Clean and Minimal */}
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-amber-200 text-center">
-              Government-Certified Security Experts
-            </h3>
-            
-            <div className="grid gap-3">
-              {/* SIA Licensed Professionals Card */}
-              <div className="group p-4 rounded-xl bg-slate-800/50 backdrop-blur-sm border border-amber-400/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-amber-400/50 hover:bg-slate-800/70">
-                <div className="flex items-start gap-3">
-                  <div className="relative">
-                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400/40 to-emerald-600/40 rounded-lg flex items-center justify-center">
-                      <Shield size={20} className="text-emerald-300" weight="bold" />
-                    </div>
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-800 flex items-center justify-center">
-                      <CheckCircle size={10} className="text-white" weight="fill" />
-                    </div>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-bold text-white">SIA Licensed Professionals</p>
-                      <div className="px-1.5 py-0.5 bg-emerald-500/20 rounded-full">
-                        <span className="text-[8px] font-bold text-emerald-300">CERTIFIED</span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-emerald-200 font-medium mb-1">
-                      Government-certified security experts, not just drivers
-                    </p>
-                    <div className="space-y-0.5 text-[10px] text-slate-300">
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-emerald-400" />
-                        <span>Only 12% of applicants pass our selection process</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-emerald-400" />
-                        <span>Rigorous background checks & criminal screening</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-emerald-400" />
-                        <span>Specialized security transport training</span>
-                      </div>
-                    </div>
-                    <div className="mt-2 pt-1 border-t border-emerald-400/20">
-                      <p className="text-[9px] text-emerald-300 font-medium italic">
-                        "Trained professionals, not taxi drivers"
-                      </p>
-                    </div>
-                  </div>
+            <div className="grid grid-cols-3 gap-4">
+              {/* SIA Licensed */}
+              <div className="text-center space-y-2">
+                <div className="w-12 h-12 mx-auto bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 rounded-xl flex items-center justify-center border border-emerald-400/30">
+                  <Shield size={24} className="text-emerald-400" weight="bold" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-emerald-300">SIA Licensed</p>
+                  <p className="text-[10px] text-slate-400">Government Certified</p>
                 </div>
               </div>
               
-              {/* Personal Protection Focus Card */}
-              <div className="group p-4 rounded-xl bg-slate-800/50 backdrop-blur-sm border border-amber-400/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-amber-400/50 hover:bg-slate-800/70">
-                <div className="flex items-start gap-3">
-                  <div className="relative">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-400/40 to-blue-600/40 rounded-lg flex items-center justify-center">
-                      <Car size={20} className="text-blue-300" weight="bold" />
-                    </div>
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-slate-800 flex items-center justify-center">
-                      <span className="text-[8px] font-bold text-white">3</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-bold text-white">Personal Protection Focus</p>
-                      <div className="px-1.5 py-0.5 bg-blue-500/20 rounded-full">
-                        <span className="text-[8px] font-bold text-blue-300">3-LAYER</span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-blue-200 font-medium mb-1">
-                      Every detail designed around your safety and privacy
-                    </p>
-                    <div className="space-y-0.5 text-[10px] text-slate-300">
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-blue-400" />
-                        <span>3-layer security planning for every journey</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-blue-400" />
-                        <span>Route planning with risk assessment</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-blue-400" />
-                        <span>Discrete communication & privacy protocols</span>
-                      </div>
-                    </div>
-                    <div className="mt-2 pt-1 border-t border-blue-400/20">
-                      <p className="text-[9px] text-blue-300 font-medium italic">
-                        "We think like bodyguards, not transport providers"
-                      </p>
-                    </div>
-                  </div>
+              {/* Zero Incidents */}
+              <div className="text-center space-y-2">
+                <div className="w-12 h-12 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
+                  <CheckCircle size={24} className="text-amber-400" weight="fill" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-amber-300">Zero Incidents</p>
+                  <p className="text-[10px] text-slate-400">6000+ Trips</p>
                 </div>
               </div>
               
-              {/* 6000+ Successful Journeys Card */}
-              <div className="group p-4 rounded-xl bg-slate-800/50 backdrop-blur-sm border border-amber-400/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-amber-400/50 hover:bg-slate-800/70">
-                <div className="flex items-start gap-3">
-                  <div className="relative">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400/40 to-amber-600/40 rounded-lg flex items-center justify-center">
-                      <Star size={20} className="text-amber-300" weight="fill" />
-                    </div>
-                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full border-2 border-slate-800 flex items-center justify-center">
-                      <span className="text-[8px] font-bold text-slate-900">0</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 text-left">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="text-sm font-bold text-white">6000+ Successful Journeys</p>
-                      <div className="px-1.5 py-0.5 bg-amber-500/20 rounded-full">
-                        <span className="text-[8px] font-bold text-amber-300">PROVEN</span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-amber-200 font-medium mb-1">
-                      Proven track record with zero security incidents
-                    </p>
-                    <div className="space-y-0.5 text-[10px] text-slate-300">
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-amber-400" />
-                        <span>100% completion rate - never missed a pickup</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-amber-400" />
-                        <span>Zero security breaches or safety incidents</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle size={8} className="text-amber-400" />
-                        <span>Average 4.9/5 client satisfaction rating</span>
-                      </div>
-                    </div>
-                    <div className="mt-2 pt-1 border-t border-amber-400/20">
-                      <p className="text-[9px] text-amber-300 font-medium italic">
-                        "6000+ clients who felt safe and returned"
-                      </p>
-                    </div>
-                  </div>
+              {/* Elite Rating */}
+              <div className="text-center space-y-2">
+                <div className="w-12 h-12 mx-auto bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                  <Star size={24} className="text-blue-400" weight="fill" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-blue-300">4.9★ Rating</p>
+                  <p className="text-[10px] text-slate-400">Elite Selection</p>
                 </div>
               </div>
             </div>
             
-            {/* Impressive Statistics Bar */}
-            <div className="p-3 bg-gradient-to-r from-slate-800/70 to-slate-700/70 rounded-xl border border-amber-400/20 backdrop-blur-sm">
-              <div className="flex items-center justify-between text-center">
-                <div className="flex-1">
-                  <p className="text-lg font-bold text-emerald-300">0</p>
-                  <p className="text-[8px] text-slate-300 font-medium">Incidents</p>
-                </div>
-                <div className="w-px h-6 bg-amber-400/30"></div>
-                <div className="flex-1">
-                  <p className="text-lg font-bold text-amber-300">4.9★</p>
-                  <p className="text-[8px] text-slate-300 font-medium">Rating</p>
-                </div>
-                <div className="w-px h-6 bg-amber-400/30"></div>
-                <div className="flex-1">
-                  <p className="text-lg font-bold text-blue-300">12%</p>
-                  <p className="text-[8px] text-slate-300 font-medium">Pass Rate</p>
-                </div>
-              </div>
+            {/* Key Value Proposition - Single Line */}
+            <div className="p-4 bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl border border-amber-400/20 backdrop-blur-sm">
+              <p className="text-sm text-amber-200 font-medium">
+                ✨ Trained security professionals, not taxi drivers
+              </p>
             </div>
           </div>
 
-          {/* Compact Continue Button */}
-          <div className="space-y-3">
+          {/* Main Action Button */}
+          <div className="space-y-4">
             {onboardingStep > 0 && !hasCompletedOnboarding ? (
               <div className="space-y-3">
                 <Button 
                   onClick={() => {
                     setCurrentView('onboarding')
                   }}
-                  className="w-full h-12 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+                  className="w-full h-14 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
                 >
-                  Resume Profile
+                  Resume Assessment
                 </Button>
-                <p className="text-xs text-green-200 text-center">
+                <p className="text-sm text-green-200 text-center">
                   Continue from step {onboardingStep + 1} of 10
                 </p>
               </div>
@@ -2957,41 +2841,22 @@ function App() {
                   setCurrentView('onboarding')
                   setOnboardingStep(0)
                 }}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="w-full h-14 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
-                Create Profile
+                Get Started
               </Button>
             )}
             
-            <p className="text-xs text-slate-400 italic">
-              "Your protection transport, perfectly tailored"
+            <p className="text-sm text-slate-400 font-medium">
+              Professional security assessment • 2-3 minutes
             </p>
           </div>
 
-          {/* Enhanced Trust Indicators */}
-          <div className="pt-4 border-t border-amber-400/20">
-            <div className="space-y-2">
-              <p className="text-[10px] text-amber-300 font-bold text-center">
-                Trusted by 6000+ clients across the UK
-              </p>
-              <div className="flex items-center justify-center gap-2 text-[9px] text-slate-300">
-                <div className="flex items-center gap-1 whitespace-nowrap bg-slate-800/60 px-2 py-1 rounded-full border border-emerald-400/30">
-                  <Shield size={8} className="text-emerald-400" />
-                  <span className="font-medium">Government Licensed</span>
-                </div>
-                <div className="flex items-center gap-1 whitespace-nowrap bg-slate-800/60 px-2 py-1 rounded-full border border-amber-400/30">
-                  <CheckCircle size={8} className="text-amber-400" />
-                  <span className="font-medium">Zero Incidents</span>
-                </div>
-                <div className="flex items-center gap-1 whitespace-nowrap bg-slate-800/60 px-2 py-1 rounded-full border border-blue-400/30">
-                  <Star size={8} className="text-blue-400" />
-                  <span className="font-medium">Elite Selection</span>
-                </div>
-              </div>
-              <p className="text-[8px] text-slate-400 text-center italic">
-                "When your safety can't be left to chance"
-              </p>
-            </div>
+          {/* Bottom Trust Line */}
+          <div className="pt-6 border-t border-amber-400/20">
+            <p className="text-xs text-amber-300 font-bold">
+              Trusted by executives, lawyers & VIPs across London
+            </p>
           </div>
         </div>
       </div>
