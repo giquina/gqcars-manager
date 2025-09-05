@@ -3656,6 +3656,914 @@ const App = () => {
     )
   }
 
+  // Activity/Trip History View
+  if (currentView === 'activity') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentView('home')}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <ArrowLeft size={16} />
+              </Button>
+              <div>
+                <h1 className="text-lg font-bold">Trip Activity</h1>
+                <p className="text-xs text-muted-foreground">Your recent security transport history</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 max-w-md mx-auto space-y-6">
+          {/* Current Trip */}
+          {currentTrip && (
+            <div className="space-y-3">
+              <h2 className="font-semibold text-sm text-muted-foreground">Current Trip</h2>
+              <Card className="border border-amber-200 bg-gradient-to-br from-amber-50/50 to-amber-100/30">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-bold text-base">{currentTrip.service}</h3>
+                    <Badge className="bg-green-100 text-green-800">Active</Badge>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <span className="text-muted-foreground">From:</span>
+                      <span className="font-medium">{currentTrip.pickup}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-muted-foreground">To:</span>
+                      <span className="font-medium">{currentTrip.destination}</span>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => setCurrentView('trip-tracking')}
+                    className="w-full mt-3 h-10 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+                  >
+                    Track Live
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Recent Trips */}
+          <div className="space-y-3">
+            <h2 className="font-semibold text-sm text-muted-foreground">Recent Trips ({recentTrips.length})</h2>
+            
+            {recentTrips.length > 0 ? (
+              <div className="space-y-3">
+                {recentTrips.slice(0, 10).map(trip => (
+                  <Card key={trip.id} className="border border-border/40">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-sm">{trip.service}</h3>
+                        <div className="text-right">
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(trip.date).toLocaleDateString('en-GB')}
+                          </p>
+                          <p className="text-sm font-bold text-green-600">£{trip.amount?.toFixed(2) || '0.00'}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                          <span className="text-muted-foreground truncate">{trip.pickup}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                          <span className="text-muted-foreground truncate">{trip.destination}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-3">
+                        <Badge variant="secondary" className="text-xs">
+                          {trip.status}
+                        </Badge>
+                        <Button variant="outline" size="sm" className="text-xs h-7">
+                          Book Again
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="border border-border/40">
+                <CardContent className="p-8 text-center">
+                  <List size={48} className="mx-auto text-muted-foreground mb-4" />
+                  <h3 className="font-semibold mb-2">No trips yet</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Book your first security transport to see trip history here
+                  </p>
+                  <Button 
+                    onClick={() => setCurrentView('home')}
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+                  >
+                    Book Your First Trip
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
+          <div className="bottom-nav-container">
+            <div className="grid grid-cols-5 h-12">
+              <button
+                onClick={() => setCurrentView('home')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <House size={16} />
+                </div>
+                <span className="text-[10px]">Home</span>
+              </button>
+              
+              <button
+                onClick={() => setCurrentView('activity')}
+                className="flex flex-col items-center justify-center gap-0.5 text-amber-600 transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <List size={16} weight="fill" />
+                </div>
+                <span className="text-[10px] font-semibold">Activity</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('favorites')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Heart size={16} />
+                </div>
+                <span className="text-[10px]">Saved</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('account')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <User size={16} />
+                </div>
+                <span className="text-[10px]">Account</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('welcome')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Shield size={16} />
+                </div>
+                <span className="text-[10px]">Reset</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Favorites/Saved Locations View
+  if (currentView === 'favorites') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentView('home')}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <ArrowLeft size={16} />
+              </Button>
+              <div>
+                <h1 className="text-lg font-bold">Saved Locations</h1>
+                <p className="text-xs text-muted-foreground">Your favorite destinations and pickup spots</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 max-w-md mx-auto space-y-6">
+          {/* Saved Locations */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="font-semibold text-sm text-muted-foreground">Saved Locations ({favorites.length})</h2>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => {
+                  // Add current location as favorite
+                  if (selectedPickupLocation) {
+                    const newFavorite = {
+                      id: Date.now().toString(),
+                      name: 'Recent Location',
+                      address: selectedPickupLocation.address,
+                      coordinates: selectedPickupLocation,
+                      type: 'custom',
+                      addedAt: new Date().toISOString()
+                    }
+                    setFavorites(prev => [newFavorite, ...prev])
+                    toast.success("Location added to favorites")
+                  } else {
+                    toast.error("No location selected to save")
+                  }
+                }}
+                className="text-xs h-7"
+              >
+                <Plus size={12} className="mr-1" />
+                Add
+              </Button>
+            </div>
+            
+            {favorites.length > 0 ? (
+              <div className="space-y-3">
+                {favorites.map(favorite => (
+                  <Card key={favorite.id} className="border border-border/40">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            {favorite.type === 'home' ? <House size={20} className="text-amber-600" /> :
+                             favorite.type === 'work' ? <User size={20} className="text-amber-600" /> :
+                             <MapPin size={20} className="text-amber-600" />}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-semibold text-sm truncate">{favorite.name}</h3>
+                            <p className="text-xs text-muted-foreground truncate">{favorite.address}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 flex-shrink-0">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => {
+                              // Use as pickup location
+                              setSelectedPickupLocation(favorite.coordinates)
+                              setBookingForm(prev => ({
+                                ...prev,
+                                pickup: favorite.address,
+                                pickupCoords: favorite.coordinates
+                              }))
+                              setCurrentView('home')
+                              toast.success("Set as pickup location")
+                            }}
+                            className="text-xs h-7"
+                          >
+                            Use
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => {
+                              setFavorites(prev => prev.filter(f => f.id !== favorite.id))
+                              toast.success("Location removed from favorites")
+                            }}
+                            className="text-xs h-7 w-7 p-0"
+                          >
+                            <X size={12} />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="border border-border/40">
+                <CardContent className="p-8 text-center">
+                  <Heart size={48} className="mx-auto text-muted-foreground mb-4" />
+                  <h3 className="font-semibold mb-2">No saved locations</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Save your frequently visited places for quick booking
+                  </p>
+                  <Button 
+                    onClick={() => setCurrentView('home')}
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+                  >
+                    Add Your First Location
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Quick Add Presets */}
+          <div className="space-y-3">
+            <h2 className="font-semibold text-sm text-muted-foreground">Quick Add</h2>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => {
+                  const homeFavorite = {
+                    id: 'home-' + Date.now(),
+                    name: 'Home',
+                    address: 'Add your home address',
+                    coordinates: { lat: 0, lng: 0, address: 'Add your home address' },
+                    type: 'home',
+                    addedAt: new Date().toISOString()
+                  }
+                  setFavorites(prev => [homeFavorite, ...prev])
+                  toast.success("Home added - tap to set address")
+                }}
+              >
+                <House size={24} className="text-muted-foreground" />
+                <span className="text-xs">Add Home</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col gap-2"
+                onClick={() => {
+                  const workFavorite = {
+                    id: 'work-' + Date.now(),
+                    name: 'Work',
+                    address: 'Add your work address',
+                    coordinates: { lat: 0, lng: 0, address: 'Add your work address' },
+                    type: 'work',
+                    addedAt: new Date().toISOString()
+                  }
+                  setFavorites(prev => [workFavorite, ...prev])
+                  toast.success("Work added - tap to set address")
+                }}
+              >
+                <User size={24} className="text-muted-foreground" />
+                <span className="text-xs">Add Work</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
+          <div className="bottom-nav-container">
+            <div className="grid grid-cols-5 h-12">
+              <button
+                onClick={() => setCurrentView('home')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <House size={16} />
+                </div>
+                <span className="text-[10px]">Home</span>
+              </button>
+              
+              <button
+                onClick={() => setCurrentView('activity')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <List size={16} />
+                </div>
+                <span className="text-[10px]">Activity</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('favorites')}
+                className="flex flex-col items-center justify-center gap-0.5 text-amber-600 transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Heart size={16} weight="fill" />
+                </div>
+                <span className="text-[10px] font-semibold">Saved</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('account')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <User size={16} />
+                </div>
+                <span className="text-[10px]">Account</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('welcome')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Shield size={16} />
+                </div>
+                <span className="text-[10px]">Reset</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Trip Tracking View
+  if (currentView === 'trip-tracking') {
+    if (!assignedDriver || !currentTrip) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex items-center justify-center p-4">
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto">
+              <Car size={32} className="text-amber-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold mb-2">No Active Trip</h2>
+              <p className="text-muted-foreground mb-4">Book a security transport to track your driver</p>
+              <Button 
+                onClick={() => setCurrentView('home')}
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+              >
+                Book a Trip
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentView('home')}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <ArrowLeft size={16} />
+              </Button>
+              <div className="flex-1">
+                <h1 className="text-lg font-bold">Live Tracking</h1>
+                <p className="text-xs text-muted-foreground">Your security driver is on the way</p>
+              </div>
+              {/* Notification Bell */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-8 h-8 rounded-full p-0 relative"
+                onClick={() => {
+                  if (notificationsEnabled) {
+                    toast.info("Notifications are enabled")
+                  } else {
+                    toast.info("Enable notifications for driver updates")
+                  }
+                }}
+              >
+                {notificationsEnabled ? <BellRinging size={16} className="text-amber-600" /> : <Bell size={16} />}
+                {lastNotification && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                )}
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 max-w-md mx-auto space-y-4">
+          {/* Trip Status Card */}
+          <Card className="border border-amber-200 bg-gradient-to-br from-amber-50/50 to-amber-100/30">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold text-base">{currentTrip.service}</h3>
+                <Badge className={`${
+                  tripStatus === 'arrived' ? 'bg-green-100 text-green-800' :
+                  tripStatus === 'driver_arriving' ? 'bg-amber-100 text-amber-800' :
+                  'bg-blue-100 text-blue-800'
+                }`}>
+                  {tripStatus === 'arrived' ? 'Driver Arrived' :
+                   tripStatus === 'driver_arriving' ? 'Approaching' :
+                   tripStatus === 'driver_assigned' ? 'On the Way' : 'Searching'}
+                </Badge>
+              </div>
+              
+              {/* Driver ETA */}
+              {estimatedArrival > 0 && tripStatus !== 'arrived' && (
+                <div className="flex items-center gap-2 mb-3">
+                  <Clock size={16} className="text-amber-600" />
+                  <span className="text-sm font-medium">
+                    Arriving in {estimatedArrival} minute{estimatedArrival > 1 ? 's' : ''}
+                  </span>
+                  {driverDistance > 0 && (
+                    <span className="text-xs text-muted-foreground">
+                      ({driverDistance.toFixed(1)} km away)
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Trip Route */}
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <span className="text-muted-foreground">From:</span>
+                  <span className="font-medium truncate">{currentTrip.pickup}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-muted-foreground">To:</span>
+                  <span className="font-medium truncate">{currentTrip.destination}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Live Map */}
+          <Card className="border-0 shadow-sm bg-card overflow-hidden">
+            <GoogleMapComponent
+              currentLocation={currentLocation}
+              selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
+              destinationLocation={selectedDestinationLocation ? { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng } : undefined}
+              driverLocation={driverLocation || undefined}
+              onLocationSelect={() => {}} // Disabled during tracking
+              isTrackingMode={true}
+            />
+          </Card>
+
+          {/* Driver Information */}
+          {assignedDriver && (
+            <Card className="border border-border/40">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+                    <img 
+                      src={assignedDriver.photo} 
+                      alt={assignedDriver.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-base">{assignedDriver.name}</h3>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Star size={14} className="text-amber-500 fill-current" />
+                      <span>{assignedDriver.rating}</span>
+                      <span>•</span>
+                      <span>{assignedDriver.completedTrips} trips</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">{assignedDriver.vehicle}</p>
+                    <p className="text-xs font-medium text-green-600">{assignedDriver.license}</p>
+                  </div>
+                </div>
+                
+                {/* Communication Buttons */}
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setCurrentView('driver-chat')}
+                    className="flex items-center gap-2"
+                  >
+                    <ChatCircle size={16} />
+                    Message
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      toast.success("Calling your security driver...")
+                      // In real app, this would initiate a call
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <Phone size={16} />
+                    Call
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Trip Actions */}
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                toast.info("Emergency features coming soon")
+              }}
+              className="h-12 flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50"
+            >
+              <Warning size={16} />
+              Emergency
+            </Button>
+            <Button 
+              onClick={() => {
+                if (tripStatus === 'arrived') {
+                  completeTrip()
+                } else {
+                  toast.info("Trip will complete when you reach your destination")
+                }
+              }}
+              className="h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+              disabled={tripStatus !== 'arrived'}
+            >
+              {tripStatus === 'arrived' ? 'Complete Trip' : 'In Progress'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
+          <div className="bottom-nav-container">
+            <div className="grid grid-cols-5 h-12">
+              <button
+                onClick={() => setCurrentView('home')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <House size={16} />
+                </div>
+                <span className="text-[10px]">Home</span>
+              </button>
+              
+              <button
+                onClick={() => setCurrentView('activity')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <List size={16} />
+                </div>
+                <span className="text-[10px]">Activity</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('favorites')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Heart size={16} />
+                </div>
+                <span className="text-[10px]">Saved</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('account')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <User size={16} />
+                </div>
+                <span className="text-[10px]">Account</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('welcome')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Shield size={16} />
+                </div>
+                <span className="text-[10px]">Reset</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Driver Chat View
+  if (currentView === 'driver-chat') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentView('trip-tracking')}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <ArrowLeft size={16} />
+              </Button>
+              {assignedDriver && (
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                    <img 
+                      src={assignedDriver.photo} 
+                      alt={assignedDriver.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h1 className="text-base font-bold">{assignedDriver.name}</h1>
+                    <p className="text-xs text-muted-foreground">Security Driver • SIA Licensed</p>
+                  </div>
+                </div>
+              )}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-8 h-8 rounded-full p-0"
+                onClick={() => {
+                  toast.success("Calling your security driver...")
+                }}
+              >
+                <Phone size={16} />
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        {/* Messages */}
+        <div className="flex-1 p-4 pb-20 max-w-md mx-auto w-full space-y-4 overflow-y-auto">
+          {messages.map(message => (
+            <div 
+              key={message.id} 
+              className={`flex ${message.from === 'driver' ? 'justify-start' : 'justify-end'}`}
+            >
+              <div className={`max-w-[75%] p-3 rounded-2xl ${
+                message.from === 'driver' 
+                  ? 'bg-gray-100 text-gray-900' 
+                  : 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900'
+              }`}>
+                <p className="text-sm">{message.text}</p>
+                <p className={`text-xs mt-1 ${
+                  message.from === 'driver' ? 'text-gray-500' : 'text-slate-700'
+                }`}>
+                  {message.time}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Message Input */}
+        <div className="bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 sticky bottom-0">
+          <div className="max-w-md mx-auto">
+            <div className="flex gap-3 items-center">
+              <Input
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type a message..."
+                className="flex-1 h-10"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && newMessage.trim()) {
+                    const message = {
+                      id: Date.now(),
+                      from: 'user',
+                      text: newMessage.trim(),
+                      time: new Date().toLocaleTimeString('en-GB', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })
+                    }
+                    setMessages(prev => [...prev, message])
+                    setNewMessage('')
+                    
+                    // Simulate driver response
+                    setTimeout(() => {
+                      const responses = [
+                        "Understood, I'll be there shortly.",
+                        "Thank you for the update.",
+                        "I can see you on my GPS. Almost there!",
+                        "Please wait near the entrance.",
+                        "I'm the black Mercedes, just arriving now."
+                      ]
+                      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+                      const driverMessage = {
+                        id: Date.now() + 1,
+                        from: 'driver',
+                        text: randomResponse,
+                        time: new Date().toLocaleTimeString('en-GB', { 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })
+                      }
+                      setMessages(prev => [...prev, driverMessage])
+                    }, 1000 + Math.random() * 2000)
+                  }
+                }}
+              />
+              <Button 
+                onClick={() => {
+                  if (newMessage.trim()) {
+                    const message = {
+                      id: Date.now(),
+                      from: 'user',
+                      text: newMessage.trim(),
+                      time: new Date().toLocaleTimeString('en-GB', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })
+                    }
+                    setMessages(prev => [...prev, message])
+                    setNewMessage('')
+                  }
+                }}
+                disabled={!newMessage.trim()}
+                className="w-10 h-10 p-0 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900"
+              >
+                <PaperPlaneTilt size={16} weight="fill" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Trip Rating View
+  if (currentView === 'trip-rating') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex items-center justify-center p-4">
+        <div className="max-w-sm mx-auto text-center space-y-6">
+          <div className="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+            <CheckCircle size={32} className="text-white" weight="fill" />
+          </div>
+          
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Trip Completed!</h2>
+            <p className="text-muted-foreground mb-6">
+              How was your security transport experience?
+            </p>
+          </div>
+
+          {/* Rating Stars */}
+          <div className="flex justify-center gap-2 mb-6">
+            {[1, 2, 3, 4, 5].map(star => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                className={`w-12 h-12 flex items-center justify-center rounded-full transition-all ${
+                  star <= rating 
+                    ? 'bg-amber-100 text-amber-600 scale-110' 
+                    : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                }`}
+              >
+                <Star size={20} weight={star <= rating ? 'fill' : 'regular'} />
+              </button>
+            ))}
+          </div>
+
+          {/* Feedback */}
+          <div className="text-left space-y-3">
+            <label className="text-sm font-medium">Additional Feedback (Optional)</label>
+            <textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="Tell us about your experience..."
+              className="w-full h-24 p-3 border border-border/40 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              maxLength={300}
+            />
+            <p className="text-xs text-muted-foreground text-right">{feedback.length}/300</p>
+          </div>
+
+          {/* Actions */}
+          <div className="space-y-3">
+            <Button 
+              onClick={() => {
+                if (rating === 0) {
+                  toast.error("Please rate your experience")
+                  return
+                }
+                
+                // Save rating and feedback
+                toast.success("Thank you for your feedback!")
+                
+                // Reset trip state
+                setRating(0)
+                setFeedback('')
+                setCurrentView('home')
+              }}
+              className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+              disabled={rating === 0}
+            >
+              Submit Rating
+            </Button>
+            
+            <Button 
+              variant="outline"
+              onClick={() => setCurrentView('home')}
+              className="w-full h-12"
+            >
+              Skip Rating
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // Account Management View  
   if (currentView === 'account') {
     return (
