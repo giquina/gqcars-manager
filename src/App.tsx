@@ -236,23 +236,23 @@ declare namespace google {
   }
 }
 
-// ARMORA Premium Luxury Security Transport Services
+// ARMORA Premium Personal Security Transport Services
 const armoraServices = [
   {
-    id: 'standard',
-    name: 'Standard Transport',
-    description: 'Licensed protection officer with discrete vehicle',
+    id: 'essential',
+    name: 'Your Essential Protection',
+    description: 'Personal security professional driver tailored to your daily transport routine',
     priceRange: '£45 - £75',
     eta: '3-8 min',
     icon: Car,
     capacity: '1-3 passengers',
-    vehicle: 'Nissan Leaf, standard plates',
+    vehicle: 'Discrete vehicle, standard plates',
     popular: true // Most popular choice
   },
   {
     id: 'shadow-escort',
     name: 'Shadow Escort',
-    description: 'Drive yourself with discrete security following',
+    description: 'Drive yourself with discrete security following - your freedom with protection backup',
     priceRange: '£150 - £350',
     eta: '5-12 min',
     icon: Shield,
@@ -260,29 +260,29 @@ const armoraServices = [
     vehicle: 'Your vehicle + Security escort'
   },
   {
-    id: 'executive-protection', 
-    name: 'Executive Protection',
-    description: 'SIA-licensed Protection Officers',
+    id: 'executive-security', 
+    name: 'Your Executive Security',
+    description: 'Personal protection transport specialist customized to your professional travel needs',
     priceRange: '£120 - £250',
     eta: '8-15 min',
     icon: Shield,
     capacity: '1-3 passengers',
-    vehicle: 'Armored luxury vehicles'
+    vehicle: 'Executive protection vehicles'
   },
   {
-    id: 'ultra-luxury',
-    name: 'Ultra-Luxury',
-    description: 'Rolls-Royce, Bentley premium fleet',
+    id: 'signature-experience',
+    name: 'Your Signature Experience',
+    description: 'Personal security transport concierge - completely tailored to your travel lifestyle',
     priceRange: '£180 - £450',
     eta: '10-20 min',
     icon: Star,
     capacity: '1-4 passengers',
-    vehicle: 'Rolls-Royce, Bentley Flying Spur'
+    vehicle: 'Rolls-Royce, Bentley premium fleet'
   },
   {
     id: 'airport-express',
-    name: 'Airport Express',
-    description: 'Flight-monitored transfers & meet-greet',
+    name: 'Airport Security Transport',
+    description: 'Personal protection for your flight transfers with meet-greet service',
     priceRange: '£65 - £120',
     eta: '15-30 min',
     icon: NavigationArrow,
@@ -291,8 +291,8 @@ const armoraServices = [
   },
   {
     id: 'corporate',
-    name: 'Corporate Transport',
-    description: 'Business accounts & bulk bookings',
+    name: 'Corporate Security Transport',
+    description: 'Your business protection transport - designed for professional demands',
     priceRange: '£40 - £85',
     eta: '5-12 min',
     icon: Users,
@@ -2450,7 +2450,7 @@ function App() {
   const [currentView, setCurrentView] = useState<string>('welcome')
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useKV("armora-onboarding-complete", false)
   const [isFirstLaunch, setIsFirstLaunch] = useKV("armora-first-launch", true)
-  const [onboardingStep, setOnboardingStep] = useState(0)
+  const [onboardingStep, setOnboardingStep] = useKV("armora-onboarding-step", 0)
   const [onboardingData, setOnboardingData] = useKV("armora-onboarding-data", {
     workType: [],
     workTypeCustom: '',
@@ -2507,14 +2507,19 @@ function App() {
   const [statusMessage, setStatusMessage] = useState<string>('')
   const [statusType, setStatusType] = useState<'info' | 'success' | 'warning' | 'error'>('info')
 
-  // Initialize app flow based on user state - Force welcome screen to show
+  // Initialize app flow based on user state - Check for saved progress
   useEffect(() => {
-    // Always show welcome screen first, regardless of stored values
-    setCurrentView('welcome')
-    
-    // Reset the values to ensure we see the full flow
-    setIsFirstLaunch(true)
-    setHasCompletedOnboarding(false)
+    // Check if user has saved progress in onboarding
+    if (onboardingStep > 0 && !hasCompletedOnboarding) {
+      // Resume from saved step
+      setCurrentView('onboarding')
+    } else if (hasCompletedOnboarding) {
+      // Go directly to home
+      setCurrentView('home')
+    } else {
+      // Start from welcome
+      setCurrentView('welcome')
+    }
   }, [])
 
   // Apply no-scroll only to welcome and onboarding pages
@@ -2625,10 +2630,10 @@ function App() {
 
     // Base pricing structure for each service type
     const pricingStructure = {
-      'standard': { base: 18.00, perKm: 2.15, securityFee: 2.00 },
+      'essential': { base: 18.00, perKm: 2.15, securityFee: 2.00 },
       'shadow-escort': { base: 85.00, perKm: 18.50, securityFee: 45.00 },
-      'executive-protection': { base: 95.00, perKm: 15.80, securityFee: 35.00 },
-      'ultra-luxury': { base: 150.00, perKm: 22.50, securityFee: 28.00 },
+      'executive-security': { base: 95.00, perKm: 15.80, securityFee: 35.00 },
+      'signature-experience': { base: 150.00, perKm: 22.50, securityFee: 28.00 },
       'airport-express': { base: 45.00, perKm: 8.75, securityFee: 12.00 },
       'corporate': { base: 28.00, perKm: 6.20, securityFee: 8.00 }
     }
@@ -2708,7 +2713,7 @@ function App() {
     setRecentTrips((prev: any[]) => [finalTrip, ...prev.slice(0, 9)])
     
     // Show success notification
-    toast.success(`🚗 Driver assigned: ${driver.name}`, {
+    toast.success(`🚗 Your security transport professional assigned: ${driver.name}`, {
       duration: 4000,
       description: `${driver.vehicle} • ETA: ${driver.eta} minutes`
     })
@@ -2760,10 +2765,10 @@ function App() {
                 Armora
               </h1>
               <p className="text-lg text-amber-100/90 font-medium tracking-wide">
-                Premium Security Transport
+                Personalizing your security service
               </p>
               <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
-                Protected by Shadows • Driven by Excellence
+                Your protection, perfectly tailored
               </p>
             </div>
           </div>
@@ -2776,8 +2781,8 @@ function App() {
                   <Shield size={16} className="text-amber-300" />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="text-sm font-semibold text-white">Licensed Security</p>
-                  <p className="text-xs text-slate-300">SIA-trained protection officers</p>
+                  <p className="text-sm font-semibold text-white">SIA Licensed</p>
+                  <p className="text-xs text-slate-300">Your security transport professionals</p>
                 </div>
               </div>
               
@@ -2786,8 +2791,8 @@ function App() {
                   <Car size={16} className="text-amber-300" />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="text-sm font-semibold text-white">Professional Fleet</p>
-                  <p className="text-xs text-slate-300">Premium vehicles, discrete service</p>
+                  <p className="text-sm font-semibold text-white">Personal Protection</p>
+                  <p className="text-xs text-slate-300">Security transport designed around your life</p>
                 </div>
               </div>
               
@@ -2796,8 +2801,8 @@ function App() {
                   <Star size={16} className="text-amber-300" />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="text-sm font-semibold text-white">6000+ Completed</p>
-                  <p className="text-xs text-slate-300">Professional, confidential transport</p>
+                  <p className="text-sm font-semibold text-white">6000+ Journeys</p>
+                  <p className="text-xs text-slate-300">Personal security, professional delivery</p>
                 </div>
               </div>
             </div>
@@ -2805,19 +2810,35 @@ function App() {
 
           {/* Compact Continue Button */}
           <div className="space-y-3">
-            <Button 
-              onClick={() => {
-                setIsFirstLaunch(false)
-                setCurrentView('onboarding')
-                setOnboardingStep(0)
-              }}
-              className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
-            >
-              Start Assessment
-            </Button>
+            {onboardingStep > 0 && !hasCompletedOnboarding ? (
+              <div className="space-y-3">
+                <Button 
+                  onClick={() => {
+                    setCurrentView('onboarding')
+                  }}
+                  className="w-full h-12 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+                >
+                  Resume Your Profile
+                </Button>
+                <p className="text-xs text-green-200 text-center">
+                  Continue from step {onboardingStep + 1} of {totalSteps}
+                </p>
+              </div>
+            ) : (
+              <Button 
+                onClick={() => {
+                  setIsFirstLaunch(false)
+                  setCurrentView('onboarding')
+                  setOnboardingStep(0)
+                }}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+              >
+                Create My Security Transport Profile
+              </Button>
+            )}
             
             <p className="text-xs text-slate-400 italic">
-              "Tailored protection for your lifestyle"
+              "Your protection transport, perfectly tailored"
             </p>
           </div>
 
@@ -2866,18 +2887,56 @@ function App() {
 
     const nextStep = () => {
       if (onboardingStep < totalSteps - 1) {
-        setOnboardingStep(onboardingStep + 1)
+        const newStep = onboardingStep + 1
+        setOnboardingStep(newStep)
+        // Auto-save progress
+        toast.success("💾 Progress saved", { duration: 1500 })
       } else {
         // Complete onboarding
         setHasCompletedOnboarding(true)
+        setOnboardingStep(0) // Reset step counter
         setCurrentView('onboarding-complete')
       }
     }
 
     const prevStep = () => {
       if (onboardingStep > 0) {
-        setOnboardingStep(onboardingStep - 1)
+        const newStep = onboardingStep - 1
+        setOnboardingStep(newStep)
+        // Auto-save progress
+        toast.success("💾 Progress saved", { duration: 1500 })
       }
+    }
+
+    const saveAndExit = () => {
+      // Save current progress and return to welcome
+      toast.success("✅ Your security transport profile progress has been saved. Resume anytime!")
+      setCurrentView('welcome')
+    }
+
+    const resetAssessment = () => {
+      // Clear all progress
+      setOnboardingStep(0)
+      setOnboardingData({
+        workType: [],
+        workTypeCustom: '',
+        travelFrequency: '',
+        travelFrequencyCustom: '',
+        serviceStyle: '',
+        serviceStyleCustom: '',
+        securityComfort: '',
+        securityComfortCustom: '',
+        locations: [],
+        locationsCustom: '',
+        riskConcerns: [],
+        riskConcernsCustom: '',
+        emergencyContact1: { name: '', relationship: '', phone: '' },
+        emergencyContact2: { name: '', relationship: '', phone: '' },
+        emergencyResponse: '',
+        emergencyInstructions: ''
+      })
+      setCurrentView('welcome')
+      toast.success("🔄 Your security transport assessment has been reset")
     }
 
     return (
@@ -2890,7 +2949,7 @@ function App() {
           <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-gradient-to-r from-slate-400/5 to-slate-600/5 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
         
-        {/* Luxury Header */}
+        {/* Luxury Header with Save/Exit Options */}
         <header className="relative z-10 p-4 border-b border-amber-400/20 bg-slate-900/80 backdrop-blur-sm">
           <div className="max-w-md mx-auto">
             <div className="flex items-center justify-between mb-3">
@@ -2899,20 +2958,30 @@ function App() {
                   <Shield size={16} className="text-slate-900" weight="bold" />
                 </div>
                 <div>
-                  <h1 className="text-base font-bold text-white">Personal Assessment</h1>
-                  <p className="text-[10px] text-amber-200">Tailoring your protection</p>
+                  <h1 className="text-base font-bold text-white">Personal Security Transport Assessment</h1>
+                  <p className="text-[10px] text-amber-200">Personalizing your security service</p>
                 </div>
               </div>
-              {onboardingStep > 0 && (
+              <div className="flex gap-2">
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  onClick={prevStep}
+                  onClick={saveAndExit}
                   className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-7 px-2 text-xs"
                 >
-                  Back
+                  Save & Exit
                 </Button>
-              )}
+                {onboardingStep > 0 && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={prevStep}
+                    className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-7 px-2 text-xs"
+                  >
+                    Back
+                  </Button>
+                )}
+              </div>
             </div>
             
             {/* Luxury Progress Bar */}
@@ -2941,41 +3010,56 @@ function App() {
                 </div>
                 
                 <div className="space-y-3">
-                  <h2 className="text-lg font-bold text-white">Tailored Protection for Your Lifestyle</h2>
+                  <h2 className="text-lg font-bold text-white">Let's create your personal security transport profile</h2>
                   <p className="text-sm text-slate-300 leading-snug">
-                    We'll ask a few questions to understand your security needs and preferences. 
-                    This ensures your protection is perfectly matched to your lifestyle.
+                    We'll ask a few questions to understand your unique protection transport needs. 
+                    This ensures your security transport service is perfectly matched to your lifestyle.
                   </p>
                 </div>
 
                 <div className="grid gap-2 text-left">
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
                     <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-xs text-slate-200">Personal security assessment</span>
+                    <span className="text-xs text-slate-200">Personal security transport assessment</span>
                   </div>
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
                     <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-xs text-slate-200">Custom service recommendations</span>
+                    <span className="text-xs text-slate-200">Customized protection transport matching</span>
                   </div>
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
                     <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-xs text-slate-200">Optimal protection matching</span>
+                    <span className="text-xs text-slate-200">Tailored transport service levels</span>
                   </div>
                 </div>
 
                 <div className="p-3 bg-amber-400/10 rounded-lg border border-amber-400/30">
                   <p className="text-xs text-amber-200">
-                    ⏱️ <strong>2 minutes</strong> for a lifetime of personalized security
+                    ⏱️ <strong>2 minutes</strong> for a lifetime of personalized security transport
                   </p>
                 </div>
               </div>
 
-              <Button 
-                onClick={nextStep}
-                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300"
-              >
-                Start
-              </Button>
+              <div className="space-y-2">
+                <Button 
+                  onClick={nextStep}
+                  className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300"
+                >
+                  Personalize My Protection Service
+                </Button>
+                
+                {onboardingStep > 0 && (
+                  <div className="text-center">
+                    <Button 
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetAssessment}
+                      className="text-slate-400 hover:text-slate-300 text-xs"
+                    >
+                      Reset Assessment
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -2983,7 +3067,7 @@ function App() {
           {onboardingStep === 1 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">How can we best protect your professional needs?</h2>
+                <h2 className="text-lg font-bold text-white">Tell us about your professional travel so we can protect your journeys</h2>
                 <p className="text-xs text-slate-300">Select all that apply to your work situation</p>
               </div>
 
@@ -3572,22 +3656,22 @@ function App() {
   if (currentView === 'onboarding-complete') {
     // Generate personalized recommendations based on collected data
     const generateRecommendations = () => {
-      let recommendedService = 'Standard Transport'
-      let recommendationReason = 'Based on your general protection needs'
+      let recommendedService = 'Your Essential Protection'
+      let recommendationReason = 'Based on your personal protection transport needs'
       
       if (onboardingData.riskConcerns.includes('Threat Assessment') || onboardingData.riskConcerns.includes('High-Profile Visibility')) {
-        recommendedService = 'Executive Protection'
-        recommendationReason = 'Enhanced security recommended due to elevated risk profile'
+        recommendedService = 'Your Executive Security'
+        recommendationReason = 'Enhanced security transport recommended due to your elevated risk profile'
       }
       
       if (onboardingData.serviceStyle === 'Ultra-Premium' || onboardingData.workType.includes('Public Figure')) {
-        recommendedService = 'Ultra-Luxury'
-        recommendationReason = 'Premium service matching your professional profile'
+        recommendedService = 'Your Signature Experience'
+        recommendationReason = 'Premium security transport service matching your professional profile'
       }
       
       if (onboardingData.workType.includes('Corporate Executive') && onboardingData.travelFrequency === 'Daily') {
-        recommendedService = 'Corporate Transport'
-        recommendationReason = 'Regular business transport with executive-level service'
+        recommendedService = 'Corporate Security Transport'
+        recommendationReason = 'Regular business protection transport with executive-level service'
       }
 
       return { service: recommendedService, reason: recommendationReason }
@@ -3617,8 +3701,8 @@ function App() {
             </div>
             
             <div className="space-y-4">
-              <h1 className="text-3xl font-bold text-white">Your Security Profile is Complete</h1>
-              <p className="text-lg text-emerald-200">Welcome to personalized protection with Armora</p>
+              <h1 className="text-3xl font-bold text-white">Your Personal Security Transport Profile is Complete</h1>
+              <p className="text-lg text-emerald-200">Welcome to your personalized protection transport with Armora</p>
             </div>
           </div>
 
@@ -3626,16 +3710,16 @@ function App() {
           <Card className="bg-slate-800/60 border-amber-400/30 shadow-2xl">
             <CardContent className="p-8 space-y-6">
               <div className="text-center space-y-4">
-                <h2 className="text-xl font-bold text-white">Your Personalized Protection Profile</h2>
+                <h2 className="text-xl font-bold text-white">Your Personalized Protection Transport Profile</h2>
                 <div className="p-6 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl border border-amber-400/30">
-                  <h3 className="text-lg font-bold text-amber-200 mb-2">Recommended Service</h3>
+                  <h3 className="text-lg font-bold text-amber-200 mb-2">Your Recommended Security Transport Service</h3>
                   <p className="text-2xl font-bold text-white">{recommendations.service}</p>
                   <p className="text-sm text-slate-300 mt-2">{recommendations.reason}</p>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h3 className="font-semibold text-amber-200">Your Requirements Summary:</h3>
+                <h3 className="font-semibold text-amber-200">Your Security Transport Requirements Summary:</h3>
                 <div className="grid gap-3 text-left">
                   {onboardingData.workType.length > 0 && (
                     <div className="flex items-center gap-3 p-3 bg-slate-700/40 rounded-lg">
@@ -3676,7 +3760,7 @@ function App() {
               <div className="pt-4 border-t border-slate-600">
                 <div className="flex items-center gap-2 justify-center text-emerald-300">
                   <Shield size={16} />
-                  <span className="text-sm">Your protection team will review these details</span>
+                  <span className="text-sm">Your protection transport team will review these details</span>
                 </div>
               </div>
             </CardContent>
@@ -3688,15 +3772,15 @@ function App() {
               onClick={() => {
                 setHasCompletedOnboarding(true)
                 setCurrentView('home')
-                toast.success("🎉 Welcome to Armora! Your personalized profile is ready.")
+                toast.success("🎉 Welcome to your personalized security transport service!")
               }}
               className="w-full h-14 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
             >
-              Begin Your Protected Journey
+              Access My Security Transport Service
             </Button>
             
             <p className="text-sm text-slate-300 italic">
-              "Your custom requirements have been securely recorded"
+              "Your custom transport requirements have been securely recorded"
             </p>
           </div>
 
@@ -3742,8 +3826,8 @@ function App() {
               <ArrowLeft size={18} />
             </Button>
             <div className="flex-1">
-              <h1 className="font-semibold">Confirm Your Booking</h1>
-              <p className="text-xs text-muted-foreground">Review trip details</p>
+              <h1 className="font-semibold">Confirm Your Security Transport Service</h1>
+              <p className="text-xs text-muted-foreground">Review your personalized trip details</p>
             </div>
           </div>
         </header>
@@ -3842,24 +3926,24 @@ function App() {
             <CardContent className="p-5 space-y-3">
               <div className="flex items-center gap-2">
                 <Shield size={16} className="text-green-600" />
-                <h3 className="font-semibold text-green-800">Security Features Included</h3>
+                <h3 className="font-semibold text-green-800">Your Security Transport Features</h3>
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>SIA-licensed protection officer</span>
+                  <span>Your personal security transport professional</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>Real-time journey tracking</span>
+                  <span>Real-time journey tracking for your protection</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>Professional vetted driver</span>
+                  <span>Your professionally vetted security driver</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>24/7 support and monitoring</span>
+                  <span>24/7 support for your security transport</span>
                 </div>
               </div>
             </CardContent>
@@ -3871,7 +3955,7 @@ function App() {
               onClick={confirmBooking}
               className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg"
             >
-              Confirm Booking - {price}
+              Confirm Your Security Transport - {price}
             </Button>
             
             <Button 
@@ -3907,7 +3991,7 @@ function App() {
               </div>
               <div>
                 <h1 className="text-base font-bold">Armora</h1>
-                <p className="text-[10px] text-muted-foreground">Protected by Shadows</p>
+                <p className="text-[10px] text-muted-foreground">Personalizing your security service</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -4130,7 +4214,7 @@ function App() {
           {/* Ultra Compact Service Selection */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">Choose your ride</h2>
+              <h2 className="text-lg font-bold">Choose Your Personal Protection Transport Level</h2>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -4265,7 +4349,7 @@ function App() {
                 {!bookingForm.pickup || !bookingForm.destination ? 
                   'Enter locations' :
                   !selectedService ? 
-                  'Select ride' :
+                  'Select protection transport' :
                   !bookingForm.pickupCoords || !bookingForm.destinationCoords ?
                   'Select valid locations' :
                   (() => {
@@ -4418,8 +4502,8 @@ function App() {
               <ArrowLeft size={18} />
             </Button>
             <div className="flex-1">
-              <h1 className="font-semibold truncate">Trip to {currentTrip.destination}</h1>
-              <p className="text-xs text-muted-foreground">Tracking your ride</p>
+              <h1 className="font-semibold truncate">Your Security Transport to {currentTrip.destination}</h1>
+              <p className="text-xs text-muted-foreground">Tracking your protection transport</p>
             </div>
           </div>
         </header>
@@ -4447,17 +4531,17 @@ function App() {
                     etaStatus === 'arriving' ? 'text-green-800' :
                     etaStatus === 'nearby' ? 'text-yellow-800' : 'text-blue-800'
                   }`}>
-                    {etaStatus === 'arriving' ? '🚗 Driver Arriving Now!' :
+                    {etaStatus === 'arriving' ? '🚗 Your Security Transport Professional Arriving Now!' :
                      etaStatus === 'nearby' ? `🔔 ${assignedDriver.name} is ${assignedDriver.eta} minutes away` :
-                     `📍 ${assignedDriver.name} is on the way`}
+                     `📍 Your protection transport specialist ${assignedDriver.name} is en route`}
                   </p>
                   <p className={`text-xs mt-1 ${
                     etaStatus === 'arriving' ? 'text-green-600' :
                     etaStatus === 'nearby' ? 'text-yellow-600' : 'text-blue-600'
                   }`}>
-                    {etaStatus === 'arriving' ? 'Please be ready for pickup' :
-                     etaStatus === 'nearby' ? 'Get ready - driver almost here!' :
-                     `Estimated arrival: ${assignedDriver.eta} minutes • Booked ${timeSinceBooking}min ago`}
+                    {etaStatus === 'arriving' ? 'Your secure transport is ready for pickup' :
+                     etaStatus === 'nearby' ? 'Your security transport professional is almost here!' :
+                     `Estimated arrival: ${assignedDriver.eta} minutes • Your transport booked ${timeSinceBooking}min ago`}
                   </p>
                 </div>
                 <Button
@@ -4486,7 +4570,7 @@ function App() {
             trip={currentTrip} 
             driver={{...assignedDriver, location: userLocation}} 
             onArrival={() => {
-              toast.success("🚗 Driver has arrived!")
+              toast.success("🚗 Your security transport professional has arrived!")
               // Could transition to in-trip mode here
             }}
           />
@@ -4628,10 +4712,10 @@ function App() {
               setIsChatOpen(false)
               setUnreadMessages(0)
               setCurrentView('home')
-              toast.success("❌ Trip cancelled")
+              toast.success("❌ Your security transport has been cancelled")
             }}
           >
-            Cancel Trip
+            Cancel Security Transport
           </Button>
         </div>
 
@@ -4782,8 +4866,8 @@ function App() {
         
         <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
           <div className="max-w-md mx-auto">
-            <h1 className="text-xl font-bold">Your Activity</h1>
-            <p className="text-sm text-muted-foreground">Recent trips and bookings</p>
+            <h1 className="text-xl font-bold">Your Security Transport Activity</h1>
+            <p className="text-sm text-muted-foreground">Recent protection transport services and bookings</p>
           </div>
         </header>
 
@@ -4793,11 +4877,11 @@ function App() {
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <List size={32} className="text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold mb-2">No trips yet</h3>
-              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">When you book your first premium transport with Armora, it will appear here</p>
+              <h3 className="text-xl font-bold mb-2">No security transports yet</h3>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">When you book your first personalized protection transport with Armora, it will appear here</p>
               <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
                 <Car size={18} className="mr-2" />
-                Book your first ride
+                Book your first security transport
               </Button>
             </div>
           ) : (
@@ -4835,7 +4919,7 @@ function App() {
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
-                      <span className="text-sm text-muted-foreground">Driver: {trip.driver.name}</span>
+                      <span className="text-sm text-muted-foreground">Security Professional: {trip.driver.name}</span>
                       <Button variant="ghost" size="sm" className="h-7 text-xs">
                         View details
                       </Button>
