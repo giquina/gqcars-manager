@@ -2994,7 +2994,7 @@ function App() {
           </div>
         </header>
 
-        <div className="relative z-10 max-w-md mx-auto p-4 pb-6 overflow-y-auto min-h-screen">{/* Added scroll container for step 2+ */}
+        <div className={`relative z-10 max-w-md mx-auto p-4 pb-6 ${onboardingStep >= 2 ? 'overflow-y-auto' : ''} ${onboardingStep >= 2 ? 'max-h-[calc(100vh-120px)]' : 'min-h-screen'}`}>{/* Scrollable container for step 2+ */}
           {/* Slide 0: Assessment Introduction */}
           {onboardingStep === 0 && (
             <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
@@ -3133,14 +3133,14 @@ function App() {
 
           {/* Slide 2: Travel Frequency - Enhanced Design with Proper Checkbox Positioning */}
           {onboardingStep === 2 && (
-            <div className="space-y-6 animate-in fade-in duration-500 pb-8">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">How often do you need secure transport?</h2>
+            <div className="space-y-4 animate-in fade-in duration-500 pb-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
                 <p className="text-sm text-slate-300 leading-relaxed">Pick what matches your schedule</p>
               </div>
 
               {/* Enhanced Cards with Better Layout */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[
                   { 
                     value: 'Just Sometimes', 
@@ -3173,35 +3173,35 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-300 relative overflow-hidden border-2 ${
+                    className={`cursor-pointer transition-all duration-300 relative overflow-hidden border-2 ${ 
                       onboardingData.travelFrequency === option.value
                         ? 'bg-gradient-to-br from-amber-400/30 to-amber-600/30 border-amber-400 shadow-xl transform scale-[1.02]' 
                         : 'bg-slate-800/80 border-slate-600/80 hover:border-amber-400/60 hover:bg-slate-800/90 hover:shadow-lg hover:scale-[1.01]'
                     }`}
                     onClick={() => updateOnboardingData('travelFrequency', option.value)}
                   >
-                    <CardContent className="p-5 relative">
+                    <CardContent className="p-4 relative">
                       {/* Properly positioned checkbox indicator */}
-                      <div className={`absolute top-4 right-4 w-6 h-6 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-300 ${
+                      <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-300 ${ 
                         onboardingData.travelFrequency === option.value 
                           ? 'bg-amber-400 scale-110 shadow-lg' 
                           : 'bg-transparent scale-100'
                       }`}>
                         {onboardingData.travelFrequency === option.value && (
-                          <div className="w-2.5 h-2.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                          <div className="w-2 h-2 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                         )}
                       </div>
                       
                       {/* Content area with proper spacing */}
-                      <div className="pr-10"> {/* Right padding to avoid checkbox */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <h3 className="font-bold text-white text-lg leading-tight">{option.value}</h3>
-                          <span className="text-xs px-2.5 py-1 bg-amber-400/25 text-amber-200 rounded-full font-medium border border-amber-400/30">
+                      <div className="pr-8"> {/* Right padding to avoid checkbox */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-bold text-white text-base leading-tight">{option.value}</h3>
+                          <span className="text-xs px-2 py-0.5 bg-amber-400/25 text-amber-200 rounded-full font-medium border border-amber-400/30">
                             {option.pricingTier}
                           </span>
                           {option.popular && (
-                            <span className="text-xs px-2.5 py-1 bg-green-400/25 text-green-200 rounded-full font-medium border border-green-400/30">
-                              Most Popular
+                            <span className="text-xs px-2 py-0.5 bg-green-400/25 text-green-200 rounded-full font-medium border border-green-400/30">
+                              Popular
                             </span>
                           )}
                         </div>
@@ -3214,16 +3214,16 @@ function App() {
               </div>
 
               {/* Enhanced Custom Input Section */}
-              <div className="space-y-3 bg-slate-800/40 rounded-xl p-4 border border-slate-600/50">
+              <div className="space-y-2 bg-slate-800/40 rounded-xl p-3 border border-slate-600/50">
                 <label className="text-sm font-semibold text-amber-200 flex items-center gap-2">
-                  <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div>
                   Different schedule?
                 </label>
                 <textarea
                   value={onboardingData.travelFrequencyCustom}
                   onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
-                  placeholder="Tell us about your specific travel needs... e.g., 'I need transport every Tuesday and Thursday for client meetings, plus occasional airport runs'"
-                  className="w-full h-16 px-4 py-3 bg-slate-700/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all resize-none text-sm leading-relaxed"
+                  placeholder="Tell us about your specific travel needs..."
+                  className="w-full h-12 px-3 py-2 bg-slate-700/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all resize-none text-sm leading-relaxed"
                   maxLength={300}
                 />
                 <div className="flex justify-between items-center">
@@ -3237,9 +3237,9 @@ function App() {
 
               {/* Service Matching Preview */}
               {onboardingData.travelFrequency && (
-                <div className="p-4 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-xl border border-amber-400/30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <CheckCircle size={16} className="text-amber-400" />
+                <div className="p-3 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-xl border border-amber-400/30">
+                  <div className="flex items-center gap-2 mb-1">
+                    <CheckCircle size={14} className="text-amber-400" />
                     <h4 className="font-semibold text-amber-200 text-sm">Service Recommendation</h4>
                   </div>
                   <p className="text-xs text-amber-100 leading-relaxed">
@@ -3251,7 +3251,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
-                className="w-full h-13 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-6"
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-4"
               >
                 Continue to Service Style
               </Button>
@@ -3260,13 +3260,13 @@ function App() {
 
           {/* Slide 3: Service Style - Enhanced Design */}
           {onboardingStep === 3 && (
-            <div className="space-y-6 animate-in fade-in duration-500 pb-8">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">How do you want your security to look?</h2>
+            <div className="space-y-4 animate-in fade-in duration-500 pb-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">How do you want your security to look?</h2>
                 <p className="text-sm text-slate-300 leading-relaxed">Pick the style that feels right for your lifestyle</p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[
                   { 
                     value: 'Quiet & Discrete', 
@@ -3296,17 +3296,17 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('serviceStyle', option.value)}
                   >
-                    <CardContent className="content-area p-5">
+                    <CardContent className="content-area p-4">
                       {/* Properly positioned checkbox */}
                       <div className={`checkbox-indicator ${onboardingData.serviceStyle === option.value ? 'checked' : ''}`}>
                         <div className="check-dot"></div>
                       </div>
                       
-                      <div className="flex items-start gap-4">
-                        <div className="text-2xl flex-shrink-0 mt-1">{option.icon}</div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-white text-lg mb-2 leading-tight">{option.value}</h3>
-                          <p className="text-sm text-slate-300 mb-3 font-medium">{option.desc}</p>
+                      <div className="flex items-start gap-3">
+                        <div className="text-xl flex-shrink-0 mt-1">{option.icon}</div>
+                        <div className="flex-1 pr-8">
+                          <h3 className="font-bold text-white text-base mb-2 leading-tight">{option.value}</h3>
+                          <p className="text-sm text-slate-300 mb-2 font-medium">{option.desc}</p>
                           <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/20">
                             <p className="text-xs text-amber-200 leading-relaxed">
                               <strong>Best for:</strong> {option.bestFor}
@@ -3320,16 +3320,16 @@ function App() {
               </div>
 
               {/* Enhanced Custom Input */}
-              <div className="space-y-3 bg-slate-800/40 rounded-xl p-4 border border-slate-600/50">
+              <div className="space-y-2 bg-slate-800/40 rounded-xl p-3 border border-slate-600/50">
                 <label className="text-sm font-semibold text-amber-200 flex items-center gap-2">
-                  <div className="w-2 h-2 bg-amber-400 rounded-full"></div>
-                  Special preferences or requirements:
+                  <div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div>
+                  Special preferences:
                 </label>
                 <textarea
                   value={onboardingData.serviceStyleCustom}
                   onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
-                  placeholder="Tell us about any specific style preferences, special requirements, or unique circumstances we should know about..."
-                  className="w-full h-16 px-4 py-3 bg-slate-700/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all resize-none text-sm leading-relaxed"
+                  placeholder="Any specific style preferences or requirements..."
+                  className="w-full h-12 px-3 py-2 bg-slate-700/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all resize-none text-sm leading-relaxed"
                   maxLength={250}
                 />
                 <div className="flex justify-between items-center">
@@ -3344,7 +3344,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
-                className="w-full h-13 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-6"
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-4"
               >
                 Continue to Security Comfort
               </Button>
@@ -3353,13 +3353,13 @@ function App() {
 
           {/* Slide 4: Security Comfort Level - Simplified */}
           {onboardingStep === 4 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-2">
+            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+              <div className="text-center space-y-1">
                 <h2 className="text-lg font-bold text-white">How much security presence feels right?</h2>
                 <p className="text-sm text-slate-300">Choose what makes you comfortable</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
                   { 
                     value: 'Barely There', 
@@ -3396,15 +3396,15 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('securityComfort', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-1">
+                          <div className="flex items-center gap-2 mb-1">
                             <h3 className="font-bold text-white text-sm">{option.value}</h3>
                             {/* Intensity indicator dots */}
                             <div className="flex gap-1">
                               {[...Array(5)].map((_, i) => (
-                                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${ 
+                                <div key={i} className={`w-1 h-1 rounded-full transition-colors duration-200 ${ 
                                   i < option.intensity ? 'bg-amber-400 shadow-sm' : 'bg-slate-600'
                                 }`} />
                               ))}
@@ -3414,7 +3414,7 @@ function App() {
                         </div>
                         
                         {/* Selection indicator */}
-                        <div className={`w-6 h-6 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
+                        <div className={`w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
                           onboardingData.securityComfort === option.value 
                             ? 'bg-amber-400 scale-110 shadow-lg' 
                             : 'bg-transparent scale-100'
@@ -3429,13 +3429,13 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <label className="text-sm font-medium text-amber-200">What makes you feel comfortable:</label>
                 <textarea
                   value={onboardingData.securityComfortCustom}
                   onChange={(e) => updateOnboardingData('securityComfortCustom', e.target.value)}
                   placeholder="Tell us what feels right for you..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={200}
                 />
               </div>
@@ -3443,7 +3443,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.securityComfort && !onboardingData.securityComfortCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                className="w-full h-11 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-3"
               >
                 Continue
               </Button>
@@ -3452,13 +3452,13 @@ function App() {
 
           {/* Slide 5: Travel Patterns & Locations - Simplified */}
           {onboardingStep === 5 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-2">
+            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+              <div className="text-center space-y-1">
                 <h2 className="text-lg font-bold text-white">Where do you need secure transport?</h2>
                 <p className="text-sm text-amber-200">✓ You can pick multiple places</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
                   { 
                     value: 'City Center & Business', 
@@ -3494,7 +3494,7 @@ function App() {
                     }`}
                     onClick={() => toggleArrayValue('locations', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h3 className="font-bold text-white text-sm mb-1">{option.value}</h3>
@@ -3502,7 +3502,7 @@ function App() {
                         </div>
                         
                         {/* Checkbox indicator */}
-                        <div className={`w-5 h-5 border-2 border-amber-400 rounded flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
+                        <div className={`w-4 h-4 border-2 border-amber-400 rounded flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
                           onboardingData.locations.includes(option.value) 
                             ? 'bg-amber-400 scale-110 shadow-lg' 
                             : 'bg-transparent scale-100'
@@ -3517,13 +3517,13 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <label className="text-sm font-medium text-amber-200">Specific places:</label>
                 <textarea
                   value={onboardingData.locationsCustom}
                   onChange={(e) => updateOnboardingData('locationsCustom', e.target.value)}
                   placeholder="Any specific addresses or areas..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={200}
                 />
               </div>
@@ -3531,7 +3531,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.locations.length === 0 && !onboardingData.locationsCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                className="w-full h-11 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-3"
               >
                 Continue
               </Button>
@@ -3540,13 +3540,13 @@ function App() {
 
           {/* Slide 6: Risk Assessment - Simplified */}
           {onboardingStep === 6 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-2">
+            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+              <div className="text-center space-y-1">
                 <h2 className="text-lg font-bold text-white">Security assessment</h2>
                 <p className="text-sm text-slate-300">Help us understand your protection needs</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
                   { 
                     value: 'Standard Business', 
@@ -3588,12 +3588,12 @@ function App() {
                     }`}
                     onClick={() => toggleArrayValue('riskConcerns', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-1">
+                          <div className="flex items-center gap-2 mb-1">
                             <h3 className="font-bold text-white text-sm">{option.value}</h3>
-                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
                               option.level === 'enhanced' ? 'bg-blue-400/20 text-blue-300' :
                               option.level === 'elevated' ? 'bg-yellow-400/20 text-yellow-300' :
                               'bg-green-400/20 text-green-300'
@@ -3605,7 +3605,7 @@ function App() {
                         </div>
                         
                         {/* Checkbox indicator */}
-                        <div className={`w-5 h-5 border-2 border-amber-400 rounded flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
+                        <div className={`w-4 h-4 border-2 border-amber-400 rounded flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
                           onboardingData.riskConcerns.includes(option.value) 
                             ? 'bg-amber-400 scale-110 shadow-lg' 
                             : 'bg-transparent scale-100'
@@ -3620,19 +3620,19 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <label className="text-sm font-medium text-amber-200">Additional details (confidential):</label>
                 <textarea
                   value={onboardingData.riskConcernsCustom}
                   onChange={(e) => updateOnboardingData('riskConcernsCustom', e.target.value)}
                   placeholder="Any specific requirements (secure & confidential)..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={300}
                 />
                 <div className="flex justify-between items-center">
                   <p className="text-xs text-slate-400">{onboardingData.riskConcernsCustom.length}/300</p>
                   <div className="flex items-center gap-1 text-xs text-amber-300">
-                    <Shield size={10} />
+                    <Shield size={8} />
                     <span>Secure</span>
                   </div>
                 </div>
@@ -3641,7 +3641,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.riskConcerns.length === 0 && !onboardingData.riskConcernsCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                className="w-full h-11 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-3"
               >
                 Continue
               </Button>
@@ -3650,28 +3650,28 @@ function App() {
 
           {/* Slide 7: Emergency Contacts */}
           {onboardingStep === 7 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="space-y-2 text-center">
+            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+              <div className="space-y-1 text-center">
                 <h2 className="text-lg font-bold text-white">Emergency contact information</h2>
                 <p className="text-sm text-slate-300">Industry best practice for professional duty of care</p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {/* Primary Contact */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <h3 className="font-semibold text-amber-200 text-sm">Primary Contact</h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <Input
                       value={onboardingData.emergencyContact1.name}
                       onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, name: e.target.value})}
                       placeholder="Full name"
-                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-10 text-sm"
+                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-9 text-sm"
                     />
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                       <select
                         value={onboardingData.emergencyContact1.relationship}
                         onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, relationship: e.target.value})}
-                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400 h-10 text-sm"
+                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400 h-9 text-sm"
                       >
                         <option value="">Relationship</option>
                         <option value="Spouse">Spouse</option>
@@ -3687,27 +3687,27 @@ function App() {
                         onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, phone: e.target.value})}
                         placeholder="Phone number"
                         type="tel"
-                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-10 text-sm"
+                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-9 text-sm"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Secondary Contact */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <h3 className="font-semibold text-amber-200 text-sm">Secondary Contact (Optional)</h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <Input
                       value={onboardingData.emergencyContact2.name}
                       onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, name: e.target.value})}
                       placeholder="Full name"
-                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-10 text-sm"
+                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-9 text-sm"
                     />
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                       <select
                         value={onboardingData.emergencyContact2.relationship}
                         onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, relationship: e.target.value})}
-                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400 h-10 text-sm"
+                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400 h-9 text-sm"
                       >
                         <option value="">Relationship</option>
                         <option value="Spouse">Spouse</option>
@@ -3723,7 +3723,7 @@ function App() {
                         onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, phone: e.target.value})}
                         placeholder="Phone number"
                         type="tel"
-                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-10 text-sm"
+                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-9 text-sm"
                       />
                     </div>
                   </div>
@@ -3733,7 +3733,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.emergencyContact1.name || !onboardingData.emergencyContact1.phone}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                className="w-full h-11 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-3"
               >
                 Continue
               </Button>
@@ -3742,13 +3742,13 @@ function App() {
 
           {/* Slide 8: Emergency Response - Simplified */}
           {onboardingStep === 8 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="space-y-2 text-center">
+            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+              <div className="space-y-1 text-center">
                 <h2 className="text-lg font-bold text-white">Emergency response preferences</h2>
                 <p className="text-sm text-slate-300">How should we coordinate in emergencies?</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
                   { 
                     value: 'Contact family first', 
@@ -3780,7 +3780,7 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('emergencyResponse', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h3 className="font-bold text-white text-sm mb-1">{option.value}</h3>
@@ -3789,13 +3789,13 @@ function App() {
                         </div>
                         
                         {/* Radio button indicator */}
-                        <div className={`w-5 h-5 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
+                        <div className={`w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${
                           onboardingData.emergencyResponse === option.value 
                             ? 'bg-amber-400 scale-110 shadow-lg' 
                             : 'bg-transparent scale-100'
                         }`}>
                           {onboardingData.emergencyResponse === option.value && (
-                            <div className="w-2 h-2 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                            <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                           )}
                         </div>
                       </div>
@@ -3804,19 +3804,19 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <label className="text-sm font-medium text-amber-200">Medical info or special instructions:</label>
                 <textarea
                   value={onboardingData.emergencyInstructions}
                   onChange={(e) => updateOnboardingData('emergencyInstructions', e.target.value)}
                   placeholder="Medical conditions, allergies, special instructions..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={300}
                 />
                 <div className="flex justify-between items-center">
                   <p className="text-xs text-slate-400">{onboardingData.emergencyInstructions.length}/300</p>
                   <div className="flex items-center gap-1 text-xs text-amber-300">
-                    <Shield size={10} />
+                    <Shield size={8} />
                     <span>Confidential</span>
                   </div>
                 </div>
@@ -3825,7 +3825,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.emergencyResponse}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+                className="w-full h-11 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-3"
               >
                 Complete Assessment
               </Button>
