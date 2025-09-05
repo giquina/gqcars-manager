@@ -44,7 +44,6 @@ declare global {
   }
 }
 
-// Google Maps Component with enhanced destination support
 const GoogleMapComponent = ({ 
   onLocationSelect, 
   selectedLocation, 
@@ -176,41 +175,6 @@ const GoogleMapComponent = ({
       setIsMapLoaded(true)
     }
 
-    // Update destination marker when destination changes
-    useEffect(() => {
-      if (googleMapRef.current && destinationLocation) {
-        // Remove existing destination marker
-        if (destinationMarkerRef.current) {
-          destinationMarkerRef.current.setMap(null)
-        }
-        
-        // Add new destination marker
-        destinationMarkerRef.current = new window.google.maps.Marker({
-          position: destinationLocation,
-          map: googleMapRef.current,
-          icon: {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#22C55E" stroke="white" stroke-width="1"/>
-                <circle cx="12" cy="9" r="2.5" fill="white"/>
-              </svg>
-            `),
-            scaledSize: new window.google.maps.Size(32, 32),
-            anchor: new window.google.maps.Point(16, 32)
-          },
-          title: "Destination"
-        })
-
-        // Adjust map bounds to include both pickup and destination
-        if (selectedLocation) {
-          const bounds = new window.google.maps.LatLngBounds()
-          bounds.extend(selectedLocation)
-          bounds.extend(destinationLocation)
-          googleMapRef.current.fitBounds(bounds)
-        }
-      }
-    }, [destinationLocation, selectedLocation])
-
     // Check if Google Maps is already loaded
     if (window.google?.maps) {
       initializeMap()
@@ -226,6 +190,41 @@ const GoogleMapComponent = ({
       }
     }
   }, [currentLocation, onLocationSelect])
+
+  // Update destination marker when destination changes
+  useEffect(() => {
+    if (googleMapRef.current && destinationLocation) {
+      // Remove existing destination marker
+      if (destinationMarkerRef.current) {
+        destinationMarkerRef.current.setMap(null)
+      }
+      
+      // Add new destination marker
+      destinationMarkerRef.current = new window.google.maps.Marker({
+        position: destinationLocation,
+        map: googleMapRef.current,
+        icon: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#22C55E" stroke="white" stroke-width="1"/>
+              <circle cx="12" cy="9" r="2.5" fill="white"/>
+            </svg>
+          `),
+          scaledSize: new window.google.maps.Size(32, 32),
+          anchor: new window.google.maps.Point(16, 32)
+        },
+        title: "Destination"
+      })
+
+      // Adjust map bounds to include both pickup and destination
+      if (selectedLocation) {
+        const bounds = new window.google.maps.LatLngBounds()
+        bounds.extend(selectedLocation)
+        bounds.extend(destinationLocation)
+        googleMapRef.current.fitBounds(bounds)
+      }
+    }
+  }, [destinationLocation, selectedLocation])
 
   // Get user's current location
   const getCurrentLocation = () => {
@@ -529,22 +528,35 @@ const armoraDrivers = [
   }
 ]
 
-function App() {
+const App = () => {
   // State management
   const [currentView, setCurrentView] = useState<string>('welcome')
+  const [selectedService, setSelectedService] = useState<string>('')
+  const [expandedService, setExpandedService] = useState<string>('')
+  
+  // KV state - declare separately to avoid initialization order issues
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useKV("armora-onboarding-complete", false)
   const [isFirstLaunch, setIsFirstLaunch] = useKV("armora-first-launch", true)
-  const [selectedService, setSelectedService] = useState<string>('')
-  const [expandedService, setExpandedService] = useState<string>('') // New state for expanded service details
+  const [favorites, setFavorites] = useKV("favorite-locations", [] as any[])
+  const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
+  const [paymentReservations, setPaymentReservations] = useKV("payment-reservations", [] as any[])
+  const [currentTrip, setCurrentTrip] = useKV("current-trip", null as any)
+  const [questionnaireAnswers, setQuestionnaireAnswers] = useKV("questionnaire-answers", {
+    workType: [] as string[],
+    travelFrequency: '',
+    securityStyle: '',
+    comfortLevel: '',
+    locations: [] as string[],
+    customRequirements: ''
+  })
+  
+  // Form and booking state
   const [bookingForm, setBookingForm] = useState({
     pickup: '',
     destination: '',
     pickupCoords: null as { lat: number; lng: number } | null,
     destinationCoords: null as { lat: number; lng: number } | null
   })
-  const [favorites, setFavorites] = useKV("favorite-locations", [] as any[])
-  const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
-  const [paymentReservations, setPaymentReservations] = useKV("payment-reservations", [] as any[])
   
   // Map and location state
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null)
@@ -560,21 +572,23 @@ function App() {
   const [isGeocodingDestination, setIsGeocodingDestination] = useState(false)
   
   // Driver tracking and trip states
-  const [currentTrip, setCurrentTrip] = useKV("current-trip", null as any)
   const [assignedDriver, setAssignedDriver] = useState<any>(null)
   const [driverLocation, setDriverLocation] = useState<{lat: number, lng: number} | null>(null)
   const [tripStatus, setTripStatus] = useState<'searching' | 'driver_assigned' | 'driver_arriving' | 'arrived' | 'in_progress' | 'completed'>('searching')
 
+  // Driver chat state
+  const [messages, setMessages] = useState([
+    { id: 1, from: 'driver', text: 'Hello! I\'m your security driver James. I\'ll be with you in 5 minutes.', time: '2:34 PM' },
+    { id: 2, from: 'driver', text: 'I\'m driving a black Mercedes S-Class. Look for license plate MB21 ABC.', time: '2:35 PM' }
+  ])
+  const [newMessage, setNewMessage] = useState('')
+
+  // Trip rating state
+  const [rating, setRating] = useState(0)
+  const [feedback, setFeedback] = useState('')
+
   // Questionnaire state management
   const [questionnaireStep, setQuestionnaireStep] = useState<number>(0)
-  const [questionnaireAnswers, setQuestionnaireAnswers] = useKV("questionnaire-answers", {
-    workType: [] as string[],
-    travelFrequency: '',
-    securityStyle: '',
-    comfortLevel: '',
-    locations: [] as string[],
-    customRequirements: ''
-  })
 
   // Initialize app flow based on user state
   useEffect(() => {
@@ -2853,12 +2867,6 @@ function App() {
 
   // Driver Chat View
   if (currentView === 'driver-chat') {
-    const [messages, setMessages] = useState([
-      { id: 1, from: 'driver', text: 'Hello! I\'m your security driver James. I\'ll be with you in 5 minutes.', time: '2:34 PM' },
-      { id: 2, from: 'driver', text: 'I\'m driving a black Mercedes S-Class. Look for license plate MB21 ABC.', time: '2:35 PM' }
-    ])
-    const [newMessage, setNewMessage] = useState('')
-
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col">
         <Toaster position="top-center" />
@@ -2951,9 +2959,6 @@ function App() {
 
   // Trip Rating View
   if (currentView === 'trip-rating') {
-    const [rating, setRating] = useState(0)
-    const [feedback, setFeedback] = useState('')
-
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex items-center justify-center p-4">
         <div className="max-w-sm mx-auto text-center space-y-6">
