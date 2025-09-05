@@ -44,19 +44,22 @@ declare global {
   }
 }
 
-// Google Maps Component
+// Google Maps Component with enhanced destination support
 const GoogleMapComponent = ({ 
   onLocationSelect, 
   selectedLocation, 
-  currentLocation 
+  currentLocation,
+  destinationLocation 
 }: {
   onLocationSelect: (location: { lat: number; lng: number; address: string }) => void
   selectedLocation?: { lat: number; lng: number }
   currentLocation?: { lat: number; lng: number }
+  destinationLocation?: { lat: number; lng: number }
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const googleMapRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
+  const destinationMarkerRef = useRef<any>(null)
   const currentLocationMarkerRef = useRef<any>(null)
   const [isMapLoaded, setIsMapLoaded] = useState(false)
   const geocoderRef = useRef<any>(null)
@@ -172,6 +175,41 @@ const GoogleMapComponent = ({
 
       setIsMapLoaded(true)
     }
+
+    // Update destination marker when destination changes
+    useEffect(() => {
+      if (googleMapRef.current && destinationLocation) {
+        // Remove existing destination marker
+        if (destinationMarkerRef.current) {
+          destinationMarkerRef.current.setMap(null)
+        }
+        
+        // Add new destination marker
+        destinationMarkerRef.current = new window.google.maps.Marker({
+          position: destinationLocation,
+          map: googleMapRef.current,
+          icon: {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#22C55E" stroke="white" stroke-width="1"/>
+                <circle cx="12" cy="9" r="2.5" fill="white"/>
+              </svg>
+            `),
+            scaledSize: new window.google.maps.Size(32, 32),
+            anchor: new window.google.maps.Point(16, 32)
+          },
+          title: "Destination"
+        })
+
+        // Adjust map bounds to include both pickup and destination
+        if (selectedLocation) {
+          const bounds = new window.google.maps.LatLngBounds()
+          bounds.extend(selectedLocation)
+          bounds.extend(destinationLocation)
+          googleMapRef.current.fitBounds(bounds)
+        }
+      }
+    }, [destinationLocation, selectedLocation])
 
     // Check if Google Maps is already loaded
     if (window.google?.maps) {
@@ -511,6 +549,15 @@ function App() {
   // Map and location state
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [selectedPickupLocation, setSelectedPickupLocation] = useState<{ lat: number; lng: number; address: string } | null>(null)
+  const [selectedDestinationLocation, setSelectedDestinationLocation] = useState<{ lat: number; lng: number; address: string } | null>(null)
+  
+  // Autocomplete and geocoding state
+  const [pickupSuggestions, setPickupSuggestions] = useState<any[]>([])
+  const [destinationSuggestions, setDestinationSuggestions] = useState<any[]>([])
+  const [showPickupSuggestions, setShowPickupSuggestions] = useState(false)
+  const [showDestinationSuggestions, setShowDestinationSuggestions] = useState(false)
+  const [isGeocodingPickup, setIsGeocodingPickup] = useState(false)
+  const [isGeocodingDestination, setIsGeocodingDestination] = useState(false)
   
   // Driver tracking and trip states
   const [currentTrip, setCurrentTrip] = useKV("current-trip", null as any)
@@ -537,6 +584,28 @@ function App() {
       setCurrentView('welcome')
     }
   }, [hasCompletedOnboarding])
+
+  // Close suggestion dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      
+      // Check if click is outside pickup suggestions
+      if (!target.closest('.pickup-input-container')) {
+        setShowPickupSuggestions(false)
+      }
+      
+      // Check if click is outside destination suggestions  
+      if (!target.closest('.destination-input-container')) {
+        setShowDestinationSuggestions(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   // Get user's current location on app start
   useEffect(() => {
@@ -573,7 +642,202 @@ function App() {
       pickup: location.address,
       pickupCoords: { lat: location.lat, lng: location.lng }
     }))
+    setShowPickupSuggestions(false)
   }, [])
+
+  // Geocoding and Places API integration
+  const geocodeAddress = useCallback(async (address: string, isDestination: boolean = false) => {
+    if (!window.google?.maps || !address.trim()) return []
+    
+    try {
+      const geocoder = new window.google.maps.Geocoder()
+      const placesService = new window.google.maps.places.PlacesService(document.createElement('div'))
+      
+      // Use Places Autocomplete for better results
+      return new Promise((resolve) => {
+        const request = {
+          input: address,
+          location: currentLocation ? new window.google.maps.LatLng(currentLocation.lat, currentLocation.lng) : undefined,
+          radius: currentLocation ? 50000 : undefined, // 50km radius
+          componentRestrictions: { country: 'GB' }, // UK only
+          types: ['establishment', 'geocode'] // Include businesses and addresses
+        }
+        
+        const autocompleteService = new window.google.maps.places.AutocompleteService()
+        autocompleteService.getPlacePredictions(request, (predictions, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
+            const suggestions = predictions.slice(0, 5).map(prediction => ({
+              description: prediction.description,
+              place_id: prediction.place_id,
+              structured_formatting: prediction.structured_formatting
+            }))
+            resolve(suggestions)
+          } else {
+            // Fallback to basic geocoding
+            geocoder.geocode(
+              { 
+                address: address + ', UK',
+                region: 'GB'
+              },
+              (results, status) => {
+                if (status === 'OK' && results && results.length > 0) {
+                  const suggestions = results.slice(0, 3).map(result => ({
+                    description: result.formatted_address,
+                    place_id: result.place_id,
+                    geometry: result.geometry
+                  }))
+                  resolve(suggestions)
+                } else {
+                  resolve([])
+                }
+              }
+            )
+          }
+        })
+      })
+    } catch (error) {
+      console.error('Geocoding error:', error)
+      return []
+    }
+  }, [currentLocation])
+
+  // Get detailed place information
+  const getPlaceDetails = useCallback(async (placeId: string) => {
+    if (!window.google?.maps) return null
+    
+    try {
+      return new Promise((resolve, reject) => {
+        const placesService = new window.google.maps.places.PlacesService(document.createElement('div'))
+        placesService.getDetails(
+          {
+            placeId: placeId,
+            fields: ['geometry', 'formatted_address', 'name']
+          },
+          (place, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK && place) {
+              resolve({
+                lat: place.geometry?.location?.lat(),
+                lng: place.geometry?.location?.lng(),
+                address: place.formatted_address || place.name,
+                name: place.name
+              })
+            } else {
+              reject(new Error('Place details not found'))
+            }
+          }
+        )
+      })
+    } catch (error) {
+      console.error('Place details error:', error)
+      return null
+    }
+  }, [])
+
+  // Handle pickup address input with autocomplete
+  const handlePickupChange = useCallback(async (value: string) => {
+    setBookingForm(prev => ({ ...prev, pickup: value }))
+    
+    if (value.length > 2) {
+      setIsGeocodingPickup(true)
+      setShowPickupSuggestions(true)
+      const suggestions = await geocodeAddress(value, false)
+      setPickupSuggestions(suggestions as any[])
+      setIsGeocodingPickup(false)
+    } else {
+      setPickupSuggestions([])
+      setShowPickupSuggestions(false)
+    }
+  }, [geocodeAddress])
+
+  // Handle destination address input with autocomplete  
+  const handleDestinationChange = useCallback(async (value: string) => {
+    setBookingForm(prev => ({ ...prev, destination: value }))
+    
+    if (value.length > 2) {
+      setIsGeocodingDestination(true)
+      setShowDestinationSuggestions(true)
+      const suggestions = await geocodeAddress(value, true)
+      setDestinationSuggestions(suggestions as any[])
+      setIsGeocodingDestination(false)
+    } else {
+      setDestinationSuggestions([])
+      setShowDestinationSuggestions(false)
+    }
+  }, [geocodeAddress])
+
+  // Handle suggestion selection for pickup
+  const handlePickupSuggestionSelect = useCallback(async (suggestion: any) => {
+    setShowPickupSuggestions(false)
+    setBookingForm(prev => ({ ...prev, pickup: suggestion.description }))
+    
+    if (suggestion.place_id) {
+      const placeDetails = await getPlaceDetails(suggestion.place_id)
+      if (placeDetails) {
+        setSelectedPickupLocation({
+          lat: placeDetails.lat,
+          lng: placeDetails.lng,
+          address: placeDetails.address
+        })
+        setBookingForm(prev => ({
+          ...prev,
+          pickup: placeDetails.address,
+          pickupCoords: { lat: placeDetails.lat, lng: placeDetails.lng }
+        }))
+        toast.success("Pickup location selected")
+      }
+    } else if (suggestion.geometry) {
+      // Fallback for geocoded results
+      const location = {
+        lat: suggestion.geometry.location.lat(),
+        lng: suggestion.geometry.location.lng(),
+        address: suggestion.description
+      }
+      setSelectedPickupLocation(location)
+      setBookingForm(prev => ({
+        ...prev,
+        pickup: location.address,
+        pickupCoords: { lat: location.lat, lng: location.lng }
+      }))
+      toast.success("Pickup location selected")
+    }
+  }, [getPlaceDetails])
+
+  // Handle suggestion selection for destination
+  const handleDestinationSuggestionSelect = useCallback(async (suggestion: any) => {
+    setShowDestinationSuggestions(false)
+    setBookingForm(prev => ({ ...prev, destination: suggestion.description }))
+    
+    if (suggestion.place_id) {
+      const placeDetails = await getPlaceDetails(suggestion.place_id)
+      if (placeDetails) {
+        setSelectedDestinationLocation({
+          lat: placeDetails.lat,
+          lng: placeDetails.lng,
+          address: placeDetails.address
+        })
+        setBookingForm(prev => ({
+          ...prev,
+          destination: placeDetails.address,
+          destinationCoords: { lat: placeDetails.lat, lng: placeDetails.lng }
+        }))
+        toast.success("Destination selected")
+      }
+    } else if (suggestion.geometry) {
+      // Fallback for geocoded results
+      const location = {
+        lat: suggestion.geometry.location.lat(),
+        lng: suggestion.geometry.location.lng(),
+        address: suggestion.description
+      }
+      setSelectedDestinationLocation(location)
+      setBookingForm(prev => ({
+        ...prev,
+        destination: location.address,
+        destinationCoords: { lat: location.lat, lng: location.lng }
+      }))
+      toast.success("Destination selected")
+    }
+  }, [getPlaceDetails])
 
   // Distance calculation helper
   const calculateDistance = useCallback((point1: any, point2: any) => {
@@ -708,28 +972,16 @@ function App() {
 
   // Calculate route distance for pricing
   const routeDistance = useMemo(() => {
-    if (bookingForm.pickupCoords && bookingForm.destinationCoords) {
-      return calculateDistance(bookingForm.pickupCoords, bookingForm.destinationCoords)
+    if (selectedPickupLocation && selectedDestinationLocation) {
+      return calculateDistance(
+        { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng },
+        { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng }
+      )
     }
     return 0
-  }, [bookingForm.pickupCoords, bookingForm.destinationCoords, calculateDistance])
+  }, [selectedPickupLocation, selectedDestinationLocation, calculateDistance])
 
-  // Update destination coordinates when manually entered (simple geocoding simulation)
-  const handleDestinationChange = useCallback((destination: string) => {
-    setBookingForm(prev => ({ ...prev, destination }))
-    
-    // If user enters a destination, we could add geocoding here
-    // For now, we'll just clear destination coords if it doesn't match a known location
-    if (destination === "Heathrow Airport") {
-      setBookingForm(prev => ({ 
-        ...prev, 
-        destinationCoords: { lat: 51.4700, lng: -0.4543 } // Heathrow coordinates
-      }))
-    } else {
-      // Clear destination coords for manual entry - in a real app, you'd geocode this
-      setBookingForm(prev => ({ ...prev, destinationCoords: null }))
-    }
-  }, [])
+
 
   // Welcome Screen
   if (currentView === 'welcome') {
@@ -1609,7 +1861,7 @@ function App() {
   // Home/Booking View
   if (currentView === 'home') {
     // Check if locations are entered for pricing display
-    const hasLocations = Boolean(bookingForm.pickup && bookingForm.destination)
+    const hasLocations = Boolean(selectedPickupLocation && selectedDestinationLocation)
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col">
@@ -1644,6 +1896,7 @@ function App() {
             <GoogleMapComponent
               currentLocation={currentLocation}
               selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
+              destinationLocation={selectedDestinationLocation ? { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng } : undefined}
               onLocationSelect={handleLocationSelect}
             />
           </Card>
@@ -1651,31 +1904,95 @@ function App() {
           {/* Location Input */}
           <Card className="border-0 shadow-sm bg-card">
             <CardContent className="p-3 space-y-2">
-              <div className="space-y-1.5">
-                <div className="relative">
+              <div className="space-y-1.5 relative">
+                <div className="relative pickup-input-container">
                   <Input
                     value={bookingForm.pickup}
-                    onChange={(e) => {
-                      setBookingForm(prev => ({ ...prev, pickup: e.target.value }))
-                      // Clear map selection if user types manually
-                      if (e.target.value !== selectedPickupLocation?.address) {
-                        setSelectedPickupLocation(null)
+                    onChange={(e) => handlePickupChange(e.target.value)}
+                    onFocus={() => {
+                      if (pickupSuggestions.length > 0) {
+                        setShowPickupSuggestions(true)
                       }
                     }}
                     placeholder="Pickup location (or tap map above)"
                     className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
                   />
                   <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
+                  {isGeocodingPickup && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                  
+                  {/* Pickup Suggestions Dropdown */}
+                  {showPickupSuggestions && pickupSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 bg-white border border-border/50 rounded-lg shadow-lg z-50 mt-1 max-h-40 overflow-y-auto">
+                      {pickupSuggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handlePickupSuggestionSelect(suggestion)}
+                          className="w-full text-left px-3 py-2 hover:bg-muted/50 border-b border-border/30 last:border-b-0 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <MapPin size={14} className="text-muted-foreground flex-shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-medium text-foreground truncate">
+                                {suggestion.structured_formatting?.main_text || suggestion.description.split(',')[0]}
+                              </p>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {suggestion.structured_formatting?.secondary_text || suggestion.description}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 
-                <div className="relative">
+                <div className="relative destination-input-container">
                   <Input
                     value={bookingForm.destination}
                     onChange={(e) => handleDestinationChange(e.target.value)}
+                    onFocus={() => {
+                      if (destinationSuggestions.length > 0) {
+                        setShowDestinationSuggestions(true)
+                      }
+                    }}
                     placeholder="Where to?"
                     className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
                   />
                   <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500 rounded-full"></div>
+                  {isGeocodingDestination && (
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                  
+                  {/* Destination Suggestions Dropdown */}
+                  {showDestinationSuggestions && destinationSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 bg-white border border-border/50 rounded-lg shadow-lg z-50 mt-1 max-h-40 overflow-y-auto">
+                      {destinationSuggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleDestinationSuggestionSelect(suggestion)}
+                          className="w-full text-left px-3 py-2 hover:bg-muted/50 border-b border-border/30 last:border-b-0 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <MapPin size={14} className="text-muted-foreground flex-shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-medium text-foreground truncate">
+                                {suggestion.structured_formatting?.main_text || suggestion.description.split(',')[0]}
+                              </p>
+                              <p className="text-xs text-muted-foreground truncate">
+                                {suggestion.structured_formatting?.secondary_text || suggestion.description}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               
@@ -1734,6 +2051,16 @@ function App() {
                   }}
                 >
                   ✈️ Airport
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="text-xs h-7 px-2"
+                  onClick={() => {
+                    handleDestinationChange("London King's Cross")
+                  }}
+                >
+                  🚂 King's Cross
                 </Button>
               </div>
             </CardContent>
@@ -1947,7 +2274,7 @@ function App() {
           {/* Book Button */}
           <Button 
             onClick={() => {
-              if (!bookingForm.pickup || !bookingForm.destination || !selectedService) {
+              if (!selectedPickupLocation || !selectedDestinationLocation || !selectedService) {
                 toast.error("Please enter pickup, destination and select a service")
                 return
               }
@@ -1969,8 +2296,8 @@ function App() {
               const newTrip = {
                 id: Date.now().toString(),
                 service: selectedServiceName,
-                pickup: bookingForm.pickup,
-                destination: bookingForm.destination,
+                pickup: selectedPickupLocation.address,
+                destination: selectedDestinationLocation.address,
                 date: new Date().toISOString(),
                 status: 'confirmed',
                 driverId: null
@@ -1985,9 +2312,9 @@ function App() {
               }, 1500)
             }}
             className="w-full h-10 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg disabled:opacity-50"
-            disabled={!bookingForm.pickup || !bookingForm.destination || !selectedService || !paymentReservations.find(res => res.serviceId === selectedService && res.status === 'confirmed')}
+            disabled={!selectedPickupLocation || !selectedDestinationLocation || !selectedService || !paymentReservations.find(res => res.serviceId === selectedService && res.status === 'confirmed')}
           >
-            {!bookingForm.pickup || !bookingForm.destination ? 
+            {!selectedPickupLocation || !selectedDestinationLocation ? 
               'Enter locations' :
               !selectedService ? 
               'Select service' :
@@ -2459,11 +2786,11 @@ function App() {
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-sm">{bookingForm.pickup}</span>
+                  <span className="text-sm">{selectedPickupLocation?.address || bookingForm.pickup}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <span className="text-sm">{bookingForm.destination}</span>
+                  <span className="text-sm">{selectedDestinationLocation?.address || bookingForm.destination}</span>
                 </div>
               </div>
               <div className="pt-2 border-t border-border">
