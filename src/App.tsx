@@ -1436,8 +1436,8 @@ function App() {
                               </CardContent>
                             </Card>
 
-                            {/* CTA Buttons - Fixed Above Bottom Navigation */}
-                            <div className="fixed bottom-20 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-40">
+                            {/* CTA Buttons - Fixed Closer to Bottom Navigation */}
+                            <div className="fixed bottom-16 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-40">
                               <div className="max-w-md mx-auto flex gap-3">
                                 <Button 
                                   variant="outline" 
@@ -1471,7 +1471,7 @@ function App() {
                                   }}
                                   className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
                                 >
-                                  Select Service
+                                  Select {service.name}
                                 </Button>
                               </div>
                             </div>
@@ -1532,7 +1532,7 @@ function App() {
         </div>
 
         {/* Bottom Navigation - Always Visible */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
           <div className="grid grid-cols-5 h-12 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
