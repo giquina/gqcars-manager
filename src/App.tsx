@@ -604,6 +604,9 @@ const App = () => {
   const [selectedService, setSelectedService] = useState<string>('')
   const [expandedService, setExpandedService] = useState<string>('')
   
+  // Questionnaire state management
+  const [questionnaireStep, setQuestionnaireStep] = useState<number>(0)
+  
   // KV state - declare separately to avoid initialization order issues
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useKV("armora-onboarding-complete", false)
   const [isFirstLaunch, setIsFirstLaunch] = useKV("armora-first-launch", true)
@@ -878,15 +881,17 @@ const App = () => {
     return 0
   }, [selectedPickupLocation, selectedDestinationLocation, calculateDistance])
 
-  // Questionnaire state management - TEMPORARILY REMOVED
-  // const [questionnaireStep, setQuestionnaireStep] = useState<number>(0)
-
   // Initialize app flow based on user state
   useEffect(() => {
-    // TEMPORARILY SKIP QUESTIONNAIRE - go directly to home
-    setCurrentView('home')
-    setHasCompletedOnboarding(true)
-  }, [])
+    if (hasCompletedOnboarding) {
+      setCurrentView('home')
+    } else if (isFirstLaunch) {
+      setCurrentView('welcome')
+    } else {
+      setCurrentView('questionnaire')
+      setQuestionnaireStep(0)
+    }
+  }, [hasCompletedOnboarding, isFirstLaunch])
 
   // Close suggestion dropdowns when clicking outside
   useEffect(() => {
@@ -2542,8 +2547,8 @@ const App = () => {
             <Button 
               onClick={() => {
                 setIsFirstLaunch(false)
-                setCurrentView('home')
-                setHasCompletedOnboarding(true)
+                setCurrentView('questionnaire')
+                setQuestionnaireStep(0)
               }}
               className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-base rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
             >
@@ -2566,12 +2571,638 @@ const App = () => {
     )
   }
 
-  // QUESTIONNAIRE TEMPORARILY REMOVED FOR TESTING
-  // Will re-add after confirming base app works
+  // QUESTIONNAIRE FLOW
   if (currentView === 'questionnaire') {
-    // Skip questionnaire and go to home
-    setCurrentView('home')
-    setHasCompletedOnboarding(true)
+    const totalSteps = 6
+    const progressPercentage = ((questionnaireStep + 1) / totalSteps) * 100
+
+    const handleNextStep = () => {
+      if (questionnaireStep < totalSteps - 1) {
+        setQuestionnaireStep(prev => prev + 1)
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        // Complete questionnaire
+        setHasCompletedOnboarding(true)
+        setCurrentView('home')
+        toast.success("Assessment complete! Welcome to Armora.")
+      }
+    }
+
+    const handlePrevStep = () => {
+      if (questionnaireStep > 0) {
+        setQuestionnaireStep(prev => prev - 1)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        setCurrentView('welcome')
+      }
+    }
+
+    const handleSaveAndExit = () => {
+      // Save current progress
+      toast.success("Progress saved. You can continue later.")
+      setCurrentView('welcome')
+    }
+
+    // Step 0: Work Type Selection
+    if (questionnaireStep === 0) {
+      const workOptions = [
+        { id: 'business-leader', title: 'Business Leader', subtitle: 'CEO, manager, executive roles', description: 'Perfect for: Board meetings, investor presentations, strategic planning, executive meetings' },
+        { id: 'business-owner', title: 'Business Owner', subtitle: 'Own a company, startup founder', description: 'Perfect for: Investor meetings, client pitches, business development, partnership negotiations', popular: true },
+        { id: 'lawyer-legal', title: 'Lawyer/Legal', subtitle: 'Attorney, legal work, court cases', description: 'Perfect for: Court appearances, client consultations, sensitive legal meetings, law firm visits' },
+        { id: 'doctor-medical', title: 'Doctor/Medical', subtitle: 'Healthcare, medical professional', description: 'Perfect for: Hospital visits, medical conferences, patient consultations, emergency calls' },
+        { id: 'banking-finance', title: 'Banking/Finance', subtitle: 'Money, investments, financial services', description: 'Perfect for: Client portfolio meetings, investment presentations, financial consultations' },
+        { id: 'tech-computer', title: 'Tech/Computer', subtitle: 'Software, IT, technology work', description: 'Perfect for: Client demos, tech conferences, startup meetings, software presentations' },
+        { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, buying/selling homes/buildings', description: 'Perfect for: Property viewings, client meetings, market tours, real estate conferences' },
+        { id: 'entertainment', title: 'Entertainment', subtitle: 'Artists, musicians, celebrities, performers', description: 'Perfect for: Events, performances, media appearances, venue transport' },
+        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep work information private', description: 'We respect your privacy and will provide professional service regardless' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <div className="questionnaire-title flex-1">
+                  <h3>What kind of work do you do?</h3>
+                </div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+                <div 
+                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us understand your security transport needs</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              {workOptions.map(option => {
+                const isSelected = questionnaireAnswers.workType.includes(option.id)
+                return (
+                  <Card 
+                    key={option.id}
+                    className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
+                      isSelected 
+                        ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                        : 'hover:shadow-md bg-white border border-border/40'
+                    }`}
+                    onClick={() => {
+                      setQuestionnaireAnswers(prev => ({
+                        ...prev,
+                        workType: isSelected 
+                          ? prev.workType.filter(type => type !== option.id)
+                          : [...prev.workType, option.id]
+                      }))
+                    }}
+                  >
+                    {option.popular && (
+                      <div className="absolute top-2 left-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-5">
+                        Popular
+                      </div>
+                    )}
+                    <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                      <div className="check-dot"></div>
+                    </div>
+                    <CardContent className="content-padding">
+                      <div className="space-y-2">
+                        <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
+                        <p className="text-xs text-muted-foreground">{option.subtitle}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+            
+            <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+              <p className="text-xs text-muted-foreground text-center">
+                ✓ You can pick more than one option • Choose all that describe your work
+              </p>
+            </div>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="w-24 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                disabled={questionnaireAnswers.workType.length === 0}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 1: Travel Frequency
+    if (questionnaireStep === 1) {
+      const frequencyOptions = [
+        { id: 'sometimes', title: 'Just Sometimes', subtitle: 'Special events and rare occasions', description: 'Perfect for: Important meetings, special events, airport trips. Frequency: 1-3 times per month or less' },
+        { id: 'weekly', title: 'About Once a Week', subtitle: 'Regular meetings and weekly commitments', description: 'Perfect for: Weekly client meetings, regular business appointments. Frequency: 1-2 times per week, consistent schedule' },
+        { id: 'daily', title: 'Almost Every Day', subtitle: 'Daily commute and regular work transport', description: 'Perfect for: Daily office commute, regular work schedule. Frequency: 4-6 days per week, consistent routine' },
+        { id: 'multiple', title: 'Multiple Times Daily', subtitle: 'Very busy schedule with frequent travel', description: 'Perfect for: Back-to-back meetings, multiple daily appointments. Frequency: 2+ trips per day, complex scheduling' },
+        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep frequency information private', description: 'We respect your privacy and will provide flexible service options' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <div className="questionnaire-title flex-1">
+                  <h3>How often do you need secure transport?</h3>
+                </div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+                <div 
+                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us understand your service frequency needs</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {frequencyOptions.map(option => {
+              const isSelected = questionnaireAnswers.travelFrequency === option.id
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
+                    isSelected 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  }`}
+                  onClick={() => {
+                    setQuestionnaireAnswers(prev => ({
+                      ...prev,
+                      travelFrequency: option.id
+                    }))
+                  }}
+                >
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
+                      <p className="text-xs text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handlePrevStep}
+                className="w-16 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="w-24 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                disabled={!questionnaireAnswers.travelFrequency}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 2: Security Style Preference
+    if (questionnaireStep === 2) {
+      const styleOptions = [
+        { id: 'discrete', title: 'Discrete & Quiet', subtitle: 'Barely noticeable, low-key protection', description: 'Perfect for: Daily routines, family outings. What to expect: Security stays 30+ feet away, uses civilian vehicles. Ideal if you value privacy.' },
+        { id: 'professional', title: 'Professional & Visible', subtitle: 'Clearly present but business-appropriate', description: 'Perfect for: Business meetings, corporate events. What to expect: Suited agents, marked vehicles, professional demeanor.' },
+        { id: 'premium', title: 'Full Premium Service', subtitle: 'Complete luxury with top protection', description: 'Perfect for: High-profile events, VIP occasions. What to expect: Multiple agents, luxury transport, comprehensive coverage.' },
+        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep security preferences private', description: 'We will recommend appropriate security levels based on your other responses' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <div className="questionnaire-title flex-1">
+                  <h3>What security style feels right for you?</h3>
+                </div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+                <div 
+                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us match your comfort level with appropriate security presentation</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {styleOptions.map(option => {
+              const isSelected = questionnaireAnswers.securityStyle === option.id
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
+                    isSelected 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  }`}
+                  onClick={() => {
+                    setQuestionnaireAnswers(prev => ({
+                      ...prev,
+                      securityStyle: option.id
+                    }))
+                  }}
+                >
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
+                      <p className="text-xs text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handlePrevStep}
+                className="w-16 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="w-24 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                disabled={!questionnaireAnswers.securityStyle}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 3: Comfort Level
+    if (questionnaireStep === 3) {
+      const comfortOptions = [
+        { id: 'minimal', title: 'Minimal Presence', subtitle: 'Nearly invisible, emergency-only', description: 'Security team maintains maximum distance and only intervenes in emergencies. Perfect for those who value complete normalcy.' },
+        { id: 'subtle', title: 'Subtle Approach', subtitle: 'Professional but unobtrusive', description: 'Security presence is felt but not obvious. Professional approach that balances protection with discretion.' },
+        { id: 'balanced', title: 'Balanced Visibility', subtitle: 'Clearly present but approachable', description: 'Security team is visible and professional, providing reassurance while maintaining approachability.' },
+        { id: 'high-visibility', title: 'High Visibility', subtitle: 'Obvious deterrent, authoritative presence', description: 'Clear security presence that acts as a visible deterrent. Professional, authoritative, and comprehensive protection.' },
+        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep comfort preferences private', description: 'We will recommend appropriate visibility levels based on your situation and needs' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <div className="questionnaire-title flex-1">
+                  <h3>What level of security presence feels comfortable?</h3>
+                </div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+                <div 
+                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • Everyone deserves to feel safe while traveling. Let us know your comfort level.</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {comfortOptions.map(option => {
+              const isSelected = questionnaireAnswers.comfortLevel === option.id
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
+                    isSelected 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  }`}
+                  onClick={() => {
+                    setQuestionnaireAnswers(prev => ({
+                      ...prev,
+                      comfortLevel: option.id
+                    }))
+                  }}
+                >
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
+                      <p className="text-xs text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handlePrevStep}
+                className="w-16 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="w-24 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                disabled={!questionnaireAnswers.comfortLevel}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 4: Travel Locations
+    if (questionnaireStep === 4) {
+      const locationOptions = [
+        { id: 'city-center', title: 'City Center', subtitle: 'Urban business districts, downtown areas', description: 'Westminster, Oxford Street area, central business zones. High-traffic professional environments.' },
+        { id: 'airports', title: 'Airports & Transport', subtitle: 'Travel hubs, stations, transit security', description: 'Heathrow, Gatwick, King\'s Cross, Paddington. Professional transport connections and terminals.' },
+        { id: 'corporate', title: 'Corporate Events', subtitle: 'Conferences, meetings, business functions', description: 'Business conferences, corporate meetings, professional networking events, office locations.' },
+        { id: 'social', title: 'Social Events', subtitle: 'Galas, parties, entertainment venues', description: 'High-end social functions, cultural events, private parties, exclusive venues.' },
+        { id: 'residential', title: 'Residential Areas', subtitle: 'Home, neighborhoods, private locations', description: 'Residential pickups, private homes, neighborhood locations, family-related transport.' },
+        { id: 'mayfair', title: 'Mayfair & Luxury Areas', subtitle: 'High-end shopping, exclusive venues', description: 'Knightsbridge, Belgravia, luxury shopping, exclusive restaurants, premium venues.' },
+        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep location preferences private', description: 'We provide professional service to all London areas and can adapt to your specific routes' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <div className="questionnaire-title flex-1">
+                  <h3>Where do you typically need protection?</h3>
+                </div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+                <div 
+                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us understand your travel patterns and route security needs</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              {locationOptions.map(option => {
+                const isSelected = questionnaireAnswers.locations.includes(option.id)
+                return (
+                  <Card 
+                    key={option.id}
+                    className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
+                      isSelected 
+                        ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                        : 'hover:shadow-md bg-white border border-border/40'
+                    }`}
+                    onClick={() => {
+                      setQuestionnaireAnswers(prev => ({
+                        ...prev,
+                        locations: isSelected 
+                          ? prev.locations.filter(loc => loc !== option.id)
+                          : [...prev.locations, option.id]
+                      }))
+                    }}
+                  >
+                    <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                      <div className="check-dot"></div>
+                    </div>
+                    <CardContent className="content-padding">
+                      <div className="space-y-2">
+                        <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
+                        <p className="text-xs text-muted-foreground">{option.subtitle}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+            
+            <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+              <p className="text-xs text-muted-foreground text-center">
+                ✓ You can pick more than one area • Choose all locations where you need secure transport
+              </p>
+            </div>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handlePrevStep}
+                className="w-16 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="w-24 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                disabled={questionnaireAnswers.locations.length === 0}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 5: Final Requirements
+    if (questionnaireStep === 5) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <div className="questionnaire-title flex-1">
+                  <h3>Any specific requirements or preferences?</h3>
+                </div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+                <div 
+                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • Optional: Share any specific needs or requirements (completely confidential)</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-4">
+            <Card className="border border-border/40">
+              <CardContent className="p-4 space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">
+                    Additional Requirements (Optional)
+                  </label>
+                  <textarea
+                    value={questionnaireAnswers.customRequirements}
+                    onChange={(e) => {
+                      setQuestionnaireAnswers(prev => ({
+                        ...prev,
+                        customRequirements: e.target.value
+                      }))
+                    }}
+                    placeholder="e.g., Prefer female drivers, vehicle accessibility needs, specific timing requirements, route preferences, or any other special considerations..."
+                    className="w-full h-32 p-3 border border-border/40 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    maxLength={500}
+                  />
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-muted-foreground">
+                      Your requirements are completely confidential and help us provide better service
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {questionnaireAnswers.customRequirements.length}/500
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Shield size={16} className="text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-medium text-green-800">Confidential & Secure</p>
+                      <p className="text-xs text-green-700">
+                        All information is encrypted and only used to improve your security transport experience. This step is completely optional.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handlePrevStep}
+                className="w-16 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="w-24 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Complete Assessment
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     return null
   }
 
