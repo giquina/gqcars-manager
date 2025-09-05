@@ -241,28 +241,28 @@ const armoraServices = [
   {
     id: 'essential',
     name: 'Your Essential Protection',
-    description: 'Personal security professional driver tailored to your daily transport routine',
+    description: 'SIA-licensed security professional driver with industry best practice protocols',
     priceRange: '£45 - £75',
     eta: '3-8 min',
     icon: Car,
     capacity: '1-3 passengers',
-    vehicle: 'Discrete vehicle, standard plates',
+    vehicle: 'Professional vehicle, discrete service',
     popular: true // Most popular choice
   },
   {
     id: 'shadow-escort',
     name: 'Shadow Escort',
-    description: 'Drive yourself with discrete security following - your freedom with protection backup',
+    description: 'Drive yourself with professional security coordination - your freedom with protection backup',
     priceRange: '£150 - £350',
     eta: '5-12 min',
     icon: Shield,
     capacity: '1-4 passengers',
-    vehicle: 'Your vehicle + Security escort'
+    vehicle: 'Your vehicle + Professional security coordination'
   },
   {
     id: 'executive-security', 
     name: 'Your Executive Security',
-    description: 'Personal protection transport specialist customized to your professional travel needs',
+    description: 'Enhanced protection transport with SIA close protection officers meeting professional standards',
     priceRange: '£120 - £250',
     eta: '8-15 min',
     icon: Shield,
@@ -309,10 +309,10 @@ const armoraDrivers = [
     rating: 4.9,
     completedTrips: 847,
     vehicle: 'Mercedes S-Class 580 - Obsidian Black',
-    license: 'ARMR001',
+    license: 'SIA CPO License',
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
     eta: 5,
-    certifications: ['SIA Protection', 'Advanced Driving', 'First Aid'],
+    certifications: ['SIA Close Protection', 'Enhanced DBS Cleared', 'BS 7858 Screened'],
     specialties: ['Executive Protection', 'Diplomatic Transport'],
     languages: ['English', 'French']
   },
@@ -322,11 +322,11 @@ const armoraDrivers = [
     rating: 4.8,
     completedTrips: 623,
     vehicle: 'Bentley Flying Spur - Sage Green',
-    license: 'ARMR002', 
+    license: 'SIA CPO License', 
     photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b586?w=400&q=80',
     eta: 7,
-    certifications: ['SIA Protection', 'VIP Security', 'Defensive Driving'],
-    specialties: ['Celebrity Protection', 'Shadow Escort'],
+    certifications: ['SIA Close Protection', 'Enhanced DBS Cleared', 'BS 7858 Screened'],
+    specialties: ['VIP Security', 'Discrete Protection'],
     languages: ['English', 'Italian', 'Spanish']
   },
   {
@@ -335,10 +335,10 @@ const armoraDrivers = [
     rating: 4.9,
     completedTrips: 1134,
     vehicle: 'Rolls-Royce Ghost - Arctic White',
-    license: 'ARMR003',
+    license: 'SIA CPO License',
     photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
     eta: 12,
-    certifications: ['SIA Protection', 'Counter-Surveillance', 'Tactical Driving'],
+    certifications: ['SIA Close Protection', 'Enhanced DBS Cleared', 'BS 7858 Screened'],
     specialties: ['Ultra-Luxury', 'Government Transport'],
     languages: ['English', 'German']
   }
@@ -2852,12 +2852,12 @@ function App() {
               <div className="w-px h-2.5 bg-amber-400/30"></div>
               <div className="flex items-center gap-1 whitespace-nowrap">
                 <CheckCircle size={10} className="text-amber-400" />
-                <span className="font-medium">Premium Service</span>
+                <span className="font-medium">BS 7858 Screened</span>
               </div>
               <div className="w-px h-2.5 bg-amber-400/30"></div>
               <div className="flex items-center gap-1 whitespace-nowrap">
                 <Star size={10} className="text-amber-400" />
-                <span className="font-medium">5-Star Rating</span>
+                <span className="font-medium">Professional Standards</span>
               </div>
             </div>
           </div>
@@ -2958,8 +2958,8 @@ function App() {
                   <Shield size={16} className="text-slate-900" weight="bold" />
                 </div>
                 <div>
-                  <h1 className="text-base font-bold text-white">Personal Security Transport Assessment</h1>
-                  <p className="text-[10px] text-amber-200">Personalizing your security service</p>
+                  <h1 className="text-base font-bold text-white">Professional Security Consultation</h1>
+                  <p className="text-[10px] text-amber-200">Industry best practice assessment</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -3012,29 +3012,29 @@ function App() {
                 <div className="space-y-3">
                   <h2 className="text-lg font-bold text-white">Let's create your personal security transport profile</h2>
                   <p className="text-sm text-slate-300 leading-snug">
-                    We'll ask a few questions to understand your unique protection transport needs. 
-                    This ensures your security transport service is perfectly matched to your lifestyle.
+                    To provide the highest level of service, we gather information about your unique protection transport needs. 
+                    This ensures your security transport service is perfectly matched to your lifestyle and requirements.
                   </p>
                 </div>
 
                 <div className="grid gap-2 text-left">
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
                     <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-xs text-slate-200">Personal security transport assessment</span>
+                    <span className="text-xs text-slate-200">Professional risk assessment and service matching</span>
                   </div>
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
                     <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-xs text-slate-200">Customized protection transport matching</span>
+                    <span className="text-xs text-slate-200">Industry best practice consultation process</span>
                   </div>
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
                     <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-xs text-slate-200">Tailored transport service levels</span>
+                    <span className="text-xs text-slate-200">Duty of care and professional responsibility</span>
                   </div>
                 </div>
 
                 <div className="p-3 bg-amber-400/10 rounded-lg border border-amber-400/30">
                   <p className="text-xs text-amber-200">
-                    ⏱️ <strong>2 minutes</strong> for a lifetime of personalized security transport
+                    🛡️ <strong>Professional standard:</strong> Working to SIA industry best practices for your protection
                   </p>
                 </div>
               </div>
@@ -3446,18 +3446,18 @@ function App() {
           {onboardingStep === 6 && (
             <div className="space-y-6 animate-in fade-in duration-500">
               <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">Are there specific security concerns we should know about?</h2>
-                <p className="text-sm text-slate-300">This information helps us provide appropriate protection</p>
+                <h2 className="text-xl font-bold text-white">Professional risk assessment consultation</h2>
+                <p className="text-sm text-slate-300">Industry best practice requires understanding your security transport context</p>
               </div>
 
               <div className="space-y-3">
                 {[
-                  { value: 'General Personal Safety', desc: 'Standard protection needs', level: 'standard' },
-                  { value: 'High-Profile Visibility', desc: 'Media attention, public recognition', level: 'elevated' },
-                  { value: 'Business Conflicts', desc: 'Corporate disputes, competitive concerns', level: 'elevated' },
-                  { value: 'Legal Proceedings', desc: 'Court appearances, legal matters', level: 'high' },
-                  { value: 'Threat Assessment', desc: 'Known risks, previous incidents', level: 'high' },
-                  { value: 'No Specific Concerns', desc: 'Preventive security only', level: 'standard' }
+                  { value: 'Standard Business Travel', desc: 'Regular professional transport needs', level: 'standard' },
+                  { value: 'High-Profile Professional', desc: 'Public recognition, media attention', level: 'elevated' },
+                  { value: 'Business Competition', desc: 'Competitive industry considerations', level: 'elevated' },
+                  { value: 'Legal Proceedings', desc: 'Court appearances, legal matters', level: 'enhanced' },
+                  { value: 'Previous Security Concerns', desc: 'Past incidents or ongoing considerations', level: 'enhanced' },
+                  { value: 'Preventive Security Only', desc: 'No specific concerns, standard protection', level: 'standard' }
                 ].map((option) => (
                   <Card 
                     key={option.value}
@@ -3474,7 +3474,7 @@ function App() {
                           <div className="flex items-center gap-3">
                             <h3 className="font-semibold text-white">{option.value}</h3>
                             <span className={`text-xs px-2 py-1 rounded-full ${
-                              option.level === 'high' ? 'bg-red-400/20 text-red-300' :
+                              option.level === 'enhanced' ? 'bg-blue-400/20 text-blue-300' :
                               option.level === 'elevated' ? 'bg-yellow-400/20 text-yellow-300' :
                               'bg-green-400/20 text-green-300'
                             }`}>
@@ -3495,11 +3495,11 @@ function App() {
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Confidential details (encrypted storage):</label>
+                <label className="text-sm font-medium text-amber-200">Additional context for professional assessment:</label>
                 <textarea
                   value={onboardingData.riskConcernsCustom}
                   onChange={(e) => updateOnboardingData('riskConcernsCustom', e.target.value)}
-                  placeholder="Describe any specific concerns, threats, or security requirements (this information is encrypted and confidential)..."
+                  placeholder="Share any specific requirements or considerations for your security transport service (confidential)..."
                   className="w-full h-24 px-4 py-3 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
                   maxLength={800}
                 />
@@ -3507,7 +3507,7 @@ function App() {
                   <p className="text-xs text-slate-400">{onboardingData.riskConcernsCustom.length}/800 characters</p>
                   <div className="flex items-center gap-1 text-xs text-amber-300">
                     <Shield size={12} />
-                    <span>Encrypted & Confidential</span>
+                    <span>Confidential & Secure</span>
                   </div>
                 </div>
               </div>
@@ -3525,9 +3525,9 @@ function App() {
           {/* Slide 7: Emergency Contacts */}
           {onboardingStep === 7 && (
             <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">Emergency Contacts & Preferences</h2>
-                <p className="text-sm text-slate-300">Who should we contact in case of emergency?</p>
+              <div className="space-y-3 text-center">
+                <h2 className="text-lg font-bold text-white">Emergency contact information</h2>
+                <p className="text-sm text-slate-300">Industry best practice for professional duty of care</p>
               </div>
 
               <div className="space-y-6">
@@ -3617,17 +3617,17 @@ function App() {
           {/* Slide 8: Emergency Response Preferences */}
           {onboardingStep === 8 && (
             <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">Emergency Response Preferences</h2>
-                <p className="text-sm text-slate-300">How should we respond in emergency situations?</p>
+              <div className="space-y-3 text-center">
+                <h2 className="text-lg font-bold text-white">Professional response preferences</h2>
+                <p className="text-sm text-slate-300">How should we coordinate in exceptional situations?</p>
               </div>
 
               <div className="space-y-3">
                 {[
-                  { value: 'Contact family first', desc: 'Notify contacts before authorities', priority: '1st: Family, 2nd: Authorities' },
-                  { value: 'Authorities first', desc: 'Police/medical immediately, then contacts', priority: '1st: Emergency Services, 2nd: Family' },
+                  { value: 'Contact family first', desc: 'Notify contacts before authorities', priority: '1st: Family, 2nd: Local authorities' },
+                  { value: 'Authorities first', desc: 'Local authorities immediately, then contacts', priority: '1st: Local authorities, 2nd: Family' },
                   { value: 'Medical conditions priority', desc: 'Health information shared immediately', priority: 'Medical info shared first' },
-                  { value: 'Discrete response', desc: 'Minimize public attention during emergencies', priority: 'Low-profile emergency response' }
+                  { value: 'Discrete response', desc: 'Minimize public attention during incidents', priority: 'Low-profile incident response' }
                 ].map((option) => (
                   <Card 
                     key={option.value}
@@ -3657,11 +3657,11 @@ function App() {
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Special instructions, medical info, or emergency preferences:</label>
+                <label className="text-sm font-medium text-amber-200">Professional considerations, medical info, or special instructions:</label>
                 <textarea
                   value={onboardingData.emergencyInstructions}
                   onChange={(e) => updateOnboardingData('emergencyInstructions', e.target.value)}
-                  placeholder="Emergency response preferences, medical conditions, allergies, medications, or special instructions..."
+                  placeholder="Response preferences, medical conditions, allergies, medications, or special instructions for professional coordination..."
                   className="w-full h-24 px-4 py-3 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
                   maxLength={600}
                 />
@@ -3669,7 +3669,7 @@ function App() {
                   <p className="text-xs text-slate-400">{onboardingData.emergencyInstructions.length}/600 characters</p>
                   <div className="flex items-center gap-1 text-xs text-amber-300">
                     <Shield size={12} />
-                    <span>Medical Confidentiality</span>
+                    <span>Professional Confidentiality</span>
                   </div>
                 </div>
               </div>
@@ -3746,11 +3746,18 @@ function App() {
           <Card className="bg-slate-800/60 border-amber-400/30 shadow-2xl">
             <CardContent className="p-8 space-y-6">
               <div className="text-center space-y-4">
-                <h2 className="text-xl font-bold text-white">Your Personalized Protection Transport Profile</h2>
+                <h2 className="text-xl font-bold text-white">Your Professional Security Transport Profile</h2>
                 <div className="p-6 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl border border-amber-400/30">
                   <h3 className="text-lg font-bold text-amber-200 mb-2">Your Recommended Security Transport Service</h3>
                   <p className="text-2xl font-bold text-white">{recommendations.service}</p>
                   <p className="text-sm text-slate-300 mt-2">{recommendations.reason}</p>
+                  <div className="mt-4 pt-4 border-t border-amber-400/30">
+                    <p className="text-xs text-amber-200">
+                      ✓ All operatives hold valid SIA licenses (legally required)<br/>
+                      ✓ Enhanced DBS background checks completed<br/>
+                      ✓ BS 7858 security screening (industry best practice)
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -3962,24 +3969,32 @@ function App() {
             <CardContent className="p-5 space-y-3">
               <div className="flex items-center gap-2">
                 <Shield size={16} className="text-green-600" />
-                <h3 className="font-semibold text-green-800">Your Security Transport Features</h3>
+                <h3 className="font-semibold text-green-800">Professional Security Standards</h3>
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>Your personal security transport professional</span>
+                  <span>All drivers hold valid SIA licenses (legally required)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>Real-time journey tracking for your protection</span>
+                  <span>Enhanced DBS background checks (legally required)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>Your professionally vetted security driver</span>
+                  <span>BS 7858 security screening (industry best practice)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle size={12} className="text-green-600" />
-                  <span>24/7 support for your security transport</span>
+                  <span>Professional liability insurance coverage</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={12} className="text-green-600" />
+                  <span>Real-time journey tracking and coordination</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={12} className="text-green-600" />
+                  <span>24/7 professional support and monitoring</span>
                 </div>
               </div>
             </CardContent>
