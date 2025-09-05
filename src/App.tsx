@@ -640,7 +640,409 @@ function App() {
       )
     }
 
-    // Completion screen for remaining steps
+    // Step 3: Comfort Level
+    if (questionnaireStep === 3) {
+      const comfortOptions = [
+        { id: 'minimal', title: 'Barely There', subtitle: 'Almost invisible, emergency-only', perfectFor: 'Normal daily activities, family time, casual outings' },
+        { id: 'subtle', title: 'Quietly Present', subtitle: 'Professional but unobtrusive', perfectFor: 'Business meetings, professional settings, client visits' },
+        { id: 'visible', title: 'Clearly Visible', subtitle: 'Obviously providing security', perfectFor: 'Public events, high-profile situations, deterrent presence' },
+        { id: 'maximum', title: 'Maximum Protection', subtitle: 'Full security, very visible', perfectFor: 'High-risk situations, VIP events, maximum safety needs' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="questionnaire-title">
+                  <h3>How much security presence feels right?</h3>
+                </h1>
+                <div className="text-sm text-muted-foreground">Step 4 of 7</div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Choose what feels comfortable for you</p>
+              <div className="w-full bg-border/30 rounded-full h-1">
+                <div className="bg-primary h-1 rounded-full" style={{ width: '57%' }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {comfortOptions.map(option => {
+              const isSelected = questionnaireAnswers.comfortLevel === option.id
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 ${
+                    isSelected 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  }`}
+                  onClick={() => handleQuestionnaireAnswer('comfortLevel', option.id)}
+                >
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                      <p className="text-sm text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground">Perfect for: {option.perfectFor}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleBack}
+                className="w-20 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="flex-1 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleContinue}
+                disabled={!questionnaireAnswers.comfortLevel}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 4: Location Preferences
+    if (questionnaireStep === 4) {
+      const locationOptions = [
+        { id: 'city-center', title: 'City Center', subtitle: 'Urban business districts, downtown areas', perfectFor: 'Business meetings, corporate events, shopping' },
+        { id: 'airports', title: 'Airports & Transport', subtitle: 'Travel hubs, stations, transit security', perfectFor: 'Flight transfers, travel connections, luggage security' },
+        { id: 'corporate', title: 'Corporate Events', subtitle: 'Conferences, meetings, business functions', perfectFor: 'Board meetings, presentations, networking events' },
+        { id: 'social', title: 'Social Events', subtitle: 'Galas, parties, entertainment venues', perfectFor: 'Evening events, celebrations, entertainment' },
+        { id: 'residential', title: 'Residential Areas', subtitle: 'Home, neighborhoods, private locations', perfectFor: 'Daily routine, family activities, personal errands' },
+        { id: 'multiple', title: 'Various Locations', subtitle: 'All over London and beyond', perfectFor: 'Flexible needs, changing schedules, diverse activities' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="questionnaire-title">
+                  <h3>Where do you typically need protection?</h3>
+                </h1>
+                <div className="text-sm text-muted-foreground">Step 5 of 7</div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Pick all areas where you need security transport</p>
+              <div className="w-full bg-border/30 rounded-full h-1">
+                <div className="bg-primary h-1 rounded-full" style={{ width: '71%' }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {locationOptions.map(option => {
+              const isSelected = questionnaireAnswers.locations.includes(option.id)
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 ${
+                    isSelected 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  }`}
+                  onClick={() => {
+                    const currentSelection = questionnaireAnswers.locations
+                    if (isSelected) {
+                      handleQuestionnaireAnswer('locations', currentSelection.filter(id => id !== option.id))
+                    } else {
+                      handleQuestionnaireAnswer('locations', [...currentSelection, option.id])
+                    }
+                  }}
+                >
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                      <p className="text-sm text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground">Perfect for: {option.perfectFor}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleBack}
+                className="w-20 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="flex-1 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleContinue}
+                disabled={questionnaireAnswers.locations.length === 0}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 5: Custom Requirements
+    if (questionnaireStep === 5) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="questionnaire-title">
+                  <h3>Any specific security needs?</h3>
+                </h1>
+                <div className="text-sm text-muted-foreground">Step 6 of 7</div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Tell us about any special requirements (optional)</p>
+              <div className="w-full bg-border/30 rounded-full h-1">
+                <div className="bg-primary h-1 rounded-full" style={{ width: '85%' }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-6">
+            <Card className="border border-border/40 bg-white">
+              <CardContent className="p-4 space-y-4">
+                <div>
+                  <h3 className="font-bold text-base mb-2">Custom Security Requirements</h3>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Describe any specific security concerns, accessibility needs, or special requests
+                  </p>
+                  <textarea
+                    value={questionnaireAnswers.customRequirements}
+                    onChange={(e) => handleQuestionnaireAnswer('customRequirements', e.target.value)}
+                    placeholder="e.g., Need wheelchair accessible vehicle, require discrete service for sensitive meetings, have specific time constraints..."
+                    className="w-full h-32 p-3 border border-border/40 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    maxLength={500}
+                  />
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-xs text-muted-foreground">Optional - helps us personalize your service</p>
+                    <p className="text-xs text-muted-foreground">{questionnaireAnswers.customRequirements.length}/500</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-amber-200/50 bg-gradient-to-br from-amber-50/30 to-amber-100/20">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Shield size={16} className="text-amber-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm text-amber-800 mb-1">Your Privacy Matters</h4>
+                    <p className="text-xs text-amber-700">
+                      All information is confidential and used only to provide better security transport service. 
+                      We follow strict privacy protocols.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleBack}
+                className="w-20 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="flex-1 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleContinue}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 6: Emergency Contact
+    if (questionnaireStep === 6) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="questionnaire-title">
+                  <h3>Emergency contact information</h3>
+                </h1>
+                <div className="text-sm text-muted-foreground">Step 7 of 7</div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Just in case - someone who can reach you if needed</p>
+              <div className="w-full bg-border/30 rounded-full h-1">
+                <div className="bg-primary h-1 rounded-full" style={{ width: '100%' }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-4">
+            <Card className="border border-border/40 bg-white">
+              <CardContent className="p-4 space-y-4">
+                <div>
+                  <h3 className="font-bold text-base mb-3">Emergency Contact Details</h3>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-foreground block mb-1">Contact Name *</label>
+                      <Input
+                        value={questionnaireAnswers.emergencyContact.name}
+                        onChange={(e) => handleQuestionnaireAnswer('emergencyContact', {
+                          ...questionnaireAnswers.emergencyContact,
+                          name: e.target.value
+                        })}
+                        placeholder="Full name"
+                        className="text-sm"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium text-foreground block mb-1">Relationship *</label>
+                      <Input
+                        value={questionnaireAnswers.emergencyContact.relationship}
+                        onChange={(e) => handleQuestionnaireAnswer('emergencyContact', {
+                          ...questionnaireAnswers.emergencyContact,
+                          relationship: e.target.value
+                        })}
+                        placeholder="e.g., spouse, business partner, friend"
+                        className="text-sm"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium text-foreground block mb-1">Phone Number *</label>
+                      <Input
+                        value={questionnaireAnswers.emergencyContact.phone}
+                        onChange={(e) => handleQuestionnaireAnswer('emergencyContact', {
+                          ...questionnaireAnswers.emergencyContact,
+                          phone: e.target.value
+                        })}
+                        placeholder="+44 7XXX XXXXXX"
+                        className="text-sm"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-emerald-200/50 bg-gradient-to-br from-emerald-50/30 to-emerald-100/20">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Shield size={16} className="text-emerald-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm text-emerald-800 mb-1">Safety Requirement</h4>
+                    <p className="text-xs text-emerald-700">
+                      This is standard safety practice - someone who can reach you if needed. 
+                      Used only in emergencies or if you request it.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleBack}
+                className="w-20 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="flex-1 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleContinue}
+                disabled={!questionnaireAnswers.emergencyContact.name || !questionnaireAnswers.emergencyContact.relationship || !questionnaireAnswers.emergencyContact.phone}
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Complete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Completion screen
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex items-center justify-center p-4">
         <div className="max-w-sm mx-auto text-center space-y-6">
