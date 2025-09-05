@@ -3223,7 +3223,8 @@ function App() {
                 Continue to Travel Frequency
               </Button>
             </div>
-          })()}
+          )
+        })()}
 
           {/* Slide 2: Travel Frequency - Enhanced Design with Proper Checkbox Positioning */}
           {onboardingStep === 2 && (() => {
