@@ -3272,118 +3272,189 @@ function App() {
 
           {/* Slide 2: Travel Frequency with Enhanced Decision Support */}
           {onboardingStep === 2 && (
-            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
-              <div className="flex-1 flex flex-col justify-center space-y-5">
-                <div className="text-center space-y-3">
-                  <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
-                  <p className="text-sm text-slate-300">This helps us recommend the right service level for you</p>
-                </div>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-3">
+                <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
+                <p className="text-sm text-slate-300">This helps us recommend the right service level for you</p>
+              </div>
 
-                {/* Frequency Decision Guide */}
-                <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30 mb-2">
-                  <h4 className="text-sm font-semibold text-amber-200 mb-2">📅 Service Matching:</h4>
-                  <div className="space-y-1 text-xs text-amber-100">
-                    <p>• <strong>Occasional:</strong> Event-based service, flexible booking</p>
-                    <p>• <strong>Weekly:</strong> Regular schedule, consistent service</p>
-                    <p>• <strong>Daily:</strong> Dedicated service, priority booking</p>
-                  </div>
+              {/* Enhanced Frequency Decision Guide */}
+              <div className="p-3 bg-amber-400/10 rounded-xl border border-amber-400/30">
+                <h4 className="text-sm font-semibold text-amber-200 mb-2">📅 Service Level Matching:</h4>
+                <div className="space-y-1 text-xs text-amber-100">
+                  <p>• <strong>Occasional:</strong> Event-based service with flexible booking</p>
+                  <p>• <strong>Weekly:</strong> Regular schedule with consistent security officer</p>
+                  <p>• <strong>Daily:</strong> Dedicated service with priority scheduling</p>
+                  <p>• <strong>Multiple daily:</strong> On-call service with immediate availability</p>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { 
-                      value: 'Just Sometimes', 
-                      desc: 'Special events, rare occasions',
-                      details: 'Perfect for conferences, important meetings, special events when you need professional security',
-                      serviceType: 'Event-based booking',
-                      benefits: 'No commitment, book when needed'
-                    },
-                    { 
-                      value: 'About Once a Week', 
-                      desc: 'Regular meetings, weekly events',
-                      details: 'Ideal for regular business activities, weekly client meetings, consistent professional needs',
-                      serviceType: 'Regular service',
-                      benefits: 'Consistent officer, priority support'
-                    },
-                    { 
-                      value: 'Almost Every Day', 
-                      desc: 'Daily commute, regular work travel',
-                      details: 'Daily protection for commuting, multiple meetings per day, extensive business travel',
-                      serviceType: 'Daily service',
-                      benefits: 'Dedicated officer, priority scheduling'
-                    },
-                    { 
-                      value: 'Multiple Times Daily', 
-                      desc: 'Very busy, lots of travel',
-                      details: 'Comprehensive security for intensive schedules, multiple locations daily, VIP requirements',
-                      serviceType: 'Premium service',
-                      benefits: 'Multiple officers available, instant booking'
-                    }
-                  ].map((option) => (
-                    <Card 
-                      key={option.value}
-                      className={`cursor-pointer transition-all duration-200 h-[100px] relative overflow-hidden ${ 
-                        onboardingData.travelFrequency === option.value
-                          ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
-                          : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
-                      }`}
-                      onClick={() => updateOnboardingData('travelFrequency', option.value)}
-                    >
-                      <CardContent className="p-3 h-full flex flex-col justify-between text-center relative">
-                        {/* Selection indicator positioned outside content area */}
-                        <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 ${ 
+              {/* Single Column Layout with Detailed Cards */}
+              <div className="space-y-3">
+                {[
+                  { 
+                    value: 'Just Sometimes', 
+                    subtitle: 'Special events and rare occasions',
+                    frequency: '1-3 times per month or less',
+                    perfectFor: 'Important meetings, special events, airport trips when you need professional security',
+                    whatThisMeans: 'Flexible booking when you need professional transport - no commitment required',
+                    serviceStyle: 'Premium on-demand service - book as needed',
+                    bestFor: 'Executives who rarely travel, special occasion transport, infrequent but important journeys',
+                    recommendedService: 'Event-based service with flexible booking - perfect for your occasional needs',
+                    pricingTier: '$',
+                    popular: false
+                  },
+                  { 
+                    value: 'About Once a Week', 
+                    subtitle: 'Regular meetings and weekly commitments',
+                    frequency: '1-2 times per week, consistent schedule',
+                    perfectFor: 'Weekly client meetings, regular business appointments, consistent professional activities',
+                    whatThisMeans: 'Semi-regular service with preferred scheduling and priority booking',
+                    serviceStyle: 'Scheduled service with consistent security officer and priority support',
+                    bestFor: 'Professionals with regular but not daily transport needs, weekly business routines',
+                    recommendedService: 'Regular schedule service with consistent officer - ideal for your weekly routine',
+                    pricingTier: '$$',
+                    popular: true
+                  },
+                  { 
+                    value: 'Almost Every Day', 
+                    subtitle: 'Daily commute and regular work transport',
+                    frequency: '4-6 days per week, consistent routine',
+                    perfectFor: 'Daily office commute, regular work schedule, extensive business travel',
+                    whatThisMeans: 'Priority scheduling with dedicated service team and backup coverage',
+                    serviceStyle: 'Scheduled daily service with dedicated officer and priority scheduling',
+                    bestFor: 'Executives with regular office schedules, daily transport needs, consistent work routine',
+                    recommendedService: 'Dedicated service with priority booking - designed for your daily schedule',
+                    pricingTier: '$$$',
+                    popular: false
+                  },
+                  { 
+                    value: 'Multiple Times Daily', 
+                    subtitle: 'Very busy schedule with frequent travel',
+                    frequency: '2+ trips per day, complex scheduling',
+                    perfectFor: 'Back-to-back meetings, multiple daily appointments, intensive schedules',
+                    whatThisMeans: 'Dedicated driver/vehicle with immediate availability and comprehensive coverage',
+                    serviceStyle: 'On-call service with dedicated resources and multiple officers available',
+                    bestFor: 'High-level executives, complex daily schedules, time-critical transport, VIP requirements',
+                    recommendedService: 'Dedicated driver/vehicle with immediate availability - built for your complex schedule',
+                    pricingTier: '$$$$',
+                    popular: false
+                  }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${ 
+                      onboardingData.travelFrequency === option.value
+                        ? 'bg-gradient-to-br from-amber-400/25 to-amber-600/25 border-2 border-amber-400 shadow-xl' 
+                        : 'bg-slate-800/70 border border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/90 hover:shadow-md'
+                    }`}
+                    onClick={() => updateOnboardingData('travelFrequency', option.value)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex-1 pr-6">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-bold text-white text-base">{option.value}</h3>
+                            {/* Pricing tier indicator */}
+                            <span className="text-xs px-2 py-1 bg-amber-400/20 text-amber-300 rounded-full font-medium">
+                              {option.pricingTier}
+                            </span>
+                            {/* Most popular badge */}
+                            {option.popular && (
+                              <span className="text-xs px-2 py-1 bg-green-400/20 text-green-300 rounded-full font-medium">
+                                Most Popular
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-amber-200 font-medium mb-2">{option.subtitle}</p>
+                        </div>
+                        
+                        {/* Radio button indicator */}
+                        <div className={`w-6 h-6 rounded-full border-2 border-amber-400 flex items-center justify-center transition-all duration-200 flex-shrink-0 ${ 
                           onboardingData.travelFrequency === option.value 
                             ? 'bg-amber-400 scale-110 shadow-lg' 
                             : 'bg-transparent scale-100'
                         }`}>
                           {onboardingData.travelFrequency === option.value && (
-                            <div className="w-1.5 h-1.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
+                            <div className="w-2.5 h-2.5 bg-slate-900 rounded-full animate-in zoom-in duration-200"></div>
                           )}
                         </div>
-                        
-                        {/* Content area with proper spacing */}
-                        <div className="flex-1 flex flex-col justify-center space-y-1 pr-6">
-                          <h3 className="font-bold text-white text-xs leading-tight">{option.value}</h3>
-                          <p className="text-xs text-slate-300 leading-snug">{option.desc}</p>
+                      </div>
+                      
+                      {/* Detailed Information */}
+                      <div className="space-y-3 border-t border-slate-600/50 pt-3">
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium mb-1">Frequency:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.frequency}</p>
                         </div>
                         
-                        {/* Enhanced service info */}
-                        <div className="mt-2 pt-2 border-t border-slate-600/50">
-                          <p className="text-xs text-amber-200 font-medium">{option.serviceType}</p>
-                          <p className="text-xs text-slate-400">{option.benefits}</p>
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium mb-1">Perfect for:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.perfectFor}</p>
                         </div>
                         
-                        {/* Selection glow effect */}
-                        {onboardingData.travelFrequency === option.value && (
-                          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse"></div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium mb-1">What this means:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.whatThisMeans}</p>
+                        </div>
+                        
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium mb-1">Service style:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.serviceStyle}</p>
+                        </div>
+                        
+                        <div>
+                          <p className="text-xs text-amber-200 font-medium mb-1">Best for:</p>
+                          <p className="text-xs text-slate-300 leading-relaxed">{option.bestFor}</p>
+                        </div>
+                        
+                        {/* Integrated Service Matching */}
+                        <div className="pt-2 border-t border-amber-400/30">
+                          <p className="text-xs text-green-200 font-medium mb-1">🎯 Recommended:</p>
+                          <p className="text-xs text-green-100 leading-relaxed italic">{option.recommendedService}</p>
+                        </div>
+                      </div>
+                      
+                      {/* Selection glow effect */}
+                      {onboardingData.travelFrequency === option.value && (
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 rounded-lg animate-pulse pointer-events-none"></div>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-amber-200">Different schedule or specific details:</label>
-                  <textarea
-                    value={onboardingData.travelFrequencyCustom}
-                    onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
-                    placeholder="Tell us about your travel schedule..."
-                    className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                    maxLength={300}
-                  />
-                  <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
+              {/* Enhanced Custom Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-amber-200">Different schedule or specific details:</label>
+                <textarea
+                  value={onboardingData.travelFrequencyCustom}
+                  onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
+                  placeholder="e.g., I need transport every Tuesday and Thursday for client meetings, plus occasional airport runs..."
+                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  maxLength={500}
+                />
+                <div className="flex justify-between items-center">
+                  <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/500 - The more details you provide, the better we can tailor your service</p>
                 </div>
               </div>
 
-              <div className="mt-6">
-                <Button 
-                  onClick={nextStep}
-                  disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
-                  className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
-                >
-                  Continue
-                </Button>
+              {/* User Guidance */}
+              <div className="p-3 bg-slate-800/40 rounded-lg border border-slate-600/50">
+                <div className="space-y-1 text-xs text-slate-300">
+                  <p>💡 <strong>Not sure?</strong> We can adjust your plan anytime</p>
+                  <p>📅 <strong>Schedule changes?</strong> Pick the closest match to your typical needs</p>
+                  <p>👥 <strong>Most clients choose:</strong> "About Once a Week" for regular business needs</p>
+                </div>
               </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
+              >
+                Continue
+              </Button>
             </div>
           )}
 
