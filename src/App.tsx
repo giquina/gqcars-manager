@@ -2522,17 +2522,17 @@ function App() {
     }
   }, [])
 
-  // Apply no-scroll only to welcome and onboarding step 0 and 1
+  // Apply no-scroll only to welcome and onboarding step 0
   useEffect(() => {
     const body = document.body
     const root = document.getElementById('root')
     
-    if (currentView === 'welcome' || (currentView === 'onboarding' && onboardingStep <= 1)) {
-      // Prevent scrolling on welcome and first two onboarding pages
+    if (currentView === 'welcome' || (currentView === 'onboarding' && onboardingStep === 0)) {
+      // Prevent scrolling on welcome and step 0 only
       body.classList.add('no-scroll')
       if (root) root.classList.add('no-scroll-container')
     } else {
-      // Allow scrolling on all other pages including onboarding step 2+
+      // Allow scrolling on all other pages including onboarding step 1+
       body.classList.remove('no-scroll')
       if (root) root.classList.remove('no-scroll-container')
     }
@@ -2994,7 +2994,7 @@ function App() {
           </div>
         </header>
 
-        <div className={`relative z-10 max-w-md mx-auto p-4 pb-6 ${onboardingStep >= 2 ? 'overflow-y-auto' : ''} ${onboardingStep >= 2 ? 'max-h-[calc(100vh-120px)]' : 'min-h-screen'}`}>{/* Scrollable container for step 2+ */}
+        <div className={`relative z-10 max-w-md mx-auto p-4 pb-6 ${onboardingStep >= 1 ? 'overflow-y-auto' : ''} ${onboardingStep >= 1 ? 'max-h-[calc(100vh-120px)]' : 'min-h-screen'}`}>{/* Scrollable container for step 1+ */}
           {/* Slide 0: Assessment Introduction */}
           {onboardingStep === 0 && (
             <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
@@ -3058,75 +3058,154 @@ function App() {
             </div>
           )}
 
-          {/* Slide 1: Work Type Selection - Compact Layout */}
+          {/* Slide 1: Work Type Selection - Professional Single-Line Layout */}
           {onboardingStep === 1 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
+            <div className="space-y-4 animate-in fade-in duration-500 pb-8">
               <div className="text-center space-y-2">
-                <h2 className="text-base font-bold text-white">What kind of work do you do?</h2>
+                <h2 className="text-lg font-bold text-white">What kind of work do you do?</h2>
+                <p className="text-sm text-slate-300 leading-relaxed">Choose all that describe your work</p>
                 <p className="text-xs text-amber-200">✓ You can pick more than one option</p>
-                <p className="text-xs text-slate-300">Choose all that describe your work</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              {/* Professional Work Type Cards - Single Column with Detailed Information */}
+              <div className="space-y-3">
                 {[
-                  { value: 'Business Leader', desc: 'CEO, manager, executive' },
-                  { value: 'Business Owner', desc: 'Own a company, startup founder' },
-                  { value: 'Doctor/Medical', desc: 'Healthcare, medical professional' },
-                  { value: 'Lawyer/Legal', desc: 'Attorney, legal work, court cases' },
-                  { value: 'Tech/Computer', desc: 'Software, IT, technology work' },
-                  { value: 'Banking/Finance', desc: 'Money, investments, financial services' },
-                  { value: 'Real Estate', desc: 'Property, buying/selling homes/buildings' },
-                  { value: 'Sales/Travel', desc: 'Selling, traveling for work' }
+                  { 
+                    value: 'Business Leader', 
+                    subtitle: 'CEO, manager, executive roles',
+                    perfectFor: 'Board meetings, investor presentations, strategic planning, executive meetings',
+                    popular: false
+                  },
+                  { 
+                    value: 'Business Owner', 
+                    subtitle: 'Own a company, startup founder',
+                    perfectFor: 'Investor meetings, client pitches, business development, partnership negotiations',
+                    popular: true
+                  },
+                  { 
+                    value: 'Lawyer/Legal', 
+                    subtitle: 'Attorney, legal work, court cases',
+                    perfectFor: 'Court appearances, client consultations, sensitive legal meetings, law firm visits',
+                    popular: false
+                  },
+                  { 
+                    value: 'Doctor/Medical', 
+                    subtitle: 'Healthcare, medical professional',
+                    perfectFor: 'Hospital visits, medical conferences, patient consultations, emergency calls',
+                    popular: false
+                  },
+                  { 
+                    value: 'Banking/Finance', 
+                    subtitle: 'Money, investments, financial services',
+                    perfectFor: 'Client portfolio meetings, investment presentations, financial consultations',
+                    popular: false
+                  },
+                  { 
+                    value: 'Tech/Computer', 
+                    subtitle: 'Software, IT, technology work',
+                    perfectFor: 'Client demos, tech conferences, startup meetings, software presentations',
+                    popular: false
+                  },
+                  { 
+                    value: 'Real Estate', 
+                    subtitle: 'Property, buying/selling homes/buildings',
+                    perfectFor: 'Property viewings, client meetings, market tours, real estate conferences',
+                    popular: false
+                  },
+                  { 
+                    value: 'Sales/Travel', 
+                    subtitle: 'Selling, traveling for work',
+                    perfectFor: 'Client sales meetings, trade shows, territory visits, business development',
+                    popular: false
+                  }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 h-[60px] relative ${ 
+                    className={`cursor-pointer transition-all duration-300 relative overflow-hidden border-2 ${ 
                       onboardingData.workType.includes(option.value)
-                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                        ? 'bg-gradient-to-br from-amber-400/30 to-amber-600/30 border-amber-400 shadow-xl transform scale-[1.02]' 
+                        : 'bg-slate-800/80 border-slate-600/80 hover:border-amber-400/60 hover:bg-slate-800/90 hover:shadow-lg hover:scale-[1.01]'
                     }`}
                     onClick={() => toggleArrayValue('workType', option.value)}
                   >
-                    {/* Professional checkbox indicator */}
-                    <div className={`absolute top-1.5 right-1.5 w-4 h-4 border border-amber-400 rounded text-center text-xs leading-3 ${ 
-                      onboardingData.workType.includes(option.value) 
-                        ? 'bg-amber-400 text-slate-900' 
-                        : 'bg-transparent'
-                    }`}>
-                      {onboardingData.workType.includes(option.value) ? '✓' : ''}
-                    </div>
-                    <CardContent className="p-2 text-center h-full flex flex-col justify-center">
-                      <h3 className="font-semibold text-white text-xs leading-tight mb-0.5">{option.value}</h3>
-                      <p className="text-[10px] text-slate-300 leading-tight">{option.desc}</p>
+                    <CardContent className="p-4 relative">
+                      {/* Popular Badge - Positioned to Stay on One Line */}
+                      {option.popular && (
+                        <div className="absolute top-2 left-2 text-xs px-2 py-0.5 bg-green-400/25 text-green-200 rounded-full font-medium border border-green-400/30">
+                          Popular
+                        </div>
+                      )}
+                      
+                      {/* Properly positioned checkbox indicator */}
+                      <div className={`absolute top-3 right-3 w-5 h-5 border-2 border-amber-400 rounded flex items-center justify-center transition-all duration-300 ${ 
+                        onboardingData.workType.includes(option.value) 
+                          ? 'bg-amber-400 scale-110 shadow-lg' 
+                          : 'bg-transparent scale-100'
+                      }`}>
+                        {onboardingData.workType.includes(option.value) && (
+                          <div className="text-slate-900 text-xs font-bold animate-in zoom-in duration-200">✓</div>
+                        )}
+                      </div>
+                      
+                      {/* Content area with proper spacing */}
+                      <div className={`${option.popular ? 'mt-6 pr-8' : 'pr-8'}`}> {/* Space for badge and checkbox */}
+                        <div className="mb-2">
+                          <h3 className="font-bold text-white text-base leading-tight">{option.value}</h3>
+                        </div>
+                        <p className="text-sm text-slate-300 mb-3 font-medium">{option.subtitle}</p>
+                        <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/20">
+                          <p className="text-xs text-amber-200 leading-relaxed">
+                            <strong>Perfect for:</strong> {option.perfectFor}
+                          </p>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-amber-200">Other work you do:</label>
+              {/* Enhanced Custom Input Section */}
+              <div className="space-y-2 bg-slate-800/40 rounded-xl p-3 border border-slate-600/50">
+                <label className="text-sm font-semibold text-amber-200 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-amber-400 rounded-full"></div>
+                  Other work you do:
+                </label>
                 <textarea
                   value={onboardingData.workTypeCustom}
                   onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
                   placeholder="Describe your work in simple terms..."
-                  className="w-full h-12 px-2.5 py-1.5 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
+                  className="w-full h-12 px-3 py-2 bg-slate-700/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 transition-all resize-none text-sm leading-relaxed"
                   maxLength={500}
                 />
-                <p className="text-[10px] text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
+                <div className="flex justify-between items-center">
+                  <p className="text-xs text-slate-500">{onboardingData.workTypeCustom.length}/500 characters</p>
+                  <div className="flex items-center gap-1 text-xs text-amber-300">
+                    <div className="w-1 h-1 bg-amber-400 rounded-full"></div>
+                    <span>Optional</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-2.5 bg-amber-400/10 rounded-lg border border-amber-400/30">
-                <p className="text-xs text-amber-200">
-                  <strong>Example:</strong> You can pick both "Business Owner" and "Tech Work"
-                </p>
-              </div>
+              {/* Work Selection Preview */}
+              {onboardingData.workType.length > 0 && (
+                <div className="p-3 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-xl border border-amber-400/30">
+                  <div className="flex items-center gap-2 mb-1">
+                    <CheckCircle size={14} className="text-amber-400" />
+                    <h4 className="font-semibold text-amber-200 text-sm">Professional Profile</h4>
+                  </div>
+                  <p className="text-xs text-amber-100 leading-relaxed">
+                    Selected: {onboardingData.workType.join(', ')}
+                    {onboardingData.workTypeCustom && ` • ${onboardingData.workTypeCustom.substring(0, 50)}${onboardingData.workTypeCustom.length > 50 ? '...' : ''}`}
+                  </p>
+                </div>
+              )}
 
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
-                className="w-full h-11 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base mt-4"
               >
-                Continue
+                Continue to Travel Frequency
               </Button>
             </div>
           )}
