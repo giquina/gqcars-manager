@@ -90,7 +90,8 @@
 .questionnaire-card {
   position: relative;
   overflow: hidden;
-  min-height: 110px;
+  min-height: 130px; /* Increased from 110px */
+  padding: 0.75rem;
 }
 
 /* Autocomplete suggestions styling */

@@ -2642,7 +2642,7 @@ const App = () => {
 
           {/* Content */}
           <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               {workOptions.map(option => {
                 const isSelected = questionnaireAnswers.workType.includes(option.id)
                 return (
@@ -2663,17 +2663,18 @@ const App = () => {
                     }}
                   >
                     {option.popular && (
-                      <div className="absolute top-2 left-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-5">
+                      <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-5">
                         Popular
                       </div>
                     )}
                     <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
                       <div className="check-dot"></div>
                     </div>
-                    <CardContent className="content-padding">
+                    <CardContent className="p-4 pt-8">
                       <div className="space-y-2">
-                        <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
-                        <p className="text-xs text-muted-foreground">{option.subtitle}</p>
+                        <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                        <p className="text-sm text-muted-foreground">{option.subtitle}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -3034,7 +3035,7 @@ const App = () => {
 
           {/* Content */}
           <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               {locationOptions.map(option => {
                 const isSelected = questionnaireAnswers.locations.includes(option.id)
                 return (
@@ -3057,10 +3058,11 @@ const App = () => {
                     <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
                       <div className="check-dot"></div>
                     </div>
-                    <CardContent className="content-padding">
+                    <CardContent className="p-4">
                       <div className="space-y-2">
-                        <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
-                        <p className="text-xs text-muted-foreground">{option.subtitle}</p>
+                        <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                        <p className="text-sm text-muted-foreground">{option.subtitle}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
                       </div>
                     </CardContent>
                   </Card>
