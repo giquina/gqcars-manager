@@ -157,6 +157,18 @@ function App() {
   const [favorites, setFavorites] = useKV("favorite-locations", [] as any[])
   const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
 
+  // Questionnaire state management
+  const [questionnaireStep, setQuestionnaireStep] = useState<number>(0)
+  const [questionnaireAnswers, setQuestionnaireAnswers] = useKV("questionnaire-answers", {
+    workType: [] as string[],
+    travelFrequency: '',
+    securityStyle: '',
+    comfortLevel: '',
+    locations: [] as string[],
+    customRequirements: '',
+    emergencyContact: { name: '', relationship: '', phone: '' }
+  })
+
   // Initialize app flow based on user state
   useEffect(() => {
     if (hasCompletedOnboarding) {
@@ -290,8 +302,8 @@ function App() {
             <Button 
               onClick={() => {
                 setIsFirstLaunch(false)
-                setCurrentView('home')
-                setHasCompletedOnboarding(true)
+                setCurrentView('questionnaire')
+                setQuestionnaireStep(0)
               }}
               className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-base rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
             >
@@ -309,6 +321,347 @@ function App() {
               Trusted by professionals across London
             </p>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Questionnaire Flow
+  if (currentView === 'questionnaire') {
+    const handleQuestionnaireAnswer = (field: string, value: any) => {
+      setQuestionnaireAnswers(prev => ({
+        ...prev,
+        [field]: value
+      }))
+    }
+
+    const handleContinue = () => {
+      window.scrollTo(0, 0)
+      if (questionnaireStep < 6) {
+        setQuestionnaireStep(prev => prev + 1)
+      } else {
+        // Complete questionnaire
+        setHasCompletedOnboarding(true)
+        setCurrentView('home')
+      }
+    }
+
+    const handleBack = () => {
+      window.scrollTo(0, 0)
+      if (questionnaireStep > 0) {
+        setQuestionnaireStep(prev => prev - 1)
+      } else {
+        setCurrentView('welcome')
+      }
+    }
+
+    const handleSaveAndExit = () => {
+      setCurrentView('welcome')
+      toast.success("Progress saved. You can continue later.")
+    }
+
+    // Step 0: Work Type Selection
+    if (questionnaireStep === 0) {
+      const workOptions = [
+        { id: 'business-leader', title: 'Business Leader', subtitle: 'CEO, manager, executive roles', perfectFor: 'Board meetings, investor presentations, strategic planning' },
+        { id: 'business-owner', title: 'Business Owner', subtitle: 'Own a company, startup founder', perfectFor: 'Investor meetings, client pitches, business development', popular: true },
+        { id: 'lawyer-legal', title: 'Lawyer/Legal', subtitle: 'Attorney, legal work, court cases', perfectFor: 'Court appearances, client consultations, sensitive legal meetings' },
+        { id: 'doctor-medical', title: 'Doctor/Medical', subtitle: 'Healthcare, medical professional', perfectFor: 'Hospital visits, medical conferences, patient consultations' },
+        { id: 'banking-finance', title: 'Banking/Finance', subtitle: 'Money, investments, financial services', perfectFor: 'Client portfolio meetings, investment presentations' },
+        { id: 'tech-computer', title: 'Tech/Computer', subtitle: 'Software, IT, technology work', perfectFor: 'Client demos, tech conferences, startup meetings' },
+        { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, buying/selling homes/buildings', perfectFor: 'Property viewings, client meetings, market tours' },
+        { id: 'sales-travel', title: 'Sales/Travel', subtitle: 'Selling, traveling for work', perfectFor: 'Client sales meetings, trade shows, territory visits' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="questionnaire-title">
+                  <h3>What kind of work do you do?</h3>
+                </h1>
+                <div className="text-sm text-muted-foreground">Step 1 of 7</div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Pick all that describe your work (you can choose more than one)</p>
+              <div className="w-full bg-border/30 rounded-full h-1">
+                <div className="bg-primary h-1 rounded-full" style={{ width: '14%' }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {workOptions.map(option => {
+              const isSelected = questionnaireAnswers.workType.includes(option.id)
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 ${
+                    isSelected 
+                      ? 'ring-2 ring-orange-500 bg-orange-50/50 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  } ${option.popular ? 'work-type-card has-badge' : 'work-type-card'}`}
+                  onClick={() => {
+                    const currentSelection = questionnaireAnswers.workType
+                    if (isSelected) {
+                      handleQuestionnaireAnswer('workType', currentSelection.filter(id => id !== option.id))
+                    } else {
+                      handleQuestionnaireAnswer('workType', [...currentSelection, option.id])
+                    }
+                  }}
+                >
+                  {option.popular && (
+                    <div className="popular-badge">Most Popular</div>
+                  )}
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                      <p className="text-sm text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground">Perfect for: {option.perfectFor}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+
+            {/* Custom Input */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Other work you do:</label>
+              <Input
+                placeholder="Describe your specific work situation..."
+                className="text-sm"
+                maxLength={200}
+              />
+            </div>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="flex-1 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleContinue}
+                disabled={questionnaireAnswers.workType.length === 0}
+                className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 1: Travel Frequency
+    if (questionnaireStep === 1) {
+      const frequencyOptions = [
+        { id: 'sometimes', title: 'Just Sometimes', subtitle: 'Special events and rare occasions', perfectFor: 'Important meetings, special events, airport trips' },
+        { id: 'weekly', title: 'About Once a Week', subtitle: 'Regular meetings and weekly commitments', perfectFor: 'Weekly client meetings, regular business appointments' },
+        { id: 'daily', title: 'Almost Every Day', subtitle: 'Daily commute and regular work transport', perfectFor: 'Daily office commute, regular work schedule' },
+        { id: 'multiple', title: 'Multiple Times Daily', subtitle: 'Very busy schedule with frequent travel', perfectFor: 'Back-to-back meetings, multiple daily appointments' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="questionnaire-title">
+                  <h3>How often do you need secure transport?</h3>
+                </h1>
+                <div className="text-sm text-muted-foreground">Step 2 of 7</div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Pick the one that best matches your needs</p>
+              <div className="w-full bg-border/30 rounded-full h-1">
+                <div className="bg-primary h-1 rounded-full" style={{ width: '28%' }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {frequencyOptions.map(option => {
+              const isSelected = questionnaireAnswers.travelFrequency === option.id
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 ${
+                    isSelected 
+                      ? 'ring-2 ring-orange-500 bg-orange-50/50 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  }`}
+                  onClick={() => handleQuestionnaireAnswer('travelFrequency', option.id)}
+                >
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                      <p className="text-sm text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground">Perfect for: {option.perfectFor}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleBack}
+                className="w-20 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="flex-1 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleContinue}
+                disabled={!questionnaireAnswers.travelFrequency}
+                className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 2: Security Style
+    if (questionnaireStep === 2) {
+      const styleOptions = [
+        { id: 'quiet', title: 'Quiet & Discreet', subtitle: 'Barely noticeable, low-key protection', perfectFor: 'Daily routines, business meetings, family outings' },
+        { id: 'professional', title: 'Professional & Visible', subtitle: 'Clearly there but business-like', perfectFor: 'Business meetings, corporate events, professional settings' },
+        { id: 'premium', title: 'Full Premium Service', subtitle: 'Complete security with top protection', perfectFor: 'High-profile events, VIP occasions, maximum security needs' }
+      ]
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+            <div className="max-w-md mx-auto">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="questionnaire-title">
+                  <h3>How do you want your security to look?</h3>
+                </h1>
+                <div className="text-sm text-muted-foreground">Step 3 of 7</div>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">Pick the style that feels right for you</p>
+              <div className="w-full bg-border/30 rounded-full h-1">
+                <div className="bg-primary h-1 rounded-full" style={{ width: '42%' }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
+            {styleOptions.map(option => {
+              const isSelected = questionnaireAnswers.securityStyle === option.id
+              return (
+                <Card 
+                  key={option.id}
+                  className={`questionnaire-card cursor-pointer transition-all duration-200 ${
+                    isSelected 
+                      ? 'ring-2 ring-orange-500 bg-orange-50/50 shadow-lg' 
+                      : 'hover:shadow-md bg-white border border-border/40'
+                  }`}
+                  onClick={() => handleQuestionnaireAnswer('securityStyle', option.id)}
+                >
+                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
+                    <div className="check-dot"></div>
+                  </div>
+                  <CardContent className="content-padding">
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                      <p className="text-sm text-muted-foreground">{option.subtitle}</p>
+                      <p className="text-xs text-muted-foreground">Perfect for: {option.perfectFor}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
+            <div className="max-w-md mx-auto flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={handleBack}
+                className="w-20 h-12 text-sm font-medium"
+              >
+                Back
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSaveAndExit}
+                className="flex-1 h-12 text-sm font-medium"
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                onClick={handleContinue}
+                disabled={!questionnaireAnswers.securityStyle}
+                className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm"
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Completion screen for remaining steps
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex items-center justify-center p-4">
+        <div className="max-w-sm mx-auto text-center space-y-6">
+          <div className="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+            <CheckCircle size={32} className="text-white" weight="fill" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Assessment Complete!</h2>
+            <p className="text-muted-foreground mb-6">
+              Based on your responses, we recommend our Standard Transport service for your security needs.
+            </p>
+          </div>
+          <Button 
+            onClick={() => {
+              setHasCompletedOnboarding(true)
+              setCurrentView('home')
+            }}
+            className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+          >
+            Start Using Armora Cabs 24/7
+          </Button>
         </div>
       </div>
     )
