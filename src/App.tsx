@@ -881,15 +881,18 @@ const App = () => {
     return 0
   }, [selectedPickupLocation, selectedDestinationLocation, calculateDistance])
 
-  // Initialize app flow based on user state
+  // Initialize app flow based on user state with automatic routing
   useEffect(() => {
+    // Automatic assessment status check and routing
     if (hasCompletedOnboarding) {
+      // User has completed assessment - go directly to homepage
       setCurrentView('home')
-    } else if (isFirstLaunch) {
-      setCurrentView('welcome')
+      toast.success("Welcome back to Armora!", {
+        description: "Your security assessment is complete"
+      })
     } else {
-      setCurrentView('questionnaire')
-      setQuestionnaireStep(0)
+      // User needs to complete assessment - show combined welcome/assessment screen
+      setCurrentView('welcome')
     }
   }, [hasCompletedOnboarding, isFirstLaunch])
 
@@ -2465,10 +2468,10 @@ const App = () => {
 
 
 
-  // Welcome Screen
+  // Combined Welcome & Security Assessment Screen
   if (currentView === 'welcome') {
     return (
-      <div className="h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden no-scroll">
         <Toaster position="top-center" />
         
         {/* Background Elements */}
@@ -2478,7 +2481,7 @@ const App = () => {
         </div>
         
         <div className="max-w-sm mx-auto text-center space-y-6 animate-in fade-in duration-1000 relative z-10">
-          {/* Logo and Main Branding */}
+          {/* Logo and Main Header */}
           <div className="space-y-4">
             <div className="relative">
               <div className="w-20 h-20 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
@@ -2489,56 +2492,59 @@ const App = () => {
             </div>
             
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
+              <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
                 Armora Cabs 24/7
               </h1>
-              <p className="text-lg text-amber-100/90 font-medium tracking-wide">
-                Professional Security Transport
-              </p>
+              <h2 className="text-base text-amber-100/90 font-semibold tracking-wide">
+                Complete Your Security Assessment
+              </h2>
               <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
-                Available around the clock for your protection
+                Required to access your professional transport service
               </p>
             </div>
           </div>
 
-          {/* Trust Badges */}
+          {/* Trust Badges - Compact Three Column */}
           <div className="space-y-3">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               <div className="text-center space-y-1">
-                <div className="w-10 h-10 mx-auto bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 rounded-xl flex items-center justify-center border border-emerald-400/30">
-                  <Shield size={20} className="text-emerald-400" weight="bold" />
+                <div className="w-8 h-8 mx-auto bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 rounded-lg flex items-center justify-center border border-emerald-400/30">
+                  <Shield size={16} className="text-emerald-400" weight="bold" />
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-emerald-300">SIA Licensed</p>
-                  <p className="text-[9px] text-slate-400">Government Certified</p>
-                </div>
+                <p className="text-xs font-bold text-emerald-300">SIA Licensed</p>
               </div>
               
               <div className="text-center space-y-1">
-                <div className="w-10 h-10 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
-                  <Users size={20} className="text-amber-400" weight="fill" />
+                <div className="w-8 h-8 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-lg flex items-center justify-center border border-amber-400/30">
+                  <Users size={16} className="text-amber-400" weight="fill" />
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-amber-300">Professional</p>
-                  <p className="text-[9px] text-slate-400">Security Drivers</p>
-                </div>
+                <p className="text-xs font-bold text-amber-300">Professional Drivers</p>
               </div>
               
               <div className="text-center space-y-1">
-                <div className="w-10 h-10 mx-auto bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-xl flex items-center justify-center border border-blue-400/30">
-                  <Star size={20} className="text-blue-400" weight="fill" />
+                <div className="w-8 h-8 mx-auto bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-lg flex items-center justify-center border border-blue-400/30">
+                  <Star size={16} className="text-blue-400" weight="fill" />
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-blue-300">4.9★ Rating</p>
-                  <p className="text-[9px] text-slate-400">Premium Service</p>
-                </div>
+                <p className="text-xs font-bold text-blue-300">4.9★ Rating</p>
               </div>
             </div>
-            
-            <div className="p-3 bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl border border-amber-400/20 backdrop-blur-sm">
-              <p className="text-sm text-amber-200 font-medium">
-                ✨ Professional security-trained drivers
-              </p>
+          </div>
+
+          {/* Benefits Section */}
+          <div className="space-y-2">
+            <div className="text-left space-y-2">
+              <div className="flex items-center gap-2 text-sm text-emerald-300">
+                <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" weight="fill" />
+                <span>Security-trained drivers</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-emerald-300">
+                <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" weight="fill" />
+                <span>Available 24/7</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-emerald-300">
+                <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" weight="fill" />
+                <span>Trusted across London</span>
+              </div>
             </div>
           </div>
 
@@ -2552,16 +2558,16 @@ const App = () => {
               }}
               className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-base rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
             >
-              Get Started
+              Complete Assessment
             </Button>
             
-            <p className="text-sm text-slate-400 font-medium">
-              Professional security transport • Available 24/7
+            <p className="text-xs text-slate-400 font-medium">
+              Private & Secure - All information encrypted
             </p>
           </div>
 
           {/* Bottom Trust Line */}
-          <div className="pt-4 border-t border-amber-400/20">
+          <div className="pt-3 border-t border-amber-400/20">
             <p className="text-xs text-amber-300 font-bold">
               Trusted by professionals across London
             </p>

@@ -46,6 +46,24 @@
   overflow: hidden !important;
 }
 
+/* Welcome screen - Fixed height, no scroll */
+.welcome-screen {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.welcome-content {
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  padding: 1rem !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
 /* Add line-clamp utilities for text overflow control */
 .line-clamp-1 {
   overflow: hidden;
