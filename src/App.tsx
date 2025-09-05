@@ -2749,22 +2749,22 @@ function App() {
           <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-indigo-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
         
-        <div className="max-w-sm mx-auto text-center space-y-8 animate-in fade-in duration-1000 relative z-10">
+        <div className="max-w-sm mx-auto text-center space-y-6 animate-in fade-in duration-1000 relative z-10">
           {/* Logo and Main Branding */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="relative">
-              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
-                <Shield size={40} className="text-slate-900" weight="fill" />
+              <div className="w-20 h-20 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
+                <Shield size={32} className="text-slate-900" weight="fill" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 rounded-full" />
               </div>
-              <div className="absolute -inset-6 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-xl animate-pulse" />
+              <div className="absolute -inset-4 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-xl animate-pulse" />
             </div>
             
-            <div className="space-y-3">
-              <h1 className="text-5xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
                 Armora
               </h1>
-              <p className="text-xl text-amber-100/90 font-medium tracking-wide">
+              <p className="text-lg text-amber-100/90 font-medium tracking-wide">
                 Premium Security Transport
               </p>
               <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
@@ -2774,44 +2774,44 @@ function App() {
           </div>
 
           {/* Visual Trust Badges - Clean and Minimal */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-4">
+          <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-3">
               {/* SIA Licensed */}
-              <div className="text-center space-y-2">
-                <div className="w-12 h-12 mx-auto bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 rounded-xl flex items-center justify-center border border-emerald-400/30">
-                  <Shield size={24} className="text-emerald-400" weight="bold" />
+              <div className="text-center space-y-1">
+                <div className="w-10 h-10 mx-auto bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 rounded-xl flex items-center justify-center border border-emerald-400/30">
+                  <Shield size={20} className="text-emerald-400" weight="bold" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-emerald-300">SIA Licensed</p>
-                  <p className="text-[10px] text-slate-400">Government Certified</p>
+                  <p className="text-[9px] text-slate-400">Government Certified</p>
                 </div>
               </div>
               
               {/* Zero Incidents */}
-              <div className="text-center space-y-2">
-                <div className="w-12 h-12 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
-                  <CheckCircle size={24} className="text-amber-400" weight="fill" />
+              <div className="text-center space-y-1">
+                <div className="w-10 h-10 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
+                  <CheckCircle size={20} className="text-amber-400" weight="fill" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-amber-300">Zero Incidents</p>
-                  <p className="text-[10px] text-slate-400">6000+ Trips</p>
+                  <p className="text-[9px] text-slate-400">6000+ Trips</p>
                 </div>
               </div>
               
               {/* Elite Rating */}
-              <div className="text-center space-y-2">
-                <div className="w-12 h-12 mx-auto bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-xl flex items-center justify-center border border-blue-400/30">
-                  <Star size={24} className="text-blue-400" weight="fill" />
+              <div className="text-center space-y-1">
+                <div className="w-10 h-10 mx-auto bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-xl flex items-center justify-center border border-blue-400/30">
+                  <Star size={20} className="text-blue-400" weight="fill" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-blue-300">4.9★ Rating</p>
-                  <p className="text-[10px] text-slate-400">Elite Selection</p>
+                  <p className="text-[9px] text-slate-400">Elite Selection</p>
                 </div>
               </div>
             </div>
             
             {/* Key Value Proposition - Single Line */}
-            <div className="p-4 bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl border border-amber-400/20 backdrop-blur-sm">
+            <div className="p-3 bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl border border-amber-400/20 backdrop-blur-sm">
               <p className="text-sm text-amber-200 font-medium">
                 ✨ Trained security professionals, not taxi drivers
               </p>
@@ -2819,14 +2819,14 @@ function App() {
           </div>
 
           {/* Main Action Button */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {onboardingStep > 0 && !hasCompletedOnboarding ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <Button 
                   onClick={() => {
                     setCurrentView('onboarding')
                   }}
-                  className="w-full h-14 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+                  className="w-full h-12 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-slate-900 font-bold text-base rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
                 >
                   Resume Assessment
                 </Button>
@@ -2841,7 +2841,7 @@ function App() {
                   setCurrentView('onboarding')
                   setOnboardingStep(0)
                 }}
-                className="w-full h-14 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-base rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
                 Get Started
               </Button>
@@ -2853,7 +2853,7 @@ function App() {
           </div>
 
           {/* Bottom Trust Line */}
-          <div className="pt-6 border-t border-amber-400/20">
+          <div className="pt-4 border-t border-amber-400/20">
             <p className="text-xs text-amber-300 font-bold">
               Trusted by executives, lawyers & VIPs across London
             </p>
