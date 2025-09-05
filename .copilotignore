@@ -1,0 +1,24 @@
+node_modules/
+dist/
+dist-ssr/
+build/
+coverage/
+.next/
+out/
+storybook-static/
+.turbo/
+.cache/
+.swc/
+parcel-cache/
+**/*.log
+**/__snapshots__/
+packages/
+docs/archive/
+public/assets/unused/
+spark.meta.json
+package-lock.json
+# Removed PRD.md (deleted) and un-ignored src/prd.md so current spec stays accessible.
+src/map-capabilities.md
+src/App.tsx  # Temporarily exclude monolithic file until modularized
+
+# Rationale: reduces token load; we will re-allow specific modules after splitting App.tsx.
