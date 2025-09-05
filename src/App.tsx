@@ -402,7 +402,7 @@ function App() {
                   key={option.id}
                   className={`questionnaire-card cursor-pointer transition-all duration-200 ${
                     isSelected 
-                      ? 'ring-2 ring-orange-500 bg-orange-50/50 shadow-lg' 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
                       : 'hover:shadow-md bg-white border border-border/40'
                   } ${option.popular ? 'work-type-card has-badge' : 'work-type-card'}`}
                   onClick={() => {
@@ -455,7 +455,7 @@ function App() {
               <Button 
                 onClick={handleContinue}
                 disabled={questionnaireAnswers.workType.length === 0}
-                className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm"
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
               >
                 Continue
               </Button>
@@ -503,7 +503,7 @@ function App() {
                   key={option.id}
                   className={`questionnaire-card cursor-pointer transition-all duration-200 ${
                     isSelected 
-                      ? 'ring-2 ring-orange-500 bg-orange-50/50 shadow-lg' 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
                       : 'hover:shadow-md bg-white border border-border/40'
                   }`}
                   onClick={() => handleQuestionnaireAnswer('travelFrequency', option.id)}
@@ -543,7 +543,7 @@ function App() {
               <Button 
                 onClick={handleContinue}
                 disabled={!questionnaireAnswers.travelFrequency}
-                className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm"
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
               >
                 Continue
               </Button>
@@ -590,7 +590,7 @@ function App() {
                   key={option.id}
                   className={`questionnaire-card cursor-pointer transition-all duration-200 ${
                     isSelected 
-                      ? 'ring-2 ring-orange-500 bg-orange-50/50 shadow-lg' 
+                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
                       : 'hover:shadow-md bg-white border border-border/40'
                   }`}
                   onClick={() => handleQuestionnaireAnswer('securityStyle', option.id)}
@@ -630,7 +630,7 @@ function App() {
               <Button 
                 onClick={handleContinue}
                 disabled={!questionnaireAnswers.securityStyle}
-                className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm"
+                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
               >
                 Continue
               </Button>
@@ -658,7 +658,7 @@ function App() {
               setHasCompletedOnboarding(true)
               setCurrentView('home')
             }}
-            className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white font-semibold"
+            className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
           >
             Start Using Armora Cabs 24/7
           </Button>
@@ -677,8 +677,8 @@ function App() {
         <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-3 sticky top-0 z-10">
           <div className="flex items-center justify-between max-w-md mx-auto">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <Car size={12} className="text-primary-foreground" weight="bold" />
+              <div className="w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
+                <Car size={12} className="text-slate-900" weight="bold" />
               </div>
               <div>
                 <h1 className="text-base font-bold">Armora Cabs 24/7</h1>
@@ -739,31 +739,31 @@ function App() {
                     key={service.id}
                     className={`cursor-pointer transition-all duration-200 h-[120px] overflow-hidden relative ${ 
                       isSelected
-                        ? 'ring-2 ring-primary bg-primary/10 shadow-lg' 
+                        ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
                         : 'hover:shadow-md bg-white border border-border/40'
-                    } ${service.popular ? 'border-green-200' : ''}`}
+                    } ${service.popular ? 'border-amber-200' : ''}`}
                     onClick={() => setSelectedService(service.id)}
                   >
                     {service.popular && (
-                      <div className="absolute top-1 right-1 bg-green-500 text-white text-[6px] font-bold px-1 py-0.5 rounded-full">
+                      <div className="absolute top-1 right-1 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[6px] font-bold px-1 py-0.5 rounded-full">
                         ★
                       </div>
                     )}
                     <CardContent className="p-3 h-full flex flex-col items-center justify-center text-center space-y-1.5">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${ 
-                        isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted/70 text-primary'
+                        isSelected ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900' : 'bg-muted/70 text-primary'
                       }`}>
                         <Icon size={18} weight={isSelected ? "fill" : "regular"} />
                       </div>
                       
                       <h3 className={`font-bold text-[10px] leading-tight text-center line-clamp-1 ${ 
-                        isSelected ? 'text-primary' : 'text-foreground'
+                        isSelected ? 'text-amber-700' : 'text-foreground'
                       }`}>
                         {service.name}
                       </h3>
                       
                       <p className={`font-bold text-sm leading-none ${ 
-                        isSelected ? 'text-primary' : 'text-foreground'
+                        isSelected ? 'text-amber-700' : 'text-foreground'
                       }`}>
                         {dynamicPrice}
                       </p>
@@ -809,7 +809,7 @@ function App() {
           <div className="grid grid-cols-5 h-12 max-w-md mx-auto">
             <button
               onClick={() => setCurrentView('home')}
-              className="flex flex-col items-center justify-center gap-0.5 text-primary transition-colors"
+              className="flex flex-col items-center justify-center gap-0.5 text-amber-600 transition-colors"
             >
               <div className="w-5 h-5 flex items-center justify-center">
                 <House size={16} weight="fill" />
@@ -896,7 +896,7 @@ function App() {
               <House size={20} />
               <span className="text-xs">Home</span>
             </button>
-            <button onClick={() => setCurrentView('activity')} className="flex flex-col items-center justify-center gap-1 text-primary transition-colors">
+            <button onClick={() => setCurrentView('activity')} className="flex flex-col items-center justify-center gap-1 text-amber-600 transition-colors">
               <List size={20} weight="fill" />
               <span className="text-xs font-semibold">Activity</span>
             </button>
@@ -952,7 +952,7 @@ function App() {
               <List size={20} />
               <span className="text-xs">Activity</span>
             </button>
-            <button onClick={() => setCurrentView('favorites')} className="flex flex-col items-center justify-center gap-1 text-primary transition-colors">
+            <button onClick={() => setCurrentView('favorites')} className="flex flex-col items-center justify-center gap-1 text-amber-600 transition-colors">
               <Heart size={20} weight="fill" />
               <span className="text-xs font-semibold">Saved</span>
             </button>
@@ -1060,7 +1060,7 @@ function App() {
               <Heart size={20} />
               <span className="text-xs">Saved</span>
             </button>
-            <button onClick={() => setCurrentView('account')} className="flex flex-col items-center justify-center gap-1 text-primary transition-colors">
+            <button onClick={() => setCurrentView('account')} className="flex flex-col items-center justify-center gap-1 text-amber-600 transition-colors">
               <User size={20} weight="fill" />
               <span className="text-xs font-semibold">Account</span>
             </button>
