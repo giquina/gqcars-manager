@@ -618,6 +618,12 @@ const App = () => {
     customRequirements: ''
   })
   
+  // Payment methods and processing state
+  const [paymentMethods, setPaymentMethods] = useKV("payment-methods", [] as any[])
+  const [defaultPaymentMethod, setDefaultPaymentMethod] = useKV("default-payment-method", null as any)
+  const [billingAddress, setBillingAddress] = useKV("billing-address", null as any)
+  const [paymentHistory, setPaymentHistory] = useKV("payment-history", [] as any[])
+  
   // Form and booking state
   const [bookingForm, setBookingForm] = useState({
     pickup: '',
@@ -749,6 +755,19 @@ const App = () => {
   // Trip rating state
   const [rating, setRating] = useState(0)
   const [feedback, setFeedback] = useState('')
+
+  // Payment processing state
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
+  const [newCardForm, setNewCardForm] = useState({
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+    nameOnCard: '',
+    billingPostcode: ''
+  })
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const [paymentErrors, setPaymentErrors] = useState<{[key: string]: string}>({})
 
   // Questionnaire state management
   const [questionnaireStep, setQuestionnaireStep] = useState<number>(0)
@@ -1028,6 +1047,225 @@ const App = () => {
     return Math.round(R * c * 100) / 100
   }, [])
 
+  // Payment Modal Component
+  const PaymentModal = () => {
+    if (!showPaymentModal) return null
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">Payment Methods</h2>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowPaymentModal(false)}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <X size={16} />
+              </Button>
+            </div>
+
+            {/* Existing Payment Methods */}
+            {paymentMethods.length > 0 && (
+              <div className="space-y-3 mb-6">
+                <h3 className="font-semibold text-sm text-muted-foreground">Saved Payment Methods</h3>
+                {paymentMethods.map(method => (
+                  <Card 
+                    key={method.id}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      selectedPaymentMethod === method.id
+                        ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60'
+                        : 'hover:shadow-md'
+                    }`}
+                    onClick={() => setSelectedPaymentMethod(method.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-md flex items-center justify-center">
+                            <CreditCard size={16} className="text-white" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-sm">
+                              {method.cardType.toUpperCase()} •••• {method.last4}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {method.nameOnCard} • Expires {method.expiryMonth}/{method.expiryYear}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {method.isDefault && (
+                            <Badge variant="secondary" className="text-xs">Default</Badge>
+                          )}
+                          <div className={`w-5 h-5 rounded-full border-2 ${
+                            selectedPaymentMethod === method.id 
+                              ? 'border-primary bg-primary' 
+                              : 'border-muted-foreground/50'
+                          } flex items-center justify-center`}>
+                            {selectedPaymentMethod === method.id && (
+                              <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {/* Add New Card Form */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-sm text-muted-foreground">Add New Card</h3>
+              
+              <div className="space-y-3">
+                <div>
+                  <Input
+                    placeholder="Card number"
+                    value={newCardForm.cardNumber}
+                    onChange={(e) => {
+                      const formatted = formatCardNumber(e.target.value)
+                      setNewCardForm(prev => ({ ...prev, cardNumber: formatted }))
+                      if (paymentErrors.cardNumber) {
+                        setPaymentErrors(prev => ({ ...prev, cardNumber: '' }))
+                      }
+                    }}
+                    className={`${paymentErrors.cardNumber ? 'border-red-500' : ''}`}
+                    maxLength={19}
+                  />
+                  {paymentErrors.cardNumber && (
+                    <p className="text-xs text-red-500 mt-1">{paymentErrors.cardNumber}</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Input
+                      placeholder="MM/YY"
+                      value={newCardForm.expiryDate}
+                      onChange={(e) => {
+                        const formatted = formatExpiryDate(e.target.value)
+                        setNewCardForm(prev => ({ ...prev, expiryDate: formatted }))
+                        if (paymentErrors.expiryDate) {
+                          setPaymentErrors(prev => ({ ...prev, expiryDate: '' }))
+                        }
+                      }}
+                      className={`${paymentErrors.expiryDate ? 'border-red-500' : ''}`}
+                      maxLength={5}
+                    />
+                    {paymentErrors.expiryDate && (
+                      <p className="text-xs text-red-500 mt-1">{paymentErrors.expiryDate}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Input
+                      placeholder="CVV"
+                      value={newCardForm.cvv}
+                      onChange={(e) => {
+                        const cvv = e.target.value.replace(/\D/g, '').substr(0, 4)
+                        setNewCardForm(prev => ({ ...prev, cvv }))
+                        if (paymentErrors.cvv) {
+                          setPaymentErrors(prev => ({ ...prev, cvv: '' }))
+                        }
+                      }}
+                      className={`${paymentErrors.cvv ? 'border-red-500' : ''}`}
+                      maxLength={4}
+                    />
+                    {paymentErrors.cvv && (
+                      <p className="text-xs text-red-500 mt-1">{paymentErrors.cvv}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <Input
+                    placeholder="Name on card"
+                    value={newCardForm.nameOnCard}
+                    onChange={(e) => {
+                      setNewCardForm(prev => ({ ...prev, nameOnCard: e.target.value }))
+                      if (paymentErrors.nameOnCard) {
+                        setPaymentErrors(prev => ({ ...prev, nameOnCard: '' }))
+                      }
+                    }}
+                    className={`${paymentErrors.nameOnCard ? 'border-red-500' : ''}`}
+                  />
+                  {paymentErrors.nameOnCard && (
+                    <p className="text-xs text-red-500 mt-1">{paymentErrors.nameOnCard}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Input
+                    placeholder="Billing postcode"
+                    value={newCardForm.billingPostcode}
+                    onChange={(e) => {
+                      setNewCardForm(prev => ({ ...prev, billingPostcode: e.target.value.toUpperCase() }))
+                      if (paymentErrors.billingPostcode) {
+                        setPaymentErrors(prev => ({ ...prev, billingPostcode: '' }))
+                      }
+                    }}
+                    className={`${paymentErrors.billingPostcode ? 'border-red-500' : ''}`}
+                    maxLength={8}
+                  />
+                  {paymentErrors.billingPostcode && (
+                    <p className="text-xs text-red-500 mt-1">{paymentErrors.billingPostcode}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Security Message */}
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <Shield size={16} className="text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-medium text-green-800">Secure Payment</p>
+                    <p className="text-xs text-green-700">
+                      Your card details are encrypted and securely processed. We never store your full card number.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowPaymentModal(false)}
+                  className="flex-1"
+                  disabled={isProcessingPayment}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={async () => {
+                    if (selectedPaymentMethod || await addPaymentMethod()) {
+                      setShowPaymentModal(false)
+                      toast.success("Payment method selected")
+                    }
+                  }}
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+                  disabled={isProcessingPayment || (!selectedPaymentMethod && !newCardForm.cardNumber)}
+                >
+                  {isProcessingPayment ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    selectedPaymentMethod ? 'Use Selected Method' : 'Add & Use Card'
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   // Real-time driver location tracking
   const startDriverTracking = useCallback(() => {
     if (driverTrackingInterval) {
@@ -1240,6 +1478,208 @@ const App = () => {
     )
     toast.success("Service selected! Payment confirmed.")
   }, [setPaymentReservations])
+
+  // Enhanced payment processing functions
+  const validateCardNumber = (cardNumber: string): boolean => {
+    // Remove spaces and hyphens
+    const cleanNumber = cardNumber.replace(/[\s-]/g, '')
+    
+    // Check if it's all digits and proper length
+    if (!/^\d{13,19}$/.test(cleanNumber)) return false
+    
+    // Luhn algorithm validation
+    let sum = 0
+    let isEven = false
+    for (let i = cleanNumber.length - 1; i >= 0; i--) {
+      let digit = parseInt(cleanNumber[i])
+      if (isEven) {
+        digit *= 2
+        if (digit > 9) digit -= 9
+      }
+      sum += digit
+      isEven = !isEven
+    }
+    return sum % 10 === 0
+  }
+
+  const validateExpiryDate = (expiry: string): boolean => {
+    const [month, year] = expiry.split('/')
+    if (!month || !year) return false
+    
+    const monthNum = parseInt(month)
+    const yearNum = parseInt('20' + year)
+    const currentDate = new Date()
+    const currentMonth = currentDate.getMonth() + 1
+    const currentYear = currentDate.getFullYear()
+    
+    if (monthNum < 1 || monthNum > 12) return false
+    if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) return false
+    
+    return true
+  }
+
+  const validateCVV = (cvv: string, cardNumber: string): boolean => {
+    // American Express has 4-digit CVV, others have 3
+    const isAmex = cardNumber.replace(/[\s-]/g, '').startsWith('34') || cardNumber.replace(/[\s-]/g, '').startsWith('37')
+    return isAmex ? /^\d{4}$/.test(cvv) : /^\d{3}$/.test(cvv)
+  }
+
+  const getCardType = (cardNumber: string): string => {
+    const number = cardNumber.replace(/[\s-]/g, '')
+    if (/^4/.test(number)) return 'visa'
+    if (/^5[1-5]/.test(number)) return 'mastercard'
+    if (/^3[47]/.test(number)) return 'amex'
+    if (/^6/.test(number)) return 'discover'
+    return 'unknown'
+  }
+
+  const formatCardNumber = (value: string): string => {
+    const number = value.replace(/[\s-]/g, '')
+    const groups = number.match(/.{1,4}/g) || []
+    return groups.join(' ').substr(0, 19) // Max 16 digits + 3 spaces
+  }
+
+  const formatExpiryDate = (value: string): string => {
+    const cleaned = value.replace(/\D/g, '')
+    if (cleaned.length >= 2) {
+      return cleaned.substr(0, 2) + '/' + cleaned.substr(2, 2)
+    }
+    return cleaned
+  }
+
+  const validatePaymentForm = (): boolean => {
+    const errors: {[key: string]: string} = {}
+    
+    if (!newCardForm.cardNumber || !validateCardNumber(newCardForm.cardNumber)) {
+      errors.cardNumber = 'Please enter a valid card number'
+    }
+    
+    if (!newCardForm.expiryDate || !validateExpiryDate(newCardForm.expiryDate)) {
+      errors.expiryDate = 'Please enter a valid expiry date'
+    }
+    
+    if (!newCardForm.cvv || !validateCVV(newCardForm.cvv, newCardForm.cardNumber)) {
+      errors.cvv = 'Please enter a valid CVV'
+    }
+    
+    if (!newCardForm.nameOnCard.trim()) {
+      errors.nameOnCard = 'Please enter the name on the card'
+    }
+    
+    if (!newCardForm.billingPostcode.trim()) {
+      errors.billingPostcode = 'Please enter your billing postcode'
+    }
+    
+    setPaymentErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const processPayment = useCallback(async (amount: number, description: string): Promise<boolean> => {
+    setIsProcessingPayment(true)
+    
+    try {
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // Simulate payment success/failure (95% success rate)
+      const isSuccess = Math.random() > 0.05
+      
+      if (isSuccess) {
+        const payment = {
+          id: Date.now().toString(),
+          amount,
+          description,
+          status: 'completed',
+          paymentMethod: selectedPaymentMethod || 'new-card',
+          createdAt: new Date().toISOString(),
+          cardLast4: newCardForm.cardNumber.slice(-4) || '****'
+        }
+        
+        setPaymentHistory(prev => [payment, ...prev])
+        
+        toast.success(`Payment of £${amount.toFixed(2)} processed successfully`)
+        return true
+      } else {
+        toast.error("Payment failed. Please try again or use a different card.")
+        return false
+      }
+    } catch (error) {
+      toast.error("Payment processing error. Please try again.")
+      return false
+    } finally {
+      setIsProcessingPayment(false)
+    }
+  }, [selectedPaymentMethod, newCardForm.cardNumber, setPaymentHistory])
+
+  const addPaymentMethod = useCallback(async () => {
+    if (!validatePaymentForm()) return false
+    
+    setIsProcessingPayment(true)
+    
+    try {
+      // Simulate card tokenization
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      const newPaymentMethod = {
+        id: Date.now().toString(),
+        type: 'card',
+        cardType: getCardType(newCardForm.cardNumber),
+        last4: newCardForm.cardNumber.replace(/[\s-]/g, '').slice(-4),
+        expiryMonth: newCardForm.expiryDate.split('/')[0],
+        expiryYear: '20' + newCardForm.expiryDate.split('/')[1],
+        nameOnCard: newCardForm.nameOnCard,
+        billingPostcode: newCardForm.billingPostcode,
+        isDefault: paymentMethods.length === 0,
+        createdAt: new Date().toISOString()
+      }
+      
+      setPaymentMethods(prev => [...prev, newPaymentMethod])
+      
+      if (newPaymentMethod.isDefault) {
+        setDefaultPaymentMethod(newPaymentMethod.id)
+      }
+      
+      // Clear form
+      setNewCardForm({
+        cardNumber: '',
+        expiryDate: '',
+        cvv: '',
+        nameOnCard: '',
+        billingPostcode: ''
+      })
+      setPaymentErrors({})
+      
+      toast.success("Payment method added successfully")
+      return true
+    } catch (error) {
+      toast.error("Failed to add payment method. Please try again.")
+      return false
+    } finally {
+      setIsProcessingPayment(false)
+    }
+  }, [newCardForm, paymentMethods.length, setPaymentMethods, setDefaultPaymentMethod])
+
+  const removePaymentMethod = useCallback((methodId: string) => {
+    setPaymentMethods(prev => prev.filter(method => method.id !== methodId))
+    
+    if (defaultPaymentMethod === methodId) {
+      const remainingMethods = paymentMethods.filter(method => method.id !== methodId)
+      setDefaultPaymentMethod(remainingMethods.length > 0 ? remainingMethods[0].id : null)
+    }
+    
+    toast.success("Payment method removed")
+  }, [paymentMethods, defaultPaymentMethod, setPaymentMethods, setDefaultPaymentMethod])
+
+  const setDefaultMethod = useCallback((methodId: string) => {
+    setPaymentMethods(prev => 
+      prev.map(method => ({
+        ...method,
+        isDefault: method.id === methodId
+      }))
+    )
+    setDefaultPaymentMethod(methodId)
+    toast.success("Default payment method updated")
+  }, [setPaymentMethods, setDefaultPaymentMethod])
 
   // Dynamic pricing calculation
   const calculateServicePrice = useCallback((service: any, distance: number = 0) => {
@@ -2533,6 +2973,13 @@ const App = () => {
                                 </Button>
                                 <Button 
                                   onClick={() => {
+                                    // Check if user has payment method
+                                    if (paymentMethods.length === 0 && !defaultPaymentMethod) {
+                                      setShowPaymentModal(true)
+                                      toast.info("Please add a payment method to continue")
+                                      return
+                                    }
+                                    
                                     // Create payment reservation
                                     const reservationId = createPaymentReservation(service.id, 50)
                                     
@@ -2569,9 +3016,16 @@ const App = () => {
 
           {/* Book Button */}
           <Button 
-            onClick={() => {
+            onClick={async () => {
               if (!selectedPickupLocation || !selectedDestinationLocation || !selectedService) {
                 toast.error("Please enter pickup, destination and select a service")
+                return
+              }
+              
+              // Check if user has payment method
+              if (paymentMethods.length === 0 && !defaultPaymentMethod) {
+                setShowPaymentModal(true)
+                toast.info("Please add a payment method to complete booking")
                 return
               }
               
@@ -2585,7 +3039,23 @@ const App = () => {
                 return
               }
               
-              const selectedServiceName = armoraServices.find(s => s.id === selectedService)?.name || 'service'
+              // Calculate final trip cost
+              const selectedServiceData = armoraServices.find(s => s.id === selectedService)
+              const finalAmount = routeDistance > 0 
+                ? parseFloat(calculateServicePrice(selectedServiceData!, routeDistance).replace('£', ''))
+                : 50 // Minimum callout charge
+              
+              // Process payment
+              const paymentSuccess = await processPayment(
+                finalAmount, 
+                `${selectedServiceData?.name} - ${selectedPickupLocation.address} to ${selectedDestinationLocation.address}`
+              )
+              
+              if (!paymentSuccess) {
+                return // Payment failed, don't proceed
+              }
+              
+              const selectedServiceName = selectedServiceData?.name || 'service'
               toast.success(`Booking confirmed! Your ${selectedServiceName} driver will be assigned shortly.`)
               
               // Add to recent trips
@@ -2596,7 +3066,8 @@ const App = () => {
                 destination: selectedDestinationLocation.address,
                 date: new Date().toISOString(),
                 status: 'confirmed',
-                driverId: null
+                driverId: null,
+                amount: finalAmount
               }
               setRecentTrips(prev => [newTrip, ...prev])
               setCurrentTrip(newTrip)
@@ -2608,16 +3079,22 @@ const App = () => {
               }, 1500)
             }}
             className="w-full h-10 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg disabled:opacity-50"
-            disabled={!selectedPickupLocation || !selectedDestinationLocation || !selectedService || !paymentReservations.find(res => res.serviceId === selectedService && res.status === 'confirmed')}
+            disabled={!selectedPickupLocation || !selectedDestinationLocation || !selectedService || isProcessingPayment}
           >
-            {!selectedPickupLocation || !selectedDestinationLocation ? 
-              'Enter locations' :
-              !selectedService ? 
-              'Select service' :
-              !paymentReservations.find(res => res.serviceId === selectedService && res.status === 'confirmed') ?
-              'Please select a service above' :
-              `Book ${armoraServices.find(s => s.id === selectedService)?.name || 'Security Cab'}`
-            }
+            {isProcessingPayment ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Processing payment...
+              </div>
+            ) : (
+              !selectedPickupLocation || !selectedDestinationLocation ? 
+                'Enter locations' :
+                !selectedService ? 
+                'Select service' :
+                paymentMethods.length === 0 ?
+                'Add payment method' :
+                `Book ${armoraServices.find(s => s.id === selectedService)?.name || 'Security Cab'}`
+            )}
           </Button>
           </div>
         </div>
@@ -2664,6 +3141,372 @@ const App = () => {
                   <User size={16} />
                 </div>
                 <span className="text-[10px]">Account</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('welcome')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Shield size={16} />
+                </div>
+                <span className="text-[10px]">Reset</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <PaymentModal />
+      </div>
+    )
+  }
+
+  // Payment Methods Management View
+  if (currentView === 'payment-methods') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentView('account')}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <ArrowLeft size={16} />
+              </Button>
+              <div>
+                <h1 className="text-lg font-bold">Payment Methods</h1>
+                <p className="text-xs text-muted-foreground">Manage your cards and billing</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 max-w-md mx-auto space-y-6">
+          {/* Payment Methods List */}
+          {paymentMethods.length > 0 ? (
+            <div className="space-y-4">
+              <h2 className="font-semibold text-sm text-muted-foreground">Your Payment Methods</h2>
+              {paymentMethods.map(method => (
+                <Card key={method.id} className="border border-border/40">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-md flex items-center justify-center">
+                          <CreditCard size={16} className="text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm">
+                            {method.cardType.toUpperCase()} •••• {method.last4}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {method.nameOnCard}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Expires {method.expiryMonth}/{method.expiryYear}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {method.isDefault && (
+                          <Badge variant="secondary" className="text-xs">Default</Badge>
+                        )}
+                        <div className="flex gap-1">
+                          {!method.isDefault && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => setDefaultMethod(method.id)}
+                              className="text-xs h-7 px-2"
+                            >
+                              Set Default
+                            </Button>
+                          )}
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => removePaymentMethod(method.id)}
+                            className="text-xs h-7 px-2"
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="border border-border/40">
+              <CardContent className="p-6 text-center">
+                <CreditCard size={48} className="mx-auto text-muted-foreground mb-4" />
+                <h3 className="font-semibold mb-2">No Payment Methods</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Add a payment method to book security transport services
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Add New Payment Method Button */}
+          <Button 
+            onClick={() => setShowPaymentModal(true)}
+            className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+          >
+            <Plus size={16} className="mr-2" />
+            Add Payment Method
+          </Button>
+
+          {/* Payment History */}
+          {paymentHistory.length > 0 && (
+            <div className="space-y-4">
+              <h2 className="font-semibold text-sm text-muted-foreground">Recent Payments</h2>
+              {paymentHistory.slice(0, 5).map(payment => (
+                <Card key={payment.id} className="border border-border/40">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-sm">{payment.description}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(payment.createdAt).toLocaleDateString('en-GB')} • 
+                          Card ending {payment.cardLast4}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-sm">£{payment.amount.toFixed(2)}</p>
+                        <Badge variant="secondary" className="text-xs">
+                          {payment.status}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <PaymentModal />
+      </div>
+    )
+  }
+
+  // Account Management View  
+  if (currentView === 'account') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentView('home')}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <ArrowLeft size={16} />
+              </Button>
+              <div>
+                <h1 className="text-lg font-bold">Account</h1>
+                <p className="text-xs text-muted-foreground">Manage your Armora profile</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 max-w-md mx-auto space-y-6">
+          {/* Profile Section */}
+          <Card className="border border-border/40">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
+                  <User size={24} className="text-slate-900" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Welcome to Armora</h3>
+                  <p className="text-sm text-muted-foreground">Professional Security Transport</p>
+                  <p className="text-xs text-muted-foreground">Member since {new Date().getFullYear()}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Account Options */}
+          <div className="space-y-3">
+            <h2 className="font-semibold text-sm text-muted-foreground">Account Settings</h2>
+            
+            <Card 
+              className="border border-border/40 cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setCurrentView('payment-methods')}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <CreditCard size={20} className="text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">Payment Methods</p>
+                      <p className="text-xs text-muted-foreground">
+                        {paymentMethods.length === 0 
+                          ? 'No payment methods added' 
+                          : `${paymentMethods.length} card${paymentMethods.length > 1 ? 's' : ''} on file`
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <NavigationArrow size={16} className="text-muted-foreground" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-border/40">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Shield size={20} className="text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">Security Preferences</p>
+                      <p className="text-xs text-muted-foreground">
+                        Assessment completed - Armora Essential recommended
+                      </p>
+                    </div>
+                  </div>
+                  <NavigationArrow size={16} className="text-muted-foreground" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-border/40">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                      <Phone size={20} className="text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">Emergency Contacts</p>
+                      <p className="text-xs text-muted-foreground">Optional safety feature</p>
+                    </div>
+                  </div>
+                  <NavigationArrow size={16} className="text-muted-foreground" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Trip Summary */}
+          <div className="space-y-3">
+            <h2 className="font-semibold text-sm text-muted-foreground">Trip Summary</h2>
+            
+            <Card className="border border-border/40">
+              <CardContent className="p-4">
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <p className="text-2xl font-bold text-primary">{recentTrips.length}</p>
+                    <p className="text-xs text-muted-foreground">Total Trips</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-green-600">
+                      £{paymentHistory.reduce((sum, payment) => sum + payment.amount, 0).toFixed(0)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Total Spent</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-amber-600">4.9</p>
+                    <p className="text-xs text-muted-foreground">Avg Rating</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Support Section */}
+          <div className="space-y-3">
+            <h2 className="font-semibold text-sm text-muted-foreground">Support</h2>
+            
+            <Card className="border border-border/40">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Phone size={20} className="text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">24/7 Support</p>
+                    <p className="text-xs text-muted-foreground">Professional assistance available anytime</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Reset App */}
+          <Button 
+            variant="outline"
+            onClick={() => {
+              setHasCompletedOnboarding(false)
+              setCurrentView('welcome')
+              toast.success("App reset. You can complete the assessment again.")
+            }}
+            className="w-full h-12 border-amber-200 text-amber-700 hover:bg-amber-50"
+          >
+            Reset Assessment
+          </Button>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
+          <div className="bottom-nav-container">
+            <div className="grid grid-cols-5 h-12">
+              <button
+                onClick={() => setCurrentView('home')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <House size={16} />
+                </div>
+                <span className="text-[10px]">Home</span>
+              </button>
+              
+              <button
+                onClick={() => setCurrentView('activity')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <List size={16} />
+                </div>
+                <span className="text-[10px]">Activity</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('favorites')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Heart size={16} />
+                </div>
+                <span className="text-[10px]">Saved</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentView('account')}
+                className="flex flex-col items-center justify-center gap-0.5 text-amber-600 transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <User size={16} weight="fill" />
+                </div>
+                <span className="text-[10px] font-semibold">Account</span>
               </button>
 
               <button
