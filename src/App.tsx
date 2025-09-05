@@ -2787,14 +2787,14 @@ function App() {
                 </div>
               </div>
               
-              {/* Zero Incidents */}
+              {/* Professional Service */}
               <div className="text-center space-y-1">
                 <div className="w-10 h-10 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
-                  <CheckCircle size={20} className="text-amber-400" weight="fill" />
+                  <Users size={20} className="text-amber-400" weight="fill" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-amber-300">Zero Incidents</p>
-                  <p className="text-[9px] text-slate-400">6000+ Trips</p>
+                  <p className="text-xs font-bold text-amber-300">Professional</p>
+                  <p className="text-[9px] text-slate-400">Trained Specialists</p>
                 </div>
               </div>
               
@@ -2805,7 +2805,7 @@ function App() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-blue-300">4.9★ Rating</p>
-                  <p className="text-[9px] text-slate-400">Elite Selection</p>
+                  <p className="text-[9px] text-slate-400">Premium Service</p>
                 </div>
               </div>
             </div>
@@ -2813,7 +2813,7 @@ function App() {
             {/* Key Value Proposition - Single Line */}
             <div className="p-3 bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl border border-amber-400/20 backdrop-blur-sm">
               <p className="text-sm text-amber-200 font-medium">
-                ✨ Trained security professionals, not taxi drivers
+                ✨ Professional security transport specialists
               </p>
             </div>
           </div>
@@ -2855,7 +2855,7 @@ function App() {
           {/* Bottom Trust Line */}
           <div className="pt-4 border-t border-amber-400/20">
             <p className="text-xs text-amber-300 font-bold">
-              Trusted by executives, lawyers & VIPs across London
+              Trusted by professionals across London
             </p>
           </div>
         </div>
