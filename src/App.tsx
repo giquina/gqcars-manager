@@ -2713,7 +2713,7 @@ function App() {
     setRecentTrips((prev: any[]) => [finalTrip, ...prev.slice(0, 9)])
     
     // Show success notification
-    toast.success(`🚗 Your security transport professional assigned: ${driver.name}`, {
+    toast.success(`🚗 Your security driver assigned: ${driver.name}`, {
       duration: 4000,
       description: `${driver.vehicle} • ETA: ${driver.eta} minutes`
     })
@@ -2794,7 +2794,7 @@ function App() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-amber-300">Professional</p>
-                  <p className="text-[9px] text-slate-400">Trained Specialists</p>
+                  <p className="text-[9px] text-slate-400">Security Drivers</p>
                 </div>
               </div>
               
@@ -2813,7 +2813,7 @@ function App() {
             {/* Key Value Proposition - Single Line */}
             <div className="p-3 bg-gradient-to-r from-slate-800/60 to-slate-700/60 rounded-xl border border-amber-400/20 backdrop-blur-sm">
               <p className="text-sm text-amber-200 font-medium">
-                ✨ Professional security transport specialists
+                ✨ Professional security-trained drivers
               </p>
             </div>
           </div>
@@ -4695,16 +4695,16 @@ function App() {
                     etaStatus === 'arriving' ? 'text-green-800' :
                     etaStatus === 'nearby' ? 'text-yellow-800' : 'text-blue-800'
                   }`}>
-                    {etaStatus === 'arriving' ? '🚗 Your Security Transport Professional Arriving Now!' :
+                    {etaStatus === 'arriving' ? '🚗 Your Security Driver Arriving Now!' :
                      etaStatus === 'nearby' ? `🔔 ${assignedDriver.name} is ${assignedDriver.eta} minutes away` :
-                     `📍 Your protection transport specialist ${assignedDriver.name} is en route`}
+                     `📍 Your security driver ${assignedDriver.name} is en route`}
                   </p>
                   <p className={`text-xs mt-1 ${
                     etaStatus === 'arriving' ? 'text-green-600' :
                     etaStatus === 'nearby' ? 'text-yellow-600' : 'text-blue-600'
                   }`}>
                     {etaStatus === 'arriving' ? 'Your secure transport is ready for pickup' :
-                     etaStatus === 'nearby' ? 'Your security transport professional is almost here!' :
+                     etaStatus === 'nearby' ? 'Your security driver is almost here!' :
                      `Estimated arrival: ${assignedDriver.eta} minutes • Your transport booked ${timeSinceBooking}min ago`}
                   </p>
                 </div>
@@ -4734,7 +4734,7 @@ function App() {
             trip={currentTrip} 
             driver={{...assignedDriver, location: userLocation}} 
             onArrival={() => {
-              toast.success("🚗 Your security transport professional has arrived!")
+              toast.success("🚗 Your security driver has arrived!")
               // Could transition to in-trip mode here
             }}
           />
@@ -5083,7 +5083,7 @@ function App() {
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
-                      <span className="text-sm text-muted-foreground">Security Professional: {trip.driver.name}</span>
+                      <span className="text-sm text-muted-foreground">Security Driver: {trip.driver.name}</span>
                       <Button variant="ghost" size="sm" className="h-7 text-xs">
                         View details
                       </Button>
