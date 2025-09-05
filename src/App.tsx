@@ -2994,7 +2994,7 @@ function App() {
           </div>
         </header>
 
-        <div className="relative z-10 max-w-md mx-auto p-4 pb-6 overflow-y-auto max-h-[calc(100vh-100px)]">{/* Enable scrolling and better spacing */}
+        <div className="relative z-10 max-w-md mx-auto p-4 pb-6">{/* No overflow restrictions - content should fit */}
           {/* Slide 0: Assessment Introduction */}
           {onboardingStep === 0 && (
             <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
@@ -3058,80 +3058,76 @@ function App() {
             </div>
           )}
 
-          {/* Slide 1: Work Type Selection */}
+          {/* Slide 1: Work Type Selection - Compact Layout */}
           {onboardingStep === 1 && (
-            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
-              <div className="flex-1 flex flex-col justify-center space-y-5">
-                <div className="text-center space-y-3">
-                  <h2 className="text-lg font-bold text-white">What kind of work do you do?</h2>
-                  <p className="text-sm text-amber-200">✓ You can pick more than one option</p>
-                  <p className="text-sm text-slate-300">Choose all that describe your work</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { value: 'Business Leader', desc: 'CEO, manager, executive' },
-                    { value: 'Business Owner', desc: 'Own a company, startup founder' },
-                    { value: 'Doctor/Medical', desc: 'Healthcare, medical professional' },
-                    { value: 'Lawyer/Legal', desc: 'Attorney, legal work, court cases' },
-                    { value: 'Tech/Computer', desc: 'Software, IT, technology work' },
-                    { value: 'Banking/Finance', desc: 'Money, investments, financial services' },
-                    { value: 'Real Estate', desc: 'Property, buying/selling homes/buildings' },
-                    { value: 'Sales/Travel', desc: 'Selling, traveling for work' }
-                  ].map((option) => (
-                    <Card 
-                      key={option.value}
-                      className={`cursor-pointer transition-all duration-200 h-[75px] relative ${ 
-                        onboardingData.workType.includes(option.value)
-                          ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
-                          : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
-                      }`}
-                      onClick={() => toggleArrayValue('workType', option.value)}
-                    >
-                      {/* Professional checkbox indicator */}
-                      <div className={`absolute top-2 right-2 w-5 h-5 border border-amber-400 rounded text-center text-sm leading-4 ${ 
-                        onboardingData.workType.includes(option.value) 
-                          ? 'bg-amber-400 text-slate-900' 
-                          : 'bg-transparent'
-                      }`}>
-                        {onboardingData.workType.includes(option.value) ? '✓' : ''}
-                      </div>
-                      <CardContent className="p-3 text-center h-full flex flex-col justify-center">
-                        <h3 className="font-semibold text-white text-sm leading-tight mb-1">{option.value}</h3>
-                        <p className="text-xs text-slate-300 leading-tight">{option.desc}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-amber-200">Other work you do:</label>
-                  <textarea
-                    value={onboardingData.workTypeCustom}
-                    onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
-                    placeholder="Describe your work in simple terms..."
-                    className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
-                    maxLength={500}
-                  />
-                  <p className="text-xs text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
-                </div>
-
-                <div className="p-3 bg-amber-400/10 rounded-lg border border-amber-400/30">
-                  <p className="text-sm text-amber-200">
-                    <strong>Example:</strong> You can pick both "Business Owner" and "Tech Work"
-                  </p>
-                </div>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-2">
+                <h2 className="text-base font-bold text-white">What kind of work do you do?</h2>
+                <p className="text-xs text-amber-200">✓ You can pick more than one option</p>
+                <p className="text-xs text-slate-300">Choose all that describe your work</p>
               </div>
 
-              <div className="mt-6">
-                <Button 
-                  onClick={nextStep}
-                  disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
-                  className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-base"
-                >
-                  Continue
-                </Button>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: 'Business Leader', desc: 'CEO, manager, executive' },
+                  { value: 'Business Owner', desc: 'Own a company, startup founder' },
+                  { value: 'Doctor/Medical', desc: 'Healthcare, medical professional' },
+                  { value: 'Lawyer/Legal', desc: 'Attorney, legal work, court cases' },
+                  { value: 'Tech/Computer', desc: 'Software, IT, technology work' },
+                  { value: 'Banking/Finance', desc: 'Money, investments, financial services' },
+                  { value: 'Real Estate', desc: 'Property, buying/selling homes/buildings' },
+                  { value: 'Sales/Travel', desc: 'Selling, traveling for work' }
+                ].map((option) => (
+                  <Card 
+                    key={option.value}
+                    className={`cursor-pointer transition-all duration-200 h-[60px] relative ${ 
+                      onboardingData.workType.includes(option.value)
+                        ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
+                        : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
+                    }`}
+                    onClick={() => toggleArrayValue('workType', option.value)}
+                  >
+                    {/* Professional checkbox indicator */}
+                    <div className={`absolute top-1.5 right-1.5 w-4 h-4 border border-amber-400 rounded text-center text-xs leading-3 ${ 
+                      onboardingData.workType.includes(option.value) 
+                        ? 'bg-amber-400 text-slate-900' 
+                        : 'bg-transparent'
+                    }`}>
+                      {onboardingData.workType.includes(option.value) ? '✓' : ''}
+                    </div>
+                    <CardContent className="p-2 text-center h-full flex flex-col justify-center">
+                      <h3 className="font-semibold text-white text-xs leading-tight mb-0.5">{option.value}</h3>
+                      <p className="text-[10px] text-slate-300 leading-tight">{option.desc}</p>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-amber-200">Other work you do:</label>
+                <textarea
+                  value={onboardingData.workTypeCustom}
+                  onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
+                  placeholder="Describe your work in simple terms..."
+                  className="w-full h-12 px-2.5 py-1.5 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
+                  maxLength={500}
+                />
+                <p className="text-[10px] text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
+              </div>
+
+              <div className="p-2.5 bg-amber-400/10 rounded-lg border border-amber-400/30">
+                <p className="text-xs text-amber-200">
+                  <strong>Example:</strong> You can pick both "Business Owner" and "Tech Work"
+                </p>
+              </div>
+
+              <Button 
+                onClick={nextStep}
+                disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
+                className="w-full h-11 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
+              >
+                Continue
+              </Button>
             </div>
           )}
 
