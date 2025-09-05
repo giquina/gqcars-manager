@@ -240,8 +240,8 @@ declare namespace google {
 const armoraServices = [
   {
     id: 'essential',
-    name: 'Your Essential Protection',
-    description: 'SIA-licensed security professional driver with industry best practice protocols',
+    name: 'Your Essential Protection Cab',
+    description: 'SIA-licensed security professional driver with industry best practice protocols - available 24/7',
     priceRange: '£45 - £75',
     eta: '3-8 min',
     icon: Car,
@@ -251,8 +251,8 @@ const armoraServices = [
   },
   {
     id: 'shadow-escort',
-    name: 'Shadow Escort',
-    description: 'Drive yourself with professional security coordination - your freedom with protection backup',
+    name: 'Shadow Escort Cab',
+    description: 'Drive yourself with professional security coordination - your freedom with protection backup, 24/7 available',
     priceRange: '£150 - £350',
     eta: '5-12 min',
     icon: Shield,
@@ -261,8 +261,8 @@ const armoraServices = [
   },
   {
     id: 'executive-security', 
-    name: 'Your Executive Security',
-    description: 'Enhanced protection transport with SIA close protection officers meeting professional standards',
+    name: 'Your Executive Security Cab',
+    description: 'Enhanced protection transport with SIA close protection officers meeting professional standards - 24/7 service',
     priceRange: '£120 - £250',
     eta: '8-15 min',
     icon: Shield,
@@ -271,8 +271,8 @@ const armoraServices = [
   },
   {
     id: 'signature-experience',
-    name: 'Your Signature Experience',
-    description: 'Personal security transport concierge - completely tailored to your travel lifestyle',
+    name: 'Your Signature Experience Cab',
+    description: 'Personal security transport concierge - completely tailored to your travel lifestyle, 24/7 availability',
     priceRange: '£180 - £450',
     eta: '10-20 min',
     icon: Star,
@@ -281,8 +281,8 @@ const armoraServices = [
   },
   {
     id: 'airport-express',
-    name: 'Airport Security Transport',
-    description: 'Personal protection for your flight transfers with meet-greet service',
+    name: 'Airport Security Cab Express',
+    description: 'Personal protection for your flight transfers with meet-greet service - 24/7 airport coverage',
     priceRange: '£65 - £120',
     eta: '15-30 min',
     icon: NavigationArrow,
@@ -291,8 +291,8 @@ const armoraServices = [
   },
   {
     id: 'corporate',
-    name: 'Corporate Security Transport',
-    description: 'Your business protection transport - designed for professional demands',
+    name: 'Corporate Security Cab Service',
+    description: 'Your business protection transport - designed for professional demands, available around the clock',
     priceRange: '£40 - £85',
     eta: '5-12 min',
     icon: Users,
@@ -2713,7 +2713,7 @@ function App() {
     setRecentTrips((prev: any[]) => [finalTrip, ...prev.slice(0, 9)])
     
     // Show success notification
-    toast.success(`🚗 Your security driver assigned: ${driver.name}`, {
+    toast.success(`🚗 Your security cab driver assigned: ${driver.name}`, {
       duration: 4000,
       description: `${driver.vehicle} • ETA: ${driver.eta} minutes`
     })
@@ -2762,13 +2762,13 @@ function App() {
             
             <div className="space-y-2">
               <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
-                Armora
+                Armora Cabs 24/7
               </h1>
               <p className="text-lg text-amber-100/90 font-medium tracking-wide">
-                Premium Security Transport
+                Professional Security Transport
               </p>
               <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
-                Professional protection, perfectly tailored
+                Available around the clock for your protection
               </p>
             </div>
           </div>
@@ -2952,8 +2952,8 @@ function App() {
                   <Shield size={10} className="text-slate-900" weight="bold" />
                 </div>
                 <div>
-                  <h1 className="text-xs font-bold text-white">Professional Security Assessment</h1>
-                  <p className="text-[8px] text-amber-200">Industry best practice consultation</p>
+                  <h1 className="text-xs font-bold text-white">Armora Cabs 24/7 - Professional Assessment</h1>
+                  <p className="text-[8px] text-amber-200">Security cab service consultation</p>
                 </div>
               </div>
               <div className="flex gap-1">
@@ -3005,9 +3005,9 @@ function App() {
                   </div>
                   
                   <div className="space-y-3">
-                    <h2 className="text-lg font-bold text-white">Create your personal security transport profile</h2>
+                    <h2 className="text-lg font-bold text-white">Create your personal security cab profile</h2>
                     <p className="text-sm text-slate-300 leading-relaxed px-2">
-                      Professional consultation to match your protection transport needs with industry best practices.
+                      Professional consultation to match your protection transport needs with 24/7 security cab services.
                     </p>
                   </div>
 
@@ -3964,8 +3964,8 @@ function App() {
             </div>
             
             <div className="space-y-4">
-              <h1 className="text-3xl font-bold text-white">Your Personal Security Transport Profile is Complete</h1>
-              <p className="text-lg text-emerald-200">Welcome to your personalized protection transport with Armora</p>
+              <h1 className="text-3xl font-bold text-white">Your Personal Security Cab Profile is Complete</h1>
+              <p className="text-lg text-emerald-200">Welcome to your personalized protection cab service with Armora Cabs 24/7</p>
             </div>
           </div>
 
@@ -3973,9 +3973,9 @@ function App() {
           <Card className="bg-slate-800/60 border-amber-400/30 shadow-2xl">
             <CardContent className="p-8 space-y-6">
               <div className="text-center space-y-4">
-                <h2 className="text-xl font-bold text-white">Your Professional Security Transport Profile</h2>
+                <h2 className="text-xl font-bold text-white">Your Professional Security Cab Profile</h2>
                 <div className="p-6 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl border border-amber-400/30">
-                  <h3 className="text-lg font-bold text-amber-200 mb-2">Your Recommended Security Transport Service</h3>
+                  <h3 className="text-lg font-bold text-amber-200 mb-2">Your Recommended Security Cab Service</h3>
                   <p className="text-2xl font-bold text-white">{recommendations.service}</p>
                   <p className="text-sm text-slate-300 mt-2">{recommendations.reason}</p>
                   <div className="mt-4 pt-4 border-t border-amber-400/30">
@@ -3989,7 +3989,7 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                <h3 className="font-semibold text-amber-200">Your Security Transport Requirements Summary:</h3>
+                <h3 className="font-semibold text-amber-200">Your Security Cab Requirements Summary:</h3>
                 <div className="grid gap-3 text-left">
                   {onboardingData.workType.length > 0 && (
                     <div className="flex items-center gap-3 p-3 bg-slate-700/40 rounded-lg">
@@ -4030,7 +4030,7 @@ function App() {
               <div className="pt-4 border-t border-slate-600">
                 <div className="flex items-center gap-2 justify-center text-emerald-300">
                   <Shield size={16} />
-                  <span className="text-sm">Your protection transport team will review these details</span>
+                  <span className="text-sm">Your protection cab team will review these details</span>
                 </div>
               </div>
             </CardContent>
@@ -4042,15 +4042,15 @@ function App() {
               onClick={() => {
                 setHasCompletedOnboarding(true)
                 setCurrentView('home')
-                toast.success("🎉 Welcome to your personalized security transport service!")
+                toast.success("🎉 Welcome to your personalized security cab service!")
               }}
               className="w-full h-14 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
             >
-              Access My Security Transport Service
+              Access My Security Cab Service
             </Button>
             
             <p className="text-sm text-slate-300 italic">
-              "Your custom transport requirements have been securely recorded"
+              "Your custom cab requirements have been securely recorded"
             </p>
           </div>
 
@@ -4096,7 +4096,7 @@ function App() {
               <ArrowLeft size={18} />
             </Button>
             <div className="flex-1">
-              <h1 className="font-semibold">Confirm Your Security Transport Service</h1>
+              <h1 className="font-semibold">Confirm Your Security Cab Service</h1>
               <p className="text-xs text-muted-foreground">Review your personalized trip details</p>
             </div>
           </div>
@@ -4233,7 +4233,7 @@ function App() {
               onClick={confirmBooking}
               className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-xl shadow-lg"
             >
-              Confirm Your Security Transport - {price}
+              Confirm Your Security Cab - {price}
             </Button>
             
             <Button 
@@ -4268,8 +4268,8 @@ function App() {
                 <Car size={12} className="text-primary-foreground" weight="bold" />
               </div>
               <div>
-                <h1 className="text-base font-bold">Armora</h1>
-                <p className="text-[10px] text-muted-foreground">Personalizing your security service</p>
+                <h1 className="text-base font-bold">Armora Cabs 24/7</h1>
+                <p className="text-[10px] text-muted-foreground">Professional security cab service</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -4492,7 +4492,7 @@ function App() {
           {/* Ultra Compact Service Selection */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">Choose Your Personal Protection Transport Level</h2>
+              <h2 className="text-lg font-bold">Choose Your Personal Protection Cab Service Level</h2>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -4780,8 +4780,8 @@ function App() {
               <ArrowLeft size={18} />
             </Button>
             <div className="flex-1">
-              <h1 className="font-semibold truncate">Your Security Transport to {currentTrip.destination}</h1>
-              <p className="text-xs text-muted-foreground">Tracking your protection transport</p>
+              <h1 className="font-semibold truncate">Your Security Cab to {currentTrip.destination}</h1>
+              <p className="text-xs text-muted-foreground">Tracking your protection cab</p>
             </div>
           </div>
         </header>
@@ -4809,17 +4809,17 @@ function App() {
                     etaStatus === 'arriving' ? 'text-green-800' :
                     etaStatus === 'nearby' ? 'text-yellow-800' : 'text-blue-800'
                   }`}>
-                    {etaStatus === 'arriving' ? '🚗 Your Security Driver Arriving Now!' :
+                    {etaStatus === 'arriving' ? '🚗 Your Security Cab Driver Arriving Now!' :
                      etaStatus === 'nearby' ? `🔔 ${assignedDriver.name} is ${assignedDriver.eta} minutes away` :
-                     `📍 Your security driver ${assignedDriver.name} is en route`}
+                     `📍 Your security cab driver ${assignedDriver.name} is en route`}
                   </p>
                   <p className={`text-xs mt-1 ${
                     etaStatus === 'arriving' ? 'text-green-600' :
                     etaStatus === 'nearby' ? 'text-yellow-600' : 'text-blue-600'
                   }`}>
-                    {etaStatus === 'arriving' ? 'Your secure transport is ready for pickup' :
-                     etaStatus === 'nearby' ? 'Your security driver is almost here!' :
-                     `Estimated arrival: ${assignedDriver.eta} minutes • Your transport booked ${timeSinceBooking}min ago`}
+                    {etaStatus === 'arriving' ? 'Your secure cab is ready for pickup' :
+                     etaStatus === 'nearby' ? 'Your security cab driver is almost here!' :
+                     `Estimated arrival: ${assignedDriver.eta} minutes • Your cab booked ${timeSinceBooking}min ago`}
                   </p>
                 </div>
                 <Button
@@ -4990,10 +4990,10 @@ function App() {
               setIsChatOpen(false)
               setUnreadMessages(0)
               setCurrentView('home')
-              toast.success("❌ Your security transport has been cancelled")
+              toast.success("❌ Your security cab has been cancelled")
             }}
           >
-            Cancel Security Transport
+            Cancel Security Cab
           </Button>
         </div>
 
@@ -5144,8 +5144,8 @@ function App() {
         
         <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
           <div className="max-w-md mx-auto">
-            <h1 className="text-xl font-bold">Your Security Transport Activity</h1>
-            <p className="text-sm text-muted-foreground">Recent protection transport services and bookings</p>
+            <h1 className="text-xl font-bold">Your Security Cab Activity</h1>
+            <p className="text-sm text-muted-foreground">Recent protection cab services and bookings</p>
           </div>
         </header>
 
@@ -5155,11 +5155,11 @@ function App() {
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <List size={32} className="text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold mb-2">No security transports yet</h3>
-              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">When you book your first personalized protection transport with Armora, it will appear here</p>
+              <h3 className="text-xl font-bold mb-2">No security cabs yet</h3>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto">When you book your first personalized protection cab with Armora Cabs 24/7, it will appear here</p>
               <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
                 <Car size={18} className="mr-2" />
-                Book your first security transport
+                Book your first security cab
               </Button>
             </div>
           ) : (
