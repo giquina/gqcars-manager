@@ -3186,20 +3186,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Work Selection Preview */}
-              {onboardingData.workType.length > 0 && (
-                <div className="p-3 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-xl border border-amber-400/30">
-                  <div className="flex items-center gap-2 mb-1">
-                    <CheckCircle size={14} className="text-amber-400" />
-                    <h4 className="font-semibold text-amber-200 text-sm">Professional Profile</h4>
-                  </div>
-                  <p className="text-xs text-amber-100 leading-relaxed">
-                    Selected: {onboardingData.workType.join(', ')}
-                    {onboardingData.workTypeCustom && ` • ${onboardingData.workTypeCustom.substring(0, 50)}${onboardingData.workTypeCustom.length > 50 ? '...' : ''}`}
-                  </p>
-                </div>
-              )}
-
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
@@ -3225,28 +3211,24 @@ function App() {
                     value: 'Just Sometimes', 
                     subtitle: 'Special events, rare occasions',
                     details: 'Perfect for: Important meetings, special events, airport trips',
-                    pricingTier: '£',
                     popular: false
                   },
                   { 
                     value: 'About Once a Week', 
                     subtitle: 'Regular meetings, weekly trips',
                     details: 'Perfect for: Weekly client meetings, regular business appointments',
-                    pricingTier: '££',
                     popular: true
                   },
                   { 
                     value: 'Almost Every Day', 
                     subtitle: 'Daily commute, regular schedule',
                     details: 'Perfect for: Daily office commute, regular work schedule',
-                    pricingTier: '£££',
                     popular: false
                   },
                   { 
                     value: 'Multiple Times Daily', 
                     subtitle: 'Very busy, frequent travel',
                     details: 'Perfect for: Back-to-back meetings, complex daily schedules',
-                    pricingTier: '££££',
                     popular: false
                   }
                 ].map((option) => (
@@ -3275,9 +3257,6 @@ function App() {
                       <div className="pr-8"> {/* Right padding to avoid checkbox */}
                         <div className="flex items-center gap-2 mb-2">
                           <h3 className="font-bold text-white text-base leading-tight">{option.value}</h3>
-                          <span className="text-xs px-2 py-0.5 bg-amber-400/25 text-amber-200 rounded-full font-medium border border-amber-400/30">
-                            {option.pricingTier}
-                          </span>
                           {option.popular && (
                             <span className="text-xs px-2 py-0.5 bg-green-400/25 text-green-200 rounded-full font-medium border border-green-400/30">
                               Popular
@@ -3313,19 +3292,6 @@ function App() {
                   </div>
                 </div>
               </div>
-
-              {/* Service Matching Preview */}
-              {onboardingData.travelFrequency && (
-                <div className="p-3 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-xl border border-amber-400/30">
-                  <div className="flex items-center gap-2 mb-1">
-                    <CheckCircle size={14} className="text-amber-400" />
-                    <h4 className="font-semibold text-amber-200 text-sm">Service Recommendation</h4>
-                  </div>
-                  <p className="text-xs text-amber-100 leading-relaxed">
-                    Based on "{onboardingData.travelFrequency}" - we'll recommend the most suitable protection transport plan for your schedule.
-                  </p>
-                </div>
-              )}
 
               <Button 
                 onClick={nextStep}
@@ -3917,26 +3883,12 @@ function App() {
 
   // Onboarding Complete - Service Recommendations
   if (currentView === 'onboarding-complete') {
-    // Generate personalized recommendations based on collected data
+    // Generate personalized recommendations based on collected data - Always recommend standard service
     const generateRecommendations = () => {
-      let recommendedService = 'Your Essential Protection'
-      let recommendationReason = 'Based on your personal protection transport needs'
+      let recommendedService = 'Your Essential Protection Cab'
+      let recommendationReason = 'Our most popular security cab service - perfect for your protection transport needs'
       
-      if (onboardingData.riskConcerns.includes('Threat Assessment') || onboardingData.riskConcerns.includes('High-Profile Visibility')) {
-        recommendedService = 'Your Executive Security'
-        recommendationReason = 'Enhanced security transport recommended due to your elevated risk profile'
-      }
-      
-      if (onboardingData.serviceStyle === 'Ultra-Premium' || onboardingData.workType.includes('Public Figure')) {
-        recommendedService = 'Your Signature Experience'
-        recommendationReason = 'Premium security transport service matching your professional profile'
-      }
-      
-      if (onboardingData.workType.includes('Corporate Executive') && onboardingData.travelFrequency === 'Daily') {
-        recommendedService = 'Corporate Security Transport'
-        recommendationReason = 'Regular business protection transport with executive-level service'
-      }
-
+      // Always recommend the standard service regardless of questionnaire responses
       return { service: recommendedService, reason: recommendationReason }
     }
 
