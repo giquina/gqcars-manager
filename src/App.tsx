@@ -1390,6 +1390,9 @@ const App = () => {
       </div>
     )
   }
+
+  // Payment Modal Component
+  const PaymentModal = () => {
     if (!showPaymentModal) return null
 
     return (
