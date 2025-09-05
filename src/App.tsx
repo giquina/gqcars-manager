@@ -2823,20 +2823,20 @@ function App() {
 
           {/* Compact Trust Indicators */}
           <div className="pt-4 border-t border-amber-400/20">
-            <div className="flex items-center justify-center gap-4 text-xs text-slate-300">
-              <div className="flex items-center gap-1.5">
-                <Shield size={12} className="text-amber-400" />
-                <span>SIA Licensed</span>
+            <div className="flex items-center justify-center gap-3 text-[10px] text-slate-300">
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <Shield size={10} className="text-amber-400" />
+                <span className="font-medium">SIA Licensed</span>
               </div>
-              <div className="w-px h-3 bg-amber-400/30"></div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle size={12} className="text-amber-400" />
-                <span>Premium Service</span>
+              <div className="w-px h-2.5 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <CheckCircle size={10} className="text-amber-400" />
+                <span className="font-medium">Premium Service</span>
               </div>
-              <div className="w-px h-3 bg-amber-400/30"></div>
-              <div className="flex items-center gap-1.5">
-                <Star size={12} className="text-amber-400" />
-                <span>5-Star Rating</span>
+              <div className="w-px h-2.5 bg-amber-400/30"></div>
+              <div className="flex items-center gap-1 whitespace-nowrap">
+                <Star size={10} className="text-amber-400" />
+                <span className="font-medium">5-Star Rating</span>
               </div>
             </div>
           </div>
@@ -2891,16 +2891,16 @@ function App() {
         </div>
         
         {/* Luxury Header */}
-        <header className="relative z-10 p-6 border-b border-amber-400/20 bg-slate-900/80 backdrop-blur-sm">
+        <header className="relative z-10 p-4 border-b border-amber-400/20 bg-slate-900/80 backdrop-blur-sm">
           <div className="max-w-md mx-auto">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Shield size={20} className="text-slate-900" weight="bold" />
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Shield size={16} className="text-slate-900" weight="bold" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-white">Personal Assessment</h1>
-                  <p className="text-xs text-amber-200">Tailoring your protection experience</p>
+                  <h1 className="text-base font-bold text-white">Personal Assessment</h1>
+                  <p className="text-[10px] text-amber-200">Tailoring your protection</p>
                 </div>
               </div>
               {onboardingStep > 0 && (
@@ -2908,7 +2908,7 @@ function App() {
                   variant="ghost" 
                   size="sm"
                   onClick={prevStep}
-                  className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30"
+                  className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-7 px-2 text-xs"
                 >
                   Back
                 </Button>
@@ -2916,12 +2916,12 @@ function App() {
             </div>
             
             {/* Luxury Progress Bar */}
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs text-amber-200">
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-[10px] text-amber-200">
                 <span>Step {currentStep} of {totalSteps}</span>
                 <span>{Math.round(progressPercentage)}%</span>
               </div>
-              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-500 ease-out shadow-lg"
                   style={{ width: `${progressPercentage}%` }}
@@ -2931,40 +2931,40 @@ function App() {
           </div>
         </header>
 
-        <div className="relative z-10 p-6 max-w-md mx-auto">
+        <div className="relative z-10 p-4 max-w-md mx-auto">{/* Reduced from p-6 */}
           {/* Slide 0: Assessment Introduction */}
           {onboardingStep === 0 && (
-            <div className="space-y-8 animate-in fade-in duration-500">
-              <div className="text-center space-y-6">
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl flex items-center justify-center border border-amber-400/30">
-                  <User size={32} className="text-amber-400" />
+            <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="text-center space-y-4">
+                <div className="w-12 h-12 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
+                  <User size={24} className="text-amber-400" />
                 </div>
                 
-                <div className="space-y-4">
-                  <h2 className="text-2xl font-bold text-white">Tailored Protection for Your Lifestyle</h2>
-                  <p className="text-slate-300 leading-relaxed">
-                    We'll ask a few personalized questions to understand your security needs and preferences. 
+                <div className="space-y-3">
+                  <h2 className="text-lg font-bold text-white">Tailored Protection for Your Lifestyle</h2>
+                  <p className="text-sm text-slate-300 leading-snug">
+                    We'll ask a few questions to understand your security needs and preferences. 
                     This ensures your protection is perfectly matched to your lifestyle.
                   </p>
                 </div>
 
-                <div className="grid gap-3 text-left">
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
-                    <CheckCircle size={16} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-sm text-slate-200">Personal security assessment</span>
+                <div className="grid gap-2 text-left">
+                  <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
+                    <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
+                    <span className="text-xs text-slate-200">Personal security assessment</span>
                   </div>
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
-                    <CheckCircle size={16} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-sm text-slate-200">Custom service recommendations</span>
+                  <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
+                    <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
+                    <span className="text-xs text-slate-200">Custom service recommendations</span>
                   </div>
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 border border-amber-400/20">
-                    <CheckCircle size={16} className="text-amber-400 flex-shrink-0" />
-                    <span className="text-sm text-slate-200">Optimal protection matching</span>
+                  <div className="flex items-center gap-2 p-2 rounded-lg bg-slate-800/60 border border-amber-400/20">
+                    <CheckCircle size={12} className="text-amber-400 flex-shrink-0" />
+                    <span className="text-xs text-slate-200">Optimal protection matching</span>
                   </div>
                 </div>
 
-                <div className="p-4 bg-amber-400/10 rounded-xl border border-amber-400/30">
-                  <p className="text-sm text-amber-200">
+                <div className="p-3 bg-amber-400/10 rounded-lg border border-amber-400/30">
+                  <p className="text-xs text-amber-200">
                     ⏱️ <strong>2 minutes</strong> for a lifetime of personalized security
                   </p>
                 </div>
@@ -2972,7 +2972,7 @@ function App() {
 
               <Button 
                 onClick={nextStep}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300"
+                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300"
               >
                 Start
               </Button>
@@ -2981,13 +2981,13 @@ function App() {
 
           {/* Slide 1: Work Type Selection */}
           {onboardingStep === 1 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">How can we best protect your professional needs?</h2>
-                <p className="text-sm text-slate-300">Select all that apply to your work situation</p>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">How can we best protect your professional needs?</h2>
+                <p className="text-xs text-slate-300">Select all that apply to your work situation</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { value: 'Corporate Executive', icon: '👔', desc: 'C-suite, senior management' },
                   { value: 'Entrepreneur', icon: '🚀', desc: 'Business owner, startup founder' },
@@ -3000,38 +3000,38 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 h-[70px] ${
                       onboardingData.workType.includes(option.value)
                         ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
                         : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
                     }`}
                     onClick={() => toggleArrayValue('workType', option.value)}
                   >
-                    <CardContent className="p-3 text-center space-y-2">
-                      <div className="text-2xl">{option.icon}</div>
-                      <h3 className="font-semibold text-white text-xs leading-tight">{option.value}</h3>
-                      <p className="text-[10px] text-slate-300 leading-tight">{option.desc}</p>
+                    <CardContent className="p-2 text-center h-full flex flex-col justify-center">
+                      <div className="text-lg">{option.icon}</div>
+                      <h3 className="font-semibold text-white text-[10px] leading-tight line-clamp-2">{option.value}</h3>
+                      <p className="text-[8px] text-slate-300 leading-tight line-clamp-1">{option.desc}</p>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Other profession or specific details:</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-amber-200">Other profession or specific details:</label>
                 <textarea
                   value={onboardingData.workTypeCustom}
                   onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
-                  placeholder="Describe your profession or specific security requirements..."
-                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  placeholder="Describe your profession..."
+                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={500}
                 />
-                <p className="text-xs text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
+                <p className="text-[10px] text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
               </div>
 
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.workType.length === 0 && !onboardingData.workTypeCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
               >
                 Continue
               </Button>
@@ -3040,13 +3040,13 @@ function App() {
 
           {/* Slide 2: Travel Frequency */}
           {onboardingStep === 2 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">How often will you require protection services?</h2>
-                <p className="text-sm text-slate-300">This helps us plan your service availability</p>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">How often will you require protection services?</h2>
+                <p className="text-xs text-slate-300">This helps us plan your service availability</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
                   { value: 'Occasionally', desc: 'Special events, rare occasions' },
                   { value: 'Weekly', desc: 'Regular business meetings, social events' },
@@ -3062,13 +3062,13 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('travelFrequency', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="font-semibold text-white">{option.value}</h3>
-                          <p className="text-sm text-slate-300">{option.desc}</p>
+                          <h3 className="font-semibold text-white text-sm">{option.value}</h3>
+                          <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded-full border-2 ${
+                        <div className={`w-3 h-3 rounded-full border-2 ${
                           onboardingData.travelFrequency === option.value 
                             ? 'bg-amber-400 border-amber-400' 
                             : 'border-slate-500'
@@ -3079,22 +3079,22 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Variable schedule or specific patterns:</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-amber-200">Variable schedule or specific patterns:</label>
                 <textarea
                   value={onboardingData.travelFrequencyCustom}
                   onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
-                  placeholder="Describe your travel pattern, schedule variations, or seasonal needs..."
-                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  placeholder="Describe your travel pattern..."
+                  className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={300}
                 />
-                <p className="text-xs text-slate-400">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
+                <p className="text-[10px] text-slate-400">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
               </div>
 
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
               >
                 Continue
               </Button>
@@ -3103,13 +3103,13 @@ function App() {
 
           {/* Slide 3: Service Style Preference */}
           {onboardingStep === 3 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">Which service approach suits your lifestyle?</h2>
-                <p className="text-sm text-slate-300">Choose the protection style that feels right</p>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">Which service approach suits your lifestyle?</h2>
+                <p className="text-xs text-slate-300">Choose the protection style that feels right</p>
               </div>
 
-              <div className="grid gap-4">
+              <div className="grid gap-2">
                 {[
                   { 
                     value: 'Discrete Protection', 
@@ -3145,22 +3145,22 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('serviceStyle', option.value)}
                   >
-                    <CardContent className="p-4 space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="text-2xl">{option.icon}</div>
+                    <CardContent className="p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="text-lg">{option.icon}</div>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-white">{option.value}</h3>
-                          <p className="text-sm text-slate-300">{option.desc}</p>
+                          <h3 className="font-semibold text-white text-sm">{option.value}</h3>
+                          <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded-full border-2 ${
+                        <div className={`w-3 h-3 rounded-full border-2 ${
                           onboardingData.serviceStyle === option.value 
                             ? 'bg-amber-400 border-amber-400' 
                             : 'border-slate-500'
                         }`} />
                       </div>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1">
                         {option.features.map((feature, idx) => (
-                          <span key={idx} className="text-xs px-2 py-1 bg-slate-700/60 text-slate-300 rounded-full">
+                          <span key={idx} className="text-[9px] px-1.5 py-0.5 bg-slate-700/60 text-slate-300 rounded-full">
                             {feature}
                           </span>
                         ))}
@@ -3170,22 +3170,22 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Custom requirements or preferences:</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-amber-200">Custom requirements or preferences:</label>
                 <textarea
                   value={onboardingData.serviceStyleCustom}
                   onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
-                  placeholder="Describe your specific security preferences, special requirements, or unique situations..."
-                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  placeholder="Describe your specific security preferences..."
+                  className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={500}
                 />
-                <p className="text-xs text-slate-400">{onboardingData.serviceStyleCustom.length}/500 characters</p>
+                <p className="text-[10px] text-slate-400">{onboardingData.serviceStyleCustom.length}/500 characters</p>
               </div>
 
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
               >
                 Continue
               </Button>
@@ -3194,13 +3194,13 @@ function App() {
 
           {/* Slide 4: Security Comfort Level */}
           {onboardingStep === 4 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">What level of security presence feels right?</h2>
-                <p className="text-sm text-slate-300">Your comfort level guides our approach</p>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">What level of security presence feels right?</h2>
+                <p className="text-xs text-slate-300">Your comfort level guides our approach</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {[
                   { value: 'Minimal Presence', intensity: 1, desc: 'Nearly invisible, emergency-only response' },
                   { value: 'Subtle Approach', intensity: 2, desc: 'Professional but unobtrusive protection' },
@@ -3217,22 +3217,22 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('securityComfort', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-white">{option.value}</h3>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-white text-sm">{option.value}</h3>
                             <div className="flex gap-1">
                               {[...Array(5)].map((_, i) => (
-                                <div key={i} className={`w-2 h-2 rounded-full ${
+                                <div key={i} className={`w-1.5 h-1.5 rounded-full ${
                                   i < option.intensity ? 'bg-amber-400' : 'bg-slate-600'
                                 }`} />
                               ))}
                             </div>
                           </div>
-                          <p className="text-sm text-slate-300">{option.desc}</p>
+                          <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded-full border-2 ${
+                        <div className={`w-3 h-3 rounded-full border-2 ${
                           onboardingData.securityComfort === option.value 
                             ? 'bg-amber-400 border-amber-400' 
                             : 'border-slate-500'
@@ -3243,22 +3243,22 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Situational needs or comfort preferences:</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-amber-200">Situational needs or comfort preferences:</label>
                 <textarea
                   value={onboardingData.securityComfortCustom}
                   onChange={(e) => updateOnboardingData('securityComfortCustom', e.target.value)}
-                  placeholder="Explain your comfort preferences, concerns, or situational needs..."
-                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  placeholder="Explain your comfort preferences..."
+                  className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={400}
                 />
-                <p className="text-xs text-slate-400">{onboardingData.securityComfortCustom.length}/400 characters</p>
+                <p className="text-[10px] text-slate-400">{onboardingData.securityComfortCustom.length}/400 characters</p>
               </div>
 
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.securityComfort && !onboardingData.securityComfortCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
               >
                 Continue
               </Button>
