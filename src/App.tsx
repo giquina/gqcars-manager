@@ -2818,10 +2818,10 @@ function App() {
                   }}
                   className="w-full h-12 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
                 >
-                  Resume Your Profile
+                  Resume Profile
                 </Button>
                 <p className="text-xs text-green-200 text-center">
-                  Continue from step {onboardingStep + 1} of {totalSteps}
+                  Continue from step {onboardingStep + 1} of 10
                 </p>
               </div>
             ) : (
@@ -2833,7 +2833,7 @@ function App() {
                 }}
                 className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-lg rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
-                Create My Security Transport Profile
+                Create Profile
               </Button>
             )}
             
@@ -3044,7 +3044,7 @@ function App() {
                   onClick={nextStep}
                   className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300"
                 >
-                  Personalize My Protection Service
+                  Start Assessment
                 </Button>
                 
                 {onboardingStep > 0 && (
@@ -3067,49 +3067,64 @@ function App() {
           {onboardingStep === 1 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">Tell us about your professional travel so we can protect your journeys</h2>
-                <p className="text-xs text-slate-300">Select all that apply to your work situation</p>
+                <h2 className="text-lg font-bold text-white">What kind of work do you do?</h2>
+                <p className="text-xs text-amber-200">✓ You can pick more than one option</p>
+                <p className="text-xs text-slate-300">Choose all that describe your work</p>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { value: 'Corporate Executive', icon: '👔', desc: 'C-suite, senior management' },
-                  { value: 'Entrepreneur', icon: '🚀', desc: 'Business owner, startup founder' },
-                  { value: 'Public Figure', icon: '📺', desc: 'Media, politics, high-profile' },
-                  { value: 'Healthcare Professional', icon: '⚕️', desc: 'Medical, pharmaceutical' },
-                  { value: 'Legal Professional', icon: '⚖️', desc: 'Lawyer, judge, legal services' },
-                  { value: 'Financial Services', icon: '💼', desc: 'Banking, investment, finance' },
-                  { value: 'Technology Leader', icon: '💻', desc: 'Tech executive, innovation' },
-                  { value: 'Government Official', icon: '🏛️', desc: 'Public service, diplomatic' }
+                  { value: 'Business Leader', icon: '👔', desc: 'CEO, manager, executive' },
+                  { value: 'Business Owner', icon: '🚀', desc: 'Own a company, startup founder' },
+                  { value: 'Doctor/Medical', icon: '⚕️', desc: 'Healthcare, medical professional' },
+                  { value: 'Lawyer/Legal', icon: '⚖️', desc: 'Attorney, legal work, court cases' },
+                  { value: 'Tech/Computer', icon: '💻', desc: 'Software, IT, technology work' },
+                  { value: 'Banking/Finance', icon: '💼', desc: 'Money, investments, financial services' },
+                  { value: 'Real Estate', icon: '🏢', desc: 'Property, buying/selling homes/buildings' },
+                  { value: 'Sales/Travel', icon: '🚗', desc: 'Selling, traveling for work' }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 h-[70px] ${
+                    className={`cursor-pointer transition-all duration-200 h-[80px] relative ${ 
                       onboardingData.workType.includes(option.value)
                         ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
                         : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
                     }`}
                     onClick={() => toggleArrayValue('workType', option.value)}
                   >
+                    {/* Checkbox indicator */}
+                    <div className={`absolute top-1 right-1 w-4 h-4 border border-amber-400 rounded text-center text-xs leading-3 ${
+                      onboardingData.workType.includes(option.value) 
+                        ? 'bg-amber-400 text-slate-900' 
+                        : 'bg-transparent'
+                    }`}>
+                      {onboardingData.workType.includes(option.value) ? '✓' : ''}
+                    </div>
                     <CardContent className="p-2 text-center h-full flex flex-col justify-center">
-                      <div className="text-lg">{option.icon}</div>
-                      <h3 className="font-semibold text-white text-[10px] leading-tight line-clamp-2">{option.value}</h3>
-                      <p className="text-[8px] text-slate-300 leading-tight line-clamp-1">{option.desc}</p>
+                      <div className="text-lg mb-1">{option.icon}</div>
+                      <h3 className="font-semibold text-white text-[11px] leading-tight">{option.value}</h3>
+                      <p className="text-[8px] text-slate-300 leading-tight">{option.desc}</p>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-medium text-amber-200">Other profession or specific details:</label>
+                <label className="text-xs font-medium text-amber-200">Other work you do:</label>
                 <textarea
                   value={onboardingData.workTypeCustom}
                   onChange={(e) => updateOnboardingData('workTypeCustom', e.target.value)}
-                  placeholder="Describe your profession..."
+                  placeholder="Describe your work in simple terms..."
                   className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={500}
                 />
                 <p className="text-[10px] text-slate-400">{onboardingData.workTypeCustom.length}/500 characters</p>
+              </div>
+
+              <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/30">
+                <p className="text-xs text-amber-200">
+                  💡 <strong>Example:</strong> You can pick both "Business Owner" and "Tech Work"
+                </p>
               </div>
 
               <Button 
@@ -3126,20 +3141,20 @@ function App() {
           {onboardingStep === 2 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">How often will you require protection services?</h2>
-                <p className="text-xs text-slate-300">This helps us plan your service availability</p>
+                <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
+                <p className="text-xs text-slate-300">Pick the one that best matches your needs</p>
               </div>
 
               <div className="space-y-2">
                 {[
-                  { value: 'Occasionally', desc: 'Special events, rare occasions' },
-                  { value: 'Weekly', desc: 'Regular business meetings, social events' },
-                  { value: 'Daily', desc: 'Commuting, regular professional activities' },
-                  { value: 'Multiple Daily', desc: 'High-frequency travel, constant mobility' }
+                  { value: 'Just Sometimes', desc: 'Special events, rare occasions' },
+                  { value: 'About Once a Week', desc: 'Regular meetings, weekly events' },
+                  { value: 'Almost Every Day', desc: 'Daily commute, regular work travel' },
+                  { value: 'Multiple Times Daily', desc: 'Very busy, lots of travel' }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 ${ 
                       onboardingData.travelFrequency === option.value
                         ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
                         : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
@@ -3152,11 +3167,15 @@ function App() {
                           <h3 className="font-semibold text-white text-sm">{option.value}</h3>
                           <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-3 h-3 rounded-full border-2 ${
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${ 
                           onboardingData.travelFrequency === option.value 
                             ? 'bg-amber-400 border-amber-400' 
                             : 'border-slate-500'
-                        }`} />
+                        }`}>
+                          {onboardingData.travelFrequency === option.value && (
+                            <div className="w-2 h-2 bg-slate-900 rounded-full"></div>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -3164,11 +3183,11 @@ function App() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-medium text-amber-200">Variable schedule or specific patterns:</label>
+                <label className="text-xs font-medium text-amber-200">Different schedule or specific details:</label>
                 <textarea
                   value={onboardingData.travelFrequencyCustom}
                   onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
-                  placeholder="Describe your travel pattern..."
+                  placeholder="Tell us about your travel schedule..."
                   className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={300}
                 />
@@ -3189,40 +3208,34 @@ function App() {
           {onboardingStep === 3 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">Which service approach suits your lifestyle?</h2>
-                <p className="text-xs text-slate-300">Choose the protection style that feels right</p>
+                <h2 className="text-lg font-bold text-white">How do you want your security to look?</h2>
+                <p className="text-xs text-slate-300">Pick the style that feels right for you</p>
               </div>
 
               <div className="grid gap-2">
                 {[
                   { 
-                    value: 'Discrete Protection', 
+                    value: 'Quiet & Discrete', 
                     icon: '🕶️',
-                    desc: 'Subtle, professional, low-profile security',
-                    features: ['Unmarked vehicles', 'Civilian clothing', 'Minimal visibility']
+                    desc: 'Barely noticeable, low-key protection',
+                    features: ['Unmarked cars', 'Normal clothing', 'Almost invisible']
                   },
                   { 
-                    value: 'Executive Security', 
+                    value: 'Professional & Visible', 
                     icon: '💼',
-                    desc: 'Visible, authoritative, business-focused',
-                    features: ['Professional presence', 'Clear identification', 'Business appropriate']
+                    desc: 'Clearly there but business-like',
+                    features: ['Professional look', 'Clear identification', 'Business appropriate']
                   },
                   { 
-                    value: 'Ultra-Premium', 
+                    value: 'Full Premium Service', 
                     icon: '👑',
-                    desc: 'Comprehensive, luxury, full-service protection',
-                    features: ['Luxury vehicles', 'Multi-layer security', 'Concierge service']
-                  },
-                  { 
-                    value: 'Event-Specific', 
-                    icon: '🎭',
-                    desc: 'Conferences, galas, special occasions only',
-                    features: ['Event coordination', 'Venue familiarity', 'Flexible arrangements']
+                    desc: 'Complete luxury with top protection',
+                    features: ['Luxury cars', 'Multiple security', 'VIP treatment']
                   }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 ${ 
                       onboardingData.serviceStyle === option.value
                         ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
                         : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
@@ -3236,11 +3249,15 @@ function App() {
                           <h3 className="font-semibold text-white text-sm">{option.value}</h3>
                           <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-3 h-3 rounded-full border-2 ${
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${ 
                           onboardingData.serviceStyle === option.value 
                             ? 'bg-amber-400 border-amber-400' 
                             : 'border-slate-500'
-                        }`} />
+                        }`}>
+                          {onboardingData.serviceStyle === option.value && (
+                            <div className="w-2 h-2 bg-slate-900 rounded-full"></div>
+                          )}
+                        </div>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {option.features.map((feature, idx) => (
@@ -3255,11 +3272,11 @@ function App() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-medium text-amber-200">Custom requirements or preferences:</label>
+                <label className="text-xs font-medium text-amber-200">Special requests or other needs:</label>
                 <textarea
                   value={onboardingData.serviceStyleCustom}
                   onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
-                  placeholder="Describe your specific security preferences..."
+                  placeholder="Tell us what you need in simple words..."
                   className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={500}
                 />
@@ -3280,21 +3297,21 @@ function App() {
           {onboardingStep === 4 && (
             <div className="space-y-4 animate-in fade-in duration-500">
               <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">What level of security presence feels right?</h2>
-                <p className="text-xs text-slate-300">Your comfort level guides our approach</p>
+                <h2 className="text-lg font-bold text-white">How much security presence makes you feel comfortable?</h2>
+                <p className="text-xs text-slate-300">Choose what feels right for you</p>
               </div>
 
               <div className="space-y-2">
                 {[
-                  { value: 'Minimal Presence', intensity: 1, desc: 'Nearly invisible, emergency-only response' },
-                  { value: 'Subtle Approach', intensity: 2, desc: 'Professional but unobtrusive protection' },
-                  { value: 'Balanced Visibility', intensity: 3, desc: 'Clearly present but approachable' },
-                  { value: 'High Visibility', intensity: 4, desc: 'Obvious deterrent, authoritative presence' },
-                  { value: 'Maximum Security', intensity: 5, desc: 'Comprehensive, multi-layer protection' }
+                  { value: 'Barely There', intensity: 1, desc: 'Almost invisible, emergency only' },
+                  { value: 'Quietly Present', intensity: 2, desc: 'There but not obvious' },
+                  { value: 'Clearly Visible', intensity: 3, desc: 'Obviously providing security' },
+                  { value: 'High Visibility', intensity: 4, desc: 'Very obvious, strong deterrent' },
+                  { value: 'Maximum Protection', intensity: 5, desc: 'Full security, multiple people' }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 ${ 
                       onboardingData.securityComfort === option.value
                         ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
                         : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
@@ -3308,7 +3325,7 @@ function App() {
                             <h3 className="font-semibold text-white text-sm">{option.value}</h3>
                             <div className="flex gap-1">
                               {[...Array(5)].map((_, i) => (
-                                <div key={i} className={`w-1.5 h-1.5 rounded-full ${
+                                <div key={i} className={`w-1.5 h-1.5 rounded-full ${ 
                                   i < option.intensity ? 'bg-amber-400' : 'bg-slate-600'
                                 }`} />
                               ))}
@@ -3316,11 +3333,15 @@ function App() {
                           </div>
                           <p className="text-xs text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-3 h-3 rounded-full border-2 ${
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${ 
                           onboardingData.securityComfort === option.value 
                             ? 'bg-amber-400 border-amber-400' 
                             : 'border-slate-500'
-                        }`} />
+                        }`}>
+                          {onboardingData.securityComfort === option.value && (
+                            <div className="w-2 h-2 bg-slate-900 rounded-full"></div>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -3328,11 +3349,11 @@ function App() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-medium text-amber-200">Situational needs or comfort preferences:</label>
+                <label className="text-xs font-medium text-amber-200">What makes you feel most comfortable:</label>
                 <textarea
                   value={onboardingData.securityComfortCustom}
                   onChange={(e) => updateOnboardingData('securityComfortCustom', e.target.value)}
-                  placeholder="Explain your comfort preferences..."
+                  placeholder="Tell us what makes you feel safe and comfortable..."
                   className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={400}
                 />
@@ -3351,31 +3372,40 @@ function App() {
 
           {/* Slide 5: Travel Patterns & Locations */}
           {onboardingStep === 5 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">Where do you typically require protection?</h2>
-                <p className="text-sm text-slate-300">Select all locations that apply</p>
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <div className="text-center space-y-2">
+                <h2 className="text-lg font-bold text-white">Where do you usually need secure transport?</h2>
+                <p className="text-xs text-amber-200">✓ You can pick more than one place</p>
+                <p className="text-xs text-slate-300">Choose all that you visit</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { value: 'City Center', icon: '🏙️', desc: 'Urban business districts' },
-                  { value: 'Airports & Transport', icon: '✈️', desc: 'Travel hubs, stations' },
-                  { value: 'Corporate Events', icon: '🏢', desc: 'Conferences, meetings' },
-                  { value: 'Social Events', icon: '🥂', desc: 'Galas, parties, entertainment' },
-                  { value: 'Residential Areas', icon: '🏠', desc: 'Home, neighborhoods' },
-                  { value: 'International Travel', icon: '🌍', desc: 'Cross-border, overseas' }
+                  { value: 'City Center', icon: '🏙️', desc: 'Downtown, business districts' },
+                  { value: 'Airports & Travel', icon: '✈️', desc: 'Flights, train stations' },
+                  { value: 'Work Events', icon: '🏢', desc: 'Meetings, conferences' },
+                  { value: 'Social Events', icon: '🥂', desc: 'Parties, entertainment' },
+                  { value: 'Home Areas', icon: '🏠', desc: 'Neighborhoods, home' },
+                  { value: 'International', icon: '🌍', desc: 'Overseas, other countries' }
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`cursor-pointer transition-all duration-200 h-[85px] relative ${ 
                       onboardingData.locations.includes(option.value)
                         ? 'bg-gradient-to-br from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
                         : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
                     }`}
                     onClick={() => toggleArrayValue('locations', option.value)}
                   >
-                    <CardContent className="p-3 text-center space-y-2">
+                    {/* Checkbox indicator */}
+                    <div className={`absolute top-1 right-1 w-4 h-4 border border-amber-400 rounded text-center text-xs leading-3 ${
+                      onboardingData.locations.includes(option.value) 
+                        ? 'bg-amber-400 text-slate-900' 
+                        : 'bg-transparent'
+                    }`}>
+                      {onboardingData.locations.includes(option.value) ? '✓' : ''}
+                    </div>
+                    <CardContent className="p-3 text-center space-y-2 h-full flex flex-col justify-center">
                       <div className="text-2xl">{option.icon}</div>
                       <h3 className="font-semibold text-white text-xs leading-tight">{option.value}</h3>
                       <p className="text-[10px] text-slate-300 leading-tight">{option.desc}</p>
@@ -3384,22 +3414,28 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Specific locations, venues, or areas:</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-amber-200">Specific places you go to:</label>
                 <textarea
                   value={onboardingData.locationsCustom}
                   onChange={(e) => updateOnboardingData('locationsCustom', e.target.value)}
-                  placeholder="List specific venues, addresses, areas, or regular destinations..."
-                  className="w-full h-20 px-4 py-3 bg-slate-800/60 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  placeholder="List specific places, addresses, or areas you visit..."
+                  className="w-full h-16 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
                   maxLength={500}
                 />
-                <p className="text-xs text-slate-400">{onboardingData.locationsCustom.length}/500 characters</p>
+                <p className="text-[10px] text-slate-400">{onboardingData.locationsCustom.length}/500 characters</p>
+              </div>
+
+              <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/30">
+                <p className="text-xs text-amber-200">
+                  💡 <strong>Example:</strong> You can pick "City Center" and "Work Events"
+                </p>
               </div>
 
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.locations.length === 0 && !onboardingData.locationsCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
               >
                 Continue
               </Button>
