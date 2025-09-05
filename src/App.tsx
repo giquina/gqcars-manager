@@ -1028,46 +1028,6 @@ const App = () => {
     return Math.round(R * c * 100) / 100
   }, [])
 
-  // Enhanced driver assignment with real-time tracking simulation
-  const assignDriver = useCallback(() => {
-    const randomDriver = armoraDrivers[Math.floor(Math.random() * armoraDrivers.length)]
-    setAssignedDriver(randomDriver)
-    setTripStatus('driver_assigned')
-    
-    // Simulate initial driver location (2-5km away from pickup)
-    if (selectedPickupLocation) {
-      const initialDriverLocation = {
-        lat: selectedPickupLocation.lat + (Math.random() - 0.5) * 0.05, // ~2.5km radius
-        lng: selectedPickupLocation.lng + (Math.random() - 0.5) * 0.05
-      }
-      setDriverLocation(initialDriverLocation)
-      
-      // Calculate initial distance and ETA
-      const distance = calculateDistance(initialDriverLocation, selectedPickupLocation)
-      setDriverDistance(distance)
-      setEstimatedArrival(Math.round(distance * 2 + Math.random() * 5)) // Rough ETA in minutes
-    }
-    
-    toast.success(`${randomDriver.name} has been assigned as your security driver!`, {
-      description: `${randomDriver.vehicle} • ETA: ${randomDriver.eta} minutes`,
-      action: {
-        label: "Track Live",
-        onClick: () => setCurrentView('trip-tracking')
-      }
-    })
-    
-    // Enhanced driver assignment notification
-    sendNotification(
-      "Security Driver Assigned!",
-      `${randomDriver.name} is on the way in ${randomDriver.vehicle}`,
-      'assigned'
-    )
-    
-    // Start real-time location updates
-    startDriverTracking()
-    
-  }, [selectedPickupLocation, calculateDistance, sendNotification, startDriverTracking])
-
   // Real-time driver location tracking
   const startDriverTracking = useCallback(() => {
     if (driverTrackingInterval) {
@@ -1154,6 +1114,46 @@ const App = () => {
     
     setDriverTrackingInterval(interval)
   }, [selectedPickupLocation, tripStatus, calculateDistance, sendNotification, assignedDriver])
+
+  // Enhanced driver assignment with real-time tracking simulation
+  const assignDriver = useCallback(() => {
+    const randomDriver = armoraDrivers[Math.floor(Math.random() * armoraDrivers.length)]
+    setAssignedDriver(randomDriver)
+    setTripStatus('driver_assigned')
+    
+    // Simulate initial driver location (2-5km away from pickup)
+    if (selectedPickupLocation) {
+      const initialDriverLocation = {
+        lat: selectedPickupLocation.lat + (Math.random() - 0.5) * 0.05, // ~2.5km radius
+        lng: selectedPickupLocation.lng + (Math.random() - 0.5) * 0.05
+      }
+      setDriverLocation(initialDriverLocation)
+      
+      // Calculate initial distance and ETA
+      const distance = calculateDistance(initialDriverLocation, selectedPickupLocation)
+      setDriverDistance(distance)
+      setEstimatedArrival(Math.round(distance * 2 + Math.random() * 5)) // Rough ETA in minutes
+    }
+    
+    toast.success(`${randomDriver.name} has been assigned as your security driver!`, {
+      description: `${randomDriver.vehicle} • ETA: ${randomDriver.eta} minutes`,
+      action: {
+        label: "Track Live",
+        onClick: () => setCurrentView('trip-tracking')
+      }
+    })
+    
+    // Enhanced driver assignment notification
+    sendNotification(
+      "Security Driver Assigned!",
+      `${randomDriver.name} is on the way in ${randomDriver.vehicle}`,
+      'assigned'
+    )
+    
+    // Start real-time location updates
+    startDriverTracking()
+    
+  }, [selectedPickupLocation, calculateDistance, sendNotification, startDriverTracking])
 
   // Stop tracking when component unmounts or trip completes
   useEffect(() => {
