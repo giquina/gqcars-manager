@@ -1068,6 +1068,9 @@ function App() {
 
   // Home/Booking View
   if (currentView === 'home') {
+    // Check if locations are entered for pricing display
+    const hasLocations = Boolean(bookingForm.pickup && bookingForm.destination)
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col">
         <Toaster position="top-center" />
@@ -1133,6 +1136,12 @@ function App() {
                   {armoraServices.map(service => {
                     const isSelected = selectedService === service.id
                     const IconComponent = service.icon
+                    
+                    // Show callout price if no locations, otherwise show route-based or original price
+                    const displayPrice = hasLocations 
+                      ? calculateServicePrice(service, routeDistance) 
+                      : "£50 minimum"
+                    
                     return (
                       <Card 
                         key={service.id}
@@ -1167,7 +1176,10 @@ function App() {
                             <p className="text-sm text-muted-foreground leading-relaxed">{service.tagline}</p>
                             <div className="flex items-center justify-between">
                               <div className="space-y-1">
-                                <p className="text-sm font-semibold text-primary">{service.priceRange}</p>
+                                <p className="text-sm font-semibold text-primary">{displayPrice}</p>
+                                {!hasLocations && (
+                                  <p className="text-xs text-amber-600 font-medium">Callout charge</p>
+                                )}
                                 <p className="text-xs text-muted-foreground">{service.eta} • {service.capacity}</p>
                               </div>
                               <div className="text-right">
