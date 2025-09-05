@@ -41,6 +41,8 @@ declare global {
       maps: any
     }
     googleMapsLoaded?: boolean
+    PaymentRequest?: any
+    ApplePaySession?: any
   }
 }
 
@@ -624,6 +626,10 @@ const App = () => {
   const [billingAddress, setBillingAddress] = useKV("billing-address", null as any)
   const [paymentHistory, setPaymentHistory] = useKV("payment-history", [] as any[])
   
+  // Digital wallet support
+  const [isApplePayAvailable, setIsApplePayAvailable] = useState(false)
+  const [isGooglePayAvailable, setIsGooglePayAvailable] = useState(false)
+  
   // Form and booking state
   const [bookingForm, setBookingForm] = useState({
     pickup: '',
@@ -677,6 +683,81 @@ const App = () => {
     
     // Request permissions when app loads
     enableNotifications()
+  }, [])
+
+  // Check for digital wallet availability
+  useEffect(() => {
+    // Check for Apple Pay availability
+    if (window.PaymentRequest && window.ApplePaySession) {
+      const applePayMethod = {
+        supportedMethods: 'https://apple.com/apple-pay',
+        data: {
+          version: 3,
+          merchantIdentifier: 'merchant.com.armora.cabs',
+          merchantCapabilities: ['supports3DS'],
+          supportedNetworks: ['visa', 'masterCard', 'amex'],
+          countryCode: 'GB'
+        }
+      }
+      
+      try {
+        const paymentRequest = new PaymentRequest([applePayMethod], {
+          total: { label: 'Test', amount: { currency: 'GBP', value: '1.00' } }
+        })
+        
+        paymentRequest.canMakePayment().then(result => {
+          setIsApplePayAvailable(!!result)
+        }).catch(() => {
+          setIsApplePayAvailable(false)
+        })
+      } catch (error) {
+        setIsApplePayAvailable(false)
+      }
+    }
+
+    // Check for Google Pay availability
+    if (window.PaymentRequest) {
+      const googlePayMethod = {
+        supportedMethods: 'https://google.com/pay',
+        data: {
+          environment: 'TEST', // Change to 'PRODUCTION' for live
+          apiVersion: 2,
+          apiVersionMinor: 0,
+          merchantInfo: {
+            merchantName: 'Armora Cabs 24/7',
+            merchantId: '12345678901234567890'
+          },
+          allowedPaymentMethods: [{
+            type: 'CARD',
+            parameters: {
+              allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+              allowedCardNetworks: ['VISA', 'MASTERCARD', 'AMEX']
+            },
+            tokenizationSpecification: {
+              type: 'PAYMENT_GATEWAY',
+              parameters: {
+                gateway: 'stripe',
+                gatewayMerchantId: 'armora_merchant_id'
+              }
+            }
+          }]
+        }
+      }
+      
+      try {
+        const paymentRequest = new PaymentRequest([googlePayMethod], {
+          total: { label: 'Test', amount: { currency: 'GBP', value: '1.00' } }
+        })
+        
+        paymentRequest.canMakePayment().then(result => {
+          setIsGooglePayAvailable(!!result)
+        }).catch(() => {
+          setIsGooglePayAvailable(false)
+        })
+      } catch (error) {
+        setIsGooglePayAvailable(false)
+      }
+    }
   }, [])
 
   // Play notification sound
@@ -1067,6 +1148,62 @@ const App = () => {
               </Button>
             </div>
 
+            {/* Digital Wallet Options */}
+            <div className="space-y-3 mb-6">
+              <h3 className="font-semibold text-sm text-muted-foreground">Quick Payment</h3>
+              
+              <div className="grid gap-3">
+                {/* Apple Pay Button */}
+                {isApplePayAvailable && (
+                  <Button
+                    onClick={async () => {
+                      const success = await processApplePayPayment(50, "Armora Service Selection")
+                      if (success) {
+                        setShowPaymentModal(false)
+                        toast.success("Apple Pay payment successful!")
+                      }
+                    }}
+                    disabled={isProcessingPayment}
+                    className="w-full h-12 bg-black hover:bg-black/90 text-white font-semibold flex items-center justify-center gap-2"
+                  >
+                    <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
+                      <span className="text-black text-xs font-bold">🍎</span>
+                    </div>
+                    Pay with Apple Pay
+                  </Button>
+                )}
+
+                {/* Google Pay Button */}
+                {isGooglePayAvailable && (
+                  <Button
+                    onClick={async () => {
+                      const success = await processGooglePayPayment(50, "Armora Service Selection")
+                      if (success) {
+                        setShowPaymentModal(false)
+                        toast.success("Google Pay payment successful!")
+                      }
+                    }}
+                    disabled={isProcessingPayment}
+                    className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center justify-center gap-2"
+                  >
+                    <div className="w-6 h-6 bg-white rounded flex items-center justify-center">
+                      <span className="text-blue-600 text-xs font-bold">G</span>
+                    </div>
+                    Pay with Google Pay
+                  </Button>
+                )}
+
+                {/* Show message if no digital wallets available */}
+                {!isApplePayAvailable && !isGooglePayAvailable && (
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                    <p className="text-xs text-amber-700 text-center">
+                      Digital wallets not available on this device
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Existing Payment Methods */}
             {paymentMethods.length > 0 && (
               <div className="space-y-3 mb-6">
@@ -1084,15 +1221,30 @@ const App = () => {
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-md flex items-center justify-center">
-                            <CreditCard size={16} className="text-white" />
+                          <div className={`w-12 h-8 rounded-md flex items-center justify-center ${
+                            method.type === 'apple-pay' ? 'bg-black' :
+                            method.type === 'google-pay' ? 'bg-blue-600' :
+                            'bg-gradient-to-r from-blue-500 to-blue-600'
+                          }`}>
+                            {method.type === 'apple-pay' ? (
+                              <span className="text-white text-xs">🍎</span>
+                            ) : method.type === 'google-pay' ? (
+                              <span className="text-white text-xs font-bold">G</span>
+                            ) : (
+                              <CreditCard size={16} className="text-white" />
+                            )}
                           </div>
                           <div>
                             <p className="font-semibold text-sm">
-                              {method.cardType.toUpperCase()} •••• {method.last4}
+                              {method.type === 'apple-pay' ? 'Apple Pay' :
+                               method.type === 'google-pay' ? 'Google Pay' :
+                               `${method.cardType.toUpperCase()} •••• ${method.last4}`}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {method.nameOnCard} • Expires {method.expiryMonth}/{method.expiryYear}
+                              {method.type === 'apple-pay' || method.type === 'google-pay' ? 
+                                'Digital Wallet' :
+                                `${method.nameOnCard} • Expires ${method.expiryMonth}/${method.expiryYear}`
+                              }
                             </p>
                           </div>
                         </div>
@@ -1658,6 +1810,179 @@ const App = () => {
       setIsProcessingPayment(false)
     }
   }, [newCardForm, paymentMethods.length, setPaymentMethods, setDefaultPaymentMethod])
+
+  // Apple Pay payment processing
+  const processApplePayPayment = useCallback(async (amount: number, description: string): Promise<boolean> => {
+    if (!isApplePayAvailable) {
+      toast.error("Apple Pay is not available on this device")
+      return false
+    }
+
+    setIsProcessingPayment(true)
+    
+    try {
+      const paymentRequest = {
+        countryCode: 'GB',
+        currencyCode: 'GBP',
+        supportedNetworks: ['visa', 'masterCard', 'amex'],
+        merchantCapabilities: ['supports3DS'],
+        total: {
+          label: description,
+          amount: amount.toFixed(2)
+        }
+      }
+
+      // @ts-ignore - Apple Pay Session
+      const session = new ApplePaySession(3, paymentRequest)
+      
+      return new Promise((resolve) => {
+        session.onvalidatemerchant = (event: any) => {
+          // In production, validate with your payment processor
+          session.completeMerchantValidation({})
+        }
+
+        session.onpaymentauthorized = (event: any) => {
+          // Process the payment token with your payment processor
+          const payment = {
+            id: Date.now().toString(),
+            amount,
+            description,
+            status: 'completed',
+            paymentMethod: 'apple-pay',
+            createdAt: new Date().toISOString(),
+            cardLast4: '****' // Apple Pay doesn't expose card details
+          }
+          
+          setPaymentHistory(prev => [payment, ...prev])
+          
+          // Add Apple Pay as a payment method if not already added
+          const existingApplePay = paymentMethods.find(method => method.type === 'apple-pay')
+          if (!existingApplePay) {
+            const applePayMethod = {
+              id: 'apple-pay-' + Date.now(),
+              type: 'apple-pay',
+              cardType: 'apple-pay',
+              last4: '****',
+              nameOnCard: 'Apple Pay',
+              isDefault: paymentMethods.length === 0,
+              createdAt: new Date().toISOString()
+            }
+            setPaymentMethods(prev => [...prev, applePayMethod])
+          }
+          
+          session.completePayment(ApplePaySession.STATUS_SUCCESS)
+          toast.success(`Apple Pay payment of £${amount.toFixed(2)} processed successfully`)
+          resolve(true)
+        }
+
+        session.oncancel = () => {
+          toast.info("Apple Pay payment cancelled")
+          resolve(false)
+        }
+
+        session.begin()
+      })
+    } catch (error) {
+      toast.error("Apple Pay payment failed. Please try again.")
+      return false
+    } finally {
+      setIsProcessingPayment(false)
+    }
+  }, [isApplePayAvailable, paymentMethods, setPaymentHistory, setPaymentMethods])
+
+  // Google Pay payment processing
+  const processGooglePayPayment = useCallback(async (amount: number, description: string): Promise<boolean> => {
+    if (!isGooglePayAvailable) {
+      toast.error("Google Pay is not available on this device")
+      return false
+    }
+
+    setIsProcessingPayment(true)
+    
+    try {
+      const googlePayMethod = {
+        supportedMethods: 'https://google.com/pay',
+        data: {
+          environment: 'TEST', // Change to 'PRODUCTION' for live
+          apiVersion: 2,
+          apiVersionMinor: 0,
+          merchantInfo: {
+            merchantName: 'Armora Cabs 24/7',
+            merchantId: '12345678901234567890'
+          },
+          allowedPaymentMethods: [{
+            type: 'CARD',
+            parameters: {
+              allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+              allowedCardNetworks: ['VISA', 'MASTERCARD', 'AMEX']
+            },
+            tokenizationSpecification: {
+              type: 'PAYMENT_GATEWAY',
+              parameters: {
+                gateway: 'stripe',
+                gatewayMerchantId: 'armora_merchant_id'
+              }
+            }
+          }]
+        }
+      }
+
+      const paymentDetails = {
+        total: {
+          label: description,
+          amount: {
+            currency: 'GBP',
+            value: amount.toFixed(2)
+          }
+        }
+      }
+
+      const paymentRequest = new PaymentRequest([googlePayMethod], paymentDetails)
+      
+      const paymentResponse = await paymentRequest.show()
+      
+      // Process the payment with your payment processor
+      const payment = {
+        id: Date.now().toString(),
+        amount,
+        description,
+        status: 'completed',
+        paymentMethod: 'google-pay',
+        createdAt: new Date().toISOString(),
+        cardLast4: '****' // Google Pay may provide masked PAN
+      }
+      
+      setPaymentHistory(prev => [payment, ...prev])
+      
+      // Add Google Pay as a payment method if not already added
+      const existingGooglePay = paymentMethods.find(method => method.type === 'google-pay')
+      if (!existingGooglePay) {
+        const googlePayMethod = {
+          id: 'google-pay-' + Date.now(),
+          type: 'google-pay',
+          cardType: 'google-pay',
+          last4: '****',
+          nameOnCard: 'Google Pay',
+          isDefault: paymentMethods.length === 0,
+          createdAt: new Date().toISOString()
+        }
+        setPaymentMethods(prev => [...prev, googlePayMethod])
+      }
+      
+      await paymentResponse.complete('success')
+      toast.success(`Google Pay payment of £${amount.toFixed(2)} processed successfully`)
+      return true
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        toast.info("Google Pay payment cancelled")
+      } else {
+        toast.error("Google Pay payment failed. Please try again.")
+      }
+      return false
+    } finally {
+      setIsProcessingPayment(false)
+    }
+  }, [isGooglePayAvailable, paymentMethods, setPaymentHistory, setPaymentMethods])
 
   const removePaymentMethod = useCallback((methodId: string) => {
     setPaymentMethods(prev => prev.filter(method => method.id !== methodId))
@@ -3022,8 +3347,8 @@ const App = () => {
                 return
               }
               
-              // Check if user has payment method
-              if (paymentMethods.length === 0 && !defaultPaymentMethod) {
+              // Check if user has payment method or digital wallet available
+              if (paymentMethods.length === 0 && !defaultPaymentMethod && !isApplePayAvailable && !isGooglePayAvailable) {
                 setShowPaymentModal(true)
                 toast.info("Please add a payment method to complete booking")
                 return
@@ -3045,11 +3370,28 @@ const App = () => {
                 ? parseFloat(calculateServicePrice(selectedServiceData!, routeDistance).replace('£', ''))
                 : 50 // Minimum callout charge
               
-              // Process payment
-              const paymentSuccess = await processPayment(
-                finalAmount, 
-                `${selectedServiceData?.name} - ${selectedPickupLocation.address} to ${selectedDestinationLocation.address}`
-              )
+              let paymentSuccess = false
+              
+              // Try digital wallets first if available and no saved methods
+              if (paymentMethods.length === 0 && (isApplePayAvailable || isGooglePayAvailable)) {
+                if (isApplePayAvailable) {
+                  paymentSuccess = await processApplePayPayment(
+                    finalAmount, 
+                    `${selectedServiceData?.name} - ${selectedPickupLocation.address} to ${selectedDestinationLocation.address}`
+                  )
+                } else if (isGooglePayAvailable) {
+                  paymentSuccess = await processGooglePayPayment(
+                    finalAmount, 
+                    `${selectedServiceData?.name} - ${selectedPickupLocation.address} to ${selectedDestinationLocation.address}`
+                  )
+                }
+              } else {
+                // Use regular payment processing
+                paymentSuccess = await processPayment(
+                  finalAmount, 
+                  `${selectedServiceData?.name} - ${selectedPickupLocation.address} to ${selectedDestinationLocation.address}`
+                )
+              }
               
               if (!paymentSuccess) {
                 return // Payment failed, don't proceed
@@ -3091,7 +3433,7 @@ const App = () => {
                 'Enter locations' :
                 !selectedService ? 
                 'Select service' :
-                paymentMethods.length === 0 ?
+                paymentMethods.length === 0 && !isApplePayAvailable && !isGooglePayAvailable ?
                 'Add payment method' :
                 `Book ${armoraServices.find(s => s.id === selectedService)?.name || 'Security Cab'}`
             )}
@@ -3197,19 +3539,36 @@ const App = () => {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-md flex items-center justify-center">
-                          <CreditCard size={16} className="text-white" />
+                        <div className={`w-12 h-8 rounded-md flex items-center justify-center ${
+                          method.type === 'apple-pay' ? 'bg-black' :
+                          method.type === 'google-pay' ? 'bg-blue-600' :
+                          'bg-gradient-to-r from-blue-500 to-blue-600'
+                        }`}>
+                          {method.type === 'apple-pay' ? (
+                            <span className="text-white text-xs">🍎</span>
+                          ) : method.type === 'google-pay' ? (
+                            <span className="text-white text-xs font-bold">G</span>
+                          ) : (
+                            <CreditCard size={16} className="text-white" />
+                          )}
                         </div>
                         <div>
                           <p className="font-semibold text-sm">
-                            {method.cardType.toUpperCase()} •••• {method.last4}
+                            {method.type === 'apple-pay' ? 'Apple Pay' :
+                             method.type === 'google-pay' ? 'Google Pay' :
+                             `${method.cardType.toUpperCase()} •••• ${method.last4}`}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {method.nameOnCard}
+                            {method.type === 'apple-pay' || method.type === 'google-pay' ? 
+                              'Digital Wallet' :
+                              method.nameOnCard
+                            }
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            Expires {method.expiryMonth}/{method.expiryYear}
-                          </p>
+                          {method.type !== 'apple-pay' && method.type !== 'google-pay' && (
+                            <p className="text-xs text-muted-foreground">
+                              Expires {method.expiryMonth}/{method.expiryYear}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col gap-2">
@@ -3358,8 +3717,9 @@ const App = () => {
                       <p className="font-semibold text-sm">Payment Methods</p>
                       <p className="text-xs text-muted-foreground">
                         {paymentMethods.length === 0 
-                          ? 'No payment methods added' 
-                          : `${paymentMethods.length} card${paymentMethods.length > 1 ? 's' : ''} on file`
+                          ? (isApplePayAvailable || isGooglePayAvailable ? 
+                             'Digital wallets available' : 'No payment methods added')
+                          : `${paymentMethods.length} payment method${paymentMethods.length > 1 ? 's' : ''} saved`
                         }
                       </p>
                     </div>
