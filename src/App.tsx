@@ -1126,10 +1126,10 @@ function App() {
           {/* Current Service Selection */}
           <Card className="border-0 shadow-sm bg-card">
             <CardContent className="p-4">
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="font-semibold text-base text-foreground">Choose Your Service</h3>
                 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-3">
                   {armoraServices.map(service => {
                     const isSelected = selectedService === service.id
                     const IconComponent = service.icon
@@ -1144,30 +1144,35 @@ function App() {
                         onClick={() => setSelectedService(service.id)}
                       >
                         {service.popular && (
-                          <div className="absolute top-2 left-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[9px] font-bold px-1.5 py-0.5 rounded-full z-10">
+                          <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-10">
                             Popular
                           </div>
                         )}
                         {service.new && (
-                          <div className="absolute top-2 left-2 bg-gradient-to-r from-green-400 to-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full z-10">
+                          <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
                             NEW
                           </div>
                         )}
-                        <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border-2 ${
+                        <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 ${
                           isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/50'
                         } flex items-center justify-center`}>
-                          {isSelected && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                          {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
                         </div>
-                        <CardContent className="p-3 pt-6">
-                          <div className="space-y-1.5">
-                            <div className="flex items-center gap-2">
-                              <IconComponent size={14} className="text-primary flex-shrink-0" />
-                              <h4 className="font-bold text-xs text-foreground line-clamp-1">{service.name}</h4>
+                        <CardContent className="p-4 pt-8">
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <IconComponent size={20} className="text-primary flex-shrink-0" />
+                              <h4 className="font-bold text-base text-foreground">{service.name}</h4>
                             </div>
-                            <p className="text-[10px] text-muted-foreground line-clamp-2 leading-relaxed">{service.tagline}</p>
-                            <div className="space-y-0.5">
-                              <p className="text-[9px] font-semibold text-primary">{service.priceRange}</p>
-                              <p className="text-[9px] text-muted-foreground">{service.eta} • {service.capacity}</p>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{service.tagline}</p>
+                            <div className="flex items-center justify-between">
+                              <div className="space-y-1">
+                                <p className="text-sm font-semibold text-primary">{service.priceRange}</p>
+                                <p className="text-xs text-muted-foreground">{service.eta} • {service.capacity}</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-xs text-muted-foreground">{service.vehicle}</p>
+                              </div>
                             </div>
                           </div>
                         </CardContent>
