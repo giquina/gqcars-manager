@@ -2629,12 +2629,21 @@ const App = () => {
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between">
                   <div className="questionnaire-title flex-1 pr-2">
-                    <h3>What kind of work do you do?</h3>
+                    <h3>What type of work or profession are you in?</h3>
                   </div>
                   <div className="text-sm text-muted-foreground whitespace-nowrap">Step 1 of 6</div>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Pick all that describe your work (you can choose more than one)</p>
+              <div className="space-y-2 mb-3">
+                <p className="text-sm text-muted-foreground">Understanding your profession helps us:</p>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>• Match you with security drivers familiar with your industry</p>
+                  <p>• Plan routes suitable for your work schedule and destinations</p>
+                  <p>• Provide appropriate security protocols for your professional needs</p>
+                  <p>• Ensure discretion levels match your work requirements</p>
+                </div>
+                <p className="text-sm text-amber-600 font-medium mt-2">Select all that apply to your work (you can choose multiple options)</p>
+              </div>
               <div className="w-full bg-border/30 rounded-full h-1">
                 <div className="bg-primary h-1 rounded-full" style={{ width: '17%' }}></div>
               </div>
@@ -2730,12 +2739,21 @@ const App = () => {
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between">
                   <div className="questionnaire-title flex-1 pr-2">
-                    <h3>How often do you need secure transport?</h3>
+                    <h3>How often do you typically need secure transport?</h3>
                   </div>
                   <div className="text-sm text-muted-foreground whitespace-nowrap">Step 2 of 6</div>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Pick the one that best matches your needs</p>
+              <div className="space-y-2 mb-3">
+                <p className="text-sm text-muted-foreground">Your travel frequency helps us:</p>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>• Assign dedicated drivers for regular schedules</p>
+                  <p>• Offer priority booking and consistent service</p>
+                  <p>• Plan flexible options for varying needs</p>
+                  <p>• Provide cost-effective packages for frequent users</p>
+                </div>
+                <p className="text-sm text-amber-600 font-medium mt-2">Choose the option that best matches your typical transport needs</p>
+              </div>
               <div className="w-full bg-border/30 rounded-full h-1">
                 <div className="bg-primary h-1 rounded-full" style={{ width: '33%' }}></div>
               </div>
@@ -2820,12 +2838,21 @@ const App = () => {
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between">
                   <div className="questionnaire-title flex-1 pr-2">
-                    <h3>How do you want your security to look?</h3>
+                    <h3>What security approach feels most comfortable to you?</h3>
                   </div>
                   <div className="text-sm text-muted-foreground whitespace-nowrap">Step 3 of 6</div>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Pick the style that feels right for you</p>
+              <div className="space-y-2 mb-3">
+                <p className="text-sm text-muted-foreground">Your security style preference helps us:</p>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>• Select drivers trained in your preferred approach</p>
+                  <p>• Choose appropriate vehicles and equipment</p>
+                  <p>• Ensure the right balance of protection and comfort</p>
+                  <p>• Match service level to your specific environment</p>
+                </div>
+                <p className="text-sm text-amber-600 font-medium mt-2">Different situations may require different security approaches</p>
+              </div>
               <div className="w-full bg-border/30 rounded-full h-1">
                 <div className="bg-primary h-1 rounded-full" style={{ width: '50%' }}></div>
               </div>
@@ -2911,12 +2938,21 @@ const App = () => {
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between">
                   <div className="questionnaire-title flex-1 pr-2">
-                    <h3>How much security presence feels right?</h3>
+                    <h3>What level of security presence makes you feel most secure?</h3>
                   </div>
                   <div className="text-sm text-muted-foreground whitespace-nowrap">Step 4 of 6</div>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Choose what feels comfortable for you</p>
+              <div className="space-y-2 mb-3">
+                <p className="text-sm text-muted-foreground">Security presence level helps us:</p>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>• Balance protection with your comfort zone</p>
+                  <p>• Choose appropriate vehicle types and positioning</p>
+                  <p>• Train drivers in your preferred interaction style</p>
+                  <p>• Ensure security measures match your lifestyle</p>
+                </div>
+                <p className="text-sm text-amber-600 font-medium mt-2">Different comfort levels provide varying degrees of visible protection</p>
+              </div>
               <div className="w-full bg-border/30 rounded-full h-1">
                 <div className="bg-primary h-1 rounded-full" style={{ width: '67%' }}></div>
               </div>
@@ -3004,12 +3040,21 @@ const App = () => {
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between">
                   <div className="questionnaire-title flex-1 pr-2">
-                    <h3>Where do you typically need protection?</h3>
+                    <h3>Where do you typically travel for work or personal activities?</h3>
                   </div>
                   <div className="text-sm text-muted-foreground whitespace-nowrap">Step 5 of 6</div>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Pick all areas where you need security transport</p>
+              <div className="space-y-2 mb-3">
+                <p className="text-sm text-muted-foreground">Your typical destinations help us:</p>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>• Assign drivers familiar with your regular areas</p>
+                  <p>• Pre-plan optimal routes and security protocols</p>
+                  <p>• Prepare for location-specific security considerations</p>
+                  <p>• Ensure smooth coordination at familiar venues</p>
+                </div>
+                <p className="text-sm text-amber-600 font-medium mt-2">Select all areas where you typically need secure transport (multiple selections welcome)</p>
+              </div>
               <div className="w-full bg-border/30 rounded-full h-1">
                 <div className="bg-primary h-1 rounded-full" style={{ width: '83%' }}></div>
               </div>
@@ -3094,12 +3139,22 @@ const App = () => {
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between">
                   <div className="questionnaire-title flex-1 pr-2">
-                    <h3>Any specific security needs?</h3>
+                    <h3>Any specific requirements or special considerations?</h3>
                   </div>
                   <div className="text-sm text-muted-foreground whitespace-nowrap">Step 6 of 6</div>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-2">Tell us about any special requirements (optional)</p>
+              <div className="space-y-2 mb-3">
+                <p className="text-sm text-muted-foreground">Share any additional details that help us provide better service:</p>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>• Accessibility needs or mobility requirements</p>
+                  <p>• Specific security concerns or previous experiences</p>
+                  <p>• Vehicle preferences or size requirements</p>
+                  <p>• Schedule constraints or timing preferences</p>
+                  <p>• Any other details that improve your transport experience</p>
+                </div>
+                <p className="text-sm text-amber-600 font-medium mt-2">This is completely optional but helps us personalize your service</p>
+              </div>
               <div className="w-full bg-border/30 rounded-full h-1">
                 <div className="bg-primary h-1 rounded-full" style={{ width: '100%' }}></div>
               </div>
@@ -3111,19 +3166,27 @@ const App = () => {
             <Card className="border border-border/40 bg-white">
               <CardContent className="p-4 space-y-4">
                 <div>
-                  <h3 className="font-bold text-base mb-2">Custom Security Requirements</h3>
+                  <h3 className="font-bold text-base mb-2">Additional Service Requirements</h3>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Describe any specific security concerns, accessibility needs, or special requests
+                    Help us tailor our security transport service to your exact needs. You can mention things like:
                   </p>
+                  <div className="text-xs text-muted-foreground mb-3 space-y-1">
+                    <p>• "I need wheelchair accessible vehicles"</p>
+                    <p>• "Prefer female security drivers when available"</p>
+                    <p>• "Always need discrete service for confidential meetings"</p>
+                    <p>• "Sometimes travel with family members"</p>
+                    <p>• "Have specific time windows for pickups"</p>
+                    <p>• "Need vehicles that can accommodate equipment/luggage"</p>
+                  </div>
                   <textarea
                     value={questionnaireAnswers.customRequirements}
                     onChange={(e) => handleQuestionnaireAnswer('customRequirements', e.target.value)}
-                    placeholder="e.g., Need wheelchair accessible vehicle, require discrete service for sensitive meetings, have specific time constraints..."
+                    placeholder="e.g., I sometimes need wheelchair accessible vehicles, prefer very discrete service for client meetings, and often travel early morning..."
                     className="w-full h-32 p-3 border border-border/40 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     maxLength={500}
                   />
                   <div className="flex justify-between items-center mt-2">
-                    <p className="text-xs text-muted-foreground">Optional - helps us personalize your service</p>
+                    <p className="text-xs text-muted-foreground">This information helps us personalize your security transport service and ensure we meet all your specific needs</p>
                     <p className="text-xs text-muted-foreground">{questionnaireAnswers.customRequirements.length}/500</p>
                   </div>
                 </div>
@@ -3137,10 +3200,11 @@ const App = () => {
                     <Shield size={16} className="text-amber-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-amber-800 mb-1">Your Privacy Matters</h4>
+                    <h4 className="font-semibold text-sm text-amber-800 mb-1">Complete Security Transport Assessment</h4>
                     <p className="text-xs text-amber-700">
-                      All information is confidential and used only to provide better security transport service. 
-                      We follow strict privacy protocols.
+                      Your responses help us create a personalized security transport profile. All information is 
+                      encrypted, confidential, and used solely to provide you with the most appropriate service. 
+                      You can modify your preferences anytime in your account settings.
                     </p>
                   </div>
                 </div>
@@ -3187,7 +3251,9 @@ const App = () => {
           <div>
             <h2 className="text-2xl font-bold mb-2">Assessment Complete!</h2>
             <p className="text-muted-foreground mb-6">
-              Based on your responses, we recommend our Armora Essential service for your security needs.
+              Thank you for providing these details. Based on your responses, we've created a personalized 
+              security transport profile that will help us provide the best possible service for your needs. 
+              Your Armora Essential service is ready to go!
             </p>
           </div>
           <Button 
