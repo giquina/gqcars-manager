@@ -2969,7 +2969,7 @@ function App() {
                   onClick={saveAndExit}
                   className="text-amber-200 hover:text-white hover:bg-amber-400/20 border border-amber-400/30 h-6 px-2 text-[10px]"
                 >
-                  Save
+                  Save & Exit
                 </Button>
                 {onboardingStep > 0 && (
                   <Button 
@@ -3139,11 +3139,11 @@ function App() {
           {onboardingStep === 2 && (
             <div className="space-y-3 animate-in fade-in duration-500">
               <div className="text-center space-y-1.5">
-                <h2 className="text-base font-bold text-white">How often do you need secure transport?</h2>
+                <h2 className="text-sm font-bold text-white">How often do you need secure transport?</h2>
                 <p className="text-xs text-slate-300">Pick the one that best matches your needs</p>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { value: 'Just Sometimes', desc: 'Special events, rare occasions' },
                   { value: 'About Once a Week', desc: 'Regular meetings, weekly events' },
@@ -3152,29 +3152,25 @@ function App() {
                 ].map((option) => (
                   <Card 
                     key={option.value}
-                    className={`cursor-pointer transition-all duration-200 ${ 
+                    className={`cursor-pointer transition-all duration-200 h-[60px] ${ 
                       onboardingData.travelFrequency === option.value
                         ? 'bg-gradient-to-r from-amber-400/20 to-amber-600/20 border-amber-400 shadow-lg' 
                         : 'bg-slate-800/60 border-slate-600 hover:border-amber-400/50 hover:bg-slate-800/80'
                     }`}
                     onClick={() => updateOnboardingData('travelFrequency', option.value)}
                   >
-                    <CardContent className="p-2.5">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-white text-xs">{option.value}</h3>
-                          <p className="text-[10px] text-slate-300">{option.desc}</p>
-                        </div>
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${ 
-                          onboardingData.travelFrequency === option.value 
-                            ? 'bg-amber-400 border-amber-400' 
-                            : 'border-slate-500'
-                        }`}>
-                          {onboardingData.travelFrequency === option.value && (
-                            <div className="w-2 h-2 bg-slate-900 rounded-full"></div>
-                          )}
-                        </div>
+                    <CardContent className="p-2 h-full flex flex-col justify-center relative">
+                      <div className={`absolute top-1 right-1 w-3 h-3 rounded-full border border-amber-400 ${ 
+                        onboardingData.travelFrequency === option.value 
+                          ? 'bg-amber-400' 
+                          : 'bg-transparent'
+                      }`}>
+                        {onboardingData.travelFrequency === option.value && (
+                          <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                        )}
                       </div>
+                      <h3 className="font-semibold text-white text-xs leading-tight mb-0.5 text-center">{option.value}</h3>
+                      <p className="text-[9px] text-slate-300 leading-tight text-center">{option.desc}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -3186,7 +3182,7 @@ function App() {
                   value={onboardingData.travelFrequencyCustom}
                   onChange={(e) => updateOnboardingData('travelFrequencyCustom', e.target.value)}
                   placeholder="Tell us about your travel schedule..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
                   maxLength={300}
                 />
                 <p className="text-[9px] text-slate-400">{onboardingData.travelFrequencyCustom.length}/300 characters</p>
@@ -3195,7 +3191,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.travelFrequency && !onboardingData.travelFrequencyCustom.trim()}
-                className="w-full h-9 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
+                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
               >
                 Continue
               </Button>
@@ -3206,11 +3202,11 @@ function App() {
           {onboardingStep === 3 && (
             <div className="space-y-3 animate-in fade-in duration-500">
               <div className="text-center space-y-1.5">
-                <h2 className="text-base font-bold text-white">How do you want your security to look?</h2>
+                <h2 className="text-sm font-bold text-white">How do you want your security to look?</h2>
                 <p className="text-xs text-slate-300">Pick the style that feels right for you</p>
               </div>
 
-              <div className="grid gap-2">
+              <div className="space-y-2">
                 {[
                   { 
                     value: 'Quiet & Discrete', 
@@ -3237,25 +3233,25 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('serviceStyle', option.value)}
                   >
-                    <CardContent className="p-3 space-y-2">
+                    <CardContent className="p-2.5 space-y-1.5">
                       <div className="flex items-center gap-2">
                         <div className="flex-1">
-                          <h3 className="font-semibold text-white text-sm">{option.value}</h3>
-                          <p className="text-xs text-slate-300">{option.desc}</p>
+                          <h3 className="font-semibold text-white text-xs">{option.value}</h3>
+                          <p className="text-[9px] text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${ 
+                        <div className={`w-3 h-3 rounded-full border border-amber-400 ${ 
                           onboardingData.serviceStyle === option.value 
-                            ? 'bg-amber-400 border-amber-400' 
-                            : 'border-slate-500'
+                            ? 'bg-amber-400' 
+                            : 'bg-transparent'
                         }`}>
                           {onboardingData.serviceStyle === option.value && (
-                            <div className="w-2 h-2 bg-slate-900 rounded-full"></div>
+                            <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
                           )}
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {option.features.map((feature, idx) => (
-                          <span key={idx} className="text-[9px] px-1.5 py-0.5 bg-slate-700/60 text-slate-300 rounded-full">
+                          <span key={idx} className="text-[8px] px-1 py-0.5 bg-slate-700/60 text-slate-300 rounded-full">
                             {feature}
                           </span>
                         ))}
@@ -3271,7 +3267,7 @@ function App() {
                   value={onboardingData.serviceStyleCustom}
                   onChange={(e) => updateOnboardingData('serviceStyleCustom', e.target.value)}
                   placeholder="Tell us what you need in simple words..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
                   maxLength={500}
                 />
                 <p className="text-[9px] text-slate-400">{onboardingData.serviceStyleCustom.length}/500 characters</p>
@@ -3280,7 +3276,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.serviceStyle && !onboardingData.serviceStyleCustom.trim()}
-                className="w-full h-9 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
+                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
               >
                 Continue
               </Button>
@@ -3289,13 +3285,13 @@ function App() {
 
           {/* Slide 4: Security Comfort Level */}
           {onboardingStep === 4 && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <div className="text-center space-y-2">
-                <h2 className="text-lg font-bold text-white">How much security presence makes you feel comfortable?</h2>
+            <div className="space-y-3 animate-in fade-in duration-500">
+              <div className="text-center space-y-1.5">
+                <h2 className="text-sm font-bold text-white">How much security presence makes you feel comfortable?</h2>
                 <p className="text-xs text-slate-300">Choose what feels right for you</p>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {[
                   { value: 'Barely There', intensity: 1, desc: 'Almost invisible, emergency only' },
                   { value: 'Quietly Present', intensity: 2, desc: 'There but not obvious' },
@@ -3312,28 +3308,28 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('securityComfort', option.value)}
                   >
-                    <CardContent className="p-3">
+                    <CardContent className="p-2.5">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-white text-sm">{option.value}</h3>
-                            <div className="flex gap-1">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <h3 className="font-semibold text-white text-xs">{option.value}</h3>
+                            <div className="flex gap-0.5">
                               {[...Array(5)].map((_, i) => (
-                                <div key={i} className={`w-1.5 h-1.5 rounded-full ${ 
+                                <div key={i} className={`w-1 h-1 rounded-full ${ 
                                   i < option.intensity ? 'bg-amber-400' : 'bg-slate-600'
                                 }`} />
                               ))}
                             </div>
                           </div>
-                          <p className="text-xs text-slate-300">{option.desc}</p>
+                          <p className="text-[9px] text-slate-300">{option.desc}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${ 
+                        <div className={`w-3 h-3 rounded-full border border-amber-400 ${ 
                           onboardingData.securityComfort === option.value 
-                            ? 'bg-amber-400 border-amber-400' 
-                            : 'border-slate-500'
+                            ? 'bg-amber-400' 
+                            : 'bg-transparent'
                         }`}>
                           {onboardingData.securityComfort === option.value && (
-                            <div className="w-2 h-2 bg-slate-900 rounded-full"></div>
+                            <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
                           )}
                         </div>
                       </div>
@@ -3342,22 +3338,22 @@ function App() {
                 ))}
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-xs font-medium text-amber-200">What makes you feel most comfortable:</label>
                 <textarea
                   value={onboardingData.securityComfortCustom}
                   onChange={(e) => updateOnboardingData('securityComfortCustom', e.target.value)}
                   placeholder="Tell us what makes you feel safe and comfortable..."
-                  className="w-full h-14 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-sm"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
                   maxLength={400}
                 />
-                <p className="text-[10px] text-slate-400">{onboardingData.securityComfortCustom.length}/400 characters</p>
+                <p className="text-[9px] text-slate-400">{onboardingData.securityComfortCustom.length}/400 characters</p>
               </div>
 
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.securityComfort && !onboardingData.securityComfortCustom.trim()}
-                className="w-full h-10 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
               >
                 Continue
               </Button>
@@ -3413,13 +3409,13 @@ function App() {
                   value={onboardingData.locationsCustom}
                   onChange={(e) => updateOnboardingData('locationsCustom', e.target.value)}
                   placeholder="List specific places, addresses, or areas you visit..."
-                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
+                  className="w-full h-10 px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
                   maxLength={500}
                 />
                 <p className="text-[9px] text-slate-400">{onboardingData.locationsCustom.length}/500 characters</p>
               </div>
 
-              <div className="p-2 bg-amber-400/10 rounded-lg border border-amber-400/30">
+              <div className="p-1.5 bg-amber-400/10 rounded-lg border border-amber-400/30">
                 <p className="text-xs text-amber-200">
                   <strong>Example:</strong> You can pick "City Center" and "Work Events"
                 </p>
@@ -3428,7 +3424,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.locations.length === 0 && !onboardingData.locationsCustom.trim()}
-                className="w-full h-9 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
+                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
               >
                 Continue
               </Button>
@@ -3437,13 +3433,13 @@ function App() {
 
           {/* Slide 6: Risk Assessment */}
           {onboardingStep === 6 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="text-center space-y-3">
-                <h2 className="text-xl font-bold text-white">Professional risk assessment consultation</h2>
-                <p className="text-sm text-slate-300">Industry best practice requires understanding your security transport context</p>
+            <div className="space-y-3 animate-in fade-in duration-500">
+              <div className="text-center space-y-1.5">
+                <h2 className="text-sm font-bold text-white">Professional risk assessment consultation</h2>
+                <p className="text-xs text-slate-300">Industry best practice requires understanding your security transport context</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 {[
                   { value: 'Standard Business Travel', desc: 'Regular professional transport needs', level: 'standard' },
                   { value: 'High-Profile Professional', desc: 'Public recognition, media attention', level: 'elevated' },
@@ -3461,12 +3457,12 @@ function App() {
                     }`}
                     onClick={() => toggleArrayValue('riskConcerns', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-2.5">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3">
-                            <h3 className="font-semibold text-white">{option.value}</h3>
-                            <span className={`text-xs px-2 py-1 rounded-full ${
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-white text-xs">{option.value}</h3>
+                            <span className={`text-[8px] px-1 py-0.5 rounded-full ${
                               option.level === 'enhanced' ? 'bg-blue-400/20 text-blue-300' :
                               option.level === 'elevated' ? 'bg-yellow-400/20 text-yellow-300' :
                               'bg-green-400/20 text-green-300'
@@ -3474,32 +3470,36 @@ function App() {
                               {option.level}
                             </span>
                           </div>
-                          <p className="text-sm text-slate-300 mt-1">{option.desc}</p>
+                          <p className="text-[9px] text-slate-300 mt-0.5">{option.desc}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded-full border-2 ${
+                        <div className={`w-3 h-3 border border-amber-400 rounded ${
                           onboardingData.riskConcerns.includes(option.value) 
-                            ? 'bg-amber-400 border-amber-400' 
-                            : 'border-slate-500'
-                        }`} />
+                            ? 'bg-amber-400 text-slate-900' 
+                            : 'bg-transparent'
+                        } text-center flex items-center justify-center`}>
+                          {onboardingData.riskConcerns.includes(option.value) && (
+                            <span className="text-[8px] font-bold">✓</span>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Additional context for professional assessment:</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-amber-200">Additional context for professional assessment:</label>
                 <textarea
                   value={onboardingData.riskConcernsCustom}
                   onChange={(e) => updateOnboardingData('riskConcernsCustom', e.target.value)}
                   placeholder="Share any specific requirements or considerations for your security transport service (confidential)..."
-                  className="w-full h-24 px-4 py-3 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
                   maxLength={800}
                 />
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-slate-400">{onboardingData.riskConcernsCustom.length}/800 characters</p>
-                  <div className="flex items-center gap-1 text-xs text-amber-300">
-                    <Shield size={12} />
+                  <p className="text-[9px] text-slate-400">{onboardingData.riskConcernsCustom.length}/800 characters</p>
+                  <div className="flex items-center gap-1 text-[9px] text-amber-300">
+                    <Shield size={8} />
                     <span>Confidential & Secure</span>
                   </div>
                 </div>
@@ -3508,7 +3508,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={onboardingData.riskConcerns.length === 0 && !onboardingData.riskConcernsCustom.trim()}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
               >
                 Continue
               </Button>
@@ -3517,28 +3517,28 @@ function App() {
 
           {/* Slide 7: Emergency Contacts */}
           {onboardingStep === 7 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="space-y-3 text-center">
-                <h2 className="text-lg font-bold text-white">Emergency contact information</h2>
-                <p className="text-sm text-slate-300">Industry best practice for professional duty of care</p>
+            <div className="space-y-3 animate-in fade-in duration-500">
+              <div className="space-y-1.5 text-center">
+                <h2 className="text-sm font-bold text-white">Emergency contact information</h2>
+                <p className="text-xs text-slate-300">Industry best practice for professional duty of care</p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {/* Primary Contact */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-amber-200">Primary Contact</h3>
-                  <div className="grid gap-3">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-amber-200 text-xs">Primary Contact</h3>
+                  <div className="space-y-2">
                     <Input
                       value={onboardingData.emergencyContact1.name}
                       onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, name: e.target.value})}
                       placeholder="Full name"
-                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-8 text-xs"
                     />
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                       <select
                         value={onboardingData.emergencyContact1.relationship}
                         onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, relationship: e.target.value})}
-                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400 h-8 text-xs"
                       >
                         <option value="">Relationship</option>
                         <option value="Spouse">Spouse</option>
@@ -3554,27 +3554,27 @@ function App() {
                         onChange={(e) => updateOnboardingData('emergencyContact1', {...onboardingData.emergencyContact1, phone: e.target.value})}
                         placeholder="Phone number"
                         type="tel"
-                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-8 text-xs"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Secondary Contact */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-amber-200">Secondary Contact (Optional)</h3>
-                  <div className="grid gap-3">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-amber-200 text-xs">Secondary Contact (Optional)</h3>
+                  <div className="space-y-2">
                     <Input
                       value={onboardingData.emergencyContact2.name}
                       onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, name: e.target.value})}
                       placeholder="Full name"
-                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                      className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-8 text-xs"
                     />
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                       <select
                         value={onboardingData.emergencyContact2.relationship}
                         onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, relationship: e.target.value})}
-                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                        className="px-3 py-2 bg-slate-800/60 border border-slate-600 rounded-lg text-white focus:border-amber-400 focus:ring-1 focus:ring-amber-400 h-8 text-xs"
                       >
                         <option value="">Relationship</option>
                         <option value="Spouse">Spouse</option>
@@ -3590,7 +3590,7 @@ function App() {
                         onChange={(e) => updateOnboardingData('emergencyContact2', {...onboardingData.emergencyContact2, phone: e.target.value})}
                         placeholder="Phone number"
                         type="tel"
-                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400"
+                        className="bg-slate-800/60 border-slate-600 text-white placeholder-slate-400 focus:border-amber-400 h-8 text-xs"
                       />
                     </div>
                   </div>
@@ -3600,7 +3600,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.emergencyContact1.name || !onboardingData.emergencyContact1.phone}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
               >
                 Continue
               </Button>
@@ -3609,13 +3609,13 @@ function App() {
 
           {/* Slide 8: Emergency Response Preferences */}
           {onboardingStep === 8 && (
-            <div className="space-y-6 animate-in fade-in duration-500">
-              <div className="space-y-3 text-center">
-                <h2 className="text-lg font-bold text-white">Professional response preferences</h2>
-                <p className="text-sm text-slate-300">How should we coordinate in exceptional situations?</p>
+            <div className="space-y-3 animate-in fade-in duration-500">
+              <div className="space-y-1.5 text-center">
+                <h2 className="text-sm font-bold text-white">Professional response preferences</h2>
+                <p className="text-xs text-slate-300">How should we coordinate in exceptional situations?</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 {[
                   { value: 'Contact family first', desc: 'Notify contacts before authorities', priority: '1st: Family, 2nd: Local authorities' },
                   { value: 'Authorities first', desc: 'Local authorities immediately, then contacts', priority: '1st: Local authorities, 2nd: Family' },
@@ -3631,37 +3631,41 @@ function App() {
                     }`}
                     onClick={() => updateOnboardingData('emergencyResponse', option.value)}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-2.5">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <h3 className="font-semibold text-white">{option.value}</h3>
-                          <p className="text-sm text-slate-300">{option.desc}</p>
-                          <p className="text-xs text-amber-300 mt-1">{option.priority}</p>
+                          <h3 className="font-semibold text-white text-xs">{option.value}</h3>
+                          <p className="text-[9px] text-slate-300">{option.desc}</p>
+                          <p className="text-[8px] text-amber-300 mt-0.5">{option.priority}</p>
                         </div>
-                        <div className={`w-4 h-4 rounded-full border-2 ${
+                        <div className={`w-3 h-3 rounded-full border border-amber-400 ${
                           onboardingData.emergencyResponse === option.value 
-                            ? 'bg-amber-400 border-amber-400' 
-                            : 'border-slate-500'
-                        }`} />
+                            ? 'bg-amber-400' 
+                            : 'bg-transparent'
+                        }`}>
+                          {onboardingData.emergencyResponse === option.value && (
+                            <div className="w-1 h-1 bg-slate-900 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-medium text-amber-200">Professional considerations, medical info, or special instructions:</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-amber-200">Professional considerations, medical info, or special instructions:</label>
                 <textarea
                   value={onboardingData.emergencyInstructions}
                   onChange={(e) => updateOnboardingData('emergencyInstructions', e.target.value)}
                   placeholder="Response preferences, medical conditions, allergies, medications, or special instructions for professional coordination..."
-                  className="w-full h-24 px-4 py-3 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none"
+                  className="w-full h-12 px-3 py-2 bg-slate-800/60 border border-amber-400/50 rounded-xl text-white placeholder-slate-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors resize-none text-xs"
                   maxLength={600}
                 />
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-slate-400">{onboardingData.emergencyInstructions.length}/600 characters</p>
-                  <div className="flex items-center gap-1 text-xs text-amber-300">
-                    <Shield size={12} />
+                  <p className="text-[9px] text-slate-400">{onboardingData.emergencyInstructions.length}/600 characters</p>
+                  <div className="flex items-center gap-1 text-[9px] text-amber-300">
+                    <Shield size={8} />
                     <span>Professional Confidentiality</span>
                   </div>
                 </div>
@@ -3670,7 +3674,7 @@ function App() {
               <Button 
                 onClick={nextStep}
                 disabled={!onboardingData.emergencyResponse}
-                className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50"
+                className="w-full h-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 text-sm"
               >
                 Complete Assessment
               </Button>
