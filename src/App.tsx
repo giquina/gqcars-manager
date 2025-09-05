@@ -466,7 +466,7 @@ const armoraServices = [
       ],
       youGet: [
         'Escort follows your car',
-        'Emergency response backup',
+        'Professional security backup',
         'Complete travel freedom'
       ]
     }
@@ -1661,7 +1661,7 @@ const App = () => {
                 </Button>
                 <Button 
                   onClick={async () => {
-                    if (selectedPaymentMethod || await addPaymentMethod()) {
+                    if (selectedPaymentMethod || (await addPaymentMethod())) {
                       setShowPaymentModal(false)
                       toast.success("Payment method selected")
                     }
@@ -1683,7 +1683,7 @@ const App = () => {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   // Real-time driver location tracking
@@ -2099,7 +2099,7 @@ const App = () => {
   const validateCVV = (cvv: string, cardNumber: string): boolean => {
     // American Express has 4-digit CVV, others have 3
     const isAmex = cardNumber.replace(/[\s-]/g, '').startsWith('34') || cardNumber.replace(/[\s-]/g, '').startsWith('37')
-    return isAmex ? /^\d{4}$/.test(cvv) : /^\d{3}$/.test(cvv)
+    return isAmex ? /^\d{4}$/.test(cvv) : /^\d{3}$/.test(cvv);
   }
 
   const getCardType = (cardNumber: string): string => {
@@ -2587,22 +2587,21 @@ const App = () => {
     // Step 0: Work Type Selection
     if (questionnaireStep === 0) {
       const workOptions = [
-        { id: 'doctor-medical', title: 'Medical Professional', subtitle: 'Doctor, Consultant, Specialist', icon: '🩺', description: 'Safe transport to late-night emergency calls or high-profile patient consultations' },
-        { id: 'banking-finance', title: 'Banking & Finance', subtitle: 'Investment, Trading, Advisory', icon: '💼', description: 'Secure transport to confidential meetings or high-stakes financial negotiations' },
-        { id: 'tech-computer', title: 'Technology', subtitle: 'Software, IT, Innovation', icon: '💻', description: 'Protected travel to product launches or when carrying sensitive intellectual property' },
-        { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, Development, Sales', icon: '🏠', description: 'Safe site visits to remote properties or protection during high-value viewings' },
-        { id: 'entertainment-media', title: 'Entertainment & Media', subtitle: 'Actors, Musicians, Performers', icon: '🎭', description: 'Discreet arrival/departure from venues, avoiding paparazzi at private events' },
-        { id: 'lawyer-legal', title: 'Legal & Government', subtitle: 'Lawyers, Officials, Diplomats', icon: '⚖️', description: 'Protected travel to sensitive proceedings or confidential government meetings' },
-        { id: 'corporate-executive', title: 'Corporate Executive', subtitle: 'C-Suite, Directors, Management', icon: '👔', description: 'Secure transport during merger negotiations or sensitive business situations' },
-        { id: 'public-figure', title: 'Public Figure', subtitle: 'Politicians, Activists, Speakers', icon: '🎤', description: 'Discreet backdoor escort from cameras or secure transport to controversial events' },
-        { id: 'sports-athletics', title: 'Sports & Athletics', subtitle: 'Athletes, Coaches, Sports Industry', icon: '🏆', description: 'Private transport avoiding crowds after games or during contract negotiations' },
-        { id: 'prefer-privacy', title: 'Prefer Privacy', subtitle: 'Keep details confidential', icon: '🔒', description: 'Professional service with complete discretion - no questions asked' }
+        { id: 'doctor-medical', title: 'Medical Professional', subtitle: 'Doctor, Consultant, Specialist', description: 'Example: Safe transport to late-night medical appointments or discrete patient consultations requiring confidentiality' },
+        { id: 'banking-finance', title: 'Banking & Finance', subtitle: 'Investment, Trading, Advisory', description: 'Example: Secure transport to confidential merger meetings or high-stakes financial negotiations with privacy protection' },
+        { id: 'tech-computer', title: 'Technology', subtitle: 'Software, IT, Innovation', description: 'Example: Protected travel to product launches or when carrying sensitive intellectual property requiring security measures' },
+        { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, Development, Sales', description: 'Example: Safe site visits to remote properties or protection during high-value viewings with potential security risks' },
+        { id: 'entertainment-media', title: 'Entertainment & Media', subtitle: 'Actors, Musicians, Performers', description: 'Example: Discreet arrival/departure from venues, avoiding paparazzi at private events or red carpet appearances' },
+        { id: 'lawyer-legal', title: 'Legal & Government', subtitle: 'Lawyers, Officials, Diplomats', description: 'Example: Protected travel to sensitive court proceedings or confidential government meetings requiring security clearance' },
+        { id: 'corporate-executive', title: 'Corporate Executive', subtitle: 'C-Suite, Directors, Management', description: 'Example: Secure transport during merger negotiations or sensitive board meetings requiring executive protection' },
+        { id: 'public-figure', title: 'Public Figure', subtitle: 'Politicians, Activists, Speakers', description: 'Example: Discreet backdoor escort from cameras or secure transport to controversial events with maximum privacy' },
+        { id: 'sports-athletics', title: 'Sports & Athletics', subtitle: 'Athletes, Coaches, Sports Industry', description: 'Example: Private transport avoiding crowds after games or during contract negotiations requiring confidentiality' },
+        { id: 'prefer-privacy', title: 'Prefer Privacy', subtitle: 'Keep details confidential', description: 'Example: Professional service with complete discretion - no questions asked, maximum privacy protection' }
       ]
 
       return (
         <div className="luxury-questionnaire-container">
           <Toaster position="top-center" />
-          
           {/* Header */}
           <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
             <div className="max-w-6xl mx-auto">
@@ -2618,12 +2617,14 @@ const App = () => {
                 ></div>
               </div>
               
-              <div className="text-center">
+              <div className="text-center space-y-1">
                 <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+                {questionnaireAnswers.workType.length > 0 && (
+                  <p className="text-xs text-gray-400 font-medium">{questionnaireAnswers.workType.length} selections made</p>
+                )}
               </div>
             </div>
           </div>
-
           {/* Content */}
           <div className="luxury-questionnaire-content">
             <div className="max-w-6xl mx-auto">
@@ -2646,10 +2647,7 @@ const App = () => {
                       <div className="luxury-checkmark"></div>
                       
                       <div className="space-y-3 pt-2">
-                        <div className="text-center">
-                          <div className="text-4xl mb-2">{option.icon}</div>
-                        </div>
-                        <div className="text-center">
+                        <div className="text-left">
                           <h3 className="text-lg font-bold text-gray-900 mb-1">{option.title}</h3>
                           <p className="text-sm text-gray-600 font-medium mb-2">{option.subtitle}</p>
                           <p className="text-xs text-gray-500 leading-relaxed">{option.description}</p>
@@ -2660,17 +2658,8 @@ const App = () => {
                 })}
               </div>
               
-              <div className="mt-8 text-center">
-                <div className="inline-flex items-center px-6 py-3 bg-gray-50 rounded-full">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  <p className="text-sm text-gray-600 font-medium">
-                    Select all that apply • Your choices help us understand your security needs
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
-
           {/* Bottom Actions */}
           <div className="luxury-cta-container">
             <div className="luxury-cta-buttons">
@@ -2678,39 +2667,32 @@ const App = () => {
                 variant="outline" 
                 onClick={handleSaveAndExit}
                 className="luxury-cta-save px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
-              >
-                Save & Exit
-              </Button>
+              >Save & Exit</Button>
               
               <div className="luxury-cta-continue">
-                <div className="flex items-center space-x-3 flex-1">
-                  <Button 
-                    onClick={handleNextStep}
-                    disabled={questionnaireAnswers.workType.length === 0}
-                    className="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-black font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ background: questionnaireAnswers.workType.length > 0 ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
-                  >
-                    Continue Assessment
-                  </Button>
-                  <span className="text-sm text-gray-500 ml-2">
-                    {questionnaireAnswers.workType.length} selected
-                  </span>
-                </div>
+                <Button 
+                  onClick={handleNextStep}
+                  disabled={questionnaireAnswers.workType.length === 0}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-black font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ background: questionnaireAnswers.workType.length > 0 ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
+                >
+                  Continue
+                </Button>
               </div>
             </div>
           </div>
         </div>
-      )
+      );
     }
 
     // Step 1: Travel Frequency
     if (questionnaireStep === 1) {
       const frequencyOptions = [
-        { id: 'sometimes', title: 'Occasional', subtitle: 'Special events only', icon: '🗓️', frequency: '1-3 times/month', description: 'Important meetings, special events, airport transfers' },
-        { id: 'weekly', title: 'Regular', subtitle: 'Weekly commitments', icon: '📅', frequency: '1-2 times/week', description: 'Weekly client meetings, consistent appointments' },
-        { id: 'daily', title: 'Frequent', subtitle: 'Daily transport needs', icon: '🚗', frequency: '4-6 days/week', description: 'Daily office commute, regular work schedule' },
-        { id: 'multiple', title: 'Intensive', subtitle: 'Multiple daily trips', icon: '⚡', frequency: '2+ trips/day', description: 'Back-to-back meetings, complex scheduling' },
-        { id: 'prefer-not-disclose', title: 'Prefer Not to Disclose', subtitle: 'Keep frequency private', icon: '🔒', frequency: 'Confidential', description: 'Professional service with discretion' }
+        { id: 'sometimes', title: 'Occasional', subtitle: 'Special events only', frequency: '1-3 times/month', description: 'Example: Important meetings, special events, or airport transfers for occasional business needs' },
+        { id: 'weekly', title: 'Regular', subtitle: 'Weekly commitments', frequency: '1-2 times/week', description: 'Example: Weekly client meetings, consistent appointments, or regular business commitments requiring security' },
+        { id: 'daily', title: 'Frequent', subtitle: 'Daily transport needs', frequency: '4-6 days/week', description: 'Example: Daily office commute, regular work schedule, or consistent professional transportation requirements' },
+        { id: 'multiple', title: 'Intensive', subtitle: 'Multiple daily trips', frequency: '2+ trips/day', description: 'Example: Back-to-back meetings, complex scheduling, or high-frequency executive transportation needs' },
+        { id: 'prefer-not-disclose', title: 'Prefer Not to Disclose', subtitle: 'Keep frequency private', frequency: 'Confidential', description: 'Example: Professional service with discretion - flexible scheduling without disclosing specific requirements' }
       ]
 
       return (
@@ -2759,11 +2741,7 @@ const App = () => {
                       <div className="luxury-checkmark"></div>
                       
                       <div className="h-full flex flex-col justify-center space-y-4">
-                        <div className="text-center">
-                          <div className="text-5xl mb-3">{option.icon}</div>
-                        </div>
-                        
-                        <div className="text-center space-y-3">
+                        <div className="text-left space-y-3">
                           <div>
                             <h3 className="text-xl font-bold text-gray-900 mb-1">{option.title}</h3>
                             <p className="text-sm text-gray-600 font-medium">{option.subtitle}</p>
@@ -2773,7 +2751,7 @@ const App = () => {
                             <p className="text-sm font-semibold text-gray-700">{option.frequency}</p>
                           </div>
                           
-                          <p className="text-xs text-gray-500 leading-relaxed px-2">{option.description}</p>
+                          <p className="text-xs text-gray-500 leading-relaxed">{option.description}</p>
                         </div>
                       </div>
                     </div>
@@ -2796,6 +2774,13 @@ const App = () => {
           <div className="luxury-cta-container">
             <div className="luxury-cta-buttons">
               <Button 
+                variant="outline"
+                onClick={handlePrevStep}
+                className="px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
+              >
+                Back
+              </Button>
+              <Button 
                 className="luxury-cta-save"
                 variant="outline"
                 onClick={handleSaveAndExit}
@@ -2808,7 +2793,7 @@ const App = () => {
                 disabled={!questionnaireAnswers.travelFrequency}
                 style={{ background: questionnaireAnswers.travelFrequency ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue Assessment
+                Continue
               </Button>
             </div>
           </div>
@@ -2823,27 +2808,24 @@ const App = () => {
           id: 'discrete', 
           title: 'Discrete Protection', 
           subtitle: 'Subtle & Unnoticed', 
-          icon: '🔒',
           level: 'Essential Protection',
-          description: 'Security maintains distance, civilian vehicles, minimal visibility',
-          features: ['30+ feet distance', 'Civilian vehicles', 'Emergency response', 'Privacy focused']
+          description: 'Example: Security maintains distance, civilian vehicles, minimal visibility for business executives requiring subtle protection',
+          features: ['30+ feet distance', 'Civilian vehicles', 'Privacy focused', 'Professional discretion']
         },
         { 
           id: 'professional', 
           title: 'Professional Service', 
           subtitle: 'Business Appropriate', 
-          icon: '🛡️',
           level: 'Premium Security',
-          description: 'Suited agents, marked vehicles, professional presence',
+          description: 'Example: Suited agents, marked vehicles, professional presence for corporate meetings or high-profile business events',
           features: ['Suited security', 'Marked vehicles', 'Business appropriate', 'Visible presence']
         },
         { 
           id: 'premium', 
           title: 'Premium Protection', 
           subtitle: 'Luxury Experience', 
-          icon: '👑',
           level: 'Ultra-Luxury Service',
-          description: 'Multiple agents, luxury transport, comprehensive coverage',
+          description: 'Example: Multiple agents, luxury transport, comprehensive coverage for VIP events or high-risk celebrity appearances',
           features: ['Multiple agents', 'Luxury vehicles', 'Full coverage', 'VIP treatment'],
           popular: true
         },
@@ -2851,9 +2833,8 @@ const App = () => {
           id: 'prefer-not-specify', 
           title: 'Prefer Not to Specify', 
           subtitle: 'Keep preferences private', 
-          icon: '🔒',
           level: 'Confidential Service',
-          description: 'Tailored service based on your specific requirements',
+          description: 'Example: Tailored service based on your specific requirements with private consultation and flexible security approach',
           features: ['Custom assessment', 'Private consultation', 'Flexible approach', 'Full discretion']
         }
       ]
@@ -2909,8 +2890,7 @@ const App = () => {
                       <div className="luxury-checkmark"></div>
                       
                       <div className="h-full flex flex-col justify-between space-y-4 pt-2">
-                        <div className="text-center space-y-3">
-                          <div className="text-4xl mb-2">{option.icon}</div>
+                        <div className="text-left space-y-3">
                           <div>
                             <div className="inline-block px-3 py-1 bg-gray-100 rounded-full mb-2">
                               <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{option.level}</span>
@@ -2925,7 +2905,7 @@ const App = () => {
                         </div>
                         
                         <div className="space-y-3">
-                          <p className="text-xs text-gray-500 leading-relaxed text-center">{option.description}</p>
+                          <p className="text-xs text-gray-500 leading-relaxed text-left">{option.description}</p>
                           
                           <div className="space-y-2">
                             {option.features.map((feature, index) => (
@@ -2957,6 +2937,13 @@ const App = () => {
           <div className="luxury-cta-container">
             <div className="luxury-cta-buttons">
               <Button 
+                variant="outline"
+                onClick={handlePrevStep}
+                className="px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
+              >
+                Back
+              </Button>
+              <Button 
                 className="luxury-cta-save"
                 variant="outline"
                 onClick={handleSaveAndExit}
@@ -2969,7 +2956,7 @@ const App = () => {
                 disabled={!questionnaireAnswers.securityStyle}
                 style={{ background: questionnaireAnswers.securityStyle ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue Assessment
+                Continue
               </Button>
             </div>
           </div>
@@ -2980,7 +2967,7 @@ const App = () => {
     // Step 3: Comfort Level
     if (questionnaireStep === 3) {
       const comfortLevels = [
-        { value: 1, label: 'Minimal', title: 'Minimal Presence', description: 'Nearly invisible security, emergency-only intervention. Maximum privacy and normalcy.' },
+        { value: 1, label: 'Minimal', title: 'Minimal Presence', description: 'Nearly invisible security, discrete monitoring only. Maximum privacy and normalcy.' },
         { value: 2, label: 'Subtle', title: 'Subtle Approach', description: 'Professional but unobtrusive presence. Felt but not obvious, balanced discretion.' },
         { value: 3, label: 'Balanced', title: 'Balanced Visibility', description: 'Clear professional presence providing reassurance while remaining approachable.' },
         { value: 4, label: 'Visible', title: 'Visible Security', description: 'Obvious professional presence acting as deterrent with comprehensive protection.' },
@@ -3108,6 +3095,13 @@ const App = () => {
           <div className="luxury-cta-container">
             <div className="luxury-cta-buttons">
               <Button 
+                variant="outline"
+                onClick={handlePrevStep}
+                className="px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
+              >
+                Back
+              </Button>
+              <Button 
                 className="luxury-cta-save"
                 variant="outline"
                 onClick={handleSaveAndExit}
@@ -3120,7 +3114,7 @@ const App = () => {
                 disabled={!questionnaireAnswers.comfortLevel}
                 style={{ background: questionnaireAnswers.comfortLevel ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue Assessment
+                Continue
               </Button>
             </div>
           </div>
@@ -3226,6 +3220,13 @@ const App = () => {
           <div className="luxury-cta-container">
             <div className="luxury-cta-buttons">
               <Button 
+                variant="outline"
+                onClick={handlePrevStep}
+                className="px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
+              >
+                Back
+              </Button>
+              <Button 
                 className="luxury-cta-save"
                 variant="outline"
                 onClick={handleSaveAndExit}
@@ -3238,7 +3239,7 @@ const App = () => {
                 disabled={questionnaireAnswers.locations.length === 0}
                 style={{ background: questionnaireAnswers.locations.length > 0 ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue Assessment
+                Continue
               </Button>
             </div>
           </div>
@@ -3362,6 +3363,13 @@ const App = () => {
           <div className="luxury-cta-container">
             <div className="luxury-cta-buttons">
               <Button 
+                variant="outline"
+                onClick={handlePrevStep}
+                className="px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
+              >
+                Back
+              </Button>
+              <Button 
                 className="luxury-cta-save"
                 variant="outline"
                 onClick={handleSaveAndExit}
@@ -3378,7 +3386,7 @@ const App = () => {
                     : '' 
                 }}
               >
-                Continue Assessment
+                Continue
               </Button>
             </div>
           </div>
@@ -3534,6 +3542,13 @@ const App = () => {
           <div className="luxury-cta-container">
             <div className="luxury-cta-buttons">
               <Button 
+                variant="outline"
+                onClick={handlePrevStep}
+                className="px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
+              >
+                Back
+              </Button>
+              <Button 
                 className="luxury-cta-save"
                 variant="outline"
                 onClick={handleSaveAndExit}
@@ -3545,7 +3560,7 @@ const App = () => {
                 onClick={handleNextStep}
                 style={{ background: 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' }}
               >
-                Complete Assessment ✓
+                Complete Assessment
               </Button>
             </div>
           </div>
@@ -3727,7 +3742,6 @@ const App = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col no-overflow">
         <Toaster position="top-center" />
-        
         {/* Header */}
         <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-3 sticky top-0 z-10 no-overflow">
           <div className="content-wrapper">
@@ -3752,7 +3766,6 @@ const App = () => {
             </div>
           </div>
         </header>
-
         <div className="flex-1 professional-spacing space-y-4 pb-32 no-overflow">
           <div className="content-wrapper space-y-4">
             {/* Google Maps Section */}
@@ -4210,23 +4223,21 @@ const App = () => {
               </div>
             ) : (
               // Smart button text based on current state
-              !selectedPickupLocation && !selectedDestinationLocation ? 
-                'Enter Locations' :
-                !selectedPickupLocation ?
-                'Enter Pickup Location' :
-                !selectedDestinationLocation ?
-                'Enter Destination' :
-                !selectedService ? 
-                'Select Service' :
-                paymentMethods.length === 0 && !isApplePayAvailable && !isGooglePayAvailable ?
-                'Add Payment Method' :
-                `Book ${armoraServices.find(s => s.id === selectedService)?.name?.replace('Armora ', '') || 'Now'}`
+              (!selectedPickupLocation && !selectedDestinationLocation ? 'Enter Locations' : !selectedPickupLocation ?
+              'Enter Pickup Location' :
+              !selectedDestinationLocation ?
+              'Enter Destination' :
+              !selectedService ? 
+              'Select Service' :
+              paymentMethods.length === 0 && !isApplePayAvailable && !isGooglePayAvailable ?
+              'Add Payment Method' :
+              `Book ${armoraServices.find(s => s.id === selectedService)?.name?.replace('Armora ', '') || 'Now'}`)
             )}
           </Button>
-          )}
-          </div>
         </div>
-
+        </div>
+        )}
+        
         {/* Bottom Navigation - Always Visible */}
         <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
           <div className="bottom-nav-container">
@@ -4283,11 +4294,10 @@ const App = () => {
             </div>
           </div>
         </div>
-
         <PaymentModal />
         <ReceiptModal />
       </div>
-    )
+    );
   }
 
   // Payment Methods Management View
@@ -5095,17 +5105,7 @@ const App = () => {
           )}
 
           {/* Trip Actions */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button 
-              variant="outline"
-              onClick={() => {
-                toast.info("Emergency features coming soon")
-              }}
-              className="h-12 flex items-center gap-2 border-red-200 text-red-600 hover:bg-red-50"
-            >
-              <Warning size={16} />
-              Emergency
-            </Button>
+          <div className="w-full">
             <Button 
               onClick={() => {
                 if (tripStatus === 'arrived') {
@@ -5114,7 +5114,7 @@ const App = () => {
                   toast.info("Trip will complete when you reach your destination")
                 }
               }}
-              className="h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+              className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
               disabled={tripStatus !== 'arrived'}
             >
               {tripStatus === 'arrived' ? 'Complete Trip' : 'In Progress'}
@@ -5703,8 +5703,8 @@ const App = () => {
                       <Phone size={20} className="text-amber-600" />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm">Emergency Contacts</p>
-                      <p className="text-xs text-muted-foreground">Optional safety feature</p>
+                      <p className="font-semibold text-sm">Safety Contacts</p>
+                      <p className="text-xs text-muted-foreground">Optional security feature</p>
                     </div>
                   </div>
                   <NavigationArrow size={16} className="text-muted-foreground" />
