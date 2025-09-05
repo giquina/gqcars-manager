@@ -34,6 +34,261 @@ import {
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
+// Type declarations for Google Maps
+declare global {
+  interface Window {
+    google?: {
+      maps: any
+    }
+    googleMapsLoaded?: boolean
+  }
+}
+
+// Google Maps Component
+const GoogleMapComponent = ({ 
+  onLocationSelect, 
+  selectedLocation, 
+  currentLocation 
+}: {
+  onLocationSelect: (location: { lat: number; lng: number; address: string }) => void
+  selectedLocation?: { lat: number; lng: number }
+  currentLocation?: { lat: number; lng: number }
+}) => {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const googleMapRef = useRef<any>(null)
+  const markerRef = useRef<any>(null)
+  const currentLocationMarkerRef = useRef<any>(null)
+  const [isMapLoaded, setIsMapLoaded] = useState(false)
+  const geocoderRef = useRef<any>(null)
+
+  // Initialize map when Google Maps API is ready
+  useEffect(() => {
+    const initializeMap = () => {
+      if (!mapRef.current || !window.google?.maps) return
+
+      // Default to London center
+      const defaultCenter = { lat: 51.5074, lng: -0.1278 }
+      
+      const map = new window.google.maps.Map(mapRef.current, {
+        center: currentLocation || defaultCenter,
+        zoom: currentLocation ? 16 : 12,
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+          },
+          {
+            featureType: "transit",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+          }
+        ],
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControlOptions: {
+          position: window.google.maps.ControlPosition.RIGHT_TOP
+        }
+      })
+
+      googleMapRef.current = map
+      geocoderRef.current = new window.google.maps.Geocoder()
+
+      // Add current location marker if available
+      if (currentLocation) {
+        currentLocationMarkerRef.current = new window.google.maps.Marker({
+          position: currentLocation,
+          map: map,
+          icon: {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="8" fill="#3B82F6" stroke="white" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" fill="white"/>
+              </svg>
+            `),
+            scaledSize: new window.google.maps.Size(24, 24)
+          },
+          title: "Your current location"
+        })
+      }
+
+      // Add click listener
+      map.addListener('click', (event: any) => {
+        if (event.latLng) {
+          const location = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+          }
+          
+          // Add/update pickup marker
+          if (markerRef.current) {
+            markerRef.current.setMap(null)
+          }
+          
+          markerRef.current = new window.google.maps.Marker({
+            position: location,
+            map: map,
+            icon: {
+              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EF4444" stroke="white" stroke-width="1"/>
+                  <circle cx="12" cy="9" r="2.5" fill="white"/>
+                </svg>
+              `),
+              scaledSize: new window.google.maps.Size(32, 32),
+              anchor: new window.google.maps.Point(16, 32)
+            },
+            title: "Pickup location"
+          })
+
+          // Reverse geocode to get address
+          if (geocoderRef.current) {
+            geocoderRef.current.geocode(
+              { location: location },
+              (results: any, status: string) => {
+                if (status === 'OK' && results && results[0]) {
+                  const address = results[0].formatted_address
+                  onLocationSelect({
+                    lat: location.lat,
+                    lng: location.lng,
+                    address: address
+                  })
+                  toast.success("Pickup location selected", {
+                    description: address
+                  })
+                } else {
+                  onLocationSelect({
+                    lat: location.lat,
+                    lng: location.lng,
+                    address: `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`
+                  })
+                }
+              }
+            )
+          }
+        }
+      })
+
+      setIsMapLoaded(true)
+    }
+
+    // Check if Google Maps is already loaded
+    if (window.google?.maps) {
+      initializeMap()
+    } else {
+      // Listen for Google Maps load event
+      const handleMapsLoad = () => {
+        initializeMap()
+      }
+      window.addEventListener('google-maps-loaded', handleMapsLoad)
+      
+      return () => {
+        window.removeEventListener('google-maps-loaded', handleMapsLoad)
+      }
+    }
+  }, [currentLocation, onLocationSelect])
+
+  // Get user's current location
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by this browser")
+      return
+    }
+
+    toast.loading("Getting your location...")
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        }
+        
+        if (googleMapRef.current) {
+          googleMapRef.current.setCenter(location)
+          googleMapRef.current.setZoom(16)
+          
+          // Add current location marker
+          if (currentLocationMarkerRef.current) {
+            currentLocationMarkerRef.current.setMap(null)
+          }
+          
+          currentLocationMarkerRef.current = new window.google.maps.Marker({
+            position: location,
+            map: googleMapRef.current,
+            icon: {
+              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="8" fill="#3B82F6" stroke="white" stroke-width="2"/>
+                  <circle cx="12" cy="12" r="3" fill="white"/>
+                </svg>
+              `),
+              scaledSize: new window.google.maps.Size(24, 24)
+            },
+            title: "Your current location"
+          })
+        }
+        
+        toast.success("Location found!")
+      },
+      (error) => {
+        console.error("Error getting location:", error)
+        toast.error("Could not get your location")
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 300000
+      }
+    )
+  }
+
+  return (
+    <div className="relative h-48 bg-slate-100 rounded-lg overflow-hidden">
+      <div ref={mapRef} className="w-full h-full" />
+      
+      {!isMapLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 bg-blue-500 rounded-full mx-auto flex items-center justify-center animate-pulse">
+              <Crosshair size={24} className="text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-700">Loading map...</p>
+              <p className="text-xs text-slate-500">Tap map to set pickup point</p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Map Controls */}
+      <div className="absolute top-3 right-3 space-y-2">
+        <Button 
+          size="sm" 
+          variant="secondary" 
+          className="w-8 h-8 p-0 bg-white/95 hover:bg-white shadow-md"
+          onClick={getCurrentLocation}
+          title="Center on current location"
+        >
+          <Crosshair size={14} />
+        </Button>
+      </div>
+      
+      {/* Status Indicator */}
+      {isMapLoaded && (
+        <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-xs font-medium text-slate-700">
+              {selectedLocation ? 'Pickup selected' : 'Tap to select pickup'}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ARMORA Premium Branded Security Transport Services with detailed information
 const armoraServices = [
   {
@@ -253,6 +508,10 @@ function App() {
   const [recentTrips, setRecentTrips] = useKV("recent-trips", [] as any[])
   const [paymentReservations, setPaymentReservations] = useKV("payment-reservations", [] as any[])
   
+  // Map and location state
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [selectedPickupLocation, setSelectedPickupLocation] = useState<{ lat: number; lng: number; address: string } | null>(null)
+  
   // Driver tracking and trip states
   const [currentTrip, setCurrentTrip] = useKV("current-trip", null as any)
   const [assignedDriver, setAssignedDriver] = useState<any>(null)
@@ -278,6 +537,43 @@ function App() {
       setCurrentView('welcome')
     }
   }, [hasCompletedOnboarding])
+
+  // Get user's current location on app start
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+        },
+        (error) => {
+          console.log("Could not get current location:", error)
+          // Default to London center
+          setCurrentLocation({
+            lat: 51.5074,
+            lng: -0.1278
+          })
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      )
+    }
+  }, [])
+
+  // Handle pickup location selection from map
+  const handleLocationSelect = useCallback((location: { lat: number; lng: number; address: string }) => {
+    setSelectedPickupLocation(location)
+    setBookingForm(prev => ({
+      ...prev,
+      pickup: location.address,
+      pickupCoords: { lat: location.lat, lng: location.lng }
+    }))
+  }, [])
 
   // Distance calculation helper
   const calculateDistance = useCallback((point1: any, point2: any) => {
@@ -417,6 +713,23 @@ function App() {
     }
     return 0
   }, [bookingForm.pickupCoords, bookingForm.destinationCoords, calculateDistance])
+
+  // Update destination coordinates when manually entered (simple geocoding simulation)
+  const handleDestinationChange = useCallback((destination: string) => {
+    setBookingForm(prev => ({ ...prev, destination }))
+    
+    // If user enters a destination, we could add geocoding here
+    // For now, we'll just clear destination coords if it doesn't match a known location
+    if (destination === "Heathrow Airport") {
+      setBookingForm(prev => ({ 
+        ...prev, 
+        destinationCoords: { lat: 51.4700, lng: -0.4543 } // Heathrow coordinates
+      }))
+    } else {
+      // Clear destination coords for manual entry - in a real app, you'd geocode this
+      setBookingForm(prev => ({ ...prev, destinationCoords: null }))
+    }
+  }, [])
 
   // Welcome Screen
   if (currentView === 'welcome') {
@@ -1328,43 +1641,11 @@ function App() {
         <div className="flex-1 p-4 space-y-4 max-w-md mx-auto pb-24">
           {/* Google Maps Section */}
           <Card className="border-0 shadow-sm bg-card overflow-hidden">
-            <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 relative">
-              {/* Map Placeholder - Google Maps will replace this */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center space-y-2">
-                  <div className="w-12 h-12 bg-blue-500 rounded-full mx-auto flex items-center justify-center">
-                    <Crosshair size={24} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-700">Finding your location...</p>
-                    <p className="text-xs text-slate-500">Tap map to set pickup point</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Current Location Indicator */}
-              <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-medium text-slate-700">Current Location</span>
-                </div>
-              </div>
-              
-              {/* Map Controls */}
-              <div className="absolute top-3 right-3 space-y-2">
-                <Button 
-                  size="sm" 
-                  variant="secondary" 
-                  className="w-8 h-8 p-0 bg-white/95 hover:bg-white"
-                  onClick={() => {
-                    // Center map on current location
-                    toast.success("Centering on your location...")
-                  }}
-                >
-                  <Crosshair size={14} />
-                </Button>
-              </div>
-            </div>
+            <GoogleMapComponent
+              currentLocation={currentLocation}
+              selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
+              onLocationSelect={handleLocationSelect}
+            />
           </Card>
 
           {/* Location Input */}
@@ -1374,21 +1655,27 @@ function App() {
                 <div className="relative">
                   <Input
                     value={bookingForm.pickup}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, pickup: e.target.value }))}
+                    onChange={(e) => {
+                      setBookingForm(prev => ({ ...prev, pickup: e.target.value }))
+                      // Clear map selection if user types manually
+                      if (e.target.value !== selectedPickupLocation?.address) {
+                        setSelectedPickupLocation(null)
+                      }
+                    }}
                     placeholder="Pickup location (or tap map above)"
                     className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
                   />
-                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
                 </div>
                 
                 <div className="relative">
                   <Input
                     value={bookingForm.destination}
-                    onChange={(e) => setBookingForm(prev => ({ ...prev, destination: e.target.value }))}
+                    onChange={(e) => handleDestinationChange(e.target.value)}
                     placeholder="Where to?"
                     className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
                   />
-                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
+                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500 rounded-full"></div>
                 </div>
               </div>
               
@@ -1399,8 +1686,40 @@ function App() {
                   variant="outline" 
                   className="text-xs h-7 px-2"
                   onClick={() => {
-                    setBookingForm(prev => ({ ...prev, pickup: "Current location" }))
-                    toast.success("Using current location as pickup")
+                    if (currentLocation) {
+                      // Use reverse geocoding to get address for current location
+                      if (window.google?.maps) {
+                        const geocoder = new window.google.maps.Geocoder()
+                        geocoder.geocode(
+                          { location: currentLocation },
+                          (results, status) => {
+                            if (status === 'OK' && results && results[0]) {
+                              const address = results[0].formatted_address
+                              setBookingForm(prev => ({ 
+                                ...prev, 
+                                pickup: address,
+                                pickupCoords: currentLocation 
+                              }))
+                              setSelectedPickupLocation({
+                                lat: currentLocation.lat,
+                                lng: currentLocation.lng,
+                                address: address
+                              })
+                              toast.success("Using current location as pickup")
+                            }
+                          }
+                        )
+                      } else {
+                        setBookingForm(prev => ({ 
+                          ...prev, 
+                          pickup: "Current location",
+                          pickupCoords: currentLocation 
+                        }))
+                        toast.success("Using current location as pickup")
+                      }
+                    } else {
+                      toast.error("Current location not available")
+                    }
                   }}
                 >
                   <Crosshair size={12} className="mr-1" />
@@ -1411,7 +1730,7 @@ function App() {
                   variant="outline" 
                   className="text-xs h-7 px-2"
                   onClick={() => {
-                    setBookingForm(prev => ({ ...prev, destination: "Heathrow Airport" }))
+                    handleDestinationChange("Heathrow Airport")
                   }}
                 >
                   ✈️ Airport
