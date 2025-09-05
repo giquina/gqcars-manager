@@ -1436,8 +1436,8 @@ function App() {
                               </CardContent>
                             </Card>
 
-                            {/* CTA Buttons - Fixed Closer to Bottom Navigation */}
-                            <div className="fixed bottom-16 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4 z-40">
+                            {/* CTA Buttons - Directly Above Bottom Navigation */}
+                            <div className="fixed bottom-12 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-3 z-40">
                               <div className="max-w-md mx-auto flex gap-3">
                                 <Button 
                                   variant="outline" 
@@ -1471,7 +1471,13 @@ function App() {
                                   }}
                                   className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
                                 >
-                                  Select {service.name}
+                                  Select {
+                                    service.id === 'shadow-escort' ? 'Shadow' :
+                                    service.id === 'essential' ? 'Essential' :
+                                    service.id === 'executive' ? 'Executive' :
+                                    service.id === 'group' ? 'Group' :
+                                    'Service'
+                                  }
                                 </Button>
                               </div>
                             </div>
