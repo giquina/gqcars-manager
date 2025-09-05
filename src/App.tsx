@@ -407,34 +407,31 @@ const armoraServices = [
     eta: '3-8 min',
     icon: Car,
     capacity: '1-3 passengers',
-    vehicle: 'Professional vehicle, discrete service',
+    vehicle: 'Professional vehicle & driver',
+    features: ['Professional vehicle & driver', 'Discrete security service', 'Quick 3-8 min response'],
+    minPrice: '£75 minimum',
+    priceValue: 75,
     popular: true,
     recommended: true,
+    colorScheme: {
+      primary: 'blue',
+      accent: '#2196F3',
+      badgeFrom: 'from-blue-400',
+      badgeTo: 'to-blue-500',
+      borderColor: 'border-blue-200',
+      bgColor: 'bg-blue-50/30'
+    },
+    serviceIcon: '🚗',
     detailedInfo: {
-      whoItsFor: [
-        'Business professionals with regular transport needs',
-        'Executives attending daily meetings and appointments', 
-        'Professionals requiring reliable, secure transport',
-        'Anyone wanting professional service without premium cost'
+      perfectFor: [
+        'Daily business transport',
+        'Cost-conscious professionals',
+        'Regular security needs'
       ],
-      whyPeopleChoose: [
-        'Most cost-effective way to get SIA-licensed security',
-        'Perfect balance of professionalism and affordability',
-        'Reliable service with trained security professionals',
-        'Discrete protection that doesn\'t draw attention'
-      ],
-      whatYouGet: [
-        'SIA-licensed professional security driver',
-        'Unmarked vehicle for discrete transport',
-        'Basic security protocols and route planning',
-        'Professional communication and service',
-        'Emergency response capabilities'
-      ],
-      idealSituations: [
-        'Daily commute to office or business meetings',
-        'Airport transfers and travel connections',
-        'Regular business appointments and client visits',
-        'Shopping trips and personal errands requiring security'
+      youGet: [
+        'Professional driver & vehicle',
+        'Discrete security protocols',
+        'Reliable daily service'
       ]
     }
   },
@@ -447,33 +444,30 @@ const armoraServices = [
     eta: '5-12 min',
     icon: NavigationArrow,
     capacity: '1-4 passengers',
-    vehicle: 'Your vehicle + discrete security escort',
+    vehicle: 'Use your own vehicle',
+    features: ['Use your own vehicle', 'Discrete security escort', 'Flexible 5-12 min response'],
+    minPrice: '£100 minimum',
+    priceValue: 100,
     new: true,
+    colorScheme: {
+      primary: 'green',
+      accent: '#4CAF50',
+      badgeFrom: 'from-green-400',
+      badgeTo: 'to-green-500',
+      borderColor: 'border-green-200',
+      bgColor: 'bg-green-50/30'
+    },
+    serviceIcon: '🛡️',
     detailedInfo: {
-      whoItsFor: [
-        'Luxury car owners who want to drive themselves',
-        'High-profile individuals who value independence',
-        'Business executives with expensive personal vehicles',
-        'Clients who want security backup without giving up control'
+      perfectFor: [
+        'Your own vehicle preference',
+        'Flexible security backup',
+        'Independent travel style'
       ],
-      whyPeopleChoose: [
-        'Unique service - drive your own luxury vehicle safely',
-        'Maintain personal freedom while having security backup',
-        'Perfect for luxury shopping and social events',
-        'Revolutionary concept not available elsewhere'
-      ],
-      whatYouGet: [
-        'Professional security vehicle following 50-200m behind',
-        'Real-time GPS coordination between vehicles',
-        'Immediate response if any incidents occur',
-        'Route coordination and traffic management',
-        'Emergency backup and assistance'
-      ],
-      idealSituations: [
-        'Luxury shopping in Mayfair and Knightsbridge',
-        'Business meetings where you want to arrive in your own car',
-        'Social events and evening entertainment',
-        'Any situation where you want independence with security'
+      youGet: [
+        'Escort follows your car',
+        'Emergency response backup',
+        'Complete travel freedom'
       ]
     }
   },
@@ -486,32 +480,29 @@ const armoraServices = [
     eta: '10-20 min',
     icon: Star,
     capacity: '1-4 passengers',
-    vehicle: 'Rolls-Royce, Bentley premium fleet',
+    vehicle: 'Luxury Rolls-Royce, Bentley fleet',
+    features: ['Luxury Rolls-Royce, Bentley fleet', 'Multiple security officers', 'Premium 10-20 min service'],
+    minPrice: '£200 minimum',
+    priceValue: 200,
+    colorScheme: {
+      primary: 'gold',
+      accent: '#FFD700',
+      badgeFrom: 'from-amber-400',
+      badgeTo: 'to-amber-500',
+      borderColor: 'border-amber-200',
+      bgColor: 'bg-amber-50/30'
+    },
+    serviceIcon: '⭐',
     detailedInfo: {
-      whoItsFor: [
-        'High-profile executives and VIPs',
-        'Celebrities and public figures',
-        'Government officials and diplomats',
-        'Ultra-high-net-worth individuals'
+      perfectFor: [
+        'High-profile executives',
+        'VIP events & meetings',
+        'Maximum security requirements'
       ],
-      whyPeopleChoose: [
-        'Maximum security with luxury transport',
-        'Multiple security personnel for comprehensive protection',
-        'Ultra-luxury vehicles (Rolls-Royce, Bentley)',
-        'Highest level of professional service available'
-      ],
-      whatYouGet: [
-        'Multiple SIA-licensed close protection officers',
-        'Ultra-luxury vehicle fleet (Rolls-Royce, Bentley)',
-        'Comprehensive security planning and risk assessment',
-        'Advanced security protocols and procedures',
-        'Concierge-level service and attention to detail'
-      ],
-      idealSituations: [
-        'High-profile business events and conferences',
-        'VIP social events and galas',
-        'Government and diplomatic functions',
-        'Any situation requiring maximum security and luxury'
+      youGet: [
+        'Luxury Rolls-Royce/Bentley fleet',
+        'Multiple security officers',
+        'Premium protection service'
       ]
     }
   },
@@ -525,31 +516,28 @@ const armoraServices = [
     icon: Users,
     capacity: '1-6 passengers',
     vehicle: 'Mercedes E-Class, Range Rover',
+    features: ['Mercedes E-Class, Range Rover', 'Group security planning', 'Extended 15-30 min preparation'],
+    minPrice: '£250 minimum',
+    priceValue: 250,
+    colorScheme: {
+      primary: 'purple',
+      accent: '#9C27B0',
+      badgeFrom: 'from-purple-400',
+      badgeTo: 'to-purple-500',
+      borderColor: 'border-purple-200',
+      bgColor: 'bg-purple-50/30'
+    },
+    serviceIcon: '👥',
     detailedInfo: {
-      whoItsFor: [
-        'Business teams and corporate groups',
-        'Families requiring group security transport',
-        'Executive teams attending events together',
-        'Corporate clients with multiple passengers'
+      perfectFor: [
+        'Business teams & families',
+        'Group events & travel',
+        'Multi-passenger security'
       ],
-      whyPeopleChoose: [
-        'Cost-effective security for multiple passengers',
-        'Specialized in group coordination and logistics',
-        'Professional vehicles suitable for team transport',
-        'Group security planning and management'
-      ],
-      whatYouGet: [
-        'Large capacity vehicles (Mercedes E-Class, Range Rover)',
-        'Group coordination and logistics management',
-        'Security planning for multiple passengers',
-        'Professional team transport service',
-        'Coordinated arrival and departure planning'
-      ],
-      idealSituations: [
-        'Corporate team meetings and conferences',
-        'Group airport transfers and travel',
-        'Family events requiring security transport',
-        'Business events with multiple executives'
+      youGet: [
+        'Mercedes/Range Rover vehicles',
+        'Group security coordination',
+        'Extended capacity service'
       ]
     }
   }
@@ -2468,109 +2456,95 @@ const App = () => {
 
 
 
-  // Combined Welcome & Security Assessment Screen
+  // Premium Welcome Landing Page
   if (currentView === 'welcome') {
+    // Professional Armora Logo Component
+    const ArmoraLogo = () => (
+      <div className="armora-logo-container">
+        <svg width="280" height="80" viewBox="0 0 280 80" className="armora-logo">
+          {/* Shield Background */}
+          <defs>
+            <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#1e293b" />
+              <stop offset="100%" stopColor="#0f172a" />
+            </linearGradient>
+            <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#d97706" />
+            </linearGradient>
+          </defs>
+          
+          {/* Shield Shape */}
+          <path 
+            d="M20 25 L35 15 L50 25 L50 45 C50 55 35 65 35 65 C35 65 20 55 20 45 Z" 
+            fill="url(#shieldGradient)" 
+            stroke="url(#accentGradient)" 
+            strokeWidth="2"
+          />
+          
+          {/* Shield Inner Design */}
+          <circle cx="35" cy="35" r="8" fill="url(#accentGradient)" />
+          <path 
+            d="M30 35 L33 38 L40 31" 
+            stroke="#1e293b" 
+            strokeWidth="2" 
+            fill="none" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          />
+          
+          {/* Company Name */}
+          <text x="70" y="35" className="logo-text-main">
+            ARMORA
+          </text>
+          <text x="70" y="52" className="logo-text-sub">
+            SECURITY TRANSPORT
+          </text>
+        </svg>
+      </div>
+    )
+
     return (
-      <div className="h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden no-scroll">
+      <div className="armora-welcome-page">
         <Toaster position="top-center" />
         
         {/* Background Elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-gradient-to-r from-amber-400/15 to-amber-600/15 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-gradient-to-r from-blue-400/10 to-indigo-600/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="welcome-background">
+          <div className="bg-accent-1" />
+          <div className="bg-accent-2" />
         </div>
         
-        <div className="max-w-sm mx-auto text-center space-y-6 animate-in fade-in duration-1000 relative z-10">
-          {/* Logo and Main Header */}
-          <div className="space-y-4">
-            <div className="relative">
-              <div className="w-20 h-20 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center shadow-2xl relative">
-                <Shield size={32} className="text-slate-900" weight="fill" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 rounded-full" />
-              </div>
-              <div className="absolute -inset-4 bg-gradient-to-r from-amber-400/20 to-amber-600/20 rounded-full blur-xl animate-pulse" />
-            </div>
-            
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 bg-clip-text">
-                Armora Cabs 24/7
-              </h1>
-              <h2 className="text-base text-amber-100/90 font-semibold tracking-wide">
-                Complete Your Security Assessment
-              </h2>
-              <p className="text-sm text-slate-300 max-w-xs mx-auto leading-relaxed">
-                Required to access your professional transport service
-              </p>
-            </div>
+        <div className="welcome-content-container">
+          {/* Professional Logo */}
+          <ArmoraLogo />
+          
+          {/* Social Proof */}
+          <div className="social-proof">
+            <h2 className="social-proof-number">6000+</h2>
+            <p className="social-proof-text">Secure Journeys Completed</p>
           </div>
-
-          {/* Trust Badges - Compact Three Column */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center space-y-1">
-                <div className="w-8 h-8 mx-auto bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 rounded-lg flex items-center justify-center border border-emerald-400/30">
-                  <Shield size={16} className="text-emerald-400" weight="bold" />
-                </div>
-                <p className="text-xs font-bold text-emerald-300">SIA Licensed</p>
-              </div>
-              
-              <div className="text-center space-y-1">
-                <div className="w-8 h-8 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-lg flex items-center justify-center border border-amber-400/30">
-                  <Users size={16} className="text-amber-400" weight="fill" />
-                </div>
-                <p className="text-xs font-bold text-amber-300">Professional Drivers</p>
-              </div>
-              
-              <div className="text-center space-y-1">
-                <div className="w-8 h-8 mx-auto bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-lg flex items-center justify-center border border-blue-400/30">
-                  <Star size={16} className="text-blue-400" weight="fill" />
-                </div>
-                <p className="text-xs font-bold text-blue-300">4.9★ Rating</p>
-              </div>
-            </div>
+          
+          {/* Value Proposition */}
+          <div className="value-proposition">
+            <h3 className="value-prop-title">2-Minute Security Assessment</h3>
+            <p className="value-prop-subtitle">Get matched with your protection level</p>
           </div>
-
-          {/* Benefits Section */}
-          <div className="space-y-2">
-            <div className="text-left space-y-2">
-              <div className="flex items-center gap-2 text-sm text-emerald-300">
-                <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" weight="fill" />
-                <span>Security-trained drivers</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-emerald-300">
-                <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" weight="fill" />
-                <span>Available 24/7</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-emerald-300">
-                <CheckCircle size={16} className="text-emerald-400 flex-shrink-0" weight="fill" />
-                <span>Trusted across London</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Action Button */}
-          <div className="space-y-3">
-            <Button 
-              onClick={() => {
-                setIsFirstLaunch(false)
-                setCurrentView('questionnaire')
-                setQuestionnaireStep(0)
-              }}
-              className="w-full h-12 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-slate-900 font-bold text-base rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105"
-            >
-              Complete Assessment
-            </Button>
-            
-            <p className="text-xs text-slate-400 font-medium">
-              Private & Secure - All information encrypted
-            </p>
-          </div>
-
-          {/* Bottom Trust Line */}
-          <div className="pt-3 border-t border-amber-400/20">
-            <p className="text-xs text-amber-300 font-bold">
-              Trusted by professionals across London
-            </p>
+          
+          {/* Main CTA */}
+          <Button 
+            onClick={() => {
+              setIsFirstLaunch(false)
+              setCurrentView('questionnaire')
+              setQuestionnaireStep(0)
+            }}
+            className="armora-cta-button"
+          >
+            Start Assessment
+          </Button>
+          
+          {/* Trust Statement */}
+          <div className="trust-statement">
+            <p>Encrypted & Private</p>
           </div>
         </div>
       </div>
@@ -2579,7 +2553,7 @@ const App = () => {
 
   // QUESTIONNAIRE FLOW
   if (currentView === 'questionnaire') {
-    const totalSteps = 6
+    const totalSteps = 7
     const progressPercentage = ((questionnaireStep + 1) / totalSteps) * 100
 
     const handleNextStep = () => {
@@ -2613,105 +2587,116 @@ const App = () => {
     // Step 0: Work Type Selection
     if (questionnaireStep === 0) {
       const workOptions = [
-        { id: 'business-leader', title: 'Business Leader', subtitle: 'CEO, manager, executive roles', description: 'Perfect for: Board meetings, investor presentations, strategic planning, executive meetings' },
-        { id: 'business-owner', title: 'Business Owner', subtitle: 'Own a company, startup founder', description: 'Perfect for: Investor meetings, client pitches, business development, partnership negotiations', popular: true },
-        { id: 'lawyer-legal', title: 'Lawyer/Legal', subtitle: 'Attorney, legal work, court cases', description: 'Perfect for: Court appearances, client consultations, sensitive legal meetings, law firm visits' },
-        { id: 'doctor-medical', title: 'Doctor/Medical', subtitle: 'Healthcare, medical professional', description: 'Perfect for: Hospital visits, medical conferences, patient consultations, emergency calls' },
-        { id: 'banking-finance', title: 'Banking/Finance', subtitle: 'Money, investments, financial services', description: 'Perfect for: Client portfolio meetings, investment presentations, financial consultations' },
-        { id: 'tech-computer', title: 'Tech/Computer', subtitle: 'Software, IT, technology work', description: 'Perfect for: Client demos, tech conferences, startup meetings, software presentations' },
-        { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, buying/selling homes/buildings', description: 'Perfect for: Property viewings, client meetings, market tours, real estate conferences' },
-        { id: 'entertainment', title: 'Entertainment', subtitle: 'Artists, musicians, celebrities, performers', description: 'Perfect for: Events, performances, media appearances, venue transport' },
-        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep work information private', description: 'We respect your privacy and will provide professional service regardless' }
+        { id: 'doctor-medical', title: 'Medical Professional', subtitle: 'Doctor, Consultant, Specialist', icon: '🩺', description: 'Safe transport to late-night emergency calls or high-profile patient consultations' },
+        { id: 'banking-finance', title: 'Banking & Finance', subtitle: 'Investment, Trading, Advisory', icon: '💼', description: 'Secure transport to confidential meetings or high-stakes financial negotiations' },
+        { id: 'tech-computer', title: 'Technology', subtitle: 'Software, IT, Innovation', icon: '💻', description: 'Protected travel to product launches or when carrying sensitive intellectual property' },
+        { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, Development, Sales', icon: '🏠', description: 'Safe site visits to remote properties or protection during high-value viewings' },
+        { id: 'entertainment-media', title: 'Entertainment & Media', subtitle: 'Actors, Musicians, Performers', icon: '🎭', description: 'Discreet arrival/departure from venues, avoiding paparazzi at private events' },
+        { id: 'lawyer-legal', title: 'Legal & Government', subtitle: 'Lawyers, Officials, Diplomats', icon: '⚖️', description: 'Protected travel to sensitive proceedings or confidential government meetings' },
+        { id: 'corporate-executive', title: 'Corporate Executive', subtitle: 'C-Suite, Directors, Management', icon: '👔', description: 'Secure transport during merger negotiations or sensitive business situations' },
+        { id: 'public-figure', title: 'Public Figure', subtitle: 'Politicians, Activists, Speakers', icon: '🎤', description: 'Discreet backdoor escort from cameras or secure transport to controversial events' },
+        { id: 'sports-athletics', title: 'Sports & Athletics', subtitle: 'Athletes, Coaches, Sports Industry', icon: '🏆', description: 'Private transport avoiding crowds after games or during contract negotiations' },
+        { id: 'prefer-privacy', title: 'Prefer Privacy', subtitle: 'Keep details confidential', icon: '🔒', description: 'Professional service with complete discretion - no questions asked' }
       ]
 
       return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+        <div className="luxury-questionnaire-container">
           <Toaster position="top-center" />
           
           {/* Header */}
-          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
-            <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <div className="questionnaire-title flex-1">
-                  <h3>What kind of work do you do?</h3>
-                </div>
+          <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-4">
+                <h1 className="luxury-title">What best describes your profession?</h1>
+                <p className="luxury-subtitle">This helps us tailor the perfect security transport experience for your needs</p>
               </div>
-              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+              
+              <div className="luxury-progress-container mb-3">
                 <div 
-                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  className="luxury-progress-line" 
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us understand your security transport needs</p>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
-            <div className="space-y-3">
-              {workOptions.map(option => {
-                const isSelected = questionnaireAnswers.workType.includes(option.id)
-                return (
-                  <Card 
-                    key={option.id}
-                    className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
-                      isSelected 
-                        ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                        : 'hover:shadow-md bg-white border border-border/40'
-                    }`}
-                    onClick={() => {
-                      setQuestionnaireAnswers(prev => ({
-                        ...prev,
-                        workType: isSelected 
-                          ? prev.workType.filter(type => type !== option.id)
-                          : [...prev.workType, option.id]
-                      }))
-                    }}
-                  >
-                    {option.popular && (
-                      <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-5">
-                        Popular
+          <div className="luxury-questionnaire-content">
+            <div className="max-w-6xl mx-auto">
+              <div className="luxury-grid-2x5">
+                {workOptions.map(option => {
+                  const isSelected = questionnaireAnswers.workType.includes(option.id)
+                  return (
+                    <div 
+                      key={option.id}
+                      className={`luxury-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => {
+                        setQuestionnaireAnswers(prev => ({
+                          ...prev,
+                          workType: isSelected 
+                            ? prev.workType.filter(type => type !== option.id)
+                            : [...prev.workType, option.id]
+                        }))
+                      }}
+                    >
+                      <div className="luxury-checkmark"></div>
+                      
+                      <div className="space-y-3 pt-2">
+                        <div className="text-center">
+                          <div className="text-4xl mb-2">{option.icon}</div>
+                        </div>
+                        <div className="text-center">
+                          <h3 className="text-lg font-bold text-gray-900 mb-1">{option.title}</h3>
+                          <p className="text-sm text-gray-600 font-medium mb-2">{option.subtitle}</p>
+                          <p className="text-xs text-gray-500 leading-relaxed">{option.description}</p>
+                        </div>
                       </div>
-                    )}
-                    <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
-                      <div className="check-dot"></div>
                     </div>
-                    <CardContent className="p-4 pt-8">
-                      <div className="space-y-2">
-                        <h3 className="font-bold text-base text-foreground">{option.title}</h3>
-                        <p className="text-sm text-muted-foreground">{option.subtitle}</p>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-            
-            <div className="mt-4 p-3 bg-muted/30 rounded-lg">
-              <p className="text-xs text-muted-foreground text-center">
-                ✓ You can pick more than one option • Choose all that describe your work
-              </p>
+                  )
+                })}
+              </div>
+              
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center px-6 py-3 bg-gray-50 rounded-full">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                  <p className="text-sm text-gray-600 font-medium">
+                    Select all that apply • Your choices help us understand your security needs
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Bottom Actions */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
-            <div className="max-w-md mx-auto flex gap-3">
+          <div className="luxury-cta-container">
+            <div className="luxury-cta-buttons">
               <Button 
                 variant="outline" 
                 onClick={handleSaveAndExit}
-                className="w-24 h-12 text-sm font-medium"
+                className="luxury-cta-save px-4 py-3 border-2 border-gray-200 hover:border-gray-300 font-medium text-gray-700"
               >
                 Save & Exit
               </Button>
-              <Button 
-                onClick={handleNextStep}
-                disabled={questionnaireAnswers.workType.length === 0}
-                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
-              >
-                Continue
-              </Button>
+              
+              <div className="luxury-cta-continue">
+                <div className="flex items-center space-x-3 flex-1">
+                  <Button 
+                    onClick={handleNextStep}
+                    disabled={questionnaireAnswers.workType.length === 0}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-black font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ background: questionnaireAnswers.workType.length > 0 ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
+                  >
+                    Continue Assessment
+                  </Button>
+                  <span className="text-sm text-gray-500 ml-2">
+                    {questionnaireAnswers.workType.length} selected
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2721,92 +2706,109 @@ const App = () => {
     // Step 1: Travel Frequency
     if (questionnaireStep === 1) {
       const frequencyOptions = [
-        { id: 'sometimes', title: 'Just Sometimes', subtitle: 'Special events and rare occasions', description: 'Perfect for: Important meetings, special events, airport trips. Frequency: 1-3 times per month or less' },
-        { id: 'weekly', title: 'About Once a Week', subtitle: 'Regular meetings and weekly commitments', description: 'Perfect for: Weekly client meetings, regular business appointments. Frequency: 1-2 times per week, consistent schedule' },
-        { id: 'daily', title: 'Almost Every Day', subtitle: 'Daily commute and regular work transport', description: 'Perfect for: Daily office commute, regular work schedule. Frequency: 4-6 days per week, consistent routine' },
-        { id: 'multiple', title: 'Multiple Times Daily', subtitle: 'Very busy schedule with frequent travel', description: 'Perfect for: Back-to-back meetings, multiple daily appointments. Frequency: 2+ trips per day, complex scheduling' },
-        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep frequency information private', description: 'We respect your privacy and will provide flexible service options' }
+        { id: 'sometimes', title: 'Occasional', subtitle: 'Special events only', icon: '🗓️', frequency: '1-3 times/month', description: 'Important meetings, special events, airport transfers' },
+        { id: 'weekly', title: 'Regular', subtitle: 'Weekly commitments', icon: '📅', frequency: '1-2 times/week', description: 'Weekly client meetings, consistent appointments' },
+        { id: 'daily', title: 'Frequent', subtitle: 'Daily transport needs', icon: '🚗', frequency: '4-6 days/week', description: 'Daily office commute, regular work schedule' },
+        { id: 'multiple', title: 'Intensive', subtitle: 'Multiple daily trips', icon: '⚡', frequency: '2+ trips/day', description: 'Back-to-back meetings, complex scheduling' },
+        { id: 'prefer-not-disclose', title: 'Prefer Not to Disclose', subtitle: 'Keep frequency private', icon: '🔒', frequency: 'Confidential', description: 'Professional service with discretion' }
       ]
 
       return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+        <div className="luxury-questionnaire-container">
           <Toaster position="top-center" />
           
           {/* Header */}
-          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
-            <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <div className="questionnaire-title flex-1">
-                  <h3>How often do you need secure transport?</h3>
-                </div>
+          <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-4">
+                <h1 className="luxury-title">How often will you need our services?</h1>
+                <p className="luxury-subtitle">This helps us understand your transport requirements and frequency needs</p>
               </div>
-              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+              
+              <div className="luxury-progress-container mb-3">
                 <div 
-                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  className="luxury-progress-line" 
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us understand your service frequency needs</p>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
-            {frequencyOptions.map(option => {
-              const isSelected = questionnaireAnswers.travelFrequency === option.id
-              return (
-                <Card 
-                  key={option.id}
-                  className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
-                    isSelected 
-                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                      : 'hover:shadow-md bg-white border border-border/40'
-                  }`}
-                  onClick={() => {
-                    setQuestionnaireAnswers(prev => ({
-                      ...prev,
-                      travelFrequency: option.id
-                    }))
-                  }}
-                >
-                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
-                    <div className="check-dot"></div>
-                  </div>
-                  <CardContent className="content-padding">
-                    <div className="space-y-2">
-                      <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
-                      <p className="text-xs text-muted-foreground">{option.subtitle}</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+          <div className="luxury-questionnaire-content">
+            <div className="max-w-6xl mx-auto">
+              <div className="luxury-grid-2x2">
+                {frequencyOptions.map(option => {
+                  const isSelected = questionnaireAnswers.travelFrequency === option.id
+                  return (
+                    <div 
+                      key={option.id}
+                      className={`luxury-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => {
+                        setQuestionnaireAnswers(prev => ({
+                          ...prev,
+                          travelFrequency: option.id
+                        }))
+                      }}
+                      style={{ minHeight: '200px' }}
+                    >
+                      <div className="luxury-checkmark"></div>
+                      
+                      <div className="h-full flex flex-col justify-center space-y-4">
+                        <div className="text-center">
+                          <div className="text-5xl mb-3">{option.icon}</div>
+                        </div>
+                        
+                        <div className="text-center space-y-3">
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-1">{option.title}</h3>
+                            <p className="text-sm text-gray-600 font-medium">{option.subtitle}</p>
+                          </div>
+                          
+                          <div className="px-4 py-2 bg-gray-50 rounded-lg">
+                            <p className="text-sm font-semibold text-gray-700">{option.frequency}</p>
+                          </div>
+                          
+                          <p className="text-xs text-gray-500 leading-relaxed px-2">{option.description}</p>
+                        </div>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
+                  )
+                })}
+              </div>
+              
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center px-6 py-3 bg-blue-50 rounded-full">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                  <p className="text-sm text-blue-700 font-medium">
+                    Select the option that best matches your typical transport needs
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Bottom Actions */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
-            <div className="max-w-md mx-auto flex gap-3">
+          {/* Fixed CTA Container */}
+          <div className="luxury-cta-container">
+            <div className="luxury-cta-buttons">
               <Button 
-                variant="outline" 
-                onClick={handlePrevStep}
-                className="w-16 h-12 text-sm font-medium"
-              >
-                Back
-              </Button>
-              <Button 
-                variant="outline" 
+                className="luxury-cta-save"
+                variant="outline"
                 onClick={handleSaveAndExit}
-                className="w-24 h-12 text-sm font-medium"
               >
                 Save & Exit
               </Button>
               <Button 
+                className="luxury-cta-continue"
                 onClick={handleNextStep}
                 disabled={!questionnaireAnswers.travelFrequency}
-                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+                style={{ background: questionnaireAnswers.travelFrequency ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue
+                Continue Assessment
               </Button>
             </div>
           </div>
@@ -2817,91 +2819,157 @@ const App = () => {
     // Step 2: Security Style Preference
     if (questionnaireStep === 2) {
       const styleOptions = [
-        { id: 'discrete', title: 'Discrete & Quiet', subtitle: 'Barely noticeable, low-key protection', description: 'Perfect for: Daily routines, family outings. What to expect: Security stays 30+ feet away, uses civilian vehicles. Ideal if you value privacy.' },
-        { id: 'professional', title: 'Professional & Visible', subtitle: 'Clearly present but business-appropriate', description: 'Perfect for: Business meetings, corporate events. What to expect: Suited agents, marked vehicles, professional demeanor.' },
-        { id: 'premium', title: 'Full Premium Service', subtitle: 'Complete luxury with top protection', description: 'Perfect for: High-profile events, VIP occasions. What to expect: Multiple agents, luxury transport, comprehensive coverage.' },
-        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep security preferences private', description: 'We will recommend appropriate security levels based on your other responses' }
+        { 
+          id: 'discrete', 
+          title: 'Discrete Protection', 
+          subtitle: 'Subtle & Unnoticed', 
+          icon: '🔒',
+          level: 'Essential Protection',
+          description: 'Security maintains distance, civilian vehicles, minimal visibility',
+          features: ['30+ feet distance', 'Civilian vehicles', 'Emergency response', 'Privacy focused']
+        },
+        { 
+          id: 'professional', 
+          title: 'Professional Service', 
+          subtitle: 'Business Appropriate', 
+          icon: '🛡️',
+          level: 'Premium Security',
+          description: 'Suited agents, marked vehicles, professional presence',
+          features: ['Suited security', 'Marked vehicles', 'Business appropriate', 'Visible presence']
+        },
+        { 
+          id: 'premium', 
+          title: 'Premium Protection', 
+          subtitle: 'Luxury Experience', 
+          icon: '👑',
+          level: 'Ultra-Luxury Service',
+          description: 'Multiple agents, luxury transport, comprehensive coverage',
+          features: ['Multiple agents', 'Luxury vehicles', 'Full coverage', 'VIP treatment'],
+          popular: true
+        },
+        { 
+          id: 'prefer-not-specify', 
+          title: 'Prefer Not to Specify', 
+          subtitle: 'Keep preferences private', 
+          icon: '🔒',
+          level: 'Confidential Service',
+          description: 'Tailored service based on your specific requirements',
+          features: ['Custom assessment', 'Private consultation', 'Flexible approach', 'Full discretion']
+        }
       ]
 
       return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+        <div className="luxury-questionnaire-container">
           <Toaster position="top-center" />
           
           {/* Header */}
-          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
-            <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <div className="questionnaire-title flex-1">
-                  <h3>What security style feels right for you?</h3>
-                </div>
+          <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-4">
+                <h1 className="luxury-title">Choose your security service level</h1>
+                <p className="luxury-subtitle">Select the protection style that matches your comfort and requirements</p>
               </div>
-              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+              
+              <div className="luxury-progress-container mb-3">
                 <div 
-                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  className="luxury-progress-line" 
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us match your comfort level with appropriate security presentation</p>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
-            {styleOptions.map(option => {
-              const isSelected = questionnaireAnswers.securityStyle === option.id
-              return (
-                <Card 
-                  key={option.id}
-                  className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
-                    isSelected 
-                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                      : 'hover:shadow-md bg-white border border-border/40'
-                  }`}
-                  onClick={() => {
-                    setQuestionnaireAnswers(prev => ({
-                      ...prev,
-                      securityStyle: option.id
-                    }))
-                  }}
-                >
-                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
-                    <div className="check-dot"></div>
-                  </div>
-                  <CardContent className="content-padding">
-                    <div className="space-y-2">
-                      <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
-                      <p className="text-xs text-muted-foreground">{option.subtitle}</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+          <div className="luxury-questionnaire-content">
+            <div className="max-w-6xl mx-auto">
+              <div className="luxury-grid-3-tier">
+                {styleOptions.map(option => {
+                  const isSelected = questionnaireAnswers.securityStyle === option.id
+                  return (
+                    <div 
+                      key={option.id}
+                      className={`luxury-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => {
+                        setQuestionnaireAnswers(prev => ({
+                          ...prev,
+                          securityStyle: option.id
+                        }))
+                      }}
+                      style={{ minHeight: '320px' }}
+                    >
+                      {option.popular && (
+                        <div className="luxury-badge">
+                          Most Popular
+                        </div>
+                      )}
+                      <div className="luxury-checkmark"></div>
+                      
+                      <div className="h-full flex flex-col justify-between space-y-4 pt-2">
+                        <div className="text-center space-y-3">
+                          <div className="text-4xl mb-2">{option.icon}</div>
+                          <div>
+                            <div className="inline-block px-3 py-1 bg-gray-100 rounded-full mb-2">
+                              <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{option.level}</span>
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-1">{option.title}</h3>
+                            <p className="text-sm text-gray-600 font-medium">{option.subtitle}</p>
+                          </div>
+                          
+                          <div className="px-4 py-2 bg-blue-50 rounded-lg">
+                            <p className="text-sm font-bold text-blue-800">Professional Service</p>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <p className="text-xs text-gray-500 leading-relaxed text-center">{option.description}</p>
+                          
+                          <div className="space-y-2">
+                            {option.features.map((feature, index) => (
+                              <div key={index} className="flex items-center text-xs text-gray-600">
+                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2 flex-shrink-0"></div>
+                                <span>{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
+                  )
+                })}
+              </div>
+              
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center px-6 py-3 bg-amber-50 rounded-full">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full mr-3"></div>
+                  <p className="text-sm text-amber-700 font-medium">
+                    All services include professional drivers and 24/7 support • Custom pricing based on your needs
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Bottom Actions */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
-            <div className="max-w-md mx-auto flex gap-3">
+          {/* Fixed CTA Container */}
+          <div className="luxury-cta-container">
+            <div className="luxury-cta-buttons">
               <Button 
-                variant="outline" 
-                onClick={handlePrevStep}
-                className="w-16 h-12 text-sm font-medium"
-              >
-                Back
-              </Button>
-              <Button 
-                variant="outline" 
+                className="luxury-cta-save"
+                variant="outline"
                 onClick={handleSaveAndExit}
-                className="w-24 h-12 text-sm font-medium"
               >
                 Save & Exit
               </Button>
               <Button 
+                className="luxury-cta-continue"
                 onClick={handleNextStep}
                 disabled={!questionnaireAnswers.securityStyle}
-                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+                style={{ background: questionnaireAnswers.securityStyle ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue
+                Continue Assessment
               </Button>
             </div>
           </div>
@@ -2911,93 +2979,148 @@ const App = () => {
 
     // Step 3: Comfort Level
     if (questionnaireStep === 3) {
-      const comfortOptions = [
-        { id: 'minimal', title: 'Minimal Presence', subtitle: 'Nearly invisible, emergency-only', description: 'Security team maintains maximum distance and only intervenes in emergencies. Perfect for those who value complete normalcy.' },
-        { id: 'subtle', title: 'Subtle Approach', subtitle: 'Professional but unobtrusive', description: 'Security presence is felt but not obvious. Professional approach that balances protection with discretion.' },
-        { id: 'balanced', title: 'Balanced Visibility', subtitle: 'Clearly present but approachable', description: 'Security team is visible and professional, providing reassurance while maintaining approachability.' },
-        { id: 'high-visibility', title: 'High Visibility', subtitle: 'Obvious deterrent, authoritative presence', description: 'Clear security presence that acts as a visible deterrent. Professional, authoritative, and comprehensive protection.' },
-        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep comfort preferences private', description: 'We will recommend appropriate visibility levels based on your situation and needs' }
+      const comfortLevels = [
+        { value: 1, label: 'Minimal', title: 'Minimal Presence', description: 'Nearly invisible security, emergency-only intervention. Maximum privacy and normalcy.' },
+        { value: 2, label: 'Subtle', title: 'Subtle Approach', description: 'Professional but unobtrusive presence. Felt but not obvious, balanced discretion.' },
+        { value: 3, label: 'Balanced', title: 'Balanced Visibility', description: 'Clear professional presence providing reassurance while remaining approachable.' },
+        { value: 4, label: 'Visible', title: 'Visible Security', description: 'Obvious professional presence acting as deterrent with comprehensive protection.' },
+        { value: 5, label: 'Maximum', title: 'Maximum Presence', description: 'Full security detail with high visibility, authoritative presence, and complete coverage.' }
       ]
 
+      const selectedLevel = questionnaireAnswers.comfortLevel || 0
+      const selectedDescription = comfortLevels.find(level => level.value === selectedLevel)
+
       return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+        <div className="luxury-questionnaire-container">
           <Toaster position="top-center" />
           
           {/* Header */}
-          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
-            <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <div className="questionnaire-title flex-1">
-                  <h3>What level of security presence feels comfortable?</h3>
-                </div>
+          <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-4">
+                <h1 className="luxury-title">What security presence feels comfortable?</h1>
+                <p className="luxury-subtitle">Choose your preferred level of security visibility and presence</p>
               </div>
-              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+              
+              <div className="luxury-progress-container mb-3">
                 <div 
-                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  className="luxury-progress-line" 
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • Everyone deserves to feel safe while traveling. Let us know your comfort level.</p>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
-            {comfortOptions.map(option => {
-              const isSelected = questionnaireAnswers.comfortLevel === option.id
-              return (
-                <Card 
-                  key={option.id}
-                  className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
-                    isSelected 
-                      ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                      : 'hover:shadow-md bg-white border border-border/40'
-                  }`}
-                  onClick={() => {
-                    setQuestionnaireAnswers(prev => ({
-                      ...prev,
-                      comfortLevel: option.id
-                    }))
-                  }}
-                >
-                  <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
-                    <div className="check-dot"></div>
+          <div className="luxury-questionnaire-content">
+            <div className="max-w-6xl mx-auto">
+              <div className="luxury-scale-container">
+                <div className="text-center mb-8">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-2">Security Comfort Scale</h2>
+                  <p className="text-gray-600">Select your preferred level on the scale below</p>
+                </div>
+                
+                {/* Scale */}
+                <div className="luxury-scale">
+                  <div className="luxury-scale-points">
+                    {comfortLevels.map(level => (
+                      <div
+                        key={level.value}
+                        className={`luxury-scale-point ${selectedLevel === level.value ? 'selected' : ''}`}
+                        onClick={() => {
+                          setQuestionnaireAnswers(prev => ({
+                            ...prev,
+                            comfortLevel: level.value
+                          }))
+                        }}
+                      />
+                    ))}
                   </div>
-                  <CardContent className="content-padding">
-                    <div className="space-y-2">
-                      <h3 className="font-bold text-sm text-foreground">{option.title}</h3>
-                      <p className="text-xs text-muted-foreground">{option.subtitle}</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+                </div>
+                
+                {/* Labels */}
+                <div className="luxury-scale-labels">
+                  {comfortLevels.map(level => (
+                    <div key={level.value}>
+                      <div className="font-semibold text-gray-700">{level.label}</div>
                     </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
+                  ))}
+                </div>
+                
+                {/* Description Box */}
+                <div className={`luxury-scale-description ${selectedLevel > 0 ? 'active' : ''}`}>
+                  {selectedLevel === -1 ? (
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">Privacy Option</h3>
+                      <p className="text-gray-600 leading-relaxed">Your comfort preferences will be discussed privately during consultation.</p>
+                    </div>
+                  ) : selectedDescription ? (
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2">{selectedDescription.title}</h3>
+                      <p className="text-gray-600 leading-relaxed">{selectedDescription.description}</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-gray-500">Select a comfort level above or choose privacy option below</p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Privacy Option Button */}
+                <div className="mt-4 flex justify-center">
+                  <button
+                    className={`px-6 py-3 border-2 border-gray-300 rounded-lg font-medium transition-all duration-300 ${
+                      questionnaireAnswers.comfortLevel === -1 
+                        ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-black border-yellow-500' 
+                        : 'bg-white text-gray-700 hover:border-yellow-400 hover:bg-yellow-50'
+                    }`}
+                    onClick={() => {
+                      setQuestionnaireAnswers(prev => ({
+                        ...prev,
+                        comfortLevel: questionnaireAnswers.comfortLevel === -1 ? 0 : -1
+                      }))
+                    }}
+                  >
+                    <span className="flex items-center space-x-2">
+                      <span>🔒</span>
+                      <span>Prefer Privacy</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center px-6 py-3 bg-purple-50 rounded-full">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
+                  <p className="text-sm text-purple-700 font-medium">
+                    All security levels maintain the highest professional standards • Your comfort is our priority
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Bottom Actions */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
-            <div className="max-w-md mx-auto flex gap-3">
+          {/* Fixed CTA Container */}
+          <div className="luxury-cta-container">
+            <div className="luxury-cta-buttons">
               <Button 
-                variant="outline" 
-                onClick={handlePrevStep}
-                className="w-16 h-12 text-sm font-medium"
-              >
-                Back
-              </Button>
-              <Button 
-                variant="outline" 
+                className="luxury-cta-save"
+                variant="outline"
                 onClick={handleSaveAndExit}
-                className="w-24 h-12 text-sm font-medium"
               >
                 Save & Exit
               </Button>
               <Button 
+                className="luxury-cta-continue"
                 onClick={handleNextStep}
                 disabled={!questionnaireAnswers.comfortLevel}
-                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+                style={{ background: questionnaireAnswers.comfortLevel ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue
+                Continue Assessment
               </Button>
             </div>
           </div>
@@ -3008,104 +3131,114 @@ const App = () => {
     // Step 4: Travel Locations
     if (questionnaireStep === 4) {
       const locationOptions = [
-        { id: 'city-center', title: 'City Center', subtitle: 'Urban business districts, downtown areas', description: 'Westminster, Oxford Street area, central business zones. High-traffic professional environments.' },
-        { id: 'airports', title: 'Airports & Transport', subtitle: 'Travel hubs, stations, transit security', description: 'Heathrow, Gatwick, King\'s Cross, Paddington. Professional transport connections and terminals.' },
-        { id: 'corporate', title: 'Corporate Events', subtitle: 'Conferences, meetings, business functions', description: 'Business conferences, corporate meetings, professional networking events, office locations.' },
-        { id: 'social', title: 'Social Events', subtitle: 'Galas, parties, entertainment venues', description: 'High-end social functions, cultural events, private parties, exclusive venues.' },
-        { id: 'residential', title: 'Residential Areas', subtitle: 'Home, neighborhoods, private locations', description: 'Residential pickups, private homes, neighborhood locations, family-related transport.' },
-        { id: 'mayfair', title: 'Mayfair & Luxury Areas', subtitle: 'High-end shopping, exclusive venues', description: 'Knightsbridge, Belgravia, luxury shopping, exclusive restaurants, premium venues.' },
-        { id: 'prefer-not-say', title: 'Prefer not to say', subtitle: 'Keep location preferences private', description: 'We provide professional service to all London areas and can adapt to your specific routes' }
+        { id: 'city-center', title: 'City Center', subtitle: 'Business Districts', icon: '🏢', description: 'Westminster, Oxford Street, central business zones' },
+        { id: 'airports', title: 'Airports', subtitle: 'Travel Hubs', icon: '✈️', description: 'Heathrow, Gatwick, transport terminals' },
+        { id: 'corporate', title: 'Corporate Events', subtitle: 'Business Functions', icon: '📊', description: 'Conferences, meetings, networking events' },
+        { id: 'social', title: 'Social Events', subtitle: 'Entertainment', icon: '🎭', description: 'Galas, parties, cultural venues' },
+        { id: 'residential', title: 'Residential', subtitle: 'Home & Neighborhoods', icon: '🏘️', description: 'Private homes, residential areas' },
+        { id: 'mayfair', title: 'Luxury Areas', subtitle: 'Premium Districts', icon: '💎', description: 'Mayfair, Knightsbridge, Belgravia' },
+        { id: 'keep-confidential', title: 'Keep Confidential', subtitle: 'Private locations', icon: '🔒', description: 'Discuss travel patterns in private consultation' }
       ]
 
       return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+        <div className="luxury-questionnaire-container">
           <Toaster position="top-center" />
           
           {/* Header */}
-          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
-            <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <div className="questionnaire-title flex-1">
-                  <h3>Where do you typically need protection?</h3>
-                </div>
+          <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-4">
+                <h1 className="luxury-title">Where do you typically need protection?</h1>
+                <p className="luxury-subtitle">Select the areas and locations where you require secure transport services</p>
               </div>
-              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+              
+              <div className="luxury-progress-container mb-3">
                 <div 
-                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  className="luxury-progress-line" 
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • This helps us understand your travel patterns and route security needs</p>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 pb-32 max-w-md mx-auto space-y-3">
-            <div className="space-y-3">
-              {locationOptions.map(option => {
-                const isSelected = questionnaireAnswers.locations.includes(option.id)
-                return (
-                  <Card 
-                    key={option.id}
-                    className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
-                      isSelected 
-                        ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                        : 'hover:shadow-md bg-white border border-border/40'
-                    }`}
-                    onClick={() => {
-                      setQuestionnaireAnswers(prev => ({
-                        ...prev,
-                        locations: isSelected 
-                          ? prev.locations.filter(loc => loc !== option.id)
-                          : [...prev.locations, option.id]
-                      }))
-                    }}
-                  >
-                    <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
-                      <div className="check-dot"></div>
-                    </div>
-                    <CardContent className="p-4">
-                      <div className="space-y-2">
-                        <h3 className="font-bold text-base text-foreground">{option.title}</h3>
-                        <p className="text-sm text-muted-foreground">{option.subtitle}</p>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
+          <div className="luxury-questionnaire-content">
+            <div className="max-w-6xl mx-auto">
+              <div className="luxury-location-grid">
+                {locationOptions.map(option => {
+                  const isSelected = questionnaireAnswers.locations.includes(option.id)
+                  return (
+                    <div 
+                      key={option.id}
+                      className={`luxury-location-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => {
+                        setQuestionnaireAnswers(prev => ({
+                          ...prev,
+                          locations: isSelected 
+                            ? prev.locations.filter(loc => loc !== option.id)
+                            : [...prev.locations, option.id]
+                        }))
+                      }}
+                    >
+                      {isSelected && (
+                        <div className="absolute top-3 right-3 w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">✓</span>
+                        </div>
+                      )}
+                      
+                      <div className="space-y-3">
+                        <div className="luxury-location-icon">{option.icon}</div>
+                        <div>
+                          <h3 className="font-bold text-lg text-gray-900 mb-1">{option.title}</h3>
+                          <p className="text-sm text-gray-600 font-medium mb-2">{option.subtitle}</p>
+                          <p className="text-xs text-gray-500 leading-relaxed">{option.description}</p>
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-            
-            <div className="mt-4 p-3 bg-muted/30 rounded-lg">
-              <p className="text-xs text-muted-foreground text-center">
-                ✓ You can pick more than one area • Choose all locations where you need secure transport
-              </p>
+                    </div>
+                  )
+                })}
+              </div>
+              
+              <div className="mt-8 text-center">
+                <div className="inline-flex items-center px-6 py-3 bg-green-50 rounded-full">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                  <p className="text-sm text-green-700 font-medium">
+                    Select all areas that apply • We provide coverage across all London zones
+                  </p>
+                </div>
+                
+                {questionnaireAnswers.locations.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 font-medium">
+                      {questionnaireAnswers.locations.length} location{questionnaireAnswers.locations.length !== 1 ? 's' : ''} selected
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Bottom Actions */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
-            <div className="max-w-md mx-auto flex gap-3">
+          {/* Fixed CTA Container */}
+          <div className="luxury-cta-container">
+            <div className="luxury-cta-buttons">
               <Button 
-                variant="outline" 
-                onClick={handlePrevStep}
-                className="w-16 h-12 text-sm font-medium"
-              >
-                Back
-              </Button>
-              <Button 
-                variant="outline" 
+                className="luxury-cta-save"
+                variant="outline"
                 onClick={handleSaveAndExit}
-                className="w-24 h-12 text-sm font-medium"
               >
                 Save & Exit
               </Button>
               <Button 
+                className="luxury-cta-continue"
                 onClick={handleNextStep}
                 disabled={questionnaireAnswers.locations.length === 0}
-                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+                style={{ background: questionnaireAnswers.locations.length > 0 ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
               >
-                Continue
+                Continue Assessment
               </Button>
             </div>
           </div>
@@ -3113,97 +3246,306 @@ const App = () => {
       )
     }
 
-    // Step 5: Final Requirements
+    // Step 5: Risk Assessment 
     if (questionnaireStep === 5) {
+      const riskQuestions = [
+        { 
+          id: 'travel-risk',
+          question: 'Do you anticipate any elevated security concerns during your travels?',
+          options: [
+            { value: 'low', label: 'Minimal concern' },
+            { value: 'medium', label: 'Some awareness needed' },
+            { value: 'high', label: 'Heightened security required' },
+            { value: 'confidential', label: 'Prefer to discuss privately' }
+          ]
+        },
+        {
+          id: 'public-profile',
+          question: 'How would you describe your public visibility?',
+          options: [
+            { value: 'private', label: 'Private individual' },
+            { value: 'business', label: 'Business professional' },
+            { value: 'public', label: 'Public figure' },
+            { value: 'confidential', label: 'Prefer not to specify' }
+          ]
+        }
+      ]
+
       return (
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 overflow-y-auto">
+        <div className="luxury-questionnaire-container">
           <Toaster position="top-center" />
           
           {/* Header */}
-          <div className="p-4 border-b border-border/30 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
-            <div className="max-w-md mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <div className="questionnaire-title flex-1">
-                  <h3>Any specific requirements or preferences?</h3>
-                </div>
+          <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-4">
+                <h1 className="luxury-title">Security Assessment</h1>
+                <p className="luxury-subtitle">Help us understand your security requirements with complete confidentiality</p>
               </div>
-              <div className="w-full bg-muted rounded-full h-1.5 mb-2">
+              
+              <div className="luxury-progress-container mb-3">
                 <div 
-                  className="bg-gradient-to-r from-amber-400 to-amber-600 h-1.5 rounded-full transition-all duration-500 ease-out" 
+                  className="luxury-progress-line" 
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-muted-foreground">Step {questionnaireStep + 1} of {totalSteps} • Optional: Share any specific needs or requirements (completely confidential)</p>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 pb-32 max-w-md mx-auto space-y-4">
-            <Card className="border border-border/40">
-              <CardContent className="p-4 space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">
-                    Additional Requirements (Optional)
-                  </label>
-                  <textarea
-                    value={questionnaireAnswers.customRequirements}
-                    onChange={(e) => {
-                      setQuestionnaireAnswers(prev => ({
-                        ...prev,
-                        customRequirements: e.target.value
-                      }))
-                    }}
-                    placeholder="e.g., Prefer female drivers, vehicle accessibility needs, specific timing requirements, route preferences, or any other special considerations..."
-                    className="w-full h-32 p-3 border border-border/40 rounded-lg text-sm resize-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    maxLength={500}
-                  />
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">
-                      Your requirements are completely confidential and help us provide better service
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {questionnaireAnswers.customRequirements.length}/500
-                    </p>
+          <div className="luxury-questionnaire-content">
+            <div className="max-w-4xl mx-auto">
+              <div className="space-y-8">
+                {riskQuestions.map((question, index) => (
+                  <div key={question.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{question.question}</h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      {question.options.map((option) => {
+                        const currentAnswer = questionnaireAnswers[question.id as keyof typeof questionnaireAnswers]
+                        const isSelected = currentAnswer === option.value
+                        
+                        return (
+                          <div
+                            key={option.value}
+                            onClick={() => {
+                              setQuestionnaireAnswers(prev => ({
+                                ...prev,
+                                [question.id]: option.value
+                              }))
+                            }}
+                            className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                              isSelected
+                                ? 'border-yellow-500 bg-yellow-50 shadow-md'
+                                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-gray-900">{option.label}</span>
+                              {isSelected && (
+                                <div className="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xs">✓</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
-                </div>
-
-                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <Shield size={16} className="text-green-600 flex-shrink-0 mt-0.5" />
+                ))}
+                
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-sm">🔒</span>
+                      </div>
+                    </div>
                     <div>
-                      <p className="text-xs font-medium text-green-800">Confidential & Secure</p>
-                      <p className="text-xs text-green-700">
-                        All information is encrypted and only used to improve your security transport experience. This step is completely optional.
+                      <h4 className="text-sm font-semibold text-blue-900 mb-1">Private & Confidential</h4>
+                      <p className="text-sm text-blue-800 leading-relaxed">
+                        This assessment follows private banking confidentiality standards. Your responses are encrypted, 
+                        never shared, and only used to provide appropriate security recommendations.
                       </p>
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
-          {/* Bottom Actions */}
-          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
-            <div className="max-w-md mx-auto flex gap-3">
+          {/* Fixed CTA Container */}
+          <div className="luxury-cta-container">
+            <div className="luxury-cta-buttons">
               <Button 
-                variant="outline" 
-                onClick={handlePrevStep}
-                className="w-16 h-12 text-sm font-medium"
-              >
-                Back
-              </Button>
-              <Button 
-                variant="outline" 
+                className="luxury-cta-save"
+                variant="outline"
                 onClick={handleSaveAndExit}
-                className="w-24 h-12 text-sm font-medium"
               >
                 Save & Exit
               </Button>
               <Button 
+                className="luxury-cta-continue"
                 onClick={handleNextStep}
-                className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+                disabled={!questionnaireAnswers['travel-risk'] || !questionnaireAnswers['public-profile']}
+                style={{ 
+                  background: (questionnaireAnswers['travel-risk'] && questionnaireAnswers['public-profile']) 
+                    ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' 
+                    : '' 
+                }}
               >
-                Complete Assessment
+                Continue Assessment
+              </Button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Step 6: Final Requirements & Summary
+    if (questionnaireStep === 6) {
+      // Generate summary data
+      const getSummaryData = () => {
+        const data = {
+          profession: questionnaireAnswers.workType?.join(', ') || 'Not specified',
+          frequency: questionnaireAnswers.travelFrequency || 'Not specified',
+          serviceStyle: questionnaireAnswers.securityStyle || 'Not specified',
+          comfortLevel: questionnaireAnswers.comfortLevel || 'Not specified',
+          locations: questionnaireAnswers.locations?.join(', ') || 'Not specified',
+          riskLevel: questionnaireAnswers['travel-risk'] || 'Not specified',
+          profile: questionnaireAnswers['public-profile'] || 'Not specified'
+        }
+        return data
+      }
+
+      const summary = getSummaryData()
+
+      return (
+        <div className="luxury-questionnaire-container">
+          <Toaster position="top-center" />
+          
+          {/* Header */}
+          <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-4">
+                <h1 className="luxury-title">Complete Your Assessment</h1>
+                <p className="luxury-subtitle">Review your preferences and add any final requirements</p>
+              </div>
+              
+              <div className="luxury-progress-container mb-3">
+                <div 
+                  className="luxury-progress-line" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              
+              <div className="text-center">
+                <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Split Screen Content */}
+          <div className="luxury-questionnaire-content">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Left Side - Summary */}
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-4">Your Profile Summary</h2>
+                    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 space-y-4">
+                      
+                      <div className="grid grid-cols-1 gap-4">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                          <span className="text-sm font-medium text-gray-600">Profession</span>
+                          <span className="text-sm text-gray-900 text-right">{summary.profession}</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                          <span className="text-sm font-medium text-gray-600">Service Frequency</span>
+                          <span className="text-sm text-gray-900 text-right">{summary.frequency}</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                          <span className="text-sm font-medium text-gray-600">Service Style</span>
+                          <span className="text-sm text-gray-900 text-right">{summary.serviceStyle}</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2 border-b border-gray-200">
+                          <span className="text-sm font-medium text-gray-600">Security Level</span>
+                          <span className="text-sm text-gray-900 text-right">Level {summary.comfortLevel}/5</span>
+                        </div>
+                        <div className="flex justify-between items-center py-2">
+                          <span className="text-sm font-medium text-gray-600">Coverage Areas</span>
+                          <span className="text-sm text-gray-900 text-right max-w-xs">{summary.locations}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm font-semibold text-green-800">Assessment Complete</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          Based on your responses, we'll recommend the most suitable security services for your needs.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side - Additional Requirements */}
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-4">Additional Requirements</h2>
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-gray-700">
+                            Specific Requirements or Preferences (Optional)
+                          </label>
+                          <textarea
+                            value={questionnaireAnswers.customRequirements || ''}
+                            onChange={(e) => {
+                              setQuestionnaireAnswers(prev => ({
+                                ...prev,
+                                customRequirements: e.target.value
+                              }))
+                            }}
+                            placeholder="e.g., Preferred vehicle types, timing requirements, accessibility needs, route preferences, or any special considerations..."
+                            className="w-full h-32 p-4 border border-gray-300 rounded-lg text-sm resize-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                            maxLength={500}
+                          />
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs text-gray-500">
+                              Optional but helpful for personalized service
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {(questionnaireAnswers.customRequirements || '').length}/500
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="flex items-start space-x-3">
+                            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-white text-xs">🔒</span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-blue-900">Confidential & Secure</p>
+                              <p className="text-xs text-blue-800 leading-relaxed">
+                                All information is encrypted and protected. We follow strict confidentiality protocols 
+                                similar to private banking standards.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Fixed CTA Container */}
+          <div className="luxury-cta-container">
+            <div className="luxury-cta-buttons">
+              <Button 
+                className="luxury-cta-save"
+                variant="outline"
+                onClick={handleSaveAndExit}
+              >
+                Save & Exit
+              </Button>
+              <Button 
+                className="luxury-cta-continue"
+                onClick={handleNextStep}
+                style={{ background: 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' }}
+              >
+                Complete Assessment ✓
               </Button>
             </div>
           </div>
@@ -3216,38 +3558,19 @@ const App = () => {
 
   // Service Selection View
   if (currentView === 'service-selection') {
-    const serviceOptions = [
-      { 
-        id: 'essential', 
-        title: 'Armora Essential', 
-        subtitle: 'Professional protection, everyday value', 
-        description: 'Perfect for: Daily commutes, business meetings, airport transfers. SIA-licensed driver, unmarked vehicle, basic security protocols.',
-        priceRange: '£45 - £75',
-        recommended: true
-      },
-      { 
-        id: 'shadow-escort', 
-        title: 'Shadow Escort', 
-        subtitle: 'Drive your own car with security backup', 
-        description: 'Perfect for: Luxury shopping, social events, business meetings. You drive your vehicle while security follows discretely behind.',
-        priceRange: '£120 - £180',
-        new: true
-      },
-      { 
-        id: 'executive', 
-        title: 'Armora Executive', 
-        subtitle: 'VIP protection for high-profile travel', 
-        description: 'Perfect for: High-profile events, maximum security needs. Multiple personnel, luxury vehicles, comprehensive protection coverage.',
-        priceRange: '£180 - £450'
-      },
-      { 
-        id: 'group', 
-        title: 'Armora Group', 
-        subtitle: 'Secure transport for larger parties', 
-        description: 'Perfect for: Team travel, corporate events, group transport. Large security vehicles, group coordination, team protection.',
-        priceRange: '£65 - £120'
-      }
-    ]
+    const serviceOptions = armoraServices.map(service => ({
+      id: service.id,
+      title: service.name,
+      subtitle: service.tagline,
+      features: service.features,
+      minPrice: service.minPrice,
+      capacity: service.capacity,
+      serviceIcon: service.serviceIcon,
+      popular: service.popular,
+      new: service.new,
+      recommended: service.recommended,
+      colorScheme: service.colorScheme
+    }))
 
     // Set default selection to Essential if none selected
     if (!selectedService) {
@@ -3287,32 +3610,61 @@ const App = () => {
             return (
               <Card 
                 key={option.id}
-                className={`questionnaire-card cursor-pointer transition-all duration-200 relative ${
+                className={`questionnaire-card cursor-pointer transition-all duration-300 relative ${
                   isSelected 
-                    ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                    ? `ring-2 ring-${option.colorScheme.primary === 'gold' ? 'amber' : option.colorScheme.primary}-400 bg-gradient-to-br ${option.colorScheme.bgColor} to-${option.colorScheme.primary === 'gold' ? 'amber' : option.colorScheme.primary}-100/60 shadow-lg border-l-4 ${option.colorScheme.borderColor}` 
                     : 'hover:shadow-md bg-white border border-border/40'
                 }`}
                 onClick={() => setSelectedService(option.id)}
               >
-                {option.recommended && (
-                  <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-5">
-                    Recommended
+                {(option.popular || option.recommended) && (
+                  <div className={`absolute top-3 left-3 bg-gradient-to-r ${option.colorScheme.badgeFrom} ${option.colorScheme.badgeTo} ${option.colorScheme.primary === 'green' ? 'text-white' : 'text-slate-900'} text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm`}>
+                    POPULAR
                   </div>
                 )}
                 {option.new && (
-                  <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-5">
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm">
                     NEW
                   </div>
                 )}
-                <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
-                  <div className="check-dot"></div>
+                <div className={`absolute top-4 right-4 w-5 h-5 rounded-full border-2 ${
+                  isSelected ? `border-${option.colorScheme.primary === 'gold' ? 'amber' : option.colorScheme.primary}-500 bg-${option.colorScheme.primary === 'gold' ? 'amber' : option.colorScheme.primary}-500` : 'border-muted-foreground/50'
+                } flex items-center justify-center transition-all duration-200`}>
+                  {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
                 </div>
-                <CardContent className="content-padding">
-                  <div className="space-y-2">
-                    <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                <CardContent className="content-padding pt-8 pb-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{option.serviceIcon}</span>
+                      <h3 className="font-bold text-base text-foreground">{option.title}</h3>
+                    </div>
                     <p className="text-sm font-medium text-muted-foreground">{option.subtitle}</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
-                    <p className="text-sm font-bold text-primary">{option.priceRange}</p>
+                    
+                    {/* Features List */}
+                    <div className="space-y-1">
+                      {option.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <div className="w-1 h-1 bg-green-500 rounded-full flex-shrink-0"></div>
+                          <p className="text-xs text-muted-foreground">{feature}</p>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="flex items-center justify-between pt-1">
+                      <div>
+                        <p className="text-sm font-bold text-amber-600">{option.minPrice}</p>
+                        <p className="text-xs text-muted-foreground">{option.capacity}</p>
+                      </div>
+                      <button 
+                        className="text-xs text-primary/70 font-medium hover:text-primary transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // Could expand details here
+                        }}
+                      >
+                        See full details ↓
+                      </button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -3323,24 +3675,44 @@ const App = () => {
         {/* Bottom Actions */}
         <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 p-4">
           <div className="max-w-md mx-auto flex gap-3">
-            <Button 
-              variant="outline" 
-              onClick={() => setCurrentView('home')}
-              className="w-20 h-12 text-sm font-medium"
-            >
-              Back
-            </Button>
-            <Button 
-              onClick={() => {
-                setCurrentView('home')
-                const selectedServiceName = serviceOptions.find(s => s.id === selectedService)?.title || 'service'
-                toast.success(`${selectedServiceName} selected! Enter your locations to continue.`)
-              }}
-              disabled={!selectedService}
-              className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
-            >
-              Continue with {serviceOptions.find(s => s.id === selectedService)?.title || 'Service'}
-            </Button>
+            {selectedService ? (
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSelectedService('')
+                    toast.info("Service selection cancelled")
+                  }}
+                  className="flex-1 h-12 text-sm font-medium border-2"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setCurrentView('home')
+                    const selectedServiceName = serviceOptions.find(s => s.id === selectedService)?.title || 'service'
+                    const serviceName = selectedService === 'shadow-escort' ? 'Shadow' :
+                                       selectedService === 'essential' ? 'Essential' :
+                                       selectedService === 'executive' ? 'Executive' :
+                                       selectedService === 'group' ? 'Group' : 'Service'
+                    toast.success(`${selectedServiceName} selected! Enter your locations to continue.`)
+                  }}
+                  className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+                >
+                  Select {selectedService === 'shadow-escort' ? 'Shadow' :
+                          selectedService === 'essential' ? 'Essential' :
+                          selectedService === 'executive' ? 'Executive' :
+                          selectedService === 'group' ? 'Group' : 'Service'}
+                </Button>
+              </>
+            ) : (
+              <Button 
+                onClick={() => setCurrentView('home')}
+                className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
+              >
+                Enter Locations
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -3381,7 +3753,7 @@ const App = () => {
           </div>
         </header>
 
-        <div className="flex-1 professional-spacing space-y-4 pb-24 no-overflow">
+        <div className="flex-1 professional-spacing space-y-4 pb-32 no-overflow">
           <div className="content-wrapper space-y-4">
             {/* Google Maps Section */}
             <Card className="border-0 shadow-sm bg-card overflow-hidden">
@@ -3578,10 +3950,10 @@ const App = () => {
                     return (
                       <div key={service.id} className="space-y-0">
                         <Card 
-                          className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${
+                          className={`cursor-pointer transition-all duration-300 relative overflow-hidden ${
                             isSelected 
-                              ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
-                              : 'hover:shadow-md bg-white border border-border/40'
+                              ? `ring-2 ring-${service.colorScheme.primary === 'gold' ? 'amber' : service.colorScheme.primary}-400 bg-gradient-to-br ${service.colorScheme.bgColor} to-${service.colorScheme.primary === 'gold' ? 'amber' : service.colorScheme.primary}-100/60 shadow-lg border-l-4 ${service.colorScheme.borderColor}` 
+                              : 'hover:shadow-md bg-white border border-border/40 hover:scale-[1.01]'
                           }`}
                           onClick={() => {
                             setSelectedService(service.id)
@@ -3593,25 +3965,25 @@ const App = () => {
                             }
                           }}
                         >
-                          {service.popular && (
-                            <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-10">
-                              Popular
+                          {(service.popular || service.recommended) && (
+                            <div className={`absolute top-3 left-3 bg-gradient-to-r ${service.colorScheme.badgeFrom} ${service.colorScheme.badgeTo} ${service.colorScheme.primary === 'green' ? 'text-white' : 'text-slate-900'} text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm`}>
+                              POPULAR
                             </div>
                           )}
                           {service.new && (
-                            <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+                            <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm">
                               NEW
                             </div>
                           )}
                           <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 ${
-                            isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/50'
-                          } flex items-center justify-center`}>
+                            isSelected ? `border-${service.colorScheme.primary === 'gold' ? 'amber' : service.colorScheme.primary}-500 bg-${service.colorScheme.primary === 'gold' ? 'amber' : service.colorScheme.primary}-500` : 'border-muted-foreground/50'
+                          } flex items-center justify-center transition-all duration-200`}>
                             {isSelected && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
                           </div>
                           <CardContent className="p-4 pt-8">
                             <div className="space-y-3">
                               <div className="flex items-center gap-3">
-                                <IconComponent size={20} className="text-primary flex-shrink-0" />
+                                <span className="text-xl">{service.serviceIcon}</span>
                                 <h4 className="font-bold text-base text-foreground">{service.name}</h4>
                                 <div className={`ml-auto transition-transform duration-200 ${
                                   isExpanded ? 'rotate-180' : 'rotate-0'
@@ -3620,20 +3992,25 @@ const App = () => {
                                 </div>
                               </div>
                               <p className="text-sm text-muted-foreground leading-relaxed">{service.tagline}</p>
-                              <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                  <p className="text-sm font-semibold text-primary">{displayPrice}</p>
-                                  {!hasLocations && (
-                                    <p className="text-xs text-amber-600 font-medium">Callout charge</p>
-                                  )}
-                                  <p className="text-xs text-muted-foreground">{service.eta} • {service.capacity}</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-xs text-muted-foreground">{service.vehicle}</p>
-                                </div>
+                              
+                              {/* Features List */}
+                              <div className="space-y-1">
+                                {service.features.map((feature, idx) => (
+                                  <div key={idx} className="flex items-center gap-2">
+                                    <div className="w-1 h-1 bg-green-500 rounded-full flex-shrink-0"></div>
+                                    <p className="text-xs text-muted-foreground">{feature}</p>
+                                  </div>
+                                ))}
                               </div>
-                              <div className="pt-1">
-                                <p className="text-xs text-primary/70 font-medium">Tap for detailed information ↓</p>
+                              
+                              <div className="flex items-center justify-between pt-1">
+                                <div>
+                                  <p className="text-sm font-semibold text-amber-600">{service.minPrice}</p>
+                                  <p className="text-xs text-muted-foreground">{service.capacity}</p>
+                                </div>
+                                <button className="text-xs text-primary/70 font-medium hover:text-primary transition-colors">
+                                  See full details ↓
+                                </button>
                               </div>
                             </div>
                           </CardContent>
@@ -3646,63 +4023,31 @@ const App = () => {
                               <CardContent className="p-4 space-y-4">
                                 <div className="space-y-3">
                                   <div>
-                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                      <Users size={14} className="text-amber-600" />
-                                      Who is this service for?
+                                    <h4 className="font-bold text-sm text-amber-800 mb-3">
+                                      ✅ Perfect for:
                                     </h4>
-                                    <ul className="space-y-1">
-                                      {service.detailedInfo.whoItsFor.map((item, index) => (
-                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                          {item}
-                                        </li>
+                                    <div className="service-features-mobile flex flex-col space-y-2">
+                                      {service.detailedInfo.perfectFor.map((item, index) => (
+                                        <div key={index} className="flex items-center gap-2">
+                                          <div className="feature-bullet"></div>
+                                          <p className="text-sm font-medium text-gray-700">{item}</p>
+                                        </div>
                                       ))}
-                                    </ul>
+                                    </div>
                                   </div>
 
                                   <div>
-                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                      <Star size={14} className="text-amber-600" />
-                                      Why people choose this service
+                                    <h4 className="font-bold text-sm text-amber-800 mb-3">
+                                      🎯 You get:
                                     </h4>
-                                    <ul className="space-y-1">
-                                      {service.detailedInfo.whyPeopleChoose.map((item, index) => (
-                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                          {item}
-                                        </li>
+                                    <div className="service-features-mobile flex flex-col space-y-2">
+                                      {service.detailedInfo.youGet.map((item, index) => (
+                                        <div key={index} className="flex items-center gap-2">
+                                          <div className="feature-bullet"></div>
+                                          <p className="text-sm font-medium text-gray-700">{item}</p>
+                                        </div>
                                       ))}
-                                    </ul>
-                                  </div>
-
-                                  <div>
-                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                      <Shield size={14} className="text-amber-600" />
-                                      What you get
-                                    </h4>
-                                    <ul className="space-y-1">
-                                      {service.detailedInfo.whatYouGet.map((item, index) => (
-                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                          {item}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-
-                                  <div>
-                                    <h4 className="font-bold text-sm text-amber-800 mb-2 flex items-center gap-2">
-                                      <MapPin size={14} className="text-amber-600" />
-                                      Ideal situations
-                                    </h4>
-                                    <ul className="space-y-1">
-                                      {service.detailedInfo.idealSituations.map((item, index) => (
-                                        <li key={index} className="text-xs text-amber-700 flex items-start gap-2">
-                                          <div className="w-1 h-1 bg-amber-600 rounded-full mt-1.5 flex-shrink-0"></div>
-                                          {item}
-                                        </li>
-                                      ))}
-                                    </ul>
+                                    </div>
                                   </div>
                                 </div>
                               </CardContent>
@@ -3737,7 +4082,7 @@ const App = () => {
                                     }
                                     
                                     // Create payment reservation
-                                    const reservationId = createPaymentReservation(service.id, 50)
+                                    const reservationId = createPaymentReservation(service.id, service.priceValue)
                                     
                                     // Set as selected service
                                     setSelectedService(service.id)
@@ -3750,13 +4095,7 @@ const App = () => {
                                   }}
                                   className="flex-1 h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold text-sm"
                                 >
-                                  Select {
-                                    service.id === 'shadow-escort' ? 'Escort' :
-                                    service.id === 'essential' ? 'Essential' :
-                                    service.id === 'executive' ? 'Executive' :
-                                    service.id === 'group' ? 'Group' :
-                                    'Service'
-                                  }
+                                  Continue to Locations
                                 </Button>
                               </div>
                             </div>
@@ -3770,11 +4109,21 @@ const App = () => {
             </CardContent>
           </Card>
 
-          {/* Book Button */}
-          <Button 
+          {/* Smart CTA Button - Hide when service details are expanded */}
+          {!expandedService && (
+            <Button 
             onClick={async () => {
-              if (!selectedPickupLocation || !selectedDestinationLocation || !selectedService) {
-                toast.error("Please enter pickup, destination and select a service")
+              // Smart button logic based on current state
+              if (!selectedPickupLocation || !selectedDestinationLocation) {
+                // Focus on location inputs if not filled
+                const pickupInput = document.querySelector('input[placeholder*="pickup" i]') as HTMLInputElement
+                if (pickupInput) pickupInput.focus()
+                toast.error("Please enter pickup and destination locations")
+                return
+              }
+              
+              if (!selectedService) {
+                toast.error("Please select a service")
                 return
               }
               
@@ -3799,7 +4148,7 @@ const App = () => {
               const selectedServiceData = armoraServices.find(s => s.id === selectedService)
               const finalAmount = routeDistance > 0 
                 ? parseFloat(calculateServicePrice(selectedServiceData!, routeDistance).replace('£', ''))
-                : 50 // Minimum callout charge
+                : selectedServiceData?.priceValue || 75 // Service-specific minimum charge
               
               let paymentSuccess = false
               
@@ -3851,8 +4200,8 @@ const App = () => {
                 setCurrentView('trip-tracking')
               }, 1500)
             }}
-            className="w-full h-10 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg disabled:opacity-50"
-            disabled={!selectedPickupLocation || !selectedDestinationLocation || !selectedService || isProcessingPayment}
+            className="w-full h-12 bg-gradient-to-r from-black to-black/90 hover:from-black/90 hover:to-black/80 text-white font-semibold text-sm rounded-xl shadow-lg disabled:opacity-50 transition-all duration-200 active:scale-95"
+            disabled={isProcessingPayment}
           >
             {isProcessingPayment ? (
               <div className="flex items-center gap-2">
@@ -3860,15 +4209,21 @@ const App = () => {
                 Processing payment...
               </div>
             ) : (
-              !selectedPickupLocation || !selectedDestinationLocation ? 
-                'Enter locations' :
+              // Smart button text based on current state
+              !selectedPickupLocation && !selectedDestinationLocation ? 
+                'Enter Locations' :
+                !selectedPickupLocation ?
+                'Enter Pickup Location' :
+                !selectedDestinationLocation ?
+                'Enter Destination' :
                 !selectedService ? 
-                'Select service' :
+                'Select Service' :
                 paymentMethods.length === 0 && !isApplePayAvailable && !isGooglePayAvailable ?
-                'Add payment method' :
-                `Book ${armoraServices.find(s => s.id === selectedService)?.name || 'Security Cab'}`
+                'Add Payment Method' :
+                `Book ${armoraServices.find(s => s.id === selectedService)?.name?.replace('Armora ', '') || 'Now'}`
             )}
           </Button>
+          )}
           </div>
         </div>
 
