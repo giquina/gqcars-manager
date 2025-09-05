@@ -50,26 +50,16 @@ const armoraServices = [
     recommended: true
   },
   {
-    id: 'professional',
-    name: 'Armora Professional',
-    tagline: 'Enhanced security for important meetings',
-    description: 'Premium protection level',
-    priceRange: '£150 - £350',
+    id: 'shadow-escort',
+    name: 'Shadow Escort',
+    tagline: 'Drive your own car with security backup',
+    description: 'Revolutionary security concept - you drive, we follow',
+    priceRange: '£120 - £180',
     eta: '5-12 min',
-    icon: Shield,
+    icon: NavigationArrow,
     capacity: '1-4 passengers',
-    vehicle: 'Enhanced security coordination'
-  },
-  {
-    id: 'business', 
-    name: 'Armora Business',
-    tagline: 'Reliable security for regular schedules',
-    description: 'Consistent professional service',
-    priceRange: '£120 - £250',
-    eta: '8-15 min',
-    icon: Shield,
-    capacity: '1-3 passengers',
-    vehicle: 'Executive protection vehicles'
+    vehicle: 'Your vehicle + discrete security escort',
+    new: true
   },
   {
     id: 'executive',
@@ -89,20 +79,9 @@ const armoraServices = [
     description: 'Group protection specialist',
     priceRange: '£65 - £120',
     eta: '15-30 min',
-    icon: NavigationArrow,
+    icon: Users,
     capacity: '1-6 passengers',
     vehicle: 'Mercedes E-Class, Range Rover'
-  },
-  {
-    id: 'express',
-    name: 'Armora Express',
-    tagline: 'Quick secure transport for teams',
-    description: 'Fast, efficient group service',
-    priceRange: '£40 - £85',
-    eta: '5-12 min',
-    icon: Users,
-    capacity: '1-8 passengers',
-    vehicle: 'Mercedes V-Class, BMW X7'
   }
 ]
 
@@ -968,18 +947,12 @@ function App() {
         recommended: true
       },
       { 
-        id: 'professional', 
-        title: 'Armora Professional', 
-        subtitle: 'Enhanced security for important meetings', 
-        description: 'Perfect for: High-stakes meetings, competitive environments. Enhanced vehicle features, trained security specialist, threat assessment.',
-        priceRange: '£150 - £350'
-      },
-      { 
-        id: 'business', 
-        title: 'Armora Business', 
-        subtitle: 'Reliable security for regular schedules', 
-        description: 'Perfect for: Weekly meetings, consistent business travel. Dedicated driver team, priority scheduling, business-appropriate vehicles.',
-        priceRange: '£120 - £250'
+        id: 'shadow-escort', 
+        title: 'Shadow Escort', 
+        subtitle: 'Drive your own car with security backup', 
+        description: 'Perfect for: Luxury shopping, social events, business meetings. You drive your vehicle while security follows discretely behind.',
+        priceRange: '£120 - £180',
+        new: true
       },
       { 
         id: 'executive', 
@@ -994,13 +967,6 @@ function App() {
         subtitle: 'Secure transport for larger parties', 
         description: 'Perfect for: Team travel, corporate events, group transport. Large security vehicles, group coordination, team protection.',
         priceRange: '£65 - £120'
-      },
-      { 
-        id: 'express', 
-        title: 'Armora Express', 
-        subtitle: 'Quick secure transport for teams', 
-        description: 'Perfect for: Fast team transport, efficient group travel. Quick coordination, team-friendly vehicles, time-sensitive movements.',
-        priceRange: '£40 - £85'
       }
     ]
 
@@ -1050,6 +1016,11 @@ function App() {
                 {option.recommended && (
                   <div className="absolute top-3 left-3 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded-full z-5">
                     Recommended
+                  </div>
+                )}
+                {option.new && (
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-green-400 to-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-5">
+                    NEW
                   </div>
                 )}
                 <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>
@@ -1154,30 +1125,56 @@ function App() {
 
           {/* Current Service Selection */}
           <Card className="border-0 shadow-sm bg-card">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-medium text-sm">
-                    {selectedService ? 
-                      armoraServices.find(s => s.id === selectedService)?.name || 'Choose Service' 
-                      : 'Choose Service'
-                    }
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {selectedService ? 
-                      armoraServices.find(s => s.id === selectedService)?.tagline || 'Tap to change'
-                      : 'Select your security level'
-                    }
-                  </p>
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                <h3 className="font-semibold text-base text-foreground">Choose Your Service</h3>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  {armoraServices.map(service => {
+                    const isSelected = selectedService === service.id
+                    const IconComponent = service.icon
+                    return (
+                      <Card 
+                        key={service.id}
+                        className={`cursor-pointer transition-all duration-200 relative overflow-hidden ${
+                          isSelected 
+                            ? 'ring-2 ring-primary bg-gradient-to-br from-amber-50/80 to-amber-100/60 shadow-lg' 
+                            : 'hover:shadow-md bg-white border border-border/40'
+                        }`}
+                        onClick={() => setSelectedService(service.id)}
+                      >
+                        {service.popular && (
+                          <div className="absolute top-2 left-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-900 text-[9px] font-bold px-1.5 py-0.5 rounded-full z-10">
+                            Popular
+                          </div>
+                        )}
+                        {service.new && (
+                          <div className="absolute top-2 left-2 bg-gradient-to-r from-green-400 to-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full z-10">
+                            NEW
+                          </div>
+                        )}
+                        <div className={`absolute top-2 right-2 w-4 h-4 rounded-full border-2 ${
+                          isSelected ? 'border-primary bg-primary' : 'border-muted-foreground/50'
+                        } flex items-center justify-center`}>
+                          {isSelected && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                        </div>
+                        <CardContent className="p-3 pt-6">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2">
+                              <IconComponent size={14} className="text-primary flex-shrink-0" />
+                              <h4 className="font-bold text-xs text-foreground line-clamp-1">{service.name}</h4>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground line-clamp-2 leading-relaxed">{service.tagline}</p>
+                            <div className="space-y-0.5">
+                              <p className="text-[9px] font-semibold text-primary">{service.priceRange}</p>
+                              <p className="text-[9px] text-muted-foreground">{service.eta} • {service.capacity}</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setCurrentView('service-selection')}
-                  className="text-xs"
-                >
-                  {selectedService ? 'Change' : 'Select'}
-                </Button>
               </div>
             </CardContent>
           </Card>
