@@ -2887,11 +2887,17 @@ function App() {
         const newStep = onboardingStep + 1
         setOnboardingStep(newStep)
         // Auto-save progress silently
+        
+        // Scroll to top of page for better UX
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
         // Complete onboarding
         setHasCompletedOnboarding(true)
         setOnboardingStep(0) // Reset step counter
         setCurrentView('onboarding-complete')
+        
+        // Scroll to top for completion screen
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     }
 
@@ -2900,12 +2906,18 @@ function App() {
         const newStep = onboardingStep - 1
         setOnboardingStep(newStep)
         // Auto-save progress silently
+        
+        // Scroll to top when going back
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     }
 
     const saveAndExit = () => {
       // Save current progress and return to welcome silently
       setCurrentView('welcome')
+      
+      // Scroll to top when exiting
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     const resetAssessment = () => {
@@ -2930,6 +2942,10 @@ function App() {
         emergencyInstructions: ''
       })
       setCurrentView('welcome')
+      
+      // Scroll to top when resetting
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      
       toast.success("🔄 Your security transport assessment has been reset")
     }
 
@@ -2996,8 +3012,14 @@ function App() {
 
         <div className={`relative z-10 max-w-md mx-auto p-4 pb-6 ${onboardingStep >= 1 ? 'overflow-y-auto' : ''} ${onboardingStep >= 1 ? 'max-h-[calc(100vh-120px)]' : 'min-h-screen'}`}>{/* Scrollable container for step 1+ */}
           {/* Slide 0: Assessment Introduction */}
-          {onboardingStep === 0 && (
-            <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
+          {onboardingStep === 0 && (() => {
+            // Scroll to top when entering step 0
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="flex flex-col h-full justify-between animate-in fade-in duration-500">
               <div className="flex-1 flex flex-col justify-center space-y-6">
                 <div className="text-center space-y-4">
                   <div className="w-16 h-16 mx-auto bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center border border-amber-400/30">
@@ -3056,11 +3078,17 @@ function App() {
                 )}
               </div>
             </div>
-          )}
+          })()}
 
           {/* Slide 1: Work Type Selection - Professional Single-Line Layout */}
-          {onboardingStep === 1 && (
-            <div className="space-y-4 animate-in fade-in duration-500 pb-8">
+          {onboardingStep === 1 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-4 animate-in fade-in duration-500 pb-8">
               <div className="text-center space-y-2">
                 <h2 className="text-lg font-bold text-white">What kind of work do you do?</h2>
                 <p className="text-sm text-slate-300 leading-relaxed">Choose all that describe your work</p>
@@ -3194,11 +3222,17 @@ function App() {
                 Continue to Travel Frequency
               </Button>
             </div>
-          )}
+          })()}
 
           {/* Slide 2: Travel Frequency - Enhanced Design with Proper Checkbox Positioning */}
-          {onboardingStep === 2 && (
-            <div className="space-y-4 animate-in fade-in duration-500 pb-8">
+          {onboardingStep === 2 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-4 animate-in fade-in duration-500 pb-8">
               <div className="text-center space-y-2">
                 <h2 className="text-lg font-bold text-white">How often do you need secure transport?</h2>
                 <p className="text-sm text-slate-300 leading-relaxed">Pick what matches your schedule</p>
@@ -3301,11 +3335,17 @@ function App() {
                 Continue to Service Style
               </Button>
             </div>
-          )}
+          })()}
 
           {/* Slide 3: Service Style - Enhanced Design */}
-          {onboardingStep === 3 && (
-            <div className="space-y-4 animate-in fade-in duration-500 pb-8">
+          {onboardingStep === 3 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-4 animate-in fade-in duration-500 pb-8">
               <div className="text-center space-y-2">
                 <h2 className="text-lg font-bold text-white">How do you want your security to look?</h2>
                 <p className="text-sm text-slate-300 leading-relaxed">Pick the style that feels right for your lifestyle</p>
@@ -3394,11 +3434,17 @@ function App() {
                 Continue to Security Comfort
               </Button>
             </div>
-          )}
+          })()}
 
           {/* Slide 4: Security Comfort Level - Simplified */}
-          {onboardingStep === 4 && (
-            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+          {onboardingStep === 4 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-3 animate-in fade-in duration-500 pb-6">
               <div className="text-center space-y-1">
                 <h2 className="text-lg font-bold text-white">How much security presence feels right?</h2>
                 <p className="text-sm text-slate-300">Choose what makes you comfortable</p>
@@ -3493,11 +3539,17 @@ function App() {
                 Continue
               </Button>
             </div>
-          )}
+          })()}
 
           {/* Slide 5: Travel Patterns & Locations - Simplified */}
-          {onboardingStep === 5 && (
-            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+          {onboardingStep === 5 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-3 animate-in fade-in duration-500 pb-6">
               <div className="text-center space-y-1">
                 <h2 className="text-lg font-bold text-white">Where do you need secure transport?</h2>
                 <p className="text-sm text-amber-200">✓ You can pick multiple places</p>
@@ -3581,11 +3633,17 @@ function App() {
                 Continue
               </Button>
             </div>
-          )}
+          })()}
 
           {/* Slide 6: Risk Assessment - Simplified */}
-          {onboardingStep === 6 && (
-            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+          {onboardingStep === 6 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-3 animate-in fade-in duration-500 pb-6">
               <div className="text-center space-y-1">
                 <h2 className="text-lg font-bold text-white">Security assessment</h2>
                 <p className="text-sm text-slate-300">Help us understand your protection needs</p>
@@ -3691,11 +3749,17 @@ function App() {
                 Continue
               </Button>
             </div>
-          )}
+          })()}
 
           {/* Slide 7: Emergency Contacts */}
-          {onboardingStep === 7 && (
-            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+          {onboardingStep === 7 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-3 animate-in fade-in duration-500 pb-6">
               <div className="space-y-1 text-center">
                 <h2 className="text-lg font-bold text-white">Emergency contact information</h2>
                 <p className="text-sm text-slate-300">Industry best practice for professional duty of care</p>
@@ -3783,11 +3847,17 @@ function App() {
                 Continue
               </Button>
             </div>
-          )}
+          })()}
 
           {/* Slide 8: Emergency Response - Simplified */}
-          {onboardingStep === 8 && (
-            <div className="space-y-3 animate-in fade-in duration-500 pb-6">
+          {onboardingStep === 8 && (() => {
+            // Scroll to top when entering this step
+            useEffect(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, [])
+            
+            return (
+              <div className="space-y-3 animate-in fade-in duration-500 pb-6">
               <div className="space-y-1 text-center">
                 <h2 className="text-lg font-bold text-white">Emergency response preferences</h2>
                 <p className="text-sm text-slate-300">How should we coordinate in emergencies?</p>
@@ -3875,7 +3945,7 @@ function App() {
                 Complete Assessment
               </Button>
             </div>
-          )}
+          })()}
         </div>
       </div>
     )
