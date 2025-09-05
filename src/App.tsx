@@ -2157,207 +2157,210 @@ const App = () => {
     const hasLocations = Boolean(selectedPickupLocation && selectedDestinationLocation)
     
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 flex flex-col no-overflow">
         <Toaster position="top-center" />
         
         {/* Header */}
-        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-3 sticky top-0 z-10">
-          <div className="flex items-center justify-between max-w-md mx-auto">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
-                <Car size={12} className="text-slate-900" weight="bold" />
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-3 sticky top-0 z-10 no-overflow">
+          <div className="content-wrapper">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
+                  <Car size={12} className="text-slate-900" weight="bold" />
+                </div>
+                <div>
+                  <h1 className="text-base font-bold responsive-text">Armora Cabs 24/7</h1>
+                  <p className="text-[10px] text-muted-foreground responsive-text">Professional security cab service</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-base font-bold">Armora Cabs 24/7</h1>
-                <p className="text-[10px] text-muted-foreground">Professional security cab service</p>
-              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-6 h-6 rounded-full"
+                onClick={() => setCurrentView('welcome')}
+              >
+                <User size={12} />
+              </Button>
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-6 h-6 rounded-full"
-              onClick={() => setCurrentView('welcome')}
-            >
-              <User size={12} />
-            </Button>
           </div>
         </header>
 
-        <div className="flex-1 p-4 space-y-4 max-w-md mx-auto pb-24">
-          {/* Google Maps Section */}
-          <Card className="border-0 shadow-sm bg-card overflow-hidden">
-            <GoogleMapComponent
-              currentLocation={currentLocation}
-              selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
-              destinationLocation={selectedDestinationLocation ? { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng } : undefined}
-              onLocationSelect={handleLocationSelect}
-            />
-          </Card>
+        <div className="flex-1 professional-spacing space-y-4 pb-24 no-overflow">
+          <div className="content-wrapper space-y-4">
+            {/* Google Maps Section */}
+            <Card className="border-0 shadow-sm bg-card overflow-hidden">
+              <GoogleMapComponent
+                currentLocation={currentLocation}
+                selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
+                destinationLocation={selectedDestinationLocation ? { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng } : undefined}
+                onLocationSelect={handleLocationSelect}
+              />
+            </Card>
 
-          {/* Location Input */}
-          <Card className="border-0 shadow-sm bg-card">
-            <CardContent className="p-3 space-y-2">
-              <div className="space-y-1.5 relative">
-                <div className="relative pickup-input-container">
-                  <Input
-                    value={bookingForm.pickup}
-                    onChange={(e) => handlePickupChange(e.target.value)}
-                    onFocus={() => {
-                      if (pickupSuggestions.length > 0) {
-                        setShowPickupSuggestions(true)
-                      }
-                    }}
-                    placeholder="Pickup location (or tap map above)"
-                    className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
-                  />
-                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
-                  {isGeocodingPickup && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                  
-                  {/* Pickup Suggestions Dropdown */}
-                  {showPickupSuggestions && pickupSuggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 bg-white border border-border/50 rounded-lg shadow-lg z-50 mt-1 max-h-40 overflow-y-auto">
-                      {pickupSuggestions.map((suggestion, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handlePickupSuggestionSelect(suggestion)}
-                          className="w-full text-left px-3 py-2 hover:bg-muted/50 border-b border-border/30 last:border-b-0 transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <MapPin size={14} className="text-muted-foreground flex-shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-medium text-foreground truncate">
-                                {suggestion.structured_formatting?.main_text || suggestion.description.split(',')[0]}
-                              </p>
-                              <p className="text-xs text-muted-foreground truncate">
-                                {suggestion.structured_formatting?.secondary_text || suggestion.description}
-                              </p>
+            {/* Location Input */}
+            <Card className="border-0 shadow-sm bg-card">
+              <CardContent className="p-3 space-y-2">
+                <div className="space-y-1.5 relative">
+                  <div className="relative pickup-input-container">
+                    <Input
+                      value={bookingForm.pickup}
+                      onChange={(e) => handlePickupChange(e.target.value)}
+                      onFocus={() => {
+                        if (pickupSuggestions.length > 0) {
+                          setShowPickupSuggestions(true)
+                        }
+                      }}
+                      placeholder="Pickup location (or tap map above)"
+                      className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs w-full"
+                    />
+                    <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
+                    {isGeocodingPickup && (
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                        <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                    
+                    {/* Pickup Suggestions Dropdown */}
+                    {showPickupSuggestions && pickupSuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 bg-white border border-border/50 rounded-lg shadow-lg z-50 mt-1 max-h-40 overflow-y-auto">
+                        {pickupSuggestions.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            onClick={() => handlePickupSuggestionSelect(suggestion)}
+                            className="w-full text-left px-3 py-2 hover:bg-muted/50 border-b border-border/30 last:border-b-0 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin size={14} className="text-muted-foreground flex-shrink-0" />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-medium text-foreground truncate">
+                                  {suggestion.structured_formatting?.main_text || suggestion.description.split(',')[0]}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {suggestion.structured_formatting?.secondary_text || suggestion.description}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="relative destination-input-container">
+                    <Input
+                      value={bookingForm.destination}
+                      onChange={(e) => handleDestinationChange(e.target.value)}
+                      onFocus={() => {
+                        if (destinationSuggestions.length > 0) {
+                          setShowDestinationSuggestions(true)
+                        }
+                      }}
+                      placeholder="Where to?"
+                      className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs w-full"
+                    />
+                    <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500 rounded-full"></div>
+                    {isGeocodingDestination && (
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                        <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                    
+                    {/* Destination Suggestions Dropdown */}
+                    {showDestinationSuggestions && destinationSuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 bg-white border border-border/50 rounded-lg shadow-lg z-50 mt-1 max-h-40 overflow-y-auto">
+                        {destinationSuggestions.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            onClick={() => handleDestinationSuggestionSelect(suggestion)}
+                            className="w-full text-left px-3 py-2 hover:bg-muted/50 border-b border-border/30 last:border-b-0 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin size={14} className="text-muted-foreground flex-shrink-0" />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-medium text-foreground truncate">
+                                  {suggestion.structured_formatting?.main_text || suggestion.description.split(',')[0]}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {suggestion.structured_formatting?.secondary_text || suggestion.description}
+                                </p>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
-                <div className="relative destination-input-container">
-                  <Input
-                    value={bookingForm.destination}
-                    onChange={(e) => handleDestinationChange(e.target.value)}
-                    onFocus={() => {
-                      if (destinationSuggestions.length > 0) {
-                        setShowDestinationSuggestions(true)
+                {/* Quick Location Buttons */}
+                <div className="flex gap-2 pt-2 flex-wrap">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="text-xs h-7 px-2 flex-shrink-0"
+                    onClick={() => {
+                      if (currentLocation) {
+                        // Use reverse geocoding to get address for current location
+                        if (window.google?.maps) {
+                          const geocoder = new window.google.maps.Geocoder()
+                          geocoder.geocode(
+                            { location: currentLocation },
+                            (results, status) => {
+                              if (status === 'OK' && results && results[0]) {
+                                const address = results[0].formatted_address
+                                setBookingForm(prev => ({ 
+                                  ...prev, 
+                                  pickup: address,
+                                  pickupCoords: currentLocation 
+                                }))
+                                setSelectedPickupLocation({
+                                  lat: currentLocation.lat,
+                                  lng: currentLocation.lng,
+                                  address: address
+                                })
+                                toast.success("Using current location as pickup")
+                              }
+                            }
+                          )
+                        } else {
+                          setBookingForm(prev => ({ 
+                            ...prev, 
+                            pickup: "Current location",
+                            pickupCoords: currentLocation 
+                          }))
+                          toast.success("Using current location as pickup")
+                        }
+                      } else {
+                        toast.error("Current location not available")
                       }
                     }}
-                    placeholder="Where to?"
-                    className="pl-6 h-8 border-0 bg-muted/50 focus:bg-background text-xs"
-                  />
-                  <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-green-500 rounded-full"></div>
-                  {isGeocodingDestination && (
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                  
-                  {/* Destination Suggestions Dropdown */}
-                  {showDestinationSuggestions && destinationSuggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 bg-white border border-border/50 rounded-lg shadow-lg z-50 mt-1 max-h-40 overflow-y-auto">
-                      {destinationSuggestions.map((suggestion, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleDestinationSuggestionSelect(suggestion)}
-                          className="w-full text-left px-3 py-2 hover:bg-muted/50 border-b border-border/30 last:border-b-0 transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <MapPin size={14} className="text-muted-foreground flex-shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-medium text-foreground truncate">
-                                {suggestion.structured_formatting?.main_text || suggestion.description.split(',')[0]}
-                              </p>
-                              <p className="text-xs text-muted-foreground truncate">
-                                {suggestion.structured_formatting?.secondary_text || suggestion.description}
-                              </p>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  >
+                    <Crosshair size={12} className="mr-1" />
+                    Use Current
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="text-xs h-7 px-2 flex-shrink-0"
+                    onClick={() => {
+                      handleDestinationChange("Heathrow Airport")
+                    }}
+                  >
+                    ✈️ Airport
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="text-xs h-7 px-2 flex-shrink-0"
+                    onClick={() => {
+                      handleDestinationChange("London King's Cross")
+                    }}
+                  >
+                    🚂 King's Cross
+                  </Button>
                 </div>
-              </div>
-              
-              {/* Quick Location Buttons */}
-              <div className="flex gap-2 pt-2">
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="text-xs h-7 px-2"
-                  onClick={() => {
-                    if (currentLocation) {
-                      // Use reverse geocoding to get address for current location
-                      if (window.google?.maps) {
-                        const geocoder = new window.google.maps.Geocoder()
-                        geocoder.geocode(
-                          { location: currentLocation },
-                          (results, status) => {
-                            if (status === 'OK' && results && results[0]) {
-                              const address = results[0].formatted_address
-                              setBookingForm(prev => ({ 
-                                ...prev, 
-                                pickup: address,
-                                pickupCoords: currentLocation 
-                              }))
-                              setSelectedPickupLocation({
-                                lat: currentLocation.lat,
-                                lng: currentLocation.lng,
-                                address: address
-                              })
-                              toast.success("Using current location as pickup")
-                            }
-                          }
-                        )
-                      } else {
-                        setBookingForm(prev => ({ 
-                          ...prev, 
-                          pickup: "Current location",
-                          pickupCoords: currentLocation 
-                        }))
-                        toast.success("Using current location as pickup")
-                      }
-                    } else {
-                      toast.error("Current location not available")
-                    }
-                  }}
-                >
-                  <Crosshair size={12} className="mr-1" />
-                  Use Current
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="text-xs h-7 px-2"
-                  onClick={() => {
-                    handleDestinationChange("Heathrow Airport")
-                  }}
-                >
-                  ✈️ Airport
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="text-xs h-7 px-2"
-                  onClick={() => {
-                    handleDestinationChange("London King's Cross")
-                  }}
-                >
-                  🚂 King's Cross
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
           {/* Current Service Selection */}
           <Card className="border-0 shadow-sm bg-card">
@@ -2619,57 +2622,59 @@ const App = () => {
         </div>
 
         {/* Bottom Navigation - Always Visible */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
-          <div className="grid grid-cols-5 h-12 max-w-md mx-auto">
-            <button
-              onClick={() => setCurrentView('home')}
-              className="flex flex-col items-center justify-center gap-0.5 text-amber-600 transition-colors"
-            >
-              <div className="w-5 h-5 flex items-center justify-center">
-                <House size={16} weight="fill" />
-              </div>
-              <span className="text-[10px] font-semibold">Home</span>
-            </button>
-            
-            <button
-              onClick={() => setCurrentView('activity')}
-              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <div className="w-5 h-5 flex items-center justify-center">
-                <List size={16} />
-              </div>
-              <span className="text-[10px]">Activity</span>
-            </button>
+        <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
+          <div className="bottom-nav-container">
+            <div className="grid grid-cols-5 h-12">
+              <button
+                onClick={() => setCurrentView('home')}
+                className="flex flex-col items-center justify-center gap-0.5 text-amber-600 transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <House size={16} weight="fill" />
+                </div>
+                <span className="text-[10px] font-semibold">Home</span>
+              </button>
+              
+              <button
+                onClick={() => setCurrentView('activity')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <List size={16} />
+                </div>
+                <span className="text-[10px]">Activity</span>
+              </button>
 
-            <button
-              onClick={() => setCurrentView('favorites')}
-              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <div className="w-5 h-5 flex items-center justify-center">
-                <Heart size={16} />
-              </div>
-              <span className="text-[10px]">Saved</span>
-            </button>
+              <button
+                onClick={() => setCurrentView('favorites')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Heart size={16} />
+                </div>
+                <span className="text-[10px]">Saved</span>
+              </button>
 
-            <button
-              onClick={() => setCurrentView('account')}
-              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <div className="w-5 h-5 flex items-center justify-center">
-                <User size={16} />
-              </div>
-              <span className="text-[10px]">Account</span>
-            </button>
+              <button
+                onClick={() => setCurrentView('account')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <User size={16} />
+                </div>
+                <span className="text-[10px]">Account</span>
+              </button>
 
-            <button
-              onClick={() => setCurrentView('welcome')}
-              className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <div className="w-5 h-5 flex items-center justify-center">
-                <Shield size={16} />
-              </div>
-              <span className="text-[10px]">Reset</span>
-            </button>
+              <button
+                onClick={() => setCurrentView('welcome')}
+                className="flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Shield size={16} />
+                </div>
+                <span className="text-[10px]">Reset</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -2679,108 +2684,112 @@ const App = () => {
   // Activity View
   if (currentView === 'activity') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95 no-overflow">
         <Toaster position="top-center" />
         
-        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 p-4 sticky top-0 z-10">
-          <div className="max-w-md mx-auto">
-            <h1 className="text-xl font-bold">Your Activity</h1>
-            <p className="text-sm text-muted-foreground">Recent trips and bookings</p>
+        <header className="bg-background/95 backdrop-blur-sm border-b border-border/50 professional-spacing sticky top-0 z-10">
+          <div className="content-wrapper py-4">
+            <h1 className="text-xl font-bold responsive-text">Your Activity</h1>
+            <p className="text-sm text-muted-foreground responsive-text">Recent trips and bookings</p>
           </div>
         </header>
 
-        <div className="p-4 pb-24 max-w-md mx-auto">
-          <div className="text-center py-16">
-            <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <List size={32} className="text-muted-foreground" />
-            </div>
-            <h3 className="text-xl font-bold mb-2">No trips yet</h3>
-            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">Your security cab bookings will appear here</p>
-            
-            {/* Show recent trips if available */}
-            {recentTrips.length > 0 && (
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-left">Recent Bookings</h4>
-                {recentTrips.slice(0, 3).map((trip) => (
-                  <Card key={trip.id} className="text-left">
-                    <CardContent className="p-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h5 className="font-medium text-sm">{trip.service}</h5>
-                          <p className="text-xs text-muted-foreground">{trip.pickup} → {trip.destination}</p>
-                          <p className="text-xs text-muted-foreground">{new Date(trip.date).toLocaleDateString()}</p>
-                        </div>
-                        <Badge variant="outline" className="text-xs">
-                          {trip.status}
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+        <div className="professional-spacing pb-24">
+          <div className="content-wrapper">
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <List size={32} className="text-muted-foreground" />
               </div>
-            )}
-            
-            {/* Show payment history */}
-            {paymentReservations.length > 0 && (
-              <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-left">Payment Activity</h4>
-                {paymentReservations.slice(0, 3).map((payment) => (
-                  <Card key={payment.id} className="text-left">
-                    <CardContent className="p-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h5 className="font-medium text-sm">
-                            {payment.type === 'cancellation_fee' ? 'Cancellation Fee' : 'Service Reservation'}
-                          </h5>
-                          <p className="text-xs text-muted-foreground">
-                            {payment.description || `Service: ${payment.serviceId}`}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(payment.createdAt).toLocaleDateString()}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium text-sm">£{payment.amount}</p>
-                          <Badge 
-                            variant={payment.status === 'charged' ? 'destructive' : payment.status === 'confirmed' ? 'default' : 'secondary'} 
-                            className="text-xs"
-                          >
-                            {payment.status}
+              <h3 className="text-xl font-bold mb-2 responsive-text">No trips yet</h3>
+              <p className="text-muted-foreground mb-6 max-w-sm mx-auto responsive-text">Your security cab bookings will appear here</p>
+              
+              {/* Show recent trips if available */}
+              {recentTrips.length > 0 && (
+                <div className="space-y-3 mb-6">
+                  <h4 className="font-semibold text-left responsive-text">Recent Bookings</h4>
+                  {recentTrips.slice(0, 3).map((trip) => (
+                    <Card key={trip.id} className="text-left">
+                      <CardContent className="p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <h5 className="font-medium text-sm responsive-text">{trip.service}</h5>
+                            <p className="text-xs text-muted-foreground responsive-text">{trip.pickup} → {trip.destination}</p>
+                            <p className="text-xs text-muted-foreground responsive-text">{new Date(trip.date).toLocaleDateString()}</p>
+                          </div>
+                          <Badge variant="outline" className="text-xs flex-shrink-0">
+                            {trip.status}
                           </Badge>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-            
-            <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
-              <Car size={18} className="mr-2" />
-              Book your first cab
-            </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              
+              {/* Show payment history */}
+              {paymentReservations.length > 0 && (
+                <div className="space-y-3 mb-6">
+                  <h4 className="font-semibold text-left responsive-text">Payment Activity</h4>
+                  {paymentReservations.slice(0, 3).map((payment) => (
+                    <Card key={payment.id} className="text-left">
+                      <CardContent className="p-3">
+                        <div className="flex items-center justify-between">
+                          <div className="min-w-0 flex-1">
+                            <h5 className="font-medium text-sm responsive-text">
+                              {payment.type === 'cancellation_fee' ? 'Cancellation Fee' : 'Service Reservation'}
+                            </h5>
+                            <p className="text-xs text-muted-foreground responsive-text">
+                              {payment.description || `Service: ${payment.serviceId}`}
+                            </p>
+                            <p className="text-xs text-muted-foreground responsive-text">
+                              {new Date(payment.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="font-medium text-sm">£{payment.amount}</p>
+                            <Badge 
+                              variant={payment.status === 'charged' ? 'destructive' : payment.status === 'confirmed' ? 'default' : 'secondary'} 
+                              className="text-xs"
+                            >
+                              {payment.status}
+                            </Badge>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+              
+              <Button onClick={() => setCurrentView('home')} className="h-12 px-6 rounded-xl font-semibold">
+                <Car size={18} className="mr-2" />
+                Book your first cab
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
-          <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
-            <button onClick={() => setCurrentView('home')} className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
-              <House size={20} />
-              <span className="text-xs">Home</span>
-            </button>
-            <button onClick={() => setCurrentView('activity')} className="flex flex-col items-center justify-center gap-1 text-amber-600 transition-colors">
-              <List size={20} weight="fill" />
-              <span className="text-xs font-semibold">Activity</span>
-            </button>
-            <button onClick={() => setCurrentView('favorites')} className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
-              <Heart size={20} />
-              <span className="text-xs">Saved</span>
-            </button>
-            <button onClick={() => setCurrentView('account')} className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
-              <User size={20} />
-              <span className="text-xs">Account</span>
-            </button>
+        <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-50">
+          <div className="bottom-nav-container">
+            <div className="grid grid-cols-4 h-16">
+              <button onClick={() => setCurrentView('home')} className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+                <House size={20} />
+                <span className="text-xs">Home</span>
+              </button>
+              <button onClick={() => setCurrentView('activity')} className="flex flex-col items-center justify-center gap-1 text-amber-600 transition-colors">
+                <List size={20} weight="fill" />
+                <span className="text-xs font-semibold">Activity</span>
+              </button>
+              <button onClick={() => setCurrentView('favorites')} className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+                <Heart size={20} />
+                <span className="text-xs">Saved</span>
+              </button>
+              <button onClick={() => setCurrentView('account')} className="flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
+                <User size={20} />
+                <span className="text-xs">Account</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

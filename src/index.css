@@ -6,12 +6,30 @@
     @apply border-border;
   }
   
-  body {
+  /* Prevent horizontal scrolling globally */
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
     font-family: 'Inter', sans-serif;
+    position: relative;
+  }
+  
+  /* Ensure all containers respect viewport width */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
+  }
+  
+  /* App container constraints */
+  #root {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
   }
 }
 
@@ -195,9 +213,11 @@
 .questionnaire-title {
   display: block;
   width: 100%;
+  max-width: 100%;
   word-wrap: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
+  box-sizing: border-box;
 }
 
 .questionnaire-title h3 {
@@ -209,6 +229,7 @@
   overflow-wrap: break-word;
   hyphens: auto;
   white-space: normal; /* Allow text wrapping */
+  max-width: 100%;
 }
 
 .questionnaire-badge {
@@ -217,6 +238,80 @@
   border-radius: 9999px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* Professional layout constraints - No horizontal overflow */
+.professional-container {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 28rem; /* max-w-md equivalent (448px) */
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  box-sizing: border-box;
+}
+
+/* Ensure all cards and components respect container width */
+.questionnaire-card,
+.service-card,
+.work-type-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Bottom navigation - Fixed width, no overflow */
+.bottom-navigation {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+}
+
+.bottom-nav-container {
+  width: 100%;
+  max-width: 28rem; /* max-w-md */
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Grid layouts - prevent overflow */
+.grid-container {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Input containers - prevent expansion */
+.input-container,
+.pickup-input-container,
+.destination-input-container {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
 }
 
 /* Professional card layout with amber gold badge positioning */
@@ -295,9 +390,41 @@
   min-width: 44px;
 }
 
-/* Enhanced animation states */
+/* Enhanced animation states - No horizontal overflow */
 .animate-selection-in {
   animation: selection-bounce 0.3s ease-out;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Professional spacing and alignment */
+.professional-spacing {
+  padding-left: clamp(0.75rem, 2vw, 1rem);
+  padding-right: clamp(0.75rem, 2vw, 1rem);
+  box-sizing: border-box;
+}
+
+.center-content {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  max-width: 100%;
+}
+
+/* Prevent any element from causing horizontal scroll */
+.no-overflow {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Responsive text that never overflows */
+.responsive-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
+  white-space: normal;
 }
 
 /* Checkbox positioning fix - Amber Gold Theme */
