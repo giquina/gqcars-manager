@@ -837,6 +837,11 @@ const App = () => {
   const [rating, setRating] = useState(0)
   const [feedback, setFeedback] = useState('')
 
+  // Receipt system state
+  const [currentReceipt, setCurrentReceipt] = useState<any>(null)
+  const [showReceiptModal, setShowReceiptModal] = useState(false)
+  const [receipts, setReceipts] = useKV("trip-receipts", [] as any[])
+
   // Payment processing state
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
@@ -1128,8 +1133,263 @@ const App = () => {
     return Math.round(R * c * 100) / 100
   }, [])
 
-  // Payment Modal Component
-  const PaymentModal = () => {
+  // Detailed Receipt Modal Component
+  const ReceiptModal = () => {
+    if (!showReceiptModal || !currentReceipt) return null
+
+    const receipt = currentReceipt
+    
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div className="bg-white rounded-2xl max-w-md w-full max-h-[95vh] overflow-y-auto">
+          {/* Receipt Header */}
+          <div className="p-6 border-b border-border/30">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">Trip Receipt</h2>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowReceiptModal(false)}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <X size={16} />
+              </Button>
+            </div>
+            
+            {/* Company Information */}
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 mx-auto bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center">
+                <Shield size={20} className="text-slate-900" weight="fill" />
+              </div>
+              <h3 className="font-bold text-lg">{receipt.company.name}</h3>
+              <div className="text-sm text-muted-foreground">
+                <p>{receipt.company.address}</p>
+                <p>{receipt.company.city}</p>
+                <p>VAT: {receipt.company.vatNumber}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Receipt Details */}
+          <div className="p-6 space-y-6">
+            {/* Receipt Information */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Receipt Number:</span>
+                <span className="text-sm font-bold">{receipt.receiptNumber}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Issue Date:</span>
+                <span className="text-sm">{new Date(receipt.issueDate).toLocaleDateString('en-GB')}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Booking Reference:</span>
+                <span className="text-sm font-mono">{receipt.trip.bookingReference}</span>
+              </div>
+            </div>
+
+            <div className="border-t border-border/30 pt-4">
+              <h4 className="font-semibold mb-3 text-amber-700">Journey Details</h4>
+              <div className="space-y-2">
+                <div>
+                  <p className="text-sm font-medium">{receipt.trip.service}</p>
+                  <p className="text-xs text-muted-foreground">{receipt.trip.serviceDescription}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Date:</span>
+                    <p className="font-medium">{receipt.trip.tripDate}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Time:</span>
+                    <p className="font-medium">{receipt.trip.tripTime}</p>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-1.5 flex-shrink-0"></div>
+                    <div className="min-w-0">
+                      <span className="text-xs text-muted-foreground">From:</span>
+                      <p className="text-sm font-medium break-words">{receipt.trip.pickupLocation}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-1.5 flex-shrink-0"></div>
+                    <div className="min-w-0">
+                      <span className="text-xs text-muted-foreground">To:</span>
+                      <p className="text-sm font-medium break-words">{receipt.trip.destinationLocation}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Distance:</span>
+                    <p className="font-medium">{receipt.trip.distance}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Duration:</span>
+                    <p className="font-medium">{receipt.trip.actualDuration}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Driver & Vehicle Information */}
+            <div className="border-t border-border/30 pt-4">
+              <h4 className="font-semibold mb-3 text-amber-700">Security Driver</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Name:</span>
+                  <span className="font-medium">{receipt.driver.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">License:</span>
+                  <span className="font-mono text-xs">{receipt.driver.licenseNumber}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Vehicle:</span>
+                  <span className="font-medium">{receipt.driver.vehicle}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Plate:</span>
+                  <span className="font-mono">{receipt.driver.licensePlate}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Rating:</span>
+                  <div className="flex items-center gap-1">
+                    <Star size={12} className="text-amber-500 fill-current" />
+                    <span className="font-medium">{receipt.driver.rating}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Billing */}
+            <div className="border-t border-border/30 pt-4">
+              <h4 className="font-semibold mb-3 text-amber-700">Billing Breakdown</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span>Base Fare:</span>
+                  <span>£{receipt.billing.baseFare.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Distance ({receipt.trip.distance}):</span>
+                  <span>£{receipt.billing.distanceFare.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Security Service Fee:</span>
+                  <span>£{receipt.billing.securityFee.toFixed(2)}</span>
+                </div>
+                {receipt.billing.surcharges.amount > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-xs">{receipt.billing.surcharges.description}:</span>
+                    <span>£{receipt.billing.surcharges.amount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="border-t border-border/20 pt-2">
+                  <div className="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span className="font-medium">£{receipt.billing.subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>VAT ({(receipt.billing.vat.rate * 100).toFixed(0)}%):</span>
+                    <span>£{receipt.billing.vat.amount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-base pt-2 border-t border-border/20">
+                    <span>Total:</span>
+                    <span>£{receipt.billing.total.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Information */}
+            <div className="border-t border-border/30 pt-4">
+              <h4 className="font-semibold mb-3 text-amber-700">Payment Details</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Method:</span>
+                  <span className="font-medium">{receipt.payment.method} •••• {receipt.payment.cardLast4}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Transaction ID:</span>
+                  <span className="font-mono text-xs">{receipt.payment.transactionId}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Auth Code:</span>
+                  <span className="font-mono text-xs">{receipt.payment.authCode}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Status:</span>
+                  <Badge className="bg-green-100 text-green-800">{receipt.payment.status}</Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Security & Compliance */}
+            <div className="border-t border-border/30 pt-4">
+              <h4 className="font-semibold mb-3 text-amber-700">Security Compliance</h4>
+              <div className="space-y-1 text-xs text-muted-foreground">
+                <p>✓ {receipt.security.driverBackgroundCheck}</p>
+                <p>✓ {receipt.security.insuranceCover}</p>
+                <p>✓ {receipt.security.vehicleInspection}</p>
+                <p>✓ {receipt.security.complianceStandard}</p>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t border-border/30 pt-4 text-center">
+              <p className="text-xs text-muted-foreground mb-2">
+                Thank you for choosing Armora Cabs 24/7
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Professional Security Transport • Available 24/7
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {receipt.company.phone} • {receipt.company.email}
+              </p>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="p-6 border-t border-border/30 space-y-3">
+            <Button 
+              onClick={() => {
+                // Simulate email receipt
+                toast.success("Receipt emailed to your registered address")
+              }}
+              className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+            >
+              Email Receipt
+            </Button>
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  // Simulate download
+                  toast.success("Receipt downloaded as PDF")
+                }}
+                className="h-10"
+              >
+                Download PDF
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  // Copy receipt link
+                  navigator.clipboard.writeText(`https://armoracabs.co.uk/receipt/${receipt.receiptNumber}`)
+                  toast.success("Receipt link copied")
+                }}
+                className="h-10"
+              >
+                Share Link
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
     if (!showPaymentModal) return null
 
     return (
@@ -1562,8 +1822,156 @@ const App = () => {
     }
   }, [tripStatus, driverTrackingInterval])
 
-  // Enhanced trip completion with tracking cleanup
+  // Generate comprehensive trip receipt
+  const generateTripReceipt = useCallback((tripData: any, paymentData: any, driverData: any) => {
+    const receiptId = `ARM-${Date.now().toString().slice(-8).toUpperCase()}`
+    const journeyDate = new Date()
+    const vatRate = 0.20 // UK VAT rate of 20%
+    
+    // Calculate journey distance and time
+    const distance = routeDistance || 5.2 // Use calculated or default
+    const estimatedDuration = Math.round(distance * 3.5) // Rough time estimate
+    
+    // Calculate detailed pricing breakdown
+    const serviceData = armoraServices.find(s => s.id === selectedService)
+    const baseFare = 18.00
+    const distanceFare = distance * 2.45
+    const securityFee = serviceData?.id === 'essential' ? 8.50 : 
+                       serviceData?.id === 'shadow-escort' ? 45.00 :
+                       serviceData?.id === 'executive' ? 85.00 : 25.00
+    const timeOfDayMultiplier = new Date().getHours() >= 22 || new Date().getHours() <= 6 ? 1.25 : 1.0
+    const surchargeAmount = timeOfDayMultiplier > 1 ? (baseFare + distanceFare) * 0.25 : 0
+    
+    const subtotal = baseFare + distanceFare + securityFee + surchargeAmount
+    const vatAmount = subtotal * vatRate
+    const totalAmount = subtotal + vatAmount
+    
+    const receipt = {
+      id: receiptId,
+      receiptNumber: receiptId,
+      issueDate: journeyDate.toISOString(),
+      
+      // Company Information
+      company: {
+        name: "Armora Cabs 24/7 Limited",
+        address: "25 Victoria Street, Westminster",
+        city: "London SW1H 0EX",
+        phone: "+44 20 7946 0958",
+        email: "receipts@armoracabs.co.uk",
+        website: "www.armoracabs.co.uk",
+        vatNumber: "GB 123 4567 89",
+        companyNumber: "12345678"
+      },
+      
+      // Trip Details
+      trip: {
+        service: serviceData?.name || 'Armora Essential',
+        serviceDescription: serviceData?.tagline || 'Professional security transport',
+        bookingReference: `BK${Date.now().toString().slice(-6)}`,
+        tripDate: journeyDate.toLocaleDateString('en-GB', { 
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+        }),
+        tripTime: journeyDate.toLocaleTimeString('en-GB', { 
+          hour: '2-digit', minute: '2-digit' 
+        }),
+        pickupLocation: selectedPickupLocation?.address || tripData.pickup,
+        destinationLocation: selectedDestinationLocation?.address || tripData.destination,
+        distance: `${distance.toFixed(1)} miles`,
+        estimatedDuration: `${estimatedDuration} minutes`,
+        actualDuration: `${estimatedDuration + Math.floor(Math.random() * 10 - 5)} minutes`
+      },
+      
+      // Driver & Vehicle Information
+      driver: {
+        name: driverData.name,
+        licenseNumber: `SIA-${Math.random().toString(36).substr(2, 8).toUpperCase()}`,
+        driverId: driverData.id,
+        vehicle: driverData.vehicle,
+        licensePlate: `${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)} ${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`,
+        rating: driverData.rating,
+        completedTrips: driverData.completedTrips
+      },
+      
+      // Detailed Billing Breakdown
+      billing: {
+        baseFare: baseFare,
+        distanceFare: distanceFare,
+        securityFee: securityFee,
+        surcharges: {
+          timeOfDay: surchargeAmount > 0 ? surchargeAmount : 0,
+          description: surchargeAmount > 0 ? "Night surcharge (22:00-06:00)" : null
+        },
+        subtotal: subtotal,
+        vat: {
+          rate: vatRate,
+          amount: vatAmount
+        },
+        total: totalAmount,
+        currency: "GBP"
+      },
+      
+      // Payment Information
+      payment: {
+        method: paymentData.method || 'Card',
+        cardLast4: paymentData.cardLast4 || '****',
+        transactionId: `TXN${Date.now().toString().slice(-10)}`,
+        paymentDate: journeyDate.toISOString(),
+        status: 'Completed',
+        authCode: Math.random().toString(36).substr(2, 8).toUpperCase()
+      },
+      
+      // Security & Compliance
+      security: {
+        driverBackgroundCheck: "Enhanced DBS Cleared",
+        insuranceCover: "£5,000,000 Public Liability",
+        vehicleInspection: "Valid MOT & Insurance",
+        complianceStandard: "BS 7858:2019 Certified"
+      },
+      
+      // Customer Information (Optional for privacy)
+      customer: {
+        bookingAccount: "Personal Account",
+        loyaltyMember: false,
+        corporateAccount: false
+      },
+      
+      // Additional Information
+      metadata: {
+        generatedAt: new Date().toISOString(),
+        version: "1.0",
+        type: "Security Transport Receipt",
+        vatIncluded: true,
+        currency: "GBP",
+        region: "United Kingdom"
+      }
+    }
+    
+    return receipt
+  }, [selectedService, selectedPickupLocation, selectedDestinationLocation, routeDistance, armoraServices])
+
+  // Enhanced trip completion with receipt generation
   const completeTrip = useCallback(() => {
+    if (!assignedDriver || !currentTrip) return
+    
+    // Generate comprehensive receipt
+    const receipt = generateTripReceipt(
+      currentTrip,
+      { method: 'Card', cardLast4: '4567' }, // This would come from actual payment data
+      assignedDriver
+    )
+    
+    // Save receipt to storage
+    setReceipts(prev => [receipt, ...prev])
+    setCurrentReceipt(receipt)
+    
+    // Update trip with receipt reference
+    const updatedTrip = {
+      ...currentTrip,
+      status: 'completed',
+      receiptId: receipt.id,
+      completedAt: new Date().toISOString()
+    }
+    
     setTripStatus('completed')
     setCurrentTrip(null)
     setAssignedDriver(null)
@@ -1577,11 +1985,21 @@ const App = () => {
       setDriverTrackingInterval(null)
     }
     
-    toast.success("Trip completed successfully!", {
-      description: "Please rate your security transport experience"
+    // Update recent trips with receipt reference
+    setRecentTrips(prev => prev.map(trip => 
+      trip.id === currentTrip.id ? updatedTrip : trip
+    ))
+    
+    toast.success("Trip completed! Receipt generated", {
+      description: `Receipt #${receipt.receiptNumber}`,
+      action: {
+        label: "View Receipt",
+        onClick: () => setShowReceiptModal(true)
+      }
     })
+    
     setCurrentView('trip-rating')
-  }, [driverTrackingInterval])
+  }, [driverTrackingInterval, currentTrip, assignedDriver, generateTripReceipt, setReceipts, setRecentTrips])
   const createPaymentReservation = useCallback((serviceId: string, amount: number) => {
     const reservation = {
       id: Date.now().toString(),
@@ -3499,6 +3917,7 @@ const App = () => {
         </div>
 
         <PaymentModal />
+        <ReceiptModal />
       </div>
     )
   }
@@ -3622,6 +4041,43 @@ const App = () => {
             Add Payment Method
           </Button>
 
+          {/* Recent Receipts */}
+          {receipts.length > 0 && (
+            <div className="space-y-4">
+              <h2 className="font-semibold text-sm text-muted-foreground">Recent Receipts</h2>
+              {receipts.slice(0, 5).map(receipt => (
+                <Card 
+                  key={receipt.id} 
+                  className="border border-border/40 cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => {
+                    setCurrentReceipt(receipt)
+                    setShowReceiptModal(true)
+                  }}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold text-sm">{receipt.trip.service}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Receipt #{receipt.receiptNumber}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(receipt.issueDate).toLocaleDateString('en-GB')}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-sm">£{receipt.billing.total.toFixed(2)}</p>
+                        <Badge variant="secondary" className="text-xs">
+                          {receipt.payment.status}
+                        </Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
           {/* Payment History */}
           {paymentHistory.length > 0 && (
             <div className="space-y-4">
@@ -3652,6 +4108,7 @@ const App = () => {
         </div>
 
         <PaymentModal />
+        <ReceiptModal />
       </div>
     )
   }
@@ -3748,9 +4205,29 @@ const App = () => {
                         <Badge variant="secondary" className="text-xs">
                           {trip.status}
                         </Badge>
-                        <Button variant="outline" size="sm" className="text-xs h-7">
-                          Book Again
-                        </Button>
+                        <div className="flex gap-2">
+                          {trip.receiptId && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="text-xs h-7"
+                              onClick={() => {
+                                const receipt = receipts.find(r => r.id === trip.receiptId)
+                                if (receipt) {
+                                  setCurrentReceipt(receipt)
+                                  setShowReceiptModal(true)
+                                } else {
+                                  toast.error("Receipt not found")
+                                }
+                              }}
+                            >
+                              View Receipt
+                            </Button>
+                          )}
+                          <Button variant="outline" size="sm" className="text-xs h-7">
+                            Book Again
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -4538,7 +5015,13 @@ const App = () => {
                 }
                 
                 // Save rating and feedback
-                toast.success("Thank you for your feedback!")
+                toast.success("Thank you for your feedback!", {
+                  description: "Your receipt is ready",
+                  action: {
+                    label: "View Receipt",
+                    onClick: () => setShowReceiptModal(true)
+                  }
+                })
                 
                 // Reset trip state
                 setRating(0)
@@ -4551,6 +5034,16 @@ const App = () => {
               Submit Rating
             </Button>
             
+            {currentReceipt && (
+              <Button 
+                variant="outline"
+                onClick={() => setShowReceiptModal(true)}
+                className="w-full h-12"
+              >
+                View Trip Receipt
+              </Button>
+            )}
+            
             <Button 
               variant="outline"
               onClick={() => setCurrentView('home')}
@@ -4560,6 +5053,181 @@ const App = () => {
             </Button>
           </div>
         </div>
+        
+        <ReceiptModal />
+      </div>
+    )
+  }
+
+  // Receipts Management View
+  if (currentView === 'receipts') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/95">
+        <Toaster position="top-center" />
+        
+        {/* Header */}
+        <header className="bg-background/98 backdrop-blur-sm border-b border-border/30 p-4 sticky top-0 z-10">
+          <div className="max-w-md mx-auto">
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentView('account')}
+                className="w-8 h-8 rounded-full p-0"
+              >
+                <ArrowLeft size={16} />
+              </Button>
+              <div>
+                <h1 className="text-lg font-bold">Trip Receipts</h1>
+                <p className="text-xs text-muted-foreground">Detailed billing and journey records</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="p-4 pb-24 max-w-md mx-auto space-y-6">
+          {/* Receipts Summary */}
+          <Card className="border border-border/40">
+            <CardContent className="p-4">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-primary">{receipts.length}</p>
+                  <p className="text-xs text-muted-foreground">Total Receipts</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-green-600">
+                    £{receipts.reduce((sum, receipt) => sum + receipt.billing.total, 0).toFixed(2)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Total Amount</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-amber-600">
+                    £{receipts.length > 0 ? (receipts.reduce((sum, receipt) => sum + receipt.billing.total, 0) / receipts.length).toFixed(2) : '0.00'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Average Trip</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Export Options */}
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                toast.success("Monthly statement downloading...")
+              }}
+              className="h-12 flex flex-col gap-1"
+            >
+              <div className="text-xs font-semibold">Download</div>
+              <div className="text-xs text-muted-foreground">Monthly Statement</div>
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => {
+                toast.success("Tax summary downloading...")
+              }}
+              className="h-12 flex flex-col gap-1"
+            >
+              <div className="text-xs font-semibold">Download</div>
+              <div className="text-xs text-muted-foreground">Tax Summary</div>
+            </Button>
+          </div>
+
+          {/* All Receipts */}
+          <div className="space-y-3">
+            <h2 className="font-semibold text-sm text-muted-foreground">All Receipts ({receipts.length})</h2>
+            
+            {receipts.length > 0 ? (
+              <div className="space-y-3">
+                {receipts.map(receipt => (
+                  <Card 
+                    key={receipt.id} 
+                    className="border border-border/40 cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => {
+                      setCurrentReceipt(receipt)
+                      setShowReceiptModal(true)
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold text-sm">{receipt.trip.service}</h3>
+                            <p className="text-xs text-muted-foreground">
+                              Receipt #{receipt.receiptNumber}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-base text-green-600">£{receipt.billing.total.toFixed(2)}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(receipt.issueDate).toLocaleDateString('en-GB')}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-1 text-xs">
+                          <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                            <span className="text-muted-foreground truncate">{receipt.trip.pickupLocation}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                            <span className="text-muted-foreground truncate">{receipt.trip.destinationLocation}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2 border-t border-border/20">
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span>{receipt.trip.distance}</span>
+                            <span>{receipt.trip.actualDuration}</span>
+                            <span>{receipt.driver.name}</span>
+                          </div>
+                          <Badge variant="secondary" className="text-xs">
+                            {receipt.payment.status}
+                          </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 text-xs bg-muted/30 rounded-lg p-2">
+                          <div className="text-center">
+                            <div className="font-medium">£{receipt.billing.subtotal.toFixed(2)}</div>
+                            <div className="text-muted-foreground">Subtotal</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="font-medium">£{receipt.billing.vat.amount.toFixed(2)}</div>
+                            <div className="text-muted-foreground">VAT (20%)</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="font-medium">{receipt.payment.method}</div>
+                            <div className="text-muted-foreground">•••• {receipt.payment.cardLast4}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="border border-border/40">
+                <CardContent className="p-8 text-center">
+                  <List size={48} className="mx-auto text-muted-foreground mb-4" />
+                  <h3 className="font-semibold mb-2">No receipts yet</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Complete trips to generate detailed receipts with full billing breakdown
+                  </p>
+                  <Button 
+                    onClick={() => setCurrentView('home')}
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-900 font-semibold"
+                  >
+                    Book Your First Trip
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+
+        <ReceiptModal />
       </div>
     )
   }
@@ -4637,17 +5305,20 @@ const App = () => {
               </CardContent>
             </Card>
 
-            <Card className="border border-border/40">
+            <Card 
+              className="border border-border/40 cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setCurrentView('receipts')}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Shield size={20} className="text-green-600" />
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <List size={20} className="text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-semibold text-sm">Security Preferences</p>
+                      <p className="font-semibold text-sm">Trip Receipts</p>
                       <p className="text-xs text-muted-foreground">
-                        Assessment completed - Armora Essential recommended
+                        {receipts.length} receipt{receipts.length !== 1 ? 's' : ''} available
                       </p>
                     </div>
                   </div>
@@ -4687,13 +5358,13 @@ const App = () => {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-green-600">
-                      £{paymentHistory.reduce((sum, payment) => sum + payment.amount, 0).toFixed(0)}
+                      £{receipts.reduce((sum, receipt) => sum + receipt.billing.total, 0).toFixed(0)}
                     </p>
                     <p className="text-xs text-muted-foreground">Total Spent</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-amber-600">4.9</p>
-                    <p className="text-xs text-muted-foreground">Avg Rating</p>
+                    <p className="text-2xl font-bold text-amber-600">{receipts.length}</p>
+                    <p className="text-xs text-muted-foreground">Receipts</p>
                   </div>
                 </div>
               </CardContent>
@@ -4789,6 +5460,8 @@ const App = () => {
             </div>
           </div>
         </div>
+
+        <ReceiptModal />
       </div>
     )
   }
