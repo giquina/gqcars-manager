@@ -2619,6 +2619,7 @@ const App = () => {
               `Book ${armoraServices.find(s => s.id === selectedService)?.name || 'Security Cab'}`
             }
           </Button>
+          </div>
         </div>
 
         {/* Bottom Navigation - Always Visible */}
