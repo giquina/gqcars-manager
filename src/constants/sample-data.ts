@@ -72,9 +72,24 @@ export const londonLocations = [
 
 export const quickMessages = [
   "I'm running a few minutes late",
-  "Where exactly should I meet you?",
-  "Thank you!",
+  "Please provide verification code",
+  "I need to change pickup location",
+  "Can you confirm your identity?",
+  "Thank you for the secure transport",
   "Please wait, I'll be right there",
-  "Can you see me?",
-  "Traffic is heavy, might be delayed"
+  "Is the route clear?",
+  "I have security concerns",
+  "Need alternative exit route",
+  "All clear, proceeding as planned"
+]
+
+export const securityQuickMessages = [
+  "Confirm secure route",
+  "All clear to proceed", 
+  "Need alternative pickup point",
+  "Security situation normal",
+  "Requesting route change",
+  "Verify backup protocols",
+  "Emergency procedures ready",
+  "Counter-surveillance active"
 ]

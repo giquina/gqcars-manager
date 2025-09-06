@@ -5,6 +5,10 @@ import { useKV } from '@github/spark/hooks'
 // Components
 import { ErrorBoundary } from './components/common/ErrorBoundary'
 import { HomeView } from './views/HomeView'
+import { PanicButton, EmergencyResponseModal } from './components/security/PanicButton'
+import { SecurityBriefingModal } from './components/security/SecurityBriefingModal'
+import { SecurityRatingModal } from './components/security/SecurityRatingModal'
+import { IncidentReportModal } from './components/security/IncidentReportModal'
 
 // Hooks
 import { useGeolocation } from './hooks/useGeolocation'
@@ -38,6 +42,13 @@ function App() {
   const [showFullMap, setShowFullMap] = useState(false)
   const [statusMessage, setStatusMessage] = useState<string>('')
   const [statusType, setStatusType] = useState<'info' | 'success' | 'warning' | 'error'>('info')
+  
+  // Security state
+  const [showSecurityBriefing, setShowSecurityBriefing] = useState(false)
+  const [showEmergencyResponse, setShowEmergencyResponse] = useState(false)
+  const [showSecurityRating, setShowSecurityRating] = useState(false)
+  const [showIncidentReport, setShowIncidentReport] = useState(false)
+  const [securityBriefingAcknowledged, setSecurityBriefingAcknowledged] = useState(false)
   
   // Form state
   const [bookingForm, setBookingForm] = useState<BookingForm>({
@@ -140,12 +151,21 @@ function App() {
     }
     
     if (!selectedService) {
-      toast.error("🚗 Please choose your ride type")
+      toast.error("🚗 Please choose your security transport level")
       return
     }
     
-    const driver = drivers[Math.floor(Math.random() * drivers.length)]
     const service = rideServices.find(s => s.id === selectedService)
+    
+    // For enhanced+ security levels, show security briefing first
+    if (service && (service.securityLevel === 'Enhanced' || service.securityLevel === 'Executive' || service.securityLevel === 'Convoy' || service.securityLevel === 'Covert')) {
+      if (!securityBriefingAcknowledged) {
+        setShowSecurityBriefing(true)
+        return
+      }
+    }
+    
+    const driver = drivers[Math.floor(Math.random() * drivers.length)]
     
     const distance = calculateDistance(bookingForm.pickupCoords!, bookingForm.destinationCoords!)
     const estimatedDuration = Math.ceil(distance * 2)
@@ -172,23 +192,50 @@ function App() {
     
     setCurrentTrip(trip)
     setAssignedDriver(driver)
-    setCurrentView('tracking')
     setIsChatOpen(false)
     setUnreadMessages(0)
     
     setStatusMessage('')
     setTimeout(() => {
-      showPassengerStatus(`🚗 ${driver.name} is your driver - arriving in ${driver.eta} minutes`, 'success')
+      showPassengerStatus(`🚗 ${driver.name} is your security driver - arriving in ${driver.eta} minutes`, 'success')
     }, 1000)
     
     setRecentTrips((prev: Trip[]) => [trip, ...prev.slice(0, 9)])
     
-    toast.success(`🚗 ${driver.name} is your driver! They'll arrive in ${driver.eta} minutes`, {
+    toast.success(`🚗 ${driver.name} is your security driver! They'll arrive in ${driver.eta} minutes`, {
       duration: 5000,
-      description: `${driver.vehicle} • ${driver.license}`
+      description: `${driver.vehicle} • Security Level: ${service?.securityLevel}`
     })
     
     setBookingForm({ pickup: '', destination: '', pickupCoords: null, destinationCoords: null })
+  }
+
+  // Security handlers
+  const handlePanicActivated = () => {
+    setShowEmergencyResponse(true)
+    // In a real app, this would trigger actual emergency protocols
+    console.log('PANIC BUTTON ACTIVATED - Emergency services contacted')
+  }
+
+  const handleSecurityBriefingAcknowledged = () => {
+    setSecurityBriefingAcknowledged(true)
+    setShowSecurityBriefing(false)
+    // Continue with booking after briefing
+    handleBookRide()
+  }
+
+  const handleTripCompleted = () => {
+    if (currentTrip && assignedDriver) {
+      // Show security rating modal for completed trips
+      setShowSecurityRating(true)
+    }
+  }
+
+  const handleSecurityRatingSubmitted = () => {
+    setShowSecurityRating(false)
+    setCurrentTrip(null)
+    setAssignedDriver(null)
+    toast.success('Trip completed and rated - thank you for using our security transport service')
   }
 
   // Scheduled rides handlers
@@ -284,6 +331,58 @@ function App() {
           handleBookRide={handleBookRide}
           showPassengerStatus={showPassengerStatus}
         />
+
+        {/* Security Components */}
+        <PanicButton
+          onPanic={handlePanicActivated}
+          currentTrip={currentTrip}
+          isVisible={!!currentTrip}
+        />
+
+        <EmergencyResponseModal
+          isOpen={showEmergencyResponse}
+          onClose={() => setShowEmergencyResponse(false)}
+          currentTrip={currentTrip}
+        />
+
+        {currentTrip && assignedDriver && (
+          <>
+            <SecurityBriefingModal
+              isOpen={showSecurityBriefing}
+              onClose={() => setShowSecurityBriefing(false)}
+              onAcknowledge={handleSecurityBriefingAcknowledged}
+              service={currentTrip.service}
+              driver={assignedDriver}
+            />
+
+            <SecurityRatingModal
+              isOpen={showSecurityRating}
+              onClose={() => setShowSecurityRating(false)}
+              trip={currentTrip}
+              driver={assignedDriver}
+              onRatingSubmitted={handleSecurityRatingSubmitted}
+            />
+          </>
+        )}
+
+        <IncidentReportModal
+          isOpen={showIncidentReport}
+          onClose={() => setShowIncidentReport(false)}
+          trip={currentTrip}
+          driver={assignedDriver}
+          location={userLocation}
+        />
+
+        {/* Add incident report button when in trip */}
+        {currentTrip && (
+          <button
+            onClick={() => setShowIncidentReport(true)}
+            className="fixed bottom-20 left-4 w-16 h-16 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center shadow-lg z-40"
+            aria-label="Report Security Incident"
+          >
+            ⚠️
+          </button>
+        )}
       </div>
     </ErrorBoundary>
   )
