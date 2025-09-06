@@ -1,23 +1,59 @@
 export const drivers = [
   {
     id: 1,
-    name: 'James Wilson',
+    name: 'Marcus Thompson',
     rating: 4.9,
-    completedTrips: 1247,
-    vehicle: 'Toyota Prius - Silver',
+    completedTrips: 847,
+    vehicle: 'BMW 5 Series - Black (Armored)',
     license: 'GK67 XBN',
     photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-    eta: 3
+    eta: 4,
+    securityClearance: 'SC Level',
+    certifications: ['Close Protection', 'Defensive Driving', 'First Aid Certified'],
+    experience: 'Ex-Military Police, 8 years security transport',
+    specializations: ['Executive Protection', 'Counter-surveillance', 'Emergency Response']
   },
   {
     id: 2,
-    name: 'Sarah Mitchell',
+    name: 'Victoria Hayes',
     rating: 4.8,
-    completedTrips: 892,
-    vehicle: 'Honda Insight - Black',
+    completedTrips: 692,
+    vehicle: 'Mercedes E-Class - Silver (Security Enhanced)',
     license: 'BV19 MKL',
     photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b586?w=400&q=80',
-    eta: 4
+    eta: 5,
+    securityClearance: 'DV Cleared',
+    certifications: ['Advanced Driving', 'Tactical Response', 'VIP Protection'],
+    experience: 'Former Diplomatic Protection, 12 years experience',
+    specializations: ['Covert Operations', 'Route Planning', 'Threat Assessment']
+  },
+  {
+    id: 3,
+    name: 'David Chen',
+    rating: 4.7,
+    completedTrips: 524,
+    vehicle: 'Audi A6 - Dark Blue (Unmarked)',
+    license: 'LC21 PMR',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
+    eta: 3,
+    securityClearance: 'Enhanced DBS',
+    certifications: ['Basic Security', 'Customer Service Excellence'],
+    experience: 'Licensed security driver, 4 years experience',
+    specializations: ['Discrete Transport', 'Client Confidentiality', 'Urban Navigation']
+  },
+  {
+    id: 4,
+    name: 'Alexandra Rodriguez',
+    rating: 4.9,
+    completedTrips: 1156,
+    vehicle: 'Range Rover Vogue - Black (Multi-Threat)',
+    license: 'HR18 KLM',
+    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80',
+    eta: 6,
+    securityClearance: 'Secret Level',
+    certifications: ['Convoy Operations', 'Crisis Management', 'Advanced First Aid'],
+    experience: 'Ex-Special Forces, 15 years protective services',
+    specializations: ['Multi-vehicle Coordination', 'High-Risk Transport', 'Emergency Evacuation']
   }
 ]
 

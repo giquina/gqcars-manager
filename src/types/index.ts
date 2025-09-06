@@ -17,6 +17,10 @@ export interface Driver {
   photo: string
   eta: number
   location?: Location
+  securityClearance?: string
+  certifications?: string[]
+  experience?: string
+  specializations?: string[]
 }
 
 export interface RideService {
@@ -28,6 +32,8 @@ export interface RideService {
   icon: any
   capacity: string
   vehicle: string
+  securityLevel?: string
+  features?: string[]
 }
 
 export interface Trip {
