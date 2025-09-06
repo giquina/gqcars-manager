@@ -3,7 +3,6 @@ import { toast } from 'sonner'
 
 export const useGeolocation = () => {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
-  const [address, setAddress] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [accuracy, setAccuracy] = useState<number>(0)
@@ -31,16 +30,6 @@ export const useGeolocation = () => {
         setAccuracy(position.coords.accuracy)
         setHeading(position.coords.heading)
         setSpeed(position.coords.speed)
-        
-        // Reverse geocoding to get address
-        if (window.google && window.google.maps) {
-          const geocoder = new window.google.maps.Geocoder()
-          geocoder.geocode({ location: coords }, (results, status) => {
-            if (status === 'OK' && results?.[0]) {
-              setAddress(results[0].formatted_address)
-            }
-          })
-        }
         
         setLoading(false)
       },
@@ -82,16 +71,6 @@ export const useGeolocation = () => {
         setAccuracy(position.coords.accuracy)
         setHeading(position.coords.heading)
         setSpeed(position.coords.speed)
-        
-        // Update address less frequently to avoid rate limits
-        if (window.google && window.google.maps && Math.random() > 0.8) {
-          const geocoder = new window.google.maps.Geocoder()
-          geocoder.geocode({ location: coords }, (results, status) => {
-            if (status === 'OK' && results?.[0]) {
-              setAddress(results[0].formatted_address)
-            }
-          })
-        }
       },
       (error) => {
         console.warn('Geolocation error:', error)
@@ -116,7 +95,6 @@ export const useGeolocation = () => {
 
   return { 
     location, 
-    address, 
     loading, 
     error, 
     accuracy, 

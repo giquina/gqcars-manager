@@ -1,78 +1,80 @@
 import React from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { House, List, Heart, User } from "@phosphor-icons/react"
+import { House, List, Heart, User, Shield } from "@phosphor-icons/react"
 
 interface BottomNavigationProps {
   currentView: string
   onNavigate: (view: string) => void
 }
 
-export const BottomNavigation: React.FC<BottomNavigationProps> = ({ currentView, onNavigate }) => {
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const handleNavigation = (path: string, viewName: string) => {
-    navigate(path)
-    onNavigate(viewName)
-  }
-
-  const isActive = (path: string) => location.pathname === path
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ currentView, onNavigate }) => {
+  const navigationItems = [
+    {
+      id: 'home',
+      label: 'Home',
+      icon: House,
+      weight: 'fill' as const,
+    },
+    {
+      id: 'activity',
+      label: 'Activity',
+      icon: List,
+      weight: 'regular' as const,
+    },
+    {
+      id: 'favorites',
+      label: 'Saved',
+      icon: Heart,
+      weight: 'regular' as const,
+    },
+    {
+      id: 'account',
+      label: 'Account',
+      icon: User,
+      weight: 'regular' as const,
+    },
+    {
+      id: 'welcome',
+      label: 'Reset',
+      icon: Shield,
+      weight: 'regular' as const,
+    },
+  ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/50">
-      <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
-        <button
-          onClick={() => handleNavigation('/', 'home')}
-          className={`flex flex-col items-center justify-center gap-1 transition-colors ${
-            isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-          aria-label="Home"
-        >
-          <div className="w-6 h-6 flex items-center justify-center">
-            <House size={20} weight={isActive('/') ? "fill" : "regular"} />
-          </div>
-          <span className={`text-xs ${isActive('/') ? 'font-semibold' : ''}`}>Home</span>
-        </button>
-        
-        <button
-          onClick={() => handleNavigation('/activity', 'activity')}
-          className={`flex flex-col items-center justify-center gap-1 transition-colors ${
-            isActive('/activity') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-          aria-label="Activity"
-        >
-          <div className="w-6 h-6 flex items-center justify-center">
-            <List size={20} weight={isActive('/activity') ? "fill" : "regular"} />
-          </div>
-          <span className={`text-xs ${isActive('/activity') ? 'font-semibold' : ''}`}>Activity</span>
-        </button>
-
-        <button
-          onClick={() => handleNavigation('/favorites', 'favorites')}
-          className={`flex flex-col items-center justify-center gap-1 transition-colors ${
-            isActive('/favorites') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-          aria-label="Saved places"
-        >
-          <div className="w-6 h-6 flex items-center justify-center">
-            <Heart size={20} weight={isActive('/favorites') ? "fill" : "regular"} />
-          </div>
-          <span className={`text-xs ${isActive('/favorites') ? 'font-semibold' : ''}`}>Saved</span>
-        </button>
-
-        <button
-          onClick={() => handleNavigation('/account', 'account')}
-          className={`flex flex-col items-center justify-center gap-1 transition-colors ${
-            isActive('/account') ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-          }`}
-          aria-label="Account"
-        >
-          <div className="w-6 h-6 flex items-center justify-center">
-            <User size={20} weight={isActive('/account') ? "fill" : "regular"} />
-          </div>
-          <span className={`text-xs ${isActive('/account') ? 'font-semibold' : ''}`}>Account</span>
-        </button>
+    <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
+      <div className="bottom-nav-container">
+        <div className="grid grid-cols-5 h-12">
+          {navigationItems.map((item) => {
+            const Icon = item.icon
+            const isActive = currentView === item.id
+            
+            return (
+              <button
+                key={item.id}
+                onClick={() => onNavigate(item.id)}
+                className={`flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                  isActive 
+                    ? 'text-amber-600' 
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                aria-label={item.label}
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <Icon 
+                    size={16} 
+                    weight={isActive && item.id === 'home' ? 'fill' : 'regular'} 
+                  />
+                </div>
+                <span className={`text-[10px] ${isActive ? 'font-semibold' : ''}`}>
+                  {item.label}
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
 }
+
+export default BottomNavigation

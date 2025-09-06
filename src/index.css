@@ -129,7 +129,8 @@
 /* Content Container */
 .welcome-content-container {
   @apply max-w-md mx-auto text-center space-y-8;
-  @apply animate-in fade-in duration-1000 relative z-10;
+  @apply relative z-10;
+  animation: fadeIn 1s ease-in;
 }
 
 /* Logo Styles */

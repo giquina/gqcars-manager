@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { motion, useAnimation } from 'framer-motion'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -35,13 +36,9 @@ import {
 import { toast, Toaster } from 'sonner'
 import { useKV } from '@github/spark/hooks'
 
-// Type declarations for Google Maps
+// Type declarations
 declare global {
   interface Window {
-    google?: {
-      maps: any
-    }
-    googleMapsLoaded?: boolean
     PaymentRequest?: any
     ApplePaySession?: any
   }
@@ -84,280 +81,6 @@ const MapComponent = ({
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-sm font-medium text-gray-700">Live Tracking</span>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ARMORA Premium Branded Security Transport Services with detailed information
-      if (!isTrackingMode) {
-        map.addListener('click', (event: any) => {
-          if (event.latLng) {
-            const location = {
-              lat: event.latLng.lat(),
-              lng: event.latLng.lng()
-            }
-            
-            // Add/update pickup marker
-            if (markerRef.current) {
-              markerRef.current.setMap(null)
-            }
-            
-            markerRef.current = new window.google.maps.Marker({
-              position: location,
-              map: map,
-              icon: {
-                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#EF4444" stroke="white" stroke-width="1"/>
-                    <circle cx="12" cy="9" r="2.5" fill="white"/>
-                  </svg>
-                `),
-                scaledSize: new window.google.maps.Size(32, 32),
-                anchor: new window.google.maps.Point(16, 32)
-              },
-              title: "Pickup location"
-            })
-
-            // Reverse geocode to get address
-            if (geocoderRef.current) {
-              geocoderRef.current.geocode(
-                { location: location },
-                (results: any, status: string) => {
-                  if (status === 'OK' && results && results[0]) {
-                    const address = results[0].formatted_address
-                    onLocationSelect({
-                      lat: location.lat,
-                      lng: location.lng,
-                      address: address
-                    })
-                    toast.success("Pickup location selected", {
-                      description: address
-                    })
-                  } else {
-                    onLocationSelect({
-                      lat: location.lat,
-                      lng: location.lng,
-                      address: `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`
-                    })
-                  }
-                }
-              )
-            }
-          }
-        })
-      }
-
-      setIsMapLoaded(true)
-    }
-
-    // Check if Google Maps is already loaded
-    if (window.google?.maps) {
-      initializeMap()
-    } else {
-      // Listen for Google Maps load event
-      const handleMapsLoad = () => {
-        initializeMap()
-      }
-      window.addEventListener('google-maps-loaded', handleMapsLoad)
-      
-      return () => {
-        window.removeEventListener('google-maps-loaded', handleMapsLoad)
-      }
-    }
-  }, [currentLocation, onLocationSelect, isTrackingMode])
-
-  // Update driver location marker with real-time tracking
-  useEffect(() => {
-    if (googleMapRef.current && driverLocation && isTrackingMode) {
-      // Remove existing driver marker
-      if (driverMarkerRef.current) {
-        driverMarkerRef.current.setMap(null)
-      }
-      
-      // Add new driver marker with car icon
-      driverMarkerRef.current = new window.google.maps.Marker({
-        position: driverLocation,
-        map: googleMapRef.current,
-        icon: {
-          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="11" width="18" height="8" rx="2" fill="#1D4ED8" stroke="white" stroke-width="1"/>
-              <circle cx="7" cy="17" r="1.5" fill="white"/>
-              <circle cx="17" cy="17" r="1.5" fill="white"/>
-              <path d="M5 11V9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2" stroke="white" stroke-width="1"/>
-              <circle cx="12" cy="12" r="1" fill="white"/>
-            </svg>
-          `),
-          scaledSize: new window.google.maps.Size(32, 32),
-          anchor: new window.google.maps.Point(16, 16)
-        },
-        title: "Your security driver",
-        zIndex: 1000
-      })
-
-      // Auto-center map to show both driver and pickup location
-      if (selectedLocation) {
-        const bounds = new window.google.maps.LatLngBounds()
-        bounds.extend(driverLocation)
-        bounds.extend(selectedLocation)
-        
-        // Add some padding to the bounds
-        googleMapRef.current.fitBounds(bounds, {
-          padding: { top: 50, right: 50, bottom: 50, left: 50 }
-        })
-        
-        // Ensure minimum zoom level for city view
-        window.google.maps.event.addListenerOnce(googleMapRef.current, 'bounds_changed', () => {
-          if (googleMapRef.current.getZoom() > 16) {
-            googleMapRef.current.setZoom(16)
-          }
-        })
-      }
-    }
-  }, [driverLocation, selectedLocation, isTrackingMode])
-
-  // Update destination marker when destination changes
-  useEffect(() => {
-    if (googleMapRef.current && destinationLocation) {
-      // Remove existing destination marker
-      if (destinationMarkerRef.current) {
-        destinationMarkerRef.current.setMap(null)
-      }
-      
-      // Add new destination marker
-      destinationMarkerRef.current = new window.google.maps.Marker({
-        position: destinationLocation,
-        map: googleMapRef.current,
-        icon: {
-          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#22C55E" stroke="white" stroke-width="1"/>
-              <circle cx="12" cy="9" r="2.5" fill="white"/>
-            </svg>
-          `),
-          scaledSize: new window.google.maps.Size(32, 32),
-          anchor: new window.google.maps.Point(16, 32)
-        },
-        title: "Destination"
-      })
-
-      // Adjust map bounds to include both pickup and destination
-      if (selectedLocation) {
-        const bounds = new window.google.maps.LatLngBounds()
-        bounds.extend(selectedLocation)
-        bounds.extend(destinationLocation)
-        googleMapRef.current.fitBounds(bounds)
-      }
-    }
-  }, [destinationLocation, selectedLocation])
-
-  // Get user's current location
-  const getCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      toast.error("Geolocation is not supported by this browser")
-      return
-    }
-
-    toast.loading("Getting your location...")
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const location = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-        
-        if (googleMapRef.current) {
-          googleMapRef.current.setCenter(location)
-          googleMapRef.current.setZoom(16)
-          
-          // Add current location marker
-          if (currentLocationMarkerRef.current) {
-            currentLocationMarkerRef.current.setMap(null)
-          }
-          
-          currentLocationMarkerRef.current = new window.google.maps.Marker({
-            position: location,
-            map: googleMapRef.current,
-            icon: {
-              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="8" fill="#3B82F6" stroke="white" stroke-width="2"/>
-                  <circle cx="12" cy="12" r="3" fill="white"/>
-                </svg>
-              `),
-              scaledSize: new window.google.maps.Size(24, 24)
-            },
-            title: "Your current location"
-          })
-        }
-        
-        toast.success("Location found!")
-      },
-      (error) => {
-        console.error("Error getting location:", error)
-        toast.error("Could not get your location")
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000
-      }
-    )
-  }
-
-  return (
-    <div className="relative h-48 bg-slate-100 rounded-lg overflow-hidden">
-      <div ref={mapRef} className="w-full h-full" />
-      
-      {!isMapLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 bg-blue-500 rounded-full mx-auto flex items-center justify-center animate-pulse">
-              <Crosshair size={24} className="text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-700">Loading map...</p>
-              <p className="text-xs text-slate-500">Tap map to set pickup point</p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Map Controls */}
-      <div className="absolute top-3 right-3 space-y-2">
-        <Button 
-          size="sm" 
-          variant="secondary" 
-          className="w-8 h-8 p-0 bg-white/95 hover:bg-white shadow-md"
-          onClick={getCurrentLocation}
-          title="Center on current location"
-        >
-          <Crosshair size={14} />
-        </Button>
-      </div>
-      
-      {/* Status Indicator */}
-      {isMapLoaded && (
-        <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm">
-          <div className="flex items-center gap-2">
-            {isTrackingMode ? (
-              <>
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                <span className="text-xs font-medium text-slate-700">
-                  Live tracking active
-                </span>
-              </>
-            ) : (
-              <>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-xs font-medium text-slate-700">
-                  {selectedLocation ? 'Pickup selected' : 'Tap to select pickup'}
-                </span>
-              </>
-            )}
           </div>
         </div>
       )}
@@ -1046,92 +769,25 @@ const App = () => {
     setShowPickupSuggestions(false)
   }, [])
 
-  // Geocoding and Places API integration
+  // Address geocoding (simplified without Google Maps dependency)
   const geocodeAddress = useCallback(async (address: string, isDestination: boolean = false) => {
-    if (!window.google?.maps || !address.trim()) return []
+    // Note: This is a stub - in a real app, you'd use a geocoding service like Nominatim
+    // or integrate with your Leaflet map's geocoding capabilities
+    if (!address.trim()) return []
     
     try {
-      const geocoder = new window.google.maps.Geocoder()
-      const placesService = new window.google.maps.places.PlacesService(document.createElement('div'))
-      
-      // Use Places Autocomplete for better results
-      return new Promise((resolve) => {
-        const request = {
-          input: address,
-          location: currentLocation ? new window.google.maps.LatLng(currentLocation.lat, currentLocation.lng) : undefined,
-          radius: currentLocation ? 50000 : undefined, // 50km radius
-          componentRestrictions: { country: 'GB' }, // UK only
-          types: ['establishment', 'geocode'] // Include businesses and addresses
-        }
-        
-        const autocompleteService = new window.google.maps.places.AutocompleteService()
-        autocompleteService.getPlacePredictions(request, (predictions, status) => {
-          if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
-            const suggestions = predictions.slice(0, 5).map(prediction => ({
-              description: prediction.description,
-              place_id: prediction.place_id,
-              structured_formatting: prediction.structured_formatting
-            }))
-            resolve(suggestions)
-          } else {
-            // Fallback to basic geocoding
-            geocoder.geocode(
-              { 
-                address: address + ', UK',
-                region: 'GB'
-              },
-              (results, status) => {
-                if (status === 'OK' && results && results.length > 0) {
-                  const suggestions = results.slice(0, 3).map(result => ({
-                    description: result.formatted_address,
-                    place_id: result.place_id,
-                    geometry: result.geometry
-                  }))
-                  resolve(suggestions)
-                } else {
-                  resolve([])
-                }
-              }
-            )
-          }
-        })
-      })
+      // For now, return empty array - the Leaflet map can handle location selection
+      return []
     } catch (error) {
       console.error('Geocoding error:', error)
       return []
     }
-  }, [currentLocation])
+  }, [])
 
-  // Get detailed place information
+  // Get place details (simplified without Google Maps dependency)
   const getPlaceDetails = useCallback(async (placeId: string) => {
-    if (!window.google?.maps) return null
-    
-    try {
-      return new Promise((resolve, reject) => {
-        const placesService = new window.google.maps.places.PlacesService(document.createElement('div'))
-        placesService.getDetails(
-          {
-            placeId: placeId,
-            fields: ['geometry', 'formatted_address', 'name']
-          },
-          (place, status) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK && place) {
-              resolve({
-                lat: place.geometry?.location?.lat(),
-                lng: place.geometry?.location?.lng(),
-                address: place.formatted_address || place.name,
-                name: place.name
-              })
-            } else {
-              reject(new Error('Place details not found'))
-            }
-          }
-        )
-      })
-    } catch (error) {
-      console.error('Place details error:', error)
-      return null
-    }
+    // Note: This is a stub - in a real app, you'd use an alternative geocoding service
+    return null
   }, [])
 
   // Handle pickup address input with autocomplete
@@ -2587,50 +2243,130 @@ const App = () => {
       }
     }, [currentView, isAnimatingCount])
 
-    // Professional Armora Logo Component
+    // Premium Armora Logo Component with Flower Bloom Animation
     const ArmoraLogo = () => (
-      <div className="animate-fade-in-down animate-delay-100">
-        <svg width="280" height="80" viewBox="0 0 280 80" className="armora-logo">
-          {/* Shield Background */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.3 }}
+        animate={{ 
+          opacity: 1, 
+          scale: 1,
+          rotateY: [0, 5, -5, 0]
+        }}
+        transition={{ 
+          duration: 0.8,
+          ease: [0.25, 0.1, 0.25, 1],
+          rotateY: { duration: 1.2, delay: 0.3 }
+        }}
+        className="mb-8"
+      >
+        <motion.svg 
+          width="320" 
+          height="90" 
+          viewBox="0 0 320 90" 
+          className="mx-auto"
+          initial={{ filter: "drop-shadow(0 0 0px rgba(245, 158, 11, 0))" }}
+          animate={{ 
+            filter: [
+              "drop-shadow(0 0 0px rgba(245, 158, 11, 0))",
+              "drop-shadow(0 0 20px rgba(245, 158, 11, 0.4))",
+              "drop-shadow(0 0 30px rgba(245, 158, 11, 0.6))",
+              "drop-shadow(0 0 20px rgba(245, 158, 11, 0.3))"
+            ]
+          }}
+          transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+        >
+          {/* Enhanced Gradients */}
           <defs>
             <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#1e293b" />
+              <stop offset="50%" stopColor="#334155" />
               <stop offset="100%" stopColor="#0f172a" />
             </linearGradient>
             <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#f59e0b" />
+              <stop offset="0%" stopColor="#fbbf24" />
+              <stop offset="50%" stopColor="#f59e0b" />
               <stop offset="100%" stopColor="#d97706" />
+            </linearGradient>
+            <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#1e293b" />
+              <stop offset="50%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#1e293b" />
             </linearGradient>
           </defs>
           
-          {/* Shield Shape */}
-          <path 
-            d="M20 25 L35 15 L50 25 L50 45 C50 55 35 65 35 65 C35 65 20 55 20 45 Z" 
+          {/* Animated Shield Shape with Bloom Effect */}
+          <motion.path 
+            d="M30 35 L50 20 L70 35 L70 60 C70 75 50 90 50 90 C50 90 30 75 30 60 Z" 
             fill="url(#shieldGradient)" 
             stroke="url(#accentGradient)" 
-            strokeWidth="2"
+            strokeWidth="3"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2, ease: "easeInOut" }}
           />
           
-          {/* Shield Inner Design */}
-          <circle cx="35" cy="35" r="8" fill="url(#accentGradient)" />
-          <path 
-            d="M30 35 L33 38 L40 31" 
-            stroke="#1e293b" 
-            strokeWidth="2" 
-            fill="none" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          />
+          {/* Central Bloom Flower */}
+          <motion.g
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "backOut" }}
+          >
+            {/* Flower Petals */}
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, index) => (
+              <motion.ellipse
+                key={angle}
+                cx="50"
+                cy="45"
+                rx="8"
+                ry="4"
+                fill="url(#accentGradient)"
+                transform={`rotate(${angle} 50 45) translate(0 -6)`}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 0.8 }}
+                transition={{ 
+                  duration: 0.3, 
+                  delay: 0.6 + (index * 0.1),
+                  ease: "backOut" 
+                }}
+              />
+            ))}
+            {/* Flower Center */}
+            <motion.circle 
+              cx="50" 
+              cy="45" 
+              r="6" 
+              fill="#fbbf24"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.4, delay: 1.2, ease: "backOut" }}
+            />
+          </motion.g>
           
-          {/* Company Name */}
-          <text x="70" y="35" className="logo-text-main">
+          {/* Company Name with Stagger Effect */}
+          <motion.text 
+            x="90" 
+            y="42" 
+            className="font-bold text-2xl fill-current"
+            style={{ fill: "url(#textGradient)" }}
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 90, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+          >
             ARMORA
-          </text>
-          <text x="70" y="52" className="logo-text-sub">
+          </motion.text>
+          <motion.text 
+            x="90" 
+            y="62" 
+            className="font-medium text-sm opacity-80"
+            style={{ fill: "#64748b" }}
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 90, opacity: 0.8 }}
+            transition={{ duration: 0.6, delay: 1, ease: "easeOut" }}
+          >
             SECURITY TRANSPORT
-          </text>
-        </svg>
-      </div>
+          </motion.text>
+        </motion.svg>
+      </motion.div>
     )
 
     return (
@@ -3952,7 +3688,7 @@ const App = () => {
         </header>
         <div className="flex-1 professional-spacing space-y-4 pb-32 no-overflow">
           <div className="content-wrapper space-y-4">
-            {/* Google Maps Section */}
+            {/* Interactive Map Section */}
             <Card className="border-0 shadow-sm bg-card overflow-hidden">
               <MapComponent
                 currentLocation={currentLocation}
@@ -4065,36 +3801,19 @@ const App = () => {
                     className="text-xs h-7 px-2 flex-shrink-0"
                     onClick={() => {
                       if (currentLocation) {
-                        // Use reverse geocoding to get address for current location
-                        if (window.google?.maps) {
-                          const geocoder = new window.google.maps.Geocoder()
-                          geocoder.geocode(
-                            { location: currentLocation },
-                            (results, status) => {
-                              if (status === 'OK' && results && results[0]) {
-                                const address = results[0].formatted_address
-                                setBookingForm(prev => ({ 
-                                  ...prev, 
-                                  pickup: address,
-                                  pickupCoords: currentLocation 
-                                }))
-                                setSelectedPickupLocation({
-                                  lat: currentLocation.lat,
-                                  lng: currentLocation.lng,
-                                  address: address
-                                })
-                                toast.success("Using current location as pickup")
-                              }
-                            }
-                          )
-                        } else {
-                          setBookingForm(prev => ({ 
-                            ...prev, 
-                            pickup: "Current location",
-                            pickupCoords: currentLocation 
-                          }))
-                          toast.success("Using current location as pickup")
-                        }
+                        // Use current location coordinates directly
+                        const coordinatesText = `${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`
+                        setBookingForm(prev => ({ 
+                          ...prev, 
+                          pickup: `Current location (${coordinatesText})`,
+                          pickupCoords: currentLocation 
+                        }))
+                        setSelectedPickupLocation({
+                          lat: currentLocation.lat,
+                          lng: currentLocation.lng,
+                          address: `Current location (${coordinatesText})`
+                        })
+                        toast.success("Using current location as pickup")
                       } else {
                         toast.error("Current location not available")
                       }

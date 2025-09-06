@@ -8,32 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script async defer 
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dpoWMejxQTdoAI&libraries=geometry,places&callback=initMap&loading=async">
-    </script>
-    <script>
-        // Enhanced Google Maps callback with error handling
-        window.initMap = function() {
-            console.log('Google Maps API loaded successfully');
-            window.googleMapsLoaded = true;
-            // Dispatch event to let React know Maps is ready
-            window.dispatchEvent(new Event('google-maps-loaded'));
-        };
-        
-        // Error handling for failed map loading
-        window.gm_authFailure = function() {
-            console.error('Google Maps API authentication failed');
-            window.dispatchEvent(new Event('google-maps-error'));
-        };
-        
-        // Handle script loading errors
-        window.addEventListener('error', function(e) {
-            if (e.target && e.target.src && e.target.src.includes('maps.googleapis.com')) {
-                console.error('Google Maps script failed to load');
-                window.dispatchEvent(new Event('google-maps-error'));
-            }
-        });
-    </script>
     <link href="/src/main.css" rel="stylesheet" />
 </head>
 

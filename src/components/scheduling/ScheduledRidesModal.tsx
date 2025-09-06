@@ -7,10 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { X, Calendar, Clock, MapPin, Car } from "@phosphor-icons/react"
 import { toast } from 'sonner'
-import { GoogleMapsLoader } from '../map/GoogleMapsLoader'
-import { PlacesAutocomplete } from '../map/PlacesAutocomplete'
+import { Input as LocationInput } from "@/components/ui/input"
 import { rideServices } from '../../constants/ride-services'
 import { ScheduledRide, Location } from '../../types'
+import LeafletMap from '../LeafletMap'
 
 interface ScheduledRidesModalProps {
   isOpen: boolean
@@ -28,6 +28,8 @@ export const ScheduledRidesModal: React.FC<ScheduledRidesModalProps> = ({
   onCancelRide
 }) => {
   const [showScheduleForm, setShowScheduleForm] = useState(false)
+  const [showMap, setShowMap] = useState(false)
+  const [mapMode, setMapMode] = useState<'pickup' | 'dropoff'>('pickup')
   const [formData, setFormData] = useState({
     pickupLocation: '',
     pickupCoords: null as Location | null,
@@ -37,6 +39,24 @@ export const ScheduledRidesModal: React.FC<ScheduledRidesModalProps> = ({
     serviceType: '',
     notes: ''
   })
+
+  const handleLocationSelect = (location: { lat: number; lng: number; address: string }) => {
+    if (mapMode === 'pickup') {
+      setFormData(prev => ({
+        ...prev,
+        pickupLocation: location.address,
+        pickupCoords: { lat: location.lat, lng: location.lng }
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        dropoffLocation: location.address,
+        dropoffCoords: { lat: location.lat, lng: location.lng }
+      }))
+    }
+    setShowMap(false)
+    toast.success(`${mapMode === 'pickup' ? 'Pickup' : 'Dropoff'} location selected`)
+  }
 
   const handleScheduleRide = () => {
     // Validation
@@ -233,51 +253,63 @@ export const ScheduledRidesModal: React.FC<ScheduledRidesModalProps> = ({
                   {/* Pickup Location */}
                   <div>
                     <label className="text-sm font-medium mb-2 block">Pickup Location *</label>
-                    <GoogleMapsLoader>
-                      <PlacesAutocomplete
+                    <div className="flex gap-2">
+                      <LocationInput
                         value={formData.pickupLocation}
-                        onChange={(value) => setFormData(prev => ({ ...prev, pickupLocation: value }))}
-                        placeholder="Enter pickup location"
-                        className="w-full"
-                        onPlaceSelect={(place) => {
-                          if (place.geometry?.location) {
-                            setFormData(prev => ({
-                              ...prev,
-                              pickupLocation: place.formatted_address || place.name || '',
-                              pickupCoords: {
-                                lat: place.geometry.location.lat(),
-                                lng: place.geometry.location.lng()
-                              }
-                            }))
-                          }
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setFormData(prev => ({ 
+                            ...prev, 
+                            pickupLocation: value,
+                            pickupCoords: value.trim() ? { lat: 51.5074, lng: -0.1278 } : null
+                          }))
                         }}
+                        placeholder="Enter pickup location"
+                        className="flex-1"
                       />
-                    </GoogleMapsLoader>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          setMapMode('pickup')
+                          setShowMap(true)
+                        }}
+                      >
+                        <MapPin size={16} />
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Dropoff Location */}
                   <div>
                     <label className="text-sm font-medium mb-2 block">Destination *</label>
-                    <GoogleMapsLoader>
-                      <PlacesAutocomplete
+                    <div className="flex gap-2">
+                      <LocationInput
                         value={formData.dropoffLocation}
-                        onChange={(value) => setFormData(prev => ({ ...prev, dropoffLocation: value }))}
-                        placeholder="Enter destination"
-                        className="w-full"
-                        onPlaceSelect={(place) => {
-                          if (place.geometry?.location) {
-                            setFormData(prev => ({
-                              ...prev,
-                              dropoffLocation: place.formatted_address || place.name || '',
-                              dropoffCoords: {
-                                lat: place.geometry.location.lat(),
-                                lng: place.geometry.location.lng()
-                              }
-                            }))
-                          }
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setFormData(prev => ({ 
+                            ...prev, 
+                            dropoffLocation: value,
+                            dropoffCoords: value.trim() ? { lat: 51.5074, lng: -0.1278 } : null
+                          }))
                         }}
+                        placeholder="Enter destination"
+                        className="flex-1"
                       />
-                    </GoogleMapsLoader>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          setMapMode('dropoff')
+                          setShowMap(true)
+                        }}
+                      >
+                        <MapPin size={16} />
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Pickup Date & Time */}
@@ -348,6 +380,32 @@ export const ScheduledRidesModal: React.FC<ScheduledRidesModalProps> = ({
           </div>
         </CardContent>
       </Card>
+
+      {/* Map Modal */}
+      {showMap && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center p-4">
+          <Card className="w-full max-w-4xl max-h-[80vh]">
+            <CardContent className="p-0">
+              <div className="flex items-center justify-between p-4 border-b">
+                <div>
+                  <h3 className="font-semibold">Select {mapMode === 'pickup' ? 'Pickup' : 'Dropoff'} Location</h3>
+                  <p className="text-sm text-muted-foreground">Click on the map to select a location</p>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setShowMap(false)} className="w-9 h-9 rounded-full">
+                  <X size={18} />
+                </Button>
+              </div>
+              <div className="h-[500px]">
+                <LeafletMap
+                  onLocationSelect={handleLocationSelect}
+                  selectedLocation={mapMode === 'pickup' ? formData.pickupCoords : formData.dropoffCoords}
+                  isTrackingMode={false}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }

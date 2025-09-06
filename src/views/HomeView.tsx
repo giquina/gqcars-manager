@@ -18,9 +18,7 @@ import {
   Compass,
   Speedometer
 } from "@phosphor-icons/react"
-import { GoogleMapsLoader } from '../components/map/GoogleMapsLoader'
-import { GoogleMapView } from '../components/map/GoogleMapView'
-import { PlacesAutocomplete } from '../components/map/PlacesAutocomplete'
+import LeafletMap from '../components/LeafletMap'
 import { rideServices } from '../constants/ride-services'
 import { BookingForm, FavoriteLocation, Location } from '../types'
 
@@ -137,53 +135,28 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <Card className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-card to-card/90 ring-1 ring-border/10">
           <CardContent className="p-0">
             <div className="relative">
-              <GoogleMapsLoader>
-                <GoogleMapView
-                  center={mapCenter}
-                  markers={userLocation ? [{
-                    lat: userLocation.lat,
-                    lng: userLocation.lng,
-                    title: "Your Current Location",
-                    icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="16" cy="16" r="14" fill="#3B82F6" stroke="white" stroke-width="3" opacity="0.9"/>
-                        <circle cx="16" cy="16" r="6" fill="white"/>
-                        <circle cx="16" cy="16" r="3" fill="#3B82F6"/>
-                      </svg>
-                    `),
-                    animation: window.google?.maps?.Animation?.DROP,
-                    infoWindow: `
-                      <div style="padding: 8px; font-family: Inter, sans-serif; text-align: center;">
-                        <h3 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #1f2937;">📍 You are here</h3>
-                        <p style="margin: 0; font-size: 12px; color: #6b7280;">
-                          Accurate to ${accuracy ? Math.round(accuracy) + 'm' : 'GPS precision'}
-                        </p>
-                      </div>
-                    `
-                  }] : []}
-                  onLocationSelect={(location) => {
-                    if (!bookingForm.pickup) {
-                      setBookingForm(prev => ({
-                        ...prev,
-                        pickup: location.address,
-                        pickupCoords: { lat: location.lat, lng: location.lng }
-                      }))
-                      showPassengerStatus("📍 Pickup location confirmed", 'success')
-                    } else if (!bookingForm.destination) {
-                      setBookingForm(prev => ({
-                        ...prev,
-                        destination: location.address,
-                        destinationCoords: { lat: location.lat, lng: location.lng }
-                      }))
-                      showPassengerStatus("🎯 Destination confirmed - ready to book", 'success')
-                    }
-                  }}
-                  className="h-64"
-                  showControls={true}
-                  showCurrentLocation={true}
-                  showTraffic={false}
-                />
-              </GoogleMapsLoader>
+              <LeafletMap
+                onLocationSelect={(location) => {
+                  if (!bookingForm.pickup) {
+                    setBookingForm(prev => ({
+                      ...prev,
+                      pickup: location.address,
+                      pickupCoords: { lat: location.lat, lng: location.lng }
+                    }))
+                    showPassengerStatus("📍 Pickup location confirmed", 'success')
+                  } else if (!bookingForm.destination) {
+                    setBookingForm(prev => ({
+                      ...prev,
+                      destination: location.address,
+                      destinationCoords: { lat: location.lat, lng: location.lng }
+                    }))
+                    showPassengerStatus("🎯 Destination confirmed - ready to book", 'success')
+                  }
+                }}
+                currentLocation={userLocation || undefined}
+                selectedLocation={bookingForm.pickupCoords}
+                destinationLocation={bookingForm.destinationCoords}
+              />
               
               {/* Enhanced GPS Status with Location Details */}
               <div className="absolute top-4 left-4 space-y-2">
@@ -340,41 +313,27 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <X size={16} />
                 </Button>
               </div>
-              <GoogleMapsLoader>
-                <GoogleMapView
-                  center={mapCenter}
-                  markers={userLocation ? [{
-                    lat: userLocation.lat,
-                    lng: userLocation.lng,
-                    title: "Your Location",
-                    icon: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="10" cy="10" r="6" fill="#3B82F6" stroke="white" stroke-width="2"/>
-                        <circle cx="10" cy="10" r="2" fill="white"/>
-                      </svg>
-                    `)
-                  }] : []}
-                  onLocationSelect={(location) => {
-                    if (!bookingForm.pickup) {
-                      setBookingForm(prev => ({
-                        ...prev,
-                        pickup: location.address,
-                        pickupCoords: { lat: location.lat, lng: location.lng }
-                      }))
-                    } else if (!bookingForm.destination) {
-                      setBookingForm(prev => ({
-                        ...prev,
-                        destination: location.address,
-                        destinationCoords: { lat: location.lat, lng: location.lng }
-                      }))
-                    }
-                    setShowFullMap(false)
-                  }}
-                  className="h-96"
-                  showControls={true}
-                  showCurrentLocation={true}
-                />
-              </GoogleMapsLoader>
+              <LeafletMap
+                onLocationSelect={(location) => {
+                  if (!bookingForm.pickup) {
+                    setBookingForm(prev => ({
+                      ...prev,
+                      pickup: location.address,
+                      pickupCoords: { lat: location.lat, lng: location.lng }
+                    }))
+                  } else if (!bookingForm.destination) {
+                    setBookingForm(prev => ({
+                      ...prev,
+                      destination: location.address,
+                      destinationCoords: { lat: location.lat, lng: location.lng }
+                    }))
+                  }
+                  setShowFullMap(false)
+                }}
+                currentLocation={userLocation || undefined}
+                selectedLocation={bookingForm.pickupCoords}
+                destinationLocation={bookingForm.destinationCoords}
+              />
               <div className="p-4 bg-muted/30">
                 <p className="text-sm text-muted-foreground text-center">
                   Tap anywhere on the map to set your {!bookingForm.pickup ? 'pickup location' : 'destination'}
