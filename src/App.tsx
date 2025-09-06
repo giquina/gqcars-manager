@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import LeafletMapComponent from '@/components/LeafletMap'
 import { 
   Shield, 
   Phone, 
@@ -46,7 +47,7 @@ declare global {
   }
 }
 
-const GoogleMapComponent = ({ 
+const MapComponent = ({ 
   onLocationSelect, 
   selectedLocation, 
   currentLocation,
@@ -61,14 +62,34 @@ const GoogleMapComponent = ({
   driverLocation?: { lat: number; lng: number }
   isTrackingMode?: boolean
 }) => {
-  const mapRef = useRef<HTMLDivElement>(null)
-  const googleMapRef = useRef<any>(null)
-  const markerRef = useRef<any>(null)
-  const destinationMarkerRef = useRef<any>(null)
-  const currentLocationMarkerRef = useRef<any>(null)
-  const driverMarkerRef = useRef<any>(null)
-  const [isMapLoaded, setIsMapLoaded] = useState(false)
-  const geocoderRef = useRef<any>(null)
+  const handleLocationSelect = (location: { lat: number; lng: number; address: string }) => {
+    onLocationSelect(location)
+    toast.success("Location selected", {
+      description: location.address
+    })
+  }
+
+  return (
+    <div className="w-full h-full relative">
+      <LeafletMapComponent
+        onLocationSelect={handleLocationSelect}
+        selectedLocation={selectedLocation}
+        currentLocation={currentLocation}
+        destinationLocation={destinationLocation}
+        driverLocation={driverLocation}
+        isTrackingMode={isTrackingMode}
+      />
+      {isTrackingMode && (
+        <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-3 z-[1000]">
+          <div className="flex items-center space-x-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-gray-700">Live Tracking</span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
   // Initialize map when Google Maps API is ready
   useEffect(() => {
