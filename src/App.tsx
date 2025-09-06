@@ -90,58 +90,8 @@ const MapComponent = ({
     </div>
   )
 }
-  useEffect(() => {
-    const initializeMap = () => {
-      if (!mapRef.current || !window.google?.maps) return
 
-      // Default to London center
-      const defaultCenter = { lat: 51.5074, lng: -0.1278 }
-      
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: currentLocation || defaultCenter,
-        zoom: currentLocation ? 16 : 12,
-        styles: [
-          {
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [{ visibility: "off" }]
-          },
-          {
-            featureType: "transit",
-            elementType: "labels",
-            stylers: [{ visibility: "off" }]
-          }
-        ],
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false,
-        zoomControlOptions: {
-          position: window.google.maps.ControlPosition.RIGHT_TOP
-        }
-      })
-
-      googleMapRef.current = map
-      geocoderRef.current = new window.google.maps.Geocoder()
-
-      // Add current location marker if available
-      if (currentLocation) {
-        currentLocationMarkerRef.current = new window.google.maps.Marker({
-          position: currentLocation,
-          map: map,
-          icon: {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="8" fill="#3B82F6" stroke="white" stroke-width="2"/>
-                <circle cx="12" cy="12" r="3" fill="white"/>
-              </svg>
-            `),
-            scaledSize: new window.google.maps.Size(24, 24)
-          },
-          title: "Your current location"
-        })
-      }
-
-      // Add click listener only if not in tracking mode
+// ARMORA Premium Branded Security Transport Services with detailed information
       if (!isTrackingMode) {
         map.addListener('click', (event: any) => {
           if (event.latLng) {
@@ -4183,7 +4133,7 @@ const App = () => {
               <div className="space-y-4">
                 <h3 className="font-semibold text-base text-foreground">Choose Your Service</h3>
                 
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {armoraServices.map(service => {
                     const isSelected = selectedService === service.id
                     const isExpanded = expandedService === service.id
@@ -4195,12 +4145,12 @@ const App = () => {
                       : "£50 minimum"
                     
                     return (
-                      <div key={service.id} className="space-y-0">
+                      <div key={service.id}>
                         <Card 
-                          className={`cursor-pointer transition-all duration-300 relative overflow-hidden ${
+                          className={`cursor-pointer transition-all duration-300 relative overflow-hidden h-full ${
                             isSelected 
-                              ? `ring-2 ring-${service.colorScheme.primary === 'gold' ? 'amber' : service.colorScheme.primary}-400 bg-gradient-to-br ${service.colorScheme.bgColor} to-${service.colorScheme.primary === 'gold' ? 'amber' : service.colorScheme.primary}-100/60 shadow-lg border-l-4 ${service.colorScheme.borderColor}` 
-                              : 'hover:shadow-md bg-white border border-border/40 hover:scale-[1.01]'
+                              ? `ring-2 ring-blue-400 bg-gradient-to-br from-blue-50 to-blue-100/60 shadow-lg border-l-4 border-l-blue-500` 
+                              : 'hover:shadow-lg bg-white border border-gray-200 hover:scale-[1.02] hover:border-blue-200'
                           }`}
                           onClick={() => {
                             setSelectedService(service.id)
