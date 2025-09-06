@@ -603,12 +603,26 @@ const App = () => {
   const [paymentReservations, setPaymentReservations] = useKV("payment-reservations", [] as any[])
   const [currentTrip, setCurrentTrip] = useKV("current-trip", null as any)
   const [questionnaireAnswers, setQuestionnaireAnswers] = useKV("questionnaire-answers", {
+    // Step 1: Professional Identity & Context
+    profession: [] as string[],
+    // Step 2: Public Visibility Assessment  
+    visibility: '',
+    // Step 3: Security Risk Concerns
+    securityConcerns: [] as string[],
+    // Step 4: Travel Patterns & Usage
+    travelPatterns: '',
+    // Step 5: Security Approach Preferences
+    securityApproach: '',
+    // Step 6: Service Preferences & Priorities
+    priorities: [] as string[],
+    // Step 7: Custom Requirements (optional)
+    customRequirements: '',
+    // Legacy fields (for compatibility during transition)
     workType: [] as string[],
     travelFrequency: '',
     securityStyle: '',
     comfortLevel: '',
-    locations: [] as string[],
-    customRequirements: ''
+    locations: [] as string[]
   })
   
   // Payment methods and processing state
@@ -868,6 +882,125 @@ const App = () => {
     }
     return 0
   }, [selectedPickupLocation, selectedDestinationLocation, calculateDistance])
+
+  // Intelligent Service Recommendation Algorithm
+  const calculateServiceRecommendation = useCallback((answers: typeof questionnaireAnswers) => {
+    let riskScore = 0
+    let luxuryScore = 0
+    let discretionScore = 0
+    let frequencyScore = 0
+
+    // Risk assessment scoring
+    if (answers.profession.includes('public-figure') || answers.profession.includes('entertainment-media') || answers.profession.includes('corporate-executive')) {
+      riskScore += 3
+    }
+    if (answers.visibility === 'national-visibility' || answers.visibility === 'high-public-profile') {
+      riskScore += 3
+    }
+    if (answers.visibility === 'regional-profile') {
+      riskScore += 2
+    }
+    if (answers.securityConcerns.length > 3) {
+      riskScore += 2
+    }
+    if (answers.securityConcerns.includes('financial-crime') || answers.securityConcerns.includes('personal-safety')) {
+      riskScore += 2
+    }
+    if (answers.securityConcerns.includes('privacy-protection') || answers.securityConcerns.includes('family-safety')) {
+      riskScore += 1
+    }
+
+    // Luxury preference scoring
+    if (answers.priorities.includes('luxury-experience')) {
+      luxuryScore += 3
+    }
+    if (answers.profession.includes('banking-finance') || answers.profession.includes('corporate-executive')) {
+      luxuryScore += 2
+    }
+    if (answers.priorities.includes('comprehensive-security')) {
+      luxuryScore += 2
+    }
+
+    // Discretion needs scoring
+    if (answers.securityApproach === 'invisible-protection') {
+      discretionScore += 3
+    }
+    if (answers.securityApproach === 'professional-discretion') {
+      discretionScore += 2
+    }
+    if (answers.visibility === 'private-individual') {
+      discretionScore += 2
+    }
+
+    // Frequency requirements scoring
+    if (answers.travelPatterns === 'high-intensity-executive') {
+      frequencyScore += 3
+    }
+    if (answers.travelPatterns === 'frequent-professional') {
+      frequencyScore += 2
+    }
+
+    // Service matching logic with confidence scoring
+    let recommendedService = 'armora-standard'
+    let confidence = 0.7
+    let reasoning = []
+
+    if (riskScore >= 6 || luxuryScore >= 4) {
+      recommendedService = 'armora-executive'
+      confidence = 0.9
+      reasoning.push('High risk profile requires executive protection')
+    } else if (answers.travelPatterns.includes('international') || riskScore >= 4) {
+      recommendedService = 'shadow-escort'
+      confidence = 0.85
+      reasoning.push('Enhanced security needs suggest Shadow Escort service')
+    } else if (discretionScore >= 3 && answers.priorities.includes('professional-discretion')) {
+      recommendedService = 'armora-standard'
+      confidence = 0.8
+      reasoning.push('Discretion requirements matched with professional transport')
+    } else if (frequencyScore >= 2) {
+      recommendedService = 'armora-group'
+      confidence = 0.75
+      reasoning.push('Regular usage patterns suit flexible group options')
+    }
+
+    // Special cases
+    if (answers.profession.includes('prefer-privacy') || answers.securityConcerns.includes('confidential-assessment')) {
+      recommendedService = 'consultation-required'
+      confidence = 0.95
+      reasoning.push('Complex requirements need personalized consultation')
+    }
+
+    return {
+      service: recommendedService,
+      confidence: Math.round(confidence * 100),
+      reasoning,
+      alternatives: getAlternativeServices(recommendedService, { riskScore, luxuryScore, discretionScore })
+    }
+  }, [])
+
+  // Get alternative service recommendations
+  const getAlternativeServices = useCallback((primaryService: string, scores: any) => {
+    const services = ['armora-standard', 'shadow-escort', 'armora-executive', 'armora-group']
+    return services.filter(s => s !== primaryService).slice(0, 2).map(service => ({
+      service,
+      reason: getServiceMatchReason(service, scores)
+    }))
+  }, [])
+
+  const getServiceMatchReason = useCallback((service: string, scores: any) => {
+    switch (service) {
+      case 'armora-executive':
+        return 'Maximum security and luxury for high-profile needs'
+      case 'shadow-escort':
+        return 'Enhanced security with route flexibility'
+      case 'armora-group':
+        return 'Cost-effective for regular business travel'
+      case 'armora-standard':
+        return 'Professional discrete transport solution'
+      default:
+        return 'Reliable security transport service'
+    }
+  }, [])
 
   // Initialize app flow based on user state with automatic routing
   useEffect(() => {
@@ -2458,9 +2591,36 @@ const App = () => {
 
   // Premium Welcome Landing Page
   if (currentView === 'welcome') {
+    // Counter Animation Hook
+    const [displayCount, setDisplayCount] = useState(0)
+    const [isAnimatingCount, setIsAnimatingCount] = useState(false)
+
+    useEffect(() => {
+      if (currentView === 'welcome' && !isAnimatingCount) {
+        setIsAnimatingCount(true)
+        const target = 6247
+        const duration = 1500 // 1.5 seconds
+        const steps = 60
+        const increment = target / steps
+        let current = 0
+        
+        const timer = setInterval(() => {
+          current += increment
+          if (current >= target) {
+            setDisplayCount(target)
+            clearInterval(timer)
+          } else {
+            setDisplayCount(Math.floor(current))
+          }
+        }, duration / steps)
+        
+        return () => clearInterval(timer)
+      }
+    }, [currentView, isAnimatingCount])
+
     // Professional Armora Logo Component
     const ArmoraLogo = () => (
-      <div className="armora-logo-container">
+      <div className="animate-fade-in-down animate-delay-100">
         <svg width="280" height="80" viewBox="0 0 280 80" className="armora-logo">
           {/* Shield Background */}
           <defs>
@@ -2505,47 +2665,105 @@ const App = () => {
     )
 
     return (
-      <div className="armora-welcome-page">
+      <div className="premium-welcome-container flex items-center justify-center p-6">
         <Toaster position="top-center" />
         
-        {/* Background Elements */}
-        <div className="welcome-background">
-          <div className="bg-accent-1" />
-          <div className="bg-accent-2" />
-        </div>
-        
-        <div className="welcome-content-container">
-          {/* Professional Logo */}
+        {/* Main Content Card */}
+        <div className="premium-welcome-card animate-scale-in animate-delay-300 max-w-2xl w-full p-12 text-center">
+          
+          {/* Logo */}
           <ArmoraLogo />
           
-          {/* Social Proof */}
-          <div className="social-proof">
-            <h2 className="social-proof-number">6000+</h2>
-            <p className="social-proof-text">Secure Journeys Completed</p>
+          {/* Enhanced Headline */}
+          <div className="animate-slide-in-left animate-delay-600">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Elite Security Transport
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Personalized protection for discerning professionals
+            </p>
+          </div>
+          
+          {/* Trust Signals Grid */}
+          <div className="grid md:grid-cols-3 gap-6 mb-8 animate-fade-in-up animate-delay-900">
+            <div className="premium-stats-card">
+              <div className="text-2xl font-bold animate-count-up animate-delay-1000">
+                {displayCount.toLocaleString()}+
+              </div>
+              <div className="text-sm opacity-90">Secure Journeys</div>
+            </div>
+            <div className="premium-stats-card">
+              <div className="text-2xl font-bold">4.9⭐</div>
+              <div className="text-sm opacity-90">Client Satisfaction</div>
+            </div>
+            <div className="premium-stats-card">
+              <div className="text-2xl font-bold">500+</div>
+              <div className="text-sm opacity-90">Business Leaders</div>
+            </div>
           </div>
           
           {/* Value Proposition */}
-          <div className="value-proposition">
-            <h3 className="value-prop-title">2-Minute Security Assessment</h3>
-            <p className="value-prop-subtitle">Get matched with your protection level</p>
+          <div className="animate-slide-in-left animate-delay-1200">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              Find Your Perfect Security Level
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Complete our 2-minute confidential assessment and get matched with the ideal protection for your professional needs.
+            </p>
           </div>
           
-          {/* Main CTA */}
-          <Button 
-            onClick={() => {
-              setIsFirstLaunch(false)
-              setCurrentView('questionnaire')
-              setQuestionnaireStep(0)
-            }}
-            className="armora-cta-button"
-          >
-            Start Assessment
-          </Button>
+          {/* Benefits List */}
+          <div className="animate-fade-in-up animate-delay-1200">
+            <ul className="benefits-list max-w-md mx-auto mb-8 text-left">
+              <li className="animate-slide-in-left animate-delay-1200">Instant matching in 2 minutes</li>
+              <li className="animate-slide-in-left animate-delay-1300">No personal details required</li>
+              <li className="animate-slide-in-left animate-delay-1400">Professional security drivers</li>
+              <li className="animate-slide-in-left animate-delay-1500">Available 24/7 across London</li>
+            </ul>
+          </div>
+          
+          {/* Enhanced CTA Button */}
+          <div className="animate-gentle-bounce animate-delay-1500">
+            <button 
+              onClick={() => {
+                setIsFirstLaunch(false)
+                setCurrentView('questionnaire')
+                setQuestionnaireStep(0)
+              }}
+              className="premium-button animate-gentle-pulse mb-6"
+            >
+              Get My Security Assessment
+            </button>
+          </div>
+          
+          {/* Testimonial */}
+          <div className="animate-fade-in-up animate-delay-1800">
+            <blockquote className="text-gray-600 italic mb-4">
+              "Armora's assessment found the perfect security level for my business travel. Felt completely safe."
+            </blockquote>
+            <cite className="text-sm text-gray-500 font-medium">
+              — Sarah K., Investment Director
+            </cite>
+          </div>
           
           {/* Trust Statement */}
-          <div className="trust-statement">
-            <p>Encrypted & Private</p>
+          <div className="animate-fade-in-up animate-delay-2000">
+            <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mt-6">
+              <span className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                Encrypted & Private
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                SIA Licensed Drivers
+              </span>
+              <span className="flex items-center gap-2">
+                <Star className="w-4 h-4" />
+                Premium Service
+              </span>
+            </div>
           </div>
+          
         </div>
       </div>
     )
@@ -2584,19 +2802,20 @@ const App = () => {
       setCurrentView('welcome')
     }
 
-    // Step 0: Work Type Selection
+    // Step 0: Professional Identity & Context
     if (questionnaireStep === 0) {
-      const workOptions = [
-        { id: 'doctor-medical', title: 'Medical Professional', subtitle: 'Doctor, Consultant, Specialist', description: 'Example: Safe transport to late-night medical appointments or discrete patient consultations requiring confidentiality' },
-        { id: 'banking-finance', title: 'Banking & Finance', subtitle: 'Investment, Trading, Advisory', description: 'Example: Secure transport to confidential merger meetings or high-stakes financial negotiations with privacy protection' },
-        { id: 'tech-computer', title: 'Technology', subtitle: 'Software, IT, Innovation', description: 'Example: Protected travel to product launches or when carrying sensitive intellectual property requiring security measures' },
-        { id: 'real-estate', title: 'Real Estate', subtitle: 'Property, Development, Sales', description: 'Example: Safe site visits to remote properties or protection during high-value viewings with potential security risks' },
-        { id: 'entertainment-media', title: 'Entertainment & Media', subtitle: 'Actors, Musicians, Performers', description: 'Example: Discreet arrival/departure from venues, avoiding paparazzi at private events or red carpet appearances' },
-        { id: 'lawyer-legal', title: 'Legal & Government', subtitle: 'Lawyers, Officials, Diplomats', description: 'Example: Protected travel to sensitive court proceedings or confidential government meetings requiring security clearance' },
-        { id: 'corporate-executive', title: 'Corporate Executive', subtitle: 'C-Suite, Directors, Management', description: 'Example: Secure transport during merger negotiations or sensitive board meetings requiring executive protection' },
-        { id: 'public-figure', title: 'Public Figure', subtitle: 'Politicians, Activists, Speakers', description: 'Example: Discreet backdoor escort from cameras or secure transport to controversial events with maximum privacy' },
-        { id: 'sports-athletics', title: 'Sports & Athletics', subtitle: 'Athletes, Coaches, Sports Industry', description: 'Example: Private transport avoiding crowds after games or during contract negotiations requiring confidentiality' },
-        { id: 'prefer-privacy', title: 'Prefer Privacy', subtitle: 'Keep details confidential', description: 'Example: Professional service with complete discretion - no questions asked, maximum privacy protection' }
+      const professionOptions = [
+        { id: 'high-profile-executive', title: 'High-Profile Executive', subtitle: 'CEO, Board Member, Senior Leadership', description: 'Example: Discrete transport to confidential board meetings, merger negotiations, or high-stakes executive decisions requiring security' },
+        { id: 'banking-finance', title: 'Financial Services', subtitle: 'Investment Banking, Trading, Private Wealth', description: 'Example: Secure transport for confidential client meetings, high-value transactions, or sensitive financial negotiations' },
+        { id: 'doctor-medical', title: 'Medical Professional', subtitle: 'Consultant, Specialist, Private Practice', description: 'Example: Protected travel to sensitive patient consultations, medical conferences, or high-profile healthcare appointments' },
+        { id: 'lawyer-legal', title: 'Legal Professional', subtitle: 'Barrister, Solicitor, Legal Counsel', description: 'Example: Secure transport to court proceedings, sensitive legal negotiations, or confidential client meetings' },
+        { id: 'tech-leader', title: 'Technology Leader', subtitle: 'Founder, CTO, Senior Tech Executive', description: 'Example: Protected travel to product launches, investor meetings, or when carrying sensitive intellectual property' },
+        { id: 'entertainment-media', title: 'Media & Entertainment', subtitle: 'Producer, Director, Public Figure', description: 'Example: Discrete arrival/departure from events, avoiding media attention, or protecting privacy during public appearances' },
+        { id: 'real-estate', title: 'Real Estate Professional', subtitle: 'Development, High-Value Sales', description: 'Example: Safe transport to remote property viewings, high-value negotiations, or international development projects' },
+        { id: 'government-diplomatic', title: 'Government/Diplomatic', subtitle: 'Civil Service, Embassy, Political', description: 'Example: Protected travel for sensitive government meetings, diplomatic missions, or political events requiring security' },
+        { id: 'other-professional', title: 'Other Professional', subtitle: 'Consultant, Business Owner, Specialist', description: 'Example: Professional transport for business meetings, client consultations, or specialized industry requirements' },
+        { id: 'prefer-privacy', title: 'Prefer Privacy', subtitle: 'Discuss requirements confidentially', description: 'Example: Complex security needs requiring personalized consultation and complete discretion' },
+        { id: 'prefer-not-to-say', title: 'Prefer not to say', subtitle: 'Privacy-focused option', description: 'Maintain complete confidentiality about your profession while still receiving personalized security transport services' }
       ]
 
       return (
@@ -2606,8 +2825,8 @@ const App = () => {
           <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-4">
-                <h1 className="luxury-title">What best describes your profession?</h1>
-                <p className="luxury-subtitle">This helps us tailor the perfect security transport experience for your needs</p>
+                <h1 className="luxury-title">What best describes your professional situation?</h1>
+                <p className="luxury-subtitle">Step 1 of 7: Understanding your professional context helps us assess your security needs</p>
               </div>
               
               <div className="luxury-progress-container mb-3">
@@ -2619,9 +2838,6 @@ const App = () => {
               
               <div className="text-center space-y-1">
                 <p className="text-sm text-gray-500 font-medium">Step {questionnaireStep + 1} of {totalSteps}</p>
-                {questionnaireAnswers.workType.length > 0 && (
-                  <p className="text-xs text-gray-400 font-medium">{questionnaireAnswers.workType.length} selections made</p>
-                )}
               </div>
             </div>
           </div>
@@ -2629,8 +2845,8 @@ const App = () => {
           <div className="luxury-questionnaire-content">
             <div className="max-w-6xl mx-auto">
               <div className="luxury-grid-2x5">
-                {workOptions.map(option => {
-                  const isSelected = questionnaireAnswers.workType.includes(option.id)
+                {professionOptions.map(option => {
+                  const isSelected = questionnaireAnswers.profession.includes(option.id)
                   return (
                     <div 
                       key={option.id}
@@ -2638,9 +2854,7 @@ const App = () => {
                       onClick={() => {
                         setQuestionnaireAnswers(prev => ({
                           ...prev,
-                          workType: isSelected 
-                            ? prev.workType.filter(type => type !== option.id)
-                            : [...prev.workType, option.id]
+                          profession: [option.id]
                         }))
                       }}
                     >
@@ -2672,11 +2886,11 @@ const App = () => {
               <div className="luxury-cta-continue">
                 <Button 
                   onClick={handleNextStep}
-                  disabled={questionnaireAnswers.workType.length === 0}
+                  disabled={questionnaireAnswers.profession.length === 0}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-black font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ background: questionnaireAnswers.workType.length > 0 ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
+                  style={{ background: questionnaireAnswers.profession.length > 0 ? 'linear-gradient(135deg, var(--luxury-gold) 0%, #f4e4bc 100%)' : '' }}
                 >
-                  Continue
+                  Continue assessment
                 </Button>
               </div>
             </div>
@@ -2685,14 +2899,15 @@ const App = () => {
       );
     }
 
-    // Step 1: Travel Frequency
+    // Step 1: Public Visibility Assessment  
     if (questionnaireStep === 1) {
-      const frequencyOptions = [
-        { id: 'sometimes', title: 'Occasional', subtitle: 'Special events only', frequency: '1-3 times/month', description: 'Example: Important meetings, special events, or airport transfers for occasional business needs' },
-        { id: 'weekly', title: 'Regular', subtitle: 'Weekly commitments', frequency: '1-2 times/week', description: 'Example: Weekly client meetings, consistent appointments, or regular business commitments requiring security' },
-        { id: 'daily', title: 'Frequent', subtitle: 'Daily transport needs', frequency: '4-6 days/week', description: 'Example: Daily office commute, regular work schedule, or consistent professional transportation requirements' },
-        { id: 'multiple', title: 'Intensive', subtitle: 'Multiple daily trips', frequency: '2+ trips/day', description: 'Example: Back-to-back meetings, complex scheduling, or high-frequency executive transportation needs' },
-        { id: 'prefer-not-disclose', title: 'Prefer Not to Disclose', subtitle: 'Keep frequency private', frequency: 'Confidential', description: 'Example: Professional service with discretion - flexible scheduling without disclosing specific requirements' }
+      const visibilityOptions = [
+        { id: 'private-individual', title: 'Private Individual', subtitle: 'Low public recognition', description: 'Example: Normal privacy needs, minimal public recognition, standard professional interactions' },
+        { id: 'industry-recognition', title: 'Industry Recognition', subtitle: 'Known within professional circles', description: 'Example: Recognized by industry peers, occasional professional media coverage, some public speaking' },
+        { id: 'regional-profile', title: 'Regional Profile', subtitle: 'Recognized locally', description: 'Example: Local media coverage, community leadership roles, regional business prominence' },
+        { id: 'national-visibility', title: 'National Visibility', subtitle: 'Regular media coverage', description: 'Example: National media appearances, significant public role, regular public recognition' },
+        { id: 'high-public-profile', title: 'High Public Profile', subtitle: 'Significant media attention', description: 'Example: Celebrity status, major media coverage, substantial public recognition and attention' },
+        { id: 'confidential-assessment', title: 'Confidential Assessment', subtitle: 'Prefer to discuss visibility privately', description: 'Example: Complex visibility situation requiring personalized consultation and discretion' }
       ]
 
       return (
@@ -2703,8 +2918,8 @@ const App = () => {
           <div className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-md">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-4">
-                <h1 className="luxury-title">How often will you need our services?</h1>
-                <p className="luxury-subtitle">This helps us understand your transport requirements and frequency needs</p>
+                <h1 className="luxury-title">How would you describe your public profile?</h1>
+                <p className="luxury-subtitle">Step 2 of 7: Understanding your visibility level helps us assess potential security exposure</p>
               </div>
               
               <div className="luxury-progress-container mb-3">
@@ -3399,7 +3614,7 @@ const App = () => {
       // Generate summary data
       const getSummaryData = () => {
         const data = {
-          profession: questionnaireAnswers.workType?.join(', ') || 'Not specified',
+          profession: questionnaireAnswers.profession?.join(', ') || 'Not specified',
           frequency: questionnaireAnswers.travelFrequency || 'Not specified',
           serviceStyle: questionnaireAnswers.securityStyle || 'Not specified',
           comfortLevel: questionnaireAnswers.comfortLevel || 'Not specified',
@@ -4234,9 +4449,9 @@ const App = () => {
               `Book ${armoraServices.find(s => s.id === selectedService)?.name?.replace('Armora ', '') || 'Now'}`)
             )}
           </Button>
-        </div>
-        </div>
         )}
+        </div>
+        </div>
         
         {/* Bottom Navigation - Always Visible */}
         <div className="bottom-navigation bg-background/95 backdrop-blur-sm border-t border-border/50 z-30">
