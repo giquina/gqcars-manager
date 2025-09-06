@@ -90,8 +90,6 @@ const MapComponent = ({
     </div>
   )
 }
-
-  // Initialize map when Google Maps API is ready
   useEffect(() => {
     const initializeMap = () => {
       if (!mapRef.current || !window.google?.maps) return
@@ -4006,7 +4004,7 @@ const App = () => {
           <div className="content-wrapper space-y-4">
             {/* Google Maps Section */}
             <Card className="border-0 shadow-sm bg-card overflow-hidden">
-              <GoogleMapComponent
+              <MapComponent
                 currentLocation={currentLocation}
                 selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
                 destinationLocation={selectedDestinationLocation ? { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng } : undefined}
@@ -5279,7 +5277,7 @@ const App = () => {
 
           {/* Live Map */}
           <Card className="border-0 shadow-sm bg-card overflow-hidden">
-            <GoogleMapComponent
+            <MapComponent
               currentLocation={currentLocation}
               selectedLocation={selectedPickupLocation ? { lat: selectedPickupLocation.lat, lng: selectedPickupLocation.lng } : undefined}
               destinationLocation={selectedDestinationLocation ? { lat: selectedDestinationLocation.lat, lng: selectedDestinationLocation.lng } : undefined}
